@@ -45,6 +45,7 @@ export const Navigation = () => {
                 key={index}
                 onClick={() => handleNavClick(item.href)}
                 className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium"
+                aria-label={`Navegar a ${item.label}`}
               >
                 {item.label}
               </button>
@@ -64,6 +65,8 @@ export const Navigation = () => {
               variant="ghost"
               size="sm"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={isMenuOpen}
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
@@ -79,6 +82,7 @@ export const Navigation = () => {
                   key={index}
                   onClick={() => handleNavClick(item.href)}
                   className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium py-2 text-left"
+                  aria-label={`Navegar a ${item.label}`}
                 >
                   {item.label}
                 </button>

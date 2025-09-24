@@ -18,7 +18,7 @@ export const PricingSection = () => {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16 animate-fade-up">
-          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
+          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground transition-colors">
             Precios Transparentes
           </Badge>
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
@@ -38,7 +38,7 @@ export const PricingSection = () => {
             <span className="font-bold text-lg">¡PRECIO DE LANZAMIENTO!</span>
           </div>
           <p className="text-sm">
-            Contrata ahora y mantén este precio fijo de por vida • Act fast to benefit from this deal!
+            Aprovecha ahora: Los precios pueden aumentar. El precio mensual al momento de la compra se mantendrá hasta la cancelación.
           </p>
         </div>
 
@@ -124,6 +124,10 @@ export const PricingSection = () => {
                   <span className="text-5xl font-bold text-accent">S/497</span>
                   <span className="text-lg text-muted-foreground">/mes</span>
                 </div>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <span className="text-lg line-through text-destructive">S/1000</span>
+                  <Badge variant="destructive" className="text-xs">-50%</Badge>
+                </div>
                 <p className="text-sm text-muted-foreground mt-2">
                   Incluye todo del Plan Básico +
                 </p>
@@ -137,9 +141,7 @@ export const PricingSection = () => {
                   "1 hora/mes de cambios extendidos",
                   "Cambios de textos e imágenes",
                   "Nuevas secciones personalizadas",
-                  "Soporte prioritario",
-                  "Login opcional si necesitas",
-                  "Asesoría mensual incluida"
+                  "Soporte prioritario"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
