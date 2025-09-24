@@ -9,7 +9,6 @@ import { ArrowLeft, Clock, Calendar, User, Home, ChevronRight } from "lucide-rea
 import { getArticleBySlug, getRelatedArticles, categoryLabels } from "@/data/articles";
 import { useEffect } from "react";
 import "../blog.css";
-import "../styles/blog.css";
 
 const BlogPost = () => {
   const { category, slug } = useParams();
