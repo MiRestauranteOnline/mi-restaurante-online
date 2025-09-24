@@ -6,7 +6,7 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="bg-muted py-12 mt-20">
+    <footer className="bg-muted py-12">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-3 gap-8">
           {/* Company Info */}
