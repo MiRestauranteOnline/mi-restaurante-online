@@ -159,7 +159,7 @@ const BlogPost = () => {
       {/* Article Content */}
       <main className="py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-5 gap-12">
               {/* Main Content */}
               <div className="lg:col-span-3">
