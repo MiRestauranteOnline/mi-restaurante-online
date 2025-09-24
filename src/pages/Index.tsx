@@ -1,12 +1,38 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Hero } from "@/components/Hero";
+import { ProblemSolutionSection } from "@/components/ProblemSolutionSection";
+import { BenefitsSection } from "@/components/BenefitsSection";
+import { HowItWorksSection } from "@/components/HowItWorksSection";
+import { PricingSection } from "@/components/PricingSection";
+import { ApplicationForm } from "@/components/ApplicationForm";
+import { FAQSection } from "@/components/FAQSection";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <Hero />
+      
+      {/* Problem/Solution Section */}
+      <ProblemSolutionSection />
+      
+      {/* Benefits Grid */}
+      <BenefitsSection />
+      
+      {/* How It Works Process */}
+      <HowItWorksSection />
+      
+      {/* Pricing Plans */}
+      <PricingSection />
+      
+      {/* Application Form */}
+      <ApplicationForm />
+      
+      {/* FAQ Section */}
+      <FAQSection />
+      
+      {/* Floating WhatsApp Button */}
+      <WhatsAppButton />
     </div>
   );
 };
