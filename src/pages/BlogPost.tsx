@@ -162,7 +162,7 @@ const BlogPost = () => {
               {/* Main Content */}
               <div className="lg:col-span-3">
                 <div 
-                  className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-ul:text-muted-foreground prose-ol:text-muted-foreground"
+                  className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-ul:text-muted-foreground prose-ol:text-muted-foreground prose-li:mb-2 prose-img:rounded-lg prose-img:shadow-md prose-table:table-auto prose-table:border-collapse prose-th:border prose-th:border-border prose-th:bg-muted prose-th:p-3 prose-td:border prose-td:border-border prose-td:p-3"
                   dangerouslySetInnerHTML={{ __html: article.content }}
                 />
                 
