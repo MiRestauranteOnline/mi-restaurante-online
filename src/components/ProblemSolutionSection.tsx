@@ -201,7 +201,7 @@ export const ProblemSolutionSection = () => {
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <div className="bg-card border border-accent/20 p-8 rounded-2xl shadow-accent max-w-2xl mx-auto">
+          <div className="bg-card border border-primary/20 p-8 rounded-2xl shadow-primary max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold text-foreground mb-4">
               ¿Listo para transformar tu negocio?
             </h3>
