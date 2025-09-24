@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { ProblemSolutionSection } from "@/components/ProblemSolutionSection";
 import { BenefitsSection } from "@/components/BenefitsSection";
 import { HowItWorksSection } from "@/components/HowItWorksSection";
+import { CTASection } from "@/components/CTASection";
 import { PricingSection } from "@/components/PricingSection";
 import { ApplicationForm } from "@/components/ApplicationForm";
 import { FAQSection } from "@/components/FAQSection";
@@ -32,6 +33,9 @@ const Index = () => {
       <section id="how-it-works">
         <HowItWorksSection />
       </section>
+      
+      {/* CTA Section with Parallax */}
+      <CTASection />
       
       {/* Pricing Plans */}
       <section id="pricing">

@@ -18,8 +18,8 @@
     --secondary-foreground: 0 0% 100%;
 
     /* Warm Accent for Promotions */
-    --accent: 45 100% 60%; /* Gold/Amber for urgency */
-    --accent-foreground: 0 0% 1%;
+    --accent: 45 80% 45%; /* Gold/Amber for urgency - darker for better contrast */
+    --accent-foreground: 0 0% 100%;
 
     /* Muted/Supporting Colors */
     --muted: 173 20% 96%;

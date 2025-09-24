@@ -38,7 +38,7 @@ export const PricingSection = () => {
             <span className="font-bold text-lg">¡PRECIO DE LANZAMIENTO!</span>
           </div>
           <p className="text-sm">
-            Contrata ahora y mantén este precio fijo de por vida • Solo hasta fin de mes
+            Contrata ahora y mantén este precio fijo de por vida • Act fast to benefit from this deal!
           </p>
         </div>
 
