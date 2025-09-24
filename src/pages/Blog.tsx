@@ -31,7 +31,7 @@ const Blog = () => {
       <Navigation />
       
       {/* SEO Optimized Header */}
-      <header className="bg-muted/30 py-16 mt-16">
+      <header className="bg-[hsl(var(--primary)_/_0.05)] py-16 mt-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
@@ -178,7 +178,7 @@ const Blog = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary/5 mb-0">
+      <section className="py-16 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">¿Listo para crear tu página web para restaurante?</h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
