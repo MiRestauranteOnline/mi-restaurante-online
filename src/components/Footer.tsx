@@ -74,7 +74,10 @@ export const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-border mt-8 pt-8 text-center">
           <p className="text-muted-foreground text-sm">
-            © 2024 Mi Restaurante Online. Todos los derechos reservados.
+            © {new Date().getFullYear()} Mi Restaurante Online. Todos los derechos reservados.
+          </p>
+          <p className="text-muted-foreground text-xs mt-1">
+            Mi Restaurante Online es una marca de Mujeres y Madres Internacional SAC - RUC: 20610336869
           </p>
         </div>
       </div>

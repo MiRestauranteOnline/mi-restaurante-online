@@ -104,7 +104,7 @@ export const FAQSection = () => {
             </p>
             <button 
               onClick={handleWhatsAppClick}
-              className="bg-[#25D366] hover:bg-[#128C7E] text-white px-8 py-4 rounded-lg font-semibold transition-smooth shadow-primary flex items-center gap-3 mx-auto"
+              className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 rounded-lg font-semibold transition-smooth shadow-accent flex items-center gap-3 mx-auto"
             >
               <MessageCircle className="w-5 h-5" />
               Preguntar por WhatsApp

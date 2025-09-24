@@ -43,7 +43,7 @@ export const CTASection = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              className="border-white text-white hover:bg-white/10 text-lg px-8 py-4"
+              className="border-white text-primary hover:bg-white/10 hover:text-primary text-lg px-8 py-4"
               onClick={handleScrollToPricing}
             >
               Ver Precios

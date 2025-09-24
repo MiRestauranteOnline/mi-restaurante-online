@@ -8,7 +8,8 @@ import {
   Image as ImageIcon, 
   Star,
   Instagram,
-  Smartphone
+  Smartphone,
+  Settings
 } from "lucide-react";
 
 export const BenefitsSection = () => {
@@ -23,7 +24,7 @@ export const BenefitsSection = () => {
       icon: MessageCircle,
       title: "WhatsApp Directo",
       description: "Botón flotante de WhatsApp para que tus clientes te contacten al instante.",
-      color: "text-[#25D366]"
+      color: "text-primary"
     },
     {
       icon: Search,
@@ -54,6 +55,12 @@ export const BenefitsSection = () => {
       title: "Muestra tus Mejores Reseñas",
       description: "Show your best reviews on your site for credibility.",
       color: "text-accent"
+    },
+    {
+      icon: Settings,
+      title: "Sistema de Gestión PIN",
+      description: "Cambia precios, horarios y contenido básico tú mismo con nuestro sistema seguro PIN.",
+      color: "text-primary"
     }
   ];
 
@@ -82,10 +89,16 @@ export const BenefitsSection = () => {
             return (
               <Card 
                 key={index} 
-                className="group hover:shadow-primary transition-all duration-300 hover:-translate-y-2 border-2 hover:border-primary/20"
+                className={`group transition-all duration-300 hover:-translate-y-2 border-2 ${
+                  benefit.color === 'text-accent' 
+                    ? 'hover:shadow-accent hover:border-accent/20' 
+                    : 'hover:shadow-primary hover:border-primary/20'
+                }`}
               >
                 <CardContent className="p-6 text-center space-y-4">
-                  <div className={`w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center ${benefit.color} group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${benefit.color} group-hover:scale-110 transition-transform duration-300 ${
+                    benefit.color === 'text-accent' ? 'bg-accent/10' : 'bg-muted'
+                  }`}>
                     <Icon className="w-8 h-8" />
                   </div>
                   
