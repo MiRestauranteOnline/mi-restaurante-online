@@ -29,6 +29,12 @@ export const Footer = () => {
             <h3 className="font-semibold text-foreground mb-4">Enlaces Útiles</h3>
             <div className="space-y-2">
               <button 
+                onClick={() => window.location.href = '/guia'}
+                className="block text-muted-foreground hover:text-primary text-sm transition-colors"
+              >
+                Guía Completa
+              </button>
+              <button 
                 onClick={() => window.location.href = '/privacy'}
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >
