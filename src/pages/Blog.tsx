@@ -208,15 +208,10 @@ const Blog = () => {
             Después de leer nuestras guías, da el siguiente paso. Crea tu sitio web restaurante profesional 
             con nosotros desde S/297/mes, sin costo inicial.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex justify-center">
             <Link to="/">
               <Button size="lg" className="shadow-primary">
                 Crear Mi Página Web
-              </Button>
-            </Link>
-            <Link to="/contacto">
-              <Button variant="outline" size="lg">
-                Solicitar Consulta Gratuita
               </Button>
             </Link>
           </div>

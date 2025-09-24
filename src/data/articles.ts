@@ -591,11 +591,8 @@ export const articles: Article[] = [
           <h3 class="text-lg font-semibold mb-3">¿Quieres una cotización personalizada?</h3>
           <p class="mb-4">En <a href="/" title="precio página web restaurante Lima cotización" class="text-blue-600 underline">Mi Restaurante Online</a> te ayudamos a encontrar la solución perfecta para tu presupuesto.</p>
           <div class="text-center">
-            <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mr-4">
+            <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
               Ver Nuestros Planes
-            </a>
-            <a href="/contacto" class="inline-block border border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors">
-              Consulta Gratuita
             </a>
           </div>
         </div>

@@ -178,6 +178,30 @@ const BlogPost = () => {
                     ))}
                   </div>
                   
+                  {/* Author Bio */}
+                  <Card className="border-primary/20 bg-gradient-subtle">
+                    <CardContent className="p-6">
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex-shrink-0">
+                          <img 
+                            src="/src/assets/kevin-van-geffen-bio.webp" 
+                            alt="Kevin van Geffen - Diseñador y Desarrollador Web Profesional"
+                            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-primary/20"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg text-foreground mb-2">Kevin van Geffen</h3>
+                          <p className="text-sm text-primary font-medium mb-3">
+                            Diseñador y Desarrollador Web Profesional
+                          </p>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            Con más de 100 páginas web creadas para clientes internacionales, Kevin combina su experiencia en UX Design, Marketing y SEO para ayudar a restaurantes a destacar online. Su enfoque integral garantiza sitios web que no solo se ven increíbles, sino que también convierten visitantes en clientes.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
                   {/* Social Share - Optional */}
                   <div className="text-center">
                     <p className="text-muted-foreground mb-4">
@@ -219,18 +243,11 @@ const BlogPost = () => {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        <Link to="/">
-                          <Button className="w-full" size="sm">
-                            Ver Nuestros Planes
-                          </Button>
-                        </Link>
-                        <Link to="/contacto">
-                          <Button variant="outline" className="w-full" size="sm">
-                            Consulta Gratuita
-                          </Button>
-                        </Link>
-                      </div>
+                      <Link to="/">
+                        <Button className="w-full" size="sm">
+                          Ver Nuestros Planes
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
 
