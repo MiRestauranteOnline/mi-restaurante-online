@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Clock, Calendar, User, Home, ChevronRight } from "lucide-react";
 import { getArticleBySlug, getRelatedArticles, categoryLabels } from "@/data/articles";
 import { useEffect } from "react";
+import { TableOfContents } from "@/components/TableOfContents";
 import "../blog.css";
 
 const BlogPost = () => {
@@ -251,17 +252,13 @@ const BlogPost = () => {
                     </CardContent>
                   </Card>
 
-                  {/* Table of Contents - could be generated from content headings */}
+                  {/* Table of Contents */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">En este artículo</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm">
-                      <nav className="space-y-2">
-                        <p className="text-muted-foreground">
-                          Navega rápidamente por las secciones principales de este artículo sobre {article.keywords[0]}.
-                        </p>
-                      </nav>
+                      <TableOfContents content={article.content} />
                     </CardContent>
                   </Card>
                 </div>
