@@ -160,7 +160,7 @@ const BlogPost = () => {
       <main className="py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="grid lg:grid-cols-4 gap-12">
+            <div className="grid lg:grid-cols-5 gap-12">
               {/* Main Content */}
               <div className="lg:col-span-3">
                 <article 
@@ -233,7 +233,7 @@ const BlogPost = () => {
               </div>
 
               {/* Sidebar */}
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-2">
                 <div className="sticky top-24 space-y-8">
                   {/* CTA Card */}
                   <Card className="border-primary/20 bg-primary/5">
