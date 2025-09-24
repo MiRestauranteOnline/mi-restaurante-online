@@ -28,7 +28,7 @@ export const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-border z-50">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center">
             <img 
@@ -72,7 +72,7 @@ export const Navigation = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-b border-border shadow-lg">
+          <div className="md:hidden absolute top-20 left-0 right-0 bg-background border-b border-border shadow-lg">
             <div className="flex flex-col space-y-1 p-4">
               {menuItems.map((item, index) => (
                 <button
