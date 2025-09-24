@@ -39,8 +39,8 @@ export const BenefitsSection = () => {
     },
     {
       icon: ImageIcon,
-      title: "Galería e Info Clara",
-      description: "Fotos profesionales de tus platos e información clara de horarios y ubicación.",
+      title: "Galería Profesional",
+      description: "Galería optimizada para mostrar tus mejores platos de manera atractiva.",
       color: "text-accent"
     },
     {
@@ -51,15 +51,9 @@ export const BenefitsSection = () => {
     },
     {
       icon: Star,
-      title: "Reseñas de Google",
-      description: "Integración opcional con tus reseñas de Google para generar más confianza.",
+      title: "Muestra tus Mejores Reseñas",
+      description: "Show your best reviews on your site for credibility.",
       color: "text-accent"
-    },
-    {
-      icon: Instagram,
-      title: "Feed de Instagram",
-      description: "Muestra automáticamente tus últimas fotos de Instagram en tu sitio web.",
-      color: "text-[#E4405F]"
     }
   ];
 

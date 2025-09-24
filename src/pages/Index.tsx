@@ -1,3 +1,4 @@
+import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { ProblemSolutionSection } from "@/components/ProblemSolutionSection";
 import { BenefitsSection } from "@/components/BenefitsSection";
@@ -6,30 +7,49 @@ import { PricingSection } from "@/components/PricingSection";
 import { ApplicationForm } from "@/components/ApplicationForm";
 import { FAQSection } from "@/components/FAQSection";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { Footer } from "@/components/Footer";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      {/* Navigation */}
+      <Navigation />
+      
       {/* Hero Section */}
-      <Hero />
+      <section id="hero">
+        <Hero />
+      </section>
       
       {/* Problem/Solution Section */}
       <ProblemSolutionSection />
       
       {/* Benefits Grid */}
-      <BenefitsSection />
+      <section id="benefits">
+        <BenefitsSection />
+      </section>
       
       {/* How It Works Process */}
-      <HowItWorksSection />
+      <section id="how-it-works">
+        <HowItWorksSection />
+      </section>
       
       {/* Pricing Plans */}
-      <PricingSection />
+      <section id="pricing">
+        <PricingSection />
+      </section>
       
       {/* Application Form */}
-      <ApplicationForm />
+      <section id="application">
+        <ApplicationForm />
+      </section>
       
       {/* FAQ Section */}
-      <FAQSection />
+      <section id="faq">
+        <FAQSection />
+      </section>
+      
+      {/* Footer */}
+      <Footer />
       
       {/* Floating WhatsApp Button */}
       <WhatsAppButton />

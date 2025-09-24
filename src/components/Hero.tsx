@@ -36,8 +36,8 @@ export const Hero = () => {
                 <span className="text-primary block">Online en 72h</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-lg">
-                Soy diseñador web profesional con años de experiencia. Gracias a mi nuevo sistema, 
-                creo sitios web profesionales más rápido y barato sin perder calidad.
+                Founded by a Web Design Professional with years of experience. Thanks to a new inhouse system, 
+                we make quality websites more affordable.
               </p>
             </div>
 
