@@ -34,7 +34,7 @@ export const Navigation = () => {
             <img 
             src="/logo.svg?v=2"
               alt="Mi Restaurante Online"
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </div>
 

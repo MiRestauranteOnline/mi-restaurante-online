@@ -11,11 +11,12 @@ export const Footer = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Company Info */}
           <div>
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">MR</span>
-              </div>
-              <span className="text-xl font-bold text-foreground">Mi Restaurante Online</span>
+            <div className="flex items-center mb-4">
+              <img 
+                src="/logo.svg?v=2"
+                alt="Mi Restaurante Online"
+                className="h-16 w-auto"
+              />
             </div>
             <p className="text-muted-foreground text-sm mb-4">
               Sitios web profesionales para restaurantes en Perú. 
