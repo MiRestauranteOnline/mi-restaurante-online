@@ -268,28 +268,6 @@ const BlogPost = () => {
         </div>
       </main>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-[hsl(var(--primary)_/_0.05)]">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-8 rounded-lg">
-              <h2 className="text-2xl font-bold mb-4">¿Listo para crear tu página web para restaurante?</h2>
-              <p className="text-muted-foreground mb-6">
-                En Mi Restaurante Online creamos sitios web especializados para restaurantes en Lima y todo Perú. 
-                Desde S/297/mes, sin costo inicial, con todo incluido.
-              </p>
-              <div className="text-center">
-                <Link to="/">
-                  <Button className="bg-primary hover:bg-primary/90 text-white">
-                    Ver Nuestros Planes
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
         <section className="py-16 bg-[hsl(var(--primary)_/_0.05)]">
