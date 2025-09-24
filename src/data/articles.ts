@@ -241,7 +241,22 @@ export const articles: Article[] = [
         
         <p>La clave está en <strong>no improvisar</strong>. Ya sea que elijas hacerlo tú mismo o contratar profesionales, asegúrate de que tu sitio web refleje la calidad de tu cocina y la experiencia que ofreces en tu local.</p>
         
-        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8">
+        <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-6 my-8">
+          <h3 class="text-lg font-semibold mb-3">¿Listo para crear tu página web para restaurante?</h3>
+          <p class="mb-4">En <a href="/" title="Mi Restaurante Online - Diseño web restaurante Lima especializado" class="text-primary underline">Mi Restaurante Online</a> creamos sitios web especializados para restaurantes en Lima y todo Perú. Desde S/297/mes, sin costo inicial, con todo incluido:</p>
+          <ul class="list-disc list-inside mb-4">
+            <li>Diseño profesional personalizado</li>
+            <li>Menú digital con código QR</li>
+            <li>Sistema de reservas integrado</li>
+            <li>SEO optimizado para Lima</li>
+            <li>Soporte técnico 24/7</li>
+          </ul>
+          <div class="text-center">
+            <a href="/" class="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
+              Ver Nuestros Planes
+            </a>
+          </div>
+        </div>
           <h3 class="text-lg font-semibold mb-3">¿Listo para crear tu página web para restaurante?</h3>
           <p class="mb-4">En <a href="/" title="Mi Restaurante Online - Diseño web restaurante Lima especializado" class="text-blue-600 underline">Mi Restaurante Online</a> creamos sitios web especializados para restaurantes en Lima y todo Perú. Desde S/297/mes, sin costo inicial, con todo incluido:</p>
           <ul class="list-disc list-inside mb-4">
@@ -562,7 +577,7 @@ export const articles: Article[] = [
         
         <p>Después de analizar cientos de casos en Lima, nuestra recomendación es:</p>
         
-        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8">
+        <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-6 my-8">
           <h3 class="text-lg font-semibold mb-3">Para la mayoría de restaurantes en Lima:</h3>
           <ul class="mb-4">
             <li><strong>Inversión inicial óptima:</strong> S/1,500-2,500</li>
@@ -587,11 +602,11 @@ export const articles: Article[] = [
         
         <p>Recuerda: un sitio web no es un gasto, es una <strong>herramienta de ventas</strong> que trabaja 24/7 para tu restaurante.</p>
         
-        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8">
+        <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-6 my-8">
           <h3 class="text-lg font-semibold mb-3">¿Quieres una cotización personalizada?</h3>
-          <p class="mb-4">En <a href="/" title="precio página web restaurante Lima cotización" class="text-blue-600 underline">Mi Restaurante Online</a> te ayudamos a encontrar la solución perfecta para tu presupuesto.</p>
+          <p class="mb-4">En <a href="/" title="precio página web restaurante Lima cotización" class="text-primary underline">Mi Restaurante Online</a> te ayudamos a encontrar la solución perfecta para tu presupuesto.</p>
           <div class="text-center">
-            <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+            <a href="/" class="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
               Ver Nuestros Planes
             </a>
           </div>
@@ -889,7 +904,7 @@ export const articles: Article[] = [
         </div>
 
         <h3>🏆 Caso 2: Cadena de Cevicherías (3 locales)</h3>
-        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 my-6">
+        <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-4 my-6">
           <p><strong>Perfil:</strong> Especialidad mariscos, alta rotación, turismo</p>
           <p><strong>Inversión:</strong> S/3,500 (sistema integrado + fotografía profesional)</p>
           <p><strong>Resultados en 6 meses:</strong></p>
@@ -950,9 +965,9 @@ export const articles: Article[] = [
         
         <p>La clave del éxito está en la <strong>implementación estratégica</strong>: diseño centrado en el usuario, contenido de calidad y mantenimiento constante. No es suficiente digitalizar tu menú actual; debes recrear la experiencia completa.</p>
         
-        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8">
+        <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-6 my-8">
           <h3 class="text-lg font-semibold mb-3">¿Listo para digitalizar tu menú?</h3>
-          <p class="mb-4">En <a href="/" title="sitio web restaurante con menú QR profesional Lima" class="text-blue-600 underline">Mi Restaurante Online</a> incluimos menú digital con código QR en todos nuestros planes desde S/297/mes:</p>
+          <p class="mb-4">En <a href="/" title="sitio web restaurante con menú QR profesional Lima" class="text-primary underline">Mi Restaurante Online</a> incluimos menú digital con código QR en todos nuestros planes desde S/297/mes:</p>
           <ul class="list-disc list-inside mb-4">
             <li>Menú digital responsive optimizado</li>
             <li>Códigos QR personalizados incluidos</li>
@@ -961,11 +976,8 @@ export const articles: Article[] = [
             <li>Soporte técnico especializado 24/7</li>
           </ul>
           <div class="text-center">
-            <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mr-4">
-              Solicitar Demo del Menú Digital
-            </a>
-            <a href="/contacto" class="inline-block border border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors">
-              Consulta Personalizada
+            <a href="/" class="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
+              Ver Nuestros Planes
             </a>
           </div>
         </div>

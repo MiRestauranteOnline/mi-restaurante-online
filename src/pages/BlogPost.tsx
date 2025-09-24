@@ -112,7 +112,7 @@ const BlogPost = () => {
       </nav>
 
       {/* Article Header */}
-      <header className="py-12 bg-gradient-subtle">
+      <header className="py-12 bg-[hsl(var(--primary)_/_0.05)]">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <Link to="/guia" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
@@ -204,7 +204,7 @@ const BlogPost = () => {
                   </Card>
 
                   {/* Social Share - Optional */}
-                  <div className="text-center">
+                  <div className="text-center mt-8">
                     <p className="text-muted-foreground mb-4">
                       ¿Te fue útil este artículo? Compártelo con otros restauranteros.
                     </p>
@@ -268,46 +268,91 @@ const BlogPost = () => {
         </div>
       </main>
 
+      {/* CTA Section */}
+      <section className="py-16 bg-[hsl(var(--primary)_/_0.05)]">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-8 rounded-lg">
+              <h2 className="text-2xl font-bold mb-4">¿Listo para crear tu página web para restaurante?</h2>
+              <p className="text-muted-foreground mb-6">
+                En Mi Restaurante Online creamos sitios web especializados para restaurantes en Lima y todo Perú. 
+                Desde S/297/mes, sin costo inicial, con todo incluido.
+              </p>
+              <div className="text-center">
+                <Link to="/">
+                  <Button className="bg-primary hover:bg-primary/90 text-white">
+                    Ver Nuestros Planes
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
-        <section className="py-16 bg-muted/30">
+        <section className="py-16 bg-[hsl(var(--primary)_/_0.05)]">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12">Artículos Relacionados</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {relatedArticles.map((relatedArticle) => (
-                  <Card key={relatedArticle.id} className="hover:shadow-primary transition-smooth">
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline">
-                          {categoryLabels[relatedArticle.category as keyof typeof categoryLabels]}
-                        </Badge>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Clock className="w-4 h-4 mr-1" />
-                          {relatedArticle.readingTime} min
-                        </div>
+                {relatedArticles.map((relatedArticle) => {
+                  // Map articles to their featured images
+                  const getArticleImage = (slug: string) => {
+                    switch(slug) {
+                      case 'como-crear-sitio-web-restaurante-peru':
+                        return '/src/assets/blog-restaurant-website-design.jpg';
+                      case 'precio-pagina-web-restaurante-peru-2025':
+                        return '/src/assets/blog-restaurant-pricing.jpg';
+                      case 'menu-digital-qr-restaurante-lima':
+                        return '/src/assets/blog-digital-menu-qr.jpg';
+                      default:
+                        return '/src/assets/blog-restaurant-website-design.jpg';
+                    }
+                  };
+
+                  return (
+                    <Card key={relatedArticle.id} className="hover:shadow-primary transition-smooth overflow-hidden">
+                      <div className="aspect-video overflow-hidden">
+                        <img 
+                          src={getArticleImage(relatedArticle.slug)} 
+                          alt={relatedArticle.title}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
                       </div>
-                      <CardTitle className="line-clamp-2">
-                        <Link 
-                          to={`/guia/${relatedArticle.category}/${relatedArticle.slug}`}
-                          className="hover:text-primary transition-colors"
-                        >
-                          {relatedArticle.title}
+                      <CardHeader>
+                        <div className="flex items-center justify-between mb-2">
+                          <Badge variant="outline">
+                            {categoryLabels[relatedArticle.category as keyof typeof categoryLabels]}
+                          </Badge>
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <Clock className="w-4 h-4 mr-1" />
+                            {relatedArticle.readingTime} min
+                          </div>
+                        </div>
+                        <CardTitle className="line-clamp-2">
+                          <Link 
+                            to={`/guia/${relatedArticle.category}/${relatedArticle.slug}`}
+                            className="hover:text-primary transition-colors"
+                          >
+                            {relatedArticle.title}
+                          </Link>
+                        </CardTitle>
+                        <CardDescription className="line-clamp-3">
+                          {relatedArticle.excerpt}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Link to={`/guia/${relatedArticle.category}/${relatedArticle.slug}`}>
+                          <Button variant="outline" size="sm" className="w-full">
+                            Leer Artículo
+                          </Button>
                         </Link>
-                      </CardTitle>
-                      <CardDescription className="line-clamp-3">
-                        {relatedArticle.excerpt}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Link to={`/guia/${relatedArticle.category}/${relatedArticle.slug}`}>
-                        <Button variant="outline" size="sm" className="w-full">
-                          Leer Artículo
-                        </Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </div>
           </div>
