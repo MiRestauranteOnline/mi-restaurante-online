@@ -1,0 +1,157 @@
+/* Blog Post Styling */
+.blog-content {
+  line-height: 1.7;
+}
+
+.blog-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin: 2rem 0 1.5rem 0;
+  line-height: 1.2;
+}
+
+.blog-content h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin: 2.5rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid hsl(var(--border));
+}
+
+.blog-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin: 2rem 0 0.75rem 0;
+}
+
+.blog-content h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.blog-content p {
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+.blog-content p.lead {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: hsl(var(--foreground));
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.blog-content ul, .blog-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.blog-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.blog-content li > ul, .blog-content li > ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.blog-content strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.blog-content a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+}
+
+.blog-content a:hover {
+  text-decoration: underline;
+}
+
+.blog-content img {
+  width: 100%;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin: 2rem 0;
+}
+
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 0.9rem;
+}
+
+.blog-content th {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  font-weight: 600;
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid hsl(var(--border));
+}
+
+.blog-content td {
+  padding: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+
+.blog-content .cta-box {
+  background-color: hsl(var(--primary) / 0.05);
+  border-left: 4px solid hsl(var(--primary));
+  padding: 2rem;
+  margin: 2rem 0;
+  border-radius: 0.5rem;
+}
+
+.blog-content .cta-box h3 {
+  color: hsl(var(--foreground));
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.blog-content .cta-box p {
+  margin-bottom: 1rem;
+}
+
+.blog-content .cta-box ul {
+  margin-bottom: 1.5rem;
+}
+
+.blog-content .cta-box a.inline-block {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  display: inline-block;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.blog-content .cta-box a.inline-block:hover {
+  background-color: hsl(var(--primary) / 0.9);
+  text-decoration: none;
+}
+
+.blog-content .cta-box a.border {
+  border: 1px solid hsl(var(--primary));
+  color: hsl(var(--primary));
+  background-color: transparent;
+}
+
+.blog-content .cta-box a.border:hover {
+  background-color: hsl(var(--primary) / 0.1);
+}

@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Clock, Calendar, User, Home, ChevronRight } from "lucide-react";
 import { getArticleBySlug, getRelatedArticles, categoryLabels } from "@/data/articles";
 import { useEffect } from "react";
+import "../blog.css";
+import "../styles/blog.css";
 
 const BlogPost = () => {
   const { category, slug } = useParams();
@@ -161,8 +163,8 @@ const BlogPost = () => {
             <div className="grid lg:grid-cols-4 gap-12">
               {/* Main Content */}
               <div className="lg:col-span-3">
-                <div 
-                  className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-ul:text-muted-foreground prose-ol:text-muted-foreground prose-li:mb-2 prose-img:rounded-lg prose-img:shadow-md prose-table:table-auto prose-table:border-collapse prose-th:border prose-th:border-border prose-th:bg-muted prose-th:p-3 prose-td:border prose-td:border-border prose-td:p-3"
+                <article 
+                  className="blog-content"
                   dangerouslySetInnerHTML={{ __html: article.content }}
                 />
                 

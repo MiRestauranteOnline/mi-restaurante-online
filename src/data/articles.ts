@@ -1,3 +1,7 @@
+import blogRestaurantImage from "@/assets/blog-restaurant-website-design.jpg";
+import blogPricingImage from "@/assets/blog-restaurant-pricing.jpg";
+import blogMenuImage from "@/assets/blog-digital-menu-qr.jpg";
+
 export type ArticleCategory = 'desarrollo-web' | 'marketing-digital' | 'tecnologia-restaurante' | 'casos-exito' | 'guias-practicas';
 
 export interface Article {
@@ -34,7 +38,7 @@ export const articles: Article[] = [
     content: `
       <article>
         <div class="mb-8">
-          <img src="/src/assets/blog-restaurant-website-design.jpg" alt="Diseño web profesional para restaurantes en Lima" class="w-full rounded-lg shadow-md mb-4" />
+          <img src="${blogRestaurantImage}" alt="Diseño web profesional para restaurantes en Lima" class="w-full rounded-lg shadow-md mb-4" />
           <p class="text-sm text-gray-600 italic text-center">Ejemplo de diseño web profesional para restaurantes</p>
         </div>
 
@@ -272,7 +276,7 @@ export const articles: Article[] = [
     content: `
       <article>
         <div class="mb-8">
-          <img src="/src/assets/blog-restaurant-pricing.jpg" alt="Calculadora de costos para página web restaurante en Lima" class="w-full rounded-lg shadow-md mb-4" />
+          <img src="${blogPricingImage}" alt="Calculadora de costos para página web restaurante en Lima" class="w-full rounded-lg shadow-md mb-4" />
           <p class="text-sm text-gray-600 italic text-center">Planificación de presupuesto para sitio web restaurante</p>
         </div>
 
@@ -614,7 +618,7 @@ export const articles: Article[] = [
     content: `
       <article>
         <div class="mb-8">
-          <img src="/src/assets/blog-digital-menu-qr.jpg" alt="Menú digital con código QR en restaurante de Lima" class="w-full rounded-lg shadow-md mb-4" />
+          <img src="${blogMenuImage}" alt="Menú digital con código QR en restaurante de Lima" class="w-full rounded-lg shadow-md mb-4" />
           <p class="text-sm text-gray-600 italic text-center">Cliente escaneando código QR para acceder al menú digital</p>
         </div>
 
