@@ -241,23 +241,6 @@ export const articles: Article[] = [
         
         <p>La clave está en <strong>no improvisar</strong>. Ya sea que elijas hacerlo tú mismo o contratar profesionales, asegúrate de que tu sitio web refleje la calidad de tu cocina y la experiencia que ofreces en tu local.</p>
         
-        <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-6 my-8">
-          <h3 class="text-lg font-semibold mb-3">¿Listo para crear tu página web para restaurante?</h3>
-          <p class="mb-4">En <a href="/" title="Mi Restaurante Online - Diseño web restaurante Lima especializado" class="text-primary underline">Mi Restaurante Online</a> creamos sitios web especializados para restaurantes en Lima y todo Perú. Desde S/297/mes, sin costo inicial, con todo incluido:</p>
-          <ul class="list-disc list-inside mb-4">
-            <li>Diseño profesional personalizado</li>
-            <li>Menú digital con código QR</li>
-            <li>Sistema de reservas integrado</li>
-            <li>SEO optimizado para Lima</li>
-            <li>Soporte técnico 24/7</li>
-          </ul>
-          <div class="text-center">
-            <a href="/" class="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
-              Ver Nuestros Planes
-            </a>
-          </div>
-        </div>
-          <h3 class="text-lg font-semibold mb-3">¿Listo para crear tu página web para restaurante?</h3>
           <p class="mb-4">En <a href="/" title="Mi Restaurante Online - Diseño web restaurante Lima especializado" class="text-blue-600 underline">Mi Restaurante Online</a> creamos sitios web especializados para restaurantes en Lima y todo Perú. Desde S/297/mes, sin costo inicial, con todo incluido:</p>
           <ul class="list-disc list-inside mb-4">
             <li>Diseño profesional personalizado</li>
@@ -602,15 +585,6 @@ export const articles: Article[] = [
         
         <p>Recuerda: un sitio web no es un gasto, es una <strong>herramienta de ventas</strong> que trabaja 24/7 para tu restaurante.</p>
         
-        <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-6 my-8">
-          <h3 class="text-lg font-semibold mb-3">¿Quieres una cotización personalizada?</h3>
-          <p class="mb-4">En <a href="/" title="precio página web restaurante Lima cotización" class="text-primary underline">Mi Restaurante Online</a> te ayudamos a encontrar la solución perfecta para tu presupuesto.</p>
-          <div class="text-center">
-            <a href="/" class="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
-              Ver Nuestros Planes
-            </a>
-          </div>
-        </div>
       </article>
     `,
     keywords: ['precio página web restaurante', 'costo sitio web restaurante', 'página web restaurante económica', 'precio diseño web restaurante'],
@@ -975,11 +949,6 @@ export const articles: Article[] = [
             <li>Análisis de comportamiento del cliente</li>
             <li>Soporte técnico especializado 24/7</li>
           </ul>
-          <div class="text-center">
-            <a href="/" class="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
-              Ver Nuestros Planes
-            </a>
-          </div>
         </div>
       </article>
     `,

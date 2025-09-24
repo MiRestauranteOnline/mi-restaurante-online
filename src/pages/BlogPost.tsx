@@ -180,7 +180,7 @@ const BlogPost = () => {
                   </div>
                   
                   {/* Author Bio */}
-                  <Card className="border-primary/20 bg-gradient-subtle">
+                  <Card className="border-primary/20 bg-gradient-subtle my-8">
                     <CardContent className="p-6">
                       <div className="flex flex-col sm:flex-row gap-4">
                         <div className="flex-shrink-0">
