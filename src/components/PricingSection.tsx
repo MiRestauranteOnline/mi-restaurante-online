@@ -18,7 +18,7 @@ export const PricingSection = () => {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16 animate-fade-up">
-          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground transition-colors">
+          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
             Precios Transparentes
           </Badge>
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">

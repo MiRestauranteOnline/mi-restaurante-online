@@ -36,7 +36,7 @@ export const Hero = () => {
                 <span className="text-primary block">Online en 72h</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-lg">
-                Fundado por un profesional en diseño web con años de experiencia. Gracias a un nuevo sistema interno, 
+                Fundado por un profesional en diseño web con años de experiencia internacional. Gracias a un nuevo sistema interno, 
                 hacemos que los sitios web de calidad sean más accesibles.
               </p>
             </div>
@@ -123,6 +123,16 @@ export const Hero = () => {
                 <div className="text-sm">Entrega</div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="flex flex-col items-center text-muted-foreground">
+          <span className="text-sm mb-2">Scroll</span>
+          <div className="w-6 h-10 border-2 border-current rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-current rounded-full mt-2 animate-pulse"></div>
           </div>
         </div>
       </div>
