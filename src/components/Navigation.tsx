@@ -32,7 +32,7 @@ export const Navigation = () => {
           {/* Logo */}
           <div className="flex items-center">
             <img 
-            src="/logo.svg"
+            src="/logo.svg?v=2"
               alt="Mi Restaurante Online"
               className="h-12 w-auto"
             />
