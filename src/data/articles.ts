@@ -31,7 +31,7 @@ export const categoryLabels: Record<ArticleCategory, string> = {
 export const articles: Article[] = [
   {
     id: '1',
-    title: 'Cómo Crear un Sitio Web para Restaurante en Perú: Guía Completa 2024',
+    title: 'Cómo Crear un Sitio Web para Restaurante en Perú: Guía Completa 2025',
     slug: 'como-crear-sitio-web-restaurante-peru',
     category: 'desarrollo-web',
     excerpt: 'Descubre paso a paso cómo crear una página web para restaurante en Lima y todo Perú. Incluye costos, mejores prácticas y herramientas recomendadas.',
@@ -262,15 +262,15 @@ export const articles: Article[] = [
     keywords: ['sitio web restaurante', 'página web para restaurante', 'crear sitio web restaurante', 'diseño web restaurante', 'sitio web restaurante Perú'],
     metaDescription: 'Guía completa para crear una página web para restaurante en Perú. Costos, pasos, herramientas y mejores prácticas para tu sitio web restaurante en Lima.',
     readingTime: 12,
-    publishDate: '2024-01-15',
+    publishDate: '2025-01-15',
     author: 'Mi Restaurante Online',
     featured: true,
     relatedArticles: ['2', '3']
   },
   {
     id: '2',
-    title: 'Precio Página Web Restaurante: Costos Reales en Perú 2024',
-    slug: 'precio-pagina-web-restaurante-peru-2024',
+    title: 'Precio Página Web Restaurante: Costos Reales en Perú 2025',
+    slug: 'precio-pagina-web-restaurante-peru-2025',
     category: 'desarrollo-web',
     excerpt: 'Descubre los costos reales de una página web para restaurante en Lima y Perú. Comparativa de precios, qué incluye cada plan y cómo elegir la mejor opción.',
     content: `
@@ -599,9 +599,9 @@ export const articles: Article[] = [
       </article>
     `,
     keywords: ['precio página web restaurante', 'costo sitio web restaurante', 'página web restaurante económica', 'precio diseño web restaurante'],
-    metaDescription: 'Descubre los precios reales de una página web para restaurante en Perú 2024. Costos, planes y cómo elegir la mejor opción para tu restaurante en Lima.',
+    metaDescription: 'Descubre los precios reales de una página web para restaurante en Perú 2025. Costos, planes y cómo elegir la mejor opción para tu restaurante en Lima.',
     readingTime: 15,
-    publishDate: '2024-01-20',
+    publishDate: '2025-01-20',
     author: 'Mi Restaurante Online',
     featured: true,
     relatedArticles: ['1', '3']
@@ -619,7 +619,7 @@ export const articles: Article[] = [
           <p class="text-sm text-gray-600 italic text-center">Cliente escaneando código QR para acceder al menú digital</p>
         </div>
 
-        <p class="lead text-xl mb-8">El <strong>menú digital con código QR</strong> revolucionó la industria restaurantera post-pandemia. Te mostramos cómo implementarlo exitosamente en tu restaurante en Lima y por qué es esencial para competir en 2024.</p>
+        <p class="lead text-xl mb-8">El <strong>menú digital con código QR</strong> revolucionó la industria restaurantera post-pandemia. Te mostramos cómo implementarlo exitosamente en tu restaurante en Lima y por qué es esencial para competir en 2025.</p>
 
         <h2>¿Qué es un Menú Digital con Código QR?</h2>
         
@@ -927,7 +927,7 @@ export const articles: Article[] = [
 
         <h2>Futuro del Menú Digital en el Mercado Peruano</h2>
         
-        <h3>🔮 Tendencias Emergentes 2024-2025:</h3>
+        <h3>🔮 Tendencias Emergentes 2025-2026:</h3>
         <ul>
           <li><strong>Integración con sistemas POS:</strong> Pedidos directos desde el menú sin intervención del mesero</li>
           <li><strong>Personalización por cliente:</strong> Recomendaciones basadas en historial y preferencias</li>
@@ -939,7 +939,7 @@ export const articles: Article[] = [
 
         <h3>📈 Proyecciones del Mercado:</h3>
         <ul>
-          <li><strong>85% de restaurantes en Lima</strong> tendrán menú digital para fin de 2024</li>
+          <li><strong>85% de restaurantes en Lima</strong> tendrán menú digital para fin de 2025</li>
           <li><strong>Crecimiento del 300%</strong> en adopción post-pandemia</li>
           <li><strong>Reducción del 40%</strong> en costos operativos relacionados con menús</li>
         </ul>
@@ -974,7 +974,7 @@ export const articles: Article[] = [
     keywords: ['menú digital para restaurante', 'código QR restaurante', 'menú QR Lima', 'menú digital código QR'],
     metaDescription: 'Guía completa para implementar menú digital con código QR en tu restaurante. Costos, mejores prácticas y casos de éxito en Lima, Perú.',
     readingTime: 18,
-    publishDate: '2024-01-25',
+    publishDate: '2025-01-25',
     author: 'Mi Restaurante Online',
     featured: false,
     relatedArticles: ['1', '2']

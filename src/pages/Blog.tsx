@@ -26,14 +26,12 @@ const Blog = () => {
     });
   }, [searchTerm, selectedCategory]);
 
-  const featuredArticles = articles.filter(article => article.featured);
-
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* SEO Optimized Header */}
-      <header className="bg-gradient-subtle py-16 mt-16">
+      <header className="bg-muted/30 py-16 mt-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
@@ -53,50 +51,6 @@ const Blog = () => {
         </div>
       </header>
 
-      {/* Featured Articles */}
-      {featuredArticles.length > 0 && (
-        <section className="py-16 bg-card">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Artículos Destacados</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredArticles.map((article) => (
-                <Card key={article.id} className="hover:shadow-primary transition-smooth">
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline">{categoryLabels[article.category]}</Badge>
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <Clock className="w-4 h-4 mr-1" />
-                        {article.readingTime} min
-                      </div>
-                    </div>
-                    <CardTitle className="line-clamp-2">
-                      <Link 
-                        to={`/guia/${article.category}/${article.slug}`}
-                        className="hover:text-primary transition-colors"
-                      >
-                        {article.title}
-                      </Link>
-                    </CardTitle>
-                    <CardDescription className="line-clamp-3">
-                      {article.excerpt}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{article.publishDate}</span>
-                      <Link to={`/guia/${article.category}/${article.slug}`}>
-                        <Button variant="outline" size="sm">
-                          Leer Más
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Search and Filter */}
       <section className="py-12">
@@ -159,40 +113,63 @@ const Blog = () => {
                 </div>
 
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-                  {filteredArticles.map((article) => (
-                    <Card key={article.id} className="hover:shadow-primary transition-smooth">
-                      <CardHeader>
-                        <div className="flex items-center justify-between mb-2">
-                          <Badge variant="outline">{categoryLabels[article.category]}</Badge>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Clock className="w-4 h-4 mr-1" />
-                            {article.readingTime} min
+                  {filteredArticles.map((article) => {
+                    // Map articles to their featured images
+                    const getArticleImage = (slug: string) => {
+                      switch(slug) {
+                        case 'como-crear-sitio-web-restaurante-peru':
+                          return '/src/assets/blog-restaurant-website-design.jpg';
+                        case 'precio-pagina-web-restaurante-peru-2025':
+                          return '/src/assets/blog-restaurant-pricing.jpg';
+                        case 'menu-digital-qr-restaurante-lima':
+                          return '/src/assets/blog-digital-menu-qr.jpg';
+                        default:
+                          return '/src/assets/blog-restaurant-website-design.jpg';
+                      }
+                    };
+
+                    return (
+                      <Card key={article.id} className="hover:shadow-primary transition-smooth overflow-hidden">
+                        <div className="aspect-video overflow-hidden">
+                          <img 
+                            src={getArticleImage(article.slug)} 
+                            alt={article.title}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                        <CardHeader>
+                          <div className="flex items-center justify-between mb-2">
+                            <Badge variant="outline">{categoryLabels[article.category]}</Badge>
+                            <div className="flex items-center text-sm text-muted-foreground">
+                              <Clock className="w-4 h-4 mr-1" />
+                              {article.readingTime} min
+                            </div>
                           </div>
-                        </div>
-                        <CardTitle className="line-clamp-2">
-                          <Link 
-                            to={`/guia/${article.category}/${article.slug}`}
-                            className="hover:text-primary transition-colors"
-                          >
-                            {article.title}
-                          </Link>
-                        </CardTitle>
-                        <CardDescription className="line-clamp-3">
-                          {article.excerpt}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">{article.publishDate}</span>
-                          <Link to={`/guia/${article.category}/${article.slug}`}>
-                            <Button variant="outline" size="sm">
-                              Leer Más
-                            </Button>
-                          </Link>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                          <CardTitle className="line-clamp-2">
+                            <Link 
+                              to={`/guia/${article.category}/${article.slug}`}
+                              className="hover:text-primary transition-colors"
+                            >
+                              {article.title}
+                            </Link>
+                          </CardTitle>
+                          <CardDescription className="line-clamp-3">
+                            {article.excerpt}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">{article.publishDate}</span>
+                            <Link to={`/guia/${article.category}/${article.slug}`}>
+                              <Button variant="outline" size="sm">
+                                Leer Más
+                              </Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -201,7 +178,7 @@ const Blog = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary/5">
+      <section className="py-16 bg-primary/5 mb-0">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">¿Listo para crear tu página web para restaurante?</h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
