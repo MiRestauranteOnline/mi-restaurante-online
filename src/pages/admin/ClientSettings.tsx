@@ -1797,9 +1797,8 @@ export default function ClientSettings() {
                 )}
               </div>
             </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        </Card>
+      </TabsContent>
 
       {/* Category Dialog */}
       <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
@@ -1934,7 +1933,7 @@ export default function ClientSettings() {
           </div>
         </DialogContent>
       </Dialog>
-      </Tabs>
-    </div>
-  );
+    </Tabs>
+  </div>
+);
 }
