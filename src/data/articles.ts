@@ -257,21 +257,6 @@ export const articles: Article[] = [
             </a>
           </div>
         </div>
-        
-          <p class="mb-4">En <a href="/" title="Mi Restaurante Online - Diseño web restaurante Lima especializado" class="text-blue-600 underline">Mi Restaurante Online</a> creamos sitios web especializados para restaurantes en Lima y todo Perú. Desde S/297/mes, sin costo inicial, con todo incluido:</p>
-          <ul class="list-disc list-inside mb-4">
-            <li>Diseño profesional personalizado</li>
-            <li>Menú digital con código QR</li>
-            <li>Sistema de reservas integrado</li>
-            <li>SEO optimizado para Lima</li>
-            <li>Soporte técnico 24/7</li>
-          </ul>
-          <div class="text-center">
-            <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
-              Solicitar Cotización Gratuita
-            </a>
-          </div>
-        </div>
       </article>
     `,
     keywords: ['sitio web restaurante', 'página web para restaurante', 'crear sitio web restaurante', 'diseño web restaurante', 'sitio web restaurante Perú'],
@@ -601,23 +586,6 @@ export const articles: Article[] = [
         <p>El <strong>precio de una página web para restaurante</strong> en Perú varía mucho, pero la inversión se justifica con los resultados. La clave está en <strong>invertir inteligentemente</strong>: empieza con lo esencial, mide resultados y ve escalando según tu crecimiento.</p>
         
         <p>Recuerda: un sitio web no es un gasto, es una <strong>herramienta de ventas</strong> que trabaja 24/7 para tu restaurante.</p>
-        
-        <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-6 my-8">
-          <h3 class="text-lg font-semibold mb-3">¿Listo para crear tu página web para restaurante?</h3>
-          <p class="mb-4">En <a href="/" title="Mi Restaurante Online - Diseño web restaurante Lima especializado" class="text-primary underline">Mi Restaurante Online</a> creamos sitios web especializados para restaurantes en Lima y todo Perú. Desde S/297/mes, sin costo inicial, con todo incluido:</p>
-          <ul class="list-disc list-inside mb-4">
-            <li>Diseño profesional personalizado</li>
-            <li>Menú digital con código QR</li>
-            <li>Sistema de reservas integrado</li>
-            <li>SEO optimizado para Lima</li>
-            <li>Soporte técnico 24/7</li>
-          </ul>
-          <div class="text-center">
-            <a href="/" class="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
-              Ver Nuestros Planes
-            </a>
-          </div>
-        </div>
         
         <div class="bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary p-6 my-8">
           <h3 class="text-lg font-semibold mb-3">¿Listo para crear tu página web para restaurante?</h3>
