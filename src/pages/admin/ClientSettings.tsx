@@ -1823,7 +1823,7 @@ export default function ClientSettings() {
           <TabsTrigger value="delivery">Delivery</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
           {userRole === 'admin' && <TabsTrigger value="content">Change Content</TabsTrigger>}
-          {userRole === 'admin' && <TabsTrigger value="briefing">Briefing</TabsTrigger>}
+          <TabsTrigger value="briefing">Briefing</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="menu">Menu Items</TabsTrigger>
           <TabsTrigger value="team">Team Members</TabsTrigger>
