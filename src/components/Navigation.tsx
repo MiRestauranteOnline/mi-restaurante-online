@@ -15,7 +15,6 @@ export const Navigation = () => {
     { label: "Precios", href: "/", section: "pricing" },
     { label: "Aplicar", href: "/", section: "application" },
     { label: "FAQ", href: "/", section: "faq" },
-    { label: "Guía", href: "/guia" },
     { label: "Contacto", href: "/contacto" }
   ];
 

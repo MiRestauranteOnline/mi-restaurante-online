@@ -1,4 +1,5 @@
 import { MessageCircle, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 import { businessData } from "@/config/businessData";
 
 export const Footer = () => {
@@ -28,30 +29,36 @@ export const Footer = () => {
           <div>
             <h3 className="font-semibold text-foreground mb-4">Enlaces Útiles</h3>
             <div className="space-y-2">
-              <button 
-                onClick={() => window.location.href = '/guia'}
+              <Link 
+                to="/guia"
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >
                 Guía Completa
-              </button>
-              <button 
-                onClick={() => window.location.href = '/privacy'}
+              </Link>
+              <Link 
+                to="/acerca-de"
+                className="block text-muted-foreground hover:text-primary text-sm transition-colors"
+              >
+                Acerca de Nosotros
+              </Link>
+              <Link 
+                to="/privacy"
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >
                 Política de Privacidad
-              </button>
-              <button 
-                onClick={() => window.location.href = '/terms'}
+              </Link>
+              <Link 
+                to="/terms"
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >
                 Términos de Servicio
-              </button>
-              <button 
-                onClick={() => window.location.href = '/contacto'}
+              </Link>
+              <Link 
+                to="/contacto"
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >
                 Contacto
-              </button>
+              </Link>
             </div>
           </div>
 

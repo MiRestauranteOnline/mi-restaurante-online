@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import Index from "./pages/Index";
 import Contact from "./pages/Contact";
+import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Blog from "./pages/Blog";
@@ -24,6 +25,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/contacto" element={<Contact />} />
+          <Route path="/acerca-de" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/guia" element={<Blog />} />
