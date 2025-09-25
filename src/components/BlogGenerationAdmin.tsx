@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { getAllArticles } from '@/data/articles';
 import { Loader2, Play, Eye, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface GenerationLog {
@@ -246,6 +247,27 @@ const BlogGenerationAdmin: React.FC = () => {
     }
   };
 
+  const handleTestArticles = async () => {
+    try {
+      console.log('Testing article fetch...');
+      const allArticles = await getAllArticles();
+      console.log('Articles found:', allArticles.length);
+      console.log('Article titles:', allArticles.map(a => a.title));
+      
+      toast({
+        title: "Articles Test",
+        description: `Found ${allArticles.length} articles. Check console for details.`,
+      });
+    } catch (error) {
+      console.error('Error testing articles:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : 'Failed to test articles',
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
@@ -334,6 +356,12 @@ const BlogGenerationAdmin: React.FC = () => {
             <AlertCircle className="w-4 h-4 mr-2" />
           )}
           Fix Stuck Operations
+        </Button>
+        <Button 
+          variant="outline"
+          onClick={handleTestArticles}
+        >
+          🔍 Test Article Fetch
         </Button>
       </div>
 

@@ -966,7 +966,12 @@ export const getAllArticles = async (): Promise<Article[]> => {
       keywords: dbArticle.keywords || [],
       metaDescription: dbArticle.meta_description,
       readingTime: dbArticle.reading_time || 5,
-      publishDate: dbArticle.publish_date ? new Date(dbArticle.publish_date).toLocaleDateString('es-PE') : 'Reciente',
+      publishDate: dbArticle.publish_date ? 
+        new Date(dbArticle.publish_date).toLocaleDateString('es-PE', {
+          year: 'numeric',
+          month: 'long', 
+          day: 'numeric'
+        }) : 'Reciente',
       author: dbArticle.author,
       featured: dbArticle.featured,
       relatedArticles: dbArticle.related_articles || [],
@@ -974,12 +979,24 @@ export const getAllArticles = async (): Promise<Article[]> => {
       featuredImageAlt: dbArticle.featured_image_alt || undefined
     }));
 
-    // Combine and sort all articles by publish date (newest first)
+    console.log('DB Articles fetched:', dbArticles.length, dbArticles.map(a => ({ title: a.title, publishDate: a.publishDate })));
+
+    // Combine all articles
     const allArticles = [...dbArticles, ...articles];
     
+    console.log('All articles combined:', allArticles.length);
+    
+    // Sort by actual date, not string comparison
     return allArticles.sort((a, b) => {
-      const dateA = new Date(a.publishDate.includes('/') ? a.publishDate : a.publishDate);
-      const dateB = new Date(b.publishDate.includes('/') ? b.publishDate : b.publishDate);
+      // For generated articles, use the actual publish date
+      const dateA = a.publishDate === 'Reciente' ? new Date() : 
+                   a.publishDate.includes('/') ? new Date(a.publishDate.split('/').reverse().join('-')) :
+                   new Date(a.publishDate);
+      
+      const dateB = b.publishDate === 'Reciente' ? new Date() : 
+                   b.publishDate.includes('/') ? new Date(b.publishDate.split('/').reverse().join('-')) :
+                   new Date(b.publishDate);
+                   
       return dateB.getTime() - dateA.getTime();
     });
 
