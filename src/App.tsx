@@ -20,6 +20,7 @@ import ClientManagement from "./pages/admin/ClientManagement";
 import ClientSettings from "./pages/admin/ClientSettings";
 import ProjectConfiguration from "./pages/admin/ProjectConfiguration";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +29,8 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+        <BrowserRouter>
+          <RecoveryRedirect />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/contacto" element={<Contact />} />
