@@ -183,11 +183,13 @@ const BlogPost = () => {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Link to="/">
-                        <Button className="w-full" size="sm">
-                          Ver Nuestros Planes
-                        </Button>
-                      </Link>
+                      <Button 
+                        className="w-full" 
+                        size="sm"
+                        onClick={() => window.location.href = '/'}
+                      >
+                        Ver Nuestros Planes
+                      </Button>
                     </CardContent>
                   </Card>
 

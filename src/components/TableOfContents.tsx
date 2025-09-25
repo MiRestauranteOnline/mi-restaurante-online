@@ -17,7 +17,7 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
     // Parse HTML content to extract headings
     const parser = new DOMParser();
     const doc = parser.parseFromString(content, 'text/html');
-    const headings = doc.querySelectorAll('h2, h3');
+    const headings = doc.querySelectorAll('h2');
     
     const items: TOCItem[] = Array.from(headings).map((heading, index) => {
       const title = heading.textContent || '';
@@ -39,7 +39,7 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
     // Update the DOM with IDs for smooth scrolling
     const articleElement = document.querySelector('.blog-content');
     if (articleElement) {
-      const articleHeadings = articleElement.querySelectorAll('h2, h3');
+      const articleHeadings = articleElement.querySelectorAll('h2');
       articleHeadings.forEach((heading, index) => {
         heading.id = `heading-${index}`;
       });
@@ -71,10 +71,10 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
       </p>
       <ol className="space-y-2 list-decimal list-inside">
         {tocItems.map((item) => (
-          <li key={item.id} className={item.level === 3 ? 'ml-4 list-none' : ''}>
+          <li key={item.id} className="text-sm">
             <button
               onClick={() => handleClick(item.id)}
-              className="text-left text-sm text-muted-foreground hover:text-primary transition-colors line-clamp-2"
+              className="text-muted-foreground hover:text-primary transition-colors line-clamp-2 inline"
             >
               {item.title}
             </button>
