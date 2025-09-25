@@ -40,6 +40,8 @@ interface ContentGap {
 const BlogGenerationAdmin: React.FC = () => {
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
   const [logs, setLogs] = useState<GenerationLog[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [contentGaps, setContentGaps] = useState<ContentGap[]>([]);
@@ -80,6 +82,15 @@ const BlogGenerationAdmin: React.FC = () => {
   }, []);
 
   const handleGenerateDaily = async () => {
+    if (isAnalyzing || isGenerating || isSeeding) {
+      toast({
+        title: "Operation in progress",
+        description: "Please wait for the current operation to complete",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsGenerating(true);
     try {
       const response = await supabase.functions.invoke('daily-blog-generator');
@@ -112,6 +123,16 @@ const BlogGenerationAdmin: React.FC = () => {
   };
 
   const handleAnalyzeGaps = async () => {
+    if (isAnalyzing || isGenerating || isSeeding) {
+      toast({
+        title: "Operation in progress",
+        description: "Please wait for the current operation to complete",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
     try {
       const response = await supabase.functions.invoke('analyze-content-gaps');
       
@@ -137,10 +158,22 @@ const BlogGenerationAdmin: React.FC = () => {
         description: error instanceof Error ? error.message : 'Failed to analyze content gaps',
         variant: "destructive",
       });
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
   const handleSeedKeywords = async () => {
+    if (isAnalyzing || isGenerating || isSeeding) {
+      toast({
+        title: "Operation in progress",
+        description: "Please wait for the current operation to complete",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSeeding(true);
     try {
       const response = await supabase.functions.invoke('seed-keywords');
       
@@ -166,6 +199,8 @@ const BlogGenerationAdmin: React.FC = () => {
         description: error instanceof Error ? error.message : 'Failed to seed keywords',
         variant: "destructive",
       });
+    } finally {
+      setIsSeeding(false);
     }
   };
 
@@ -212,7 +247,7 @@ const BlogGenerationAdmin: React.FC = () => {
       <div className="flex gap-4">
         <Button 
           onClick={handleGenerateDaily}
-          disabled={isGenerating}
+          disabled={isGenerating || isAnalyzing || isSeeding}
           className="flex items-center gap-2"
         >
           {isGenerating ? (
@@ -225,14 +260,25 @@ const BlogGenerationAdmin: React.FC = () => {
         <Button 
           variant="outline"
           onClick={handleAnalyzeGaps}
+          disabled={isGenerating || isAnalyzing || isSeeding}
         >
-          <Eye className="w-4 h-4 mr-2" />
+          {isAnalyzing ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <Eye className="w-4 h-4 mr-2" />
+          )}
           Analyze Content Gaps
         </Button>
         <Button 
           variant="outline"
           onClick={handleSeedKeywords}
+          disabled={isGenerating || isAnalyzing || isSeeding}
         >
+          {isSeeding ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <Eye className="w-4 h-4 mr-2" />
+          )}
           Seed Keywords
         </Button>
       </div>
