@@ -367,6 +367,15 @@ export default function ClientSettings() {
     
     setSaving(true);
     try {
+      // Reorganize opening_hours in correct order (Monday to Sunday)
+      const orderedOpeningHours = {};
+      const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+      dayOrder.forEach(day => {
+        if (formData.opening_hours[day]) {
+          orderedOpeningHours[day] = formData.opening_hours[day];
+        }
+      });
+
       const { data, error } = await supabase
         .from('clients')
         .update({
@@ -377,7 +386,7 @@ export default function ClientSettings() {
           address: formData.address,
           whatsapp: formData.whatsapp,
           coordinates: formData.coordinates,
-          opening_hours: formData.opening_hours,
+          opening_hours: orderedOpeningHours,
           social_media_links: formData.social_media_links,
           delivery: formData.delivery,
           brand_colors: formData.brand_colors,
