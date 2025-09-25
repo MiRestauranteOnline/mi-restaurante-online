@@ -335,7 +335,8 @@ export default function ClientSettings() {
     header_background_enabled: false,
     header_background_style: 'dark',
     // Admin content fields
-    homepage_hero_title: '',
+    homepage_hero_title_first_line: '',
+    homepage_hero_title_second_line: '',
     homepage_hero_description: '',
     homepage_hero_background_url: '',
     homepage_hero_right_button_text: 'Reservar Mesa',
@@ -351,17 +352,21 @@ export default function ClientSettings() {
     homepage_delivery_section_title: 'Delivery Partners',
     homepage_delivery_section_description: 'Ordena desde la comodidad de tu hogar',
     homepage_contact_hide_reservation_box: false,
-    menu_page_hero_title: 'Nuestro Menú',
+    menu_page_hero_title_first_line: '',
+    menu_page_hero_title_second_line: '',
     menu_page_hero_description: 'Explora nuestra carta completa de especialidades culinarias',
     menu_page_hero_background_url: '',
-    contact_page_hero_title: 'Contáctanos',
+    contact_page_hero_title_first_line: '',
+    contact_page_hero_title_second_line: '',
     contact_page_hero_description: 'Estamos aquí para hacer de tu experiencia algo inolvidable',
     contact_page_hero_background_url: '',
-    about_page_hero_title: 'Nuestra Historia',
+    about_page_hero_title_first_line: '',
+    about_page_hero_title_second_line: '',
     about_page_hero_description: 'Conoce la pasión y tradición detrás de cada plato',
     about_page_hero_background_url: '',
     about_page_content: {},
-    reviews_page_hero_title: 'Testimonios',
+    reviews_page_hero_title_first_line: '',
+    reviews_page_hero_title_second_line: '',
     reviews_page_hero_description: 'Lo que nuestros clientes dicen sobre nosotros',
     reviews_page_hero_background_url: ''
   });
@@ -674,7 +679,8 @@ export default function ClientSettings() {
           .from('admin_content')
           .upsert({
             client_id: clientId,
-            homepage_hero_title: formData.homepage_hero_title,
+            homepage_hero_title_first_line: formData.homepage_hero_title_first_line,
+            homepage_hero_title_second_line: formData.homepage_hero_title_second_line,
             homepage_hero_description: formData.homepage_hero_description,
             homepage_hero_background_url: formData.homepage_hero_background_url,
             homepage_hero_right_button_text: formData.homepage_hero_right_button_text,
@@ -690,17 +696,21 @@ export default function ClientSettings() {
             homepage_delivery_section_title: formData.homepage_delivery_section_title,
             homepage_delivery_section_description: formData.homepage_delivery_section_description,
             homepage_contact_hide_reservation_box: formData.homepage_contact_hide_reservation_box,
-            menu_page_hero_title: formData.menu_page_hero_title,
+            menu_page_hero_title_first_line: formData.menu_page_hero_title_first_line,
+            menu_page_hero_title_second_line: formData.menu_page_hero_title_second_line,
             menu_page_hero_description: formData.menu_page_hero_description,
             menu_page_hero_background_url: formData.menu_page_hero_background_url,
-            contact_page_hero_title: formData.contact_page_hero_title,
+            contact_page_hero_title_first_line: formData.contact_page_hero_title_first_line,
+            contact_page_hero_title_second_line: formData.contact_page_hero_title_second_line,
             contact_page_hero_description: formData.contact_page_hero_description,
             contact_page_hero_background_url: formData.contact_page_hero_background_url,
-            about_page_hero_title: formData.about_page_hero_title,
+            about_page_hero_title_first_line: formData.about_page_hero_title_first_line,
+            about_page_hero_title_second_line: formData.about_page_hero_title_second_line,
             about_page_hero_description: formData.about_page_hero_description,
             about_page_hero_background_url: formData.about_page_hero_background_url,
             about_page_content: formData.about_page_content,
-            reviews_page_hero_title: formData.reviews_page_hero_title,
+            reviews_page_hero_title_first_line: formData.reviews_page_hero_title_first_line,
+            reviews_page_hero_title_second_line: formData.reviews_page_hero_title_second_line,
             reviews_page_hero_description: formData.reviews_page_hero_description,
             reviews_page_hero_background_url: formData.reviews_page_hero_background_url,
             updated_at: new Date().toISOString()
@@ -1443,21 +1453,29 @@ export default function ClientSettings() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="homepage_hero_title">Hero Title</Label>
+                      <Label htmlFor="homepage_hero_title_first_line">Hero Title (First Line)</Label>
                       <Input
-                        id="homepage_hero_title"
-                        value={formData.homepage_hero_title}
-                        onChange={(e) => setFormData({...formData, homepage_hero_title: e.target.value})}
+                        id="homepage_hero_title_first_line"
+                        value={formData.homepage_hero_title_first_line}
+                        onChange={(e) => setFormData({...formData, homepage_hero_title_first_line: e.target.value})}
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.homepage_hero_background_url}
-                        onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
-                        clientId={clientId!}
+                      <Label htmlFor="homepage_hero_title_second_line">Hero Title (Second Line)</Label>
+                      <Input
+                        id="homepage_hero_title_second_line"
+                        value={formData.homepage_hero_title_second_line}
+                        onChange={(e) => setFormData({...formData, homepage_hero_title_second_line: e.target.value})}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <ImageUpload
+                      label="Hero Background Image"
+                      value={formData.homepage_hero_background_url}
+                      onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
+                      clientId={clientId!}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="homepage_hero_description">Hero Description</Label>
@@ -1489,146 +1507,6 @@ export default function ClientSettings() {
                 </CardContent>
               </Card>
 
-              {/* Homepage About Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - About Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_about_section_title">About Section Title</Label>
-                    <Input
-                      id="homepage_about_section_title"
-                      value={formData.homepage_about_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_about_section_title: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_about_section_description">About Section Description</Label>
-                    <Textarea
-                      id="homepage_about_section_description"
-                      value={formData.homepage_about_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_about_section_description: e.target.value})}
-                      rows={3}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage Services Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Services Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_services_section_title">Services Section Title</Label>
-                    <Input
-                      id="homepage_services_section_title"
-                      value={formData.homepage_services_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_services_section_title: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_services_section_description">Services Section Description</Label>
-                    <Textarea
-                      id="homepage_services_section_description"
-                      value={formData.homepage_services_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_services_section_description: e.target.value})}
-                      rows={3}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage Menu Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Menu Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_menu_section_title">Menu Section Title</Label>
-                    <Input
-                      id="homepage_menu_section_title"
-                      value={formData.homepage_menu_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_menu_section_title: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_menu_section_description">Menu Section Description</Label>
-                    <Textarea
-                      id="homepage_menu_section_description"
-                      value={formData.homepage_menu_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_menu_section_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage Contact Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Contact Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_contact_section_title">Contact Section Title</Label>
-                    <Input
-                      id="homepage_contact_section_title"
-                      value={formData.homepage_contact_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_contact_section_title: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_contact_section_description">Contact Section Description</Label>
-                    <Textarea
-                      id="homepage_contact_section_description"
-                      value={formData.homepage_contact_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_contact_section_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Hide Reservation Box</Label>
-                      <p className="text-sm text-muted-foreground">Hide the reservation form box in contact section</p>
-                    </div>
-                    <Switch
-                      checked={formData.homepage_contact_hide_reservation_box}
-                      onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: checked})}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage Delivery Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Delivery Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_delivery_section_title">Delivery Section Title</Label>
-                    <Input
-                      id="homepage_delivery_section_title"
-                      value={formData.homepage_delivery_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_delivery_section_title: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_delivery_section_description">Delivery Section Description</Label>
-                    <Textarea
-                      id="homepage_delivery_section_description"
-                      value={formData.homepage_delivery_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_delivery_section_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
               {/* Menu Page Content */}
               <Card>
                 <CardHeader>
@@ -1637,21 +1515,29 @@ export default function ClientSettings() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="menu_page_hero_title">Hero Title</Label>
+                      <Label htmlFor="menu_page_hero_title_first_line">Hero Title (First Line)</Label>
                       <Input
-                        id="menu_page_hero_title"
-                        value={formData.menu_page_hero_title}
-                        onChange={(e) => setFormData({...formData, menu_page_hero_title: e.target.value})}
+                        id="menu_page_hero_title_first_line"
+                        value={formData.menu_page_hero_title_first_line}
+                        onChange={(e) => setFormData({...formData, menu_page_hero_title_first_line: e.target.value})}
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.menu_page_hero_background_url}
-                        onChange={(url) => setFormData({...formData, menu_page_hero_background_url: url})}
-                        clientId={clientId!}
+                      <Label htmlFor="menu_page_hero_title_second_line">Hero Title (Second Line)</Label>
+                      <Input
+                        id="menu_page_hero_title_second_line"
+                        value={formData.menu_page_hero_title_second_line}
+                        onChange={(e) => setFormData({...formData, menu_page_hero_title_second_line: e.target.value})}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <ImageUpload
+                      label="Hero Background Image"
+                      value={formData.menu_page_hero_background_url}
+                      onChange={(url) => setFormData({...formData, menu_page_hero_background_url: url})}
+                      clientId={clientId!}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="menu_page_hero_description">Hero Description</Label>
@@ -1673,21 +1559,29 @@ export default function ClientSettings() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="contact_page_hero_title">Hero Title</Label>
+                      <Label htmlFor="contact_page_hero_title_first_line">Hero Title (First Line)</Label>
                       <Input
-                        id="contact_page_hero_title"
-                        value={formData.contact_page_hero_title}
-                        onChange={(e) => setFormData({...formData, contact_page_hero_title: e.target.value})}
+                        id="contact_page_hero_title_first_line"
+                        value={formData.contact_page_hero_title_first_line}
+                        onChange={(e) => setFormData({...formData, contact_page_hero_title_first_line: e.target.value})}
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.contact_page_hero_background_url}
-                        onChange={(url) => setFormData({...formData, contact_page_hero_background_url: url})}
-                        clientId={clientId!}
+                      <Label htmlFor="contact_page_hero_title_second_line">Hero Title (Second Line)</Label>
+                      <Input
+                        id="contact_page_hero_title_second_line"
+                        value={formData.contact_page_hero_title_second_line}
+                        onChange={(e) => setFormData({...formData, contact_page_hero_title_second_line: e.target.value})}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <ImageUpload
+                      label="Hero Background Image"
+                      value={formData.contact_page_hero_background_url}
+                      onChange={(url) => setFormData({...formData, contact_page_hero_background_url: url})}
+                      clientId={clientId!}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="contact_page_hero_description">Hero Description</Label>
@@ -1709,21 +1603,29 @@ export default function ClientSettings() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="about_page_hero_title">Hero Title</Label>
+                      <Label htmlFor="about_page_hero_title_first_line">Hero Title (First Line)</Label>
                       <Input
-                        id="about_page_hero_title"
-                        value={formData.about_page_hero_title}
-                        onChange={(e) => setFormData({...formData, about_page_hero_title: e.target.value})}
+                        id="about_page_hero_title_first_line"
+                        value={formData.about_page_hero_title_first_line}
+                        onChange={(e) => setFormData({...formData, about_page_hero_title_first_line: e.target.value})}
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.about_page_hero_background_url}
-                        onChange={(url) => setFormData({...formData, about_page_hero_background_url: url})}
-                        clientId={clientId!}
+                      <Label htmlFor="about_page_hero_title_second_line">Hero Title (Second Line)</Label>
+                      <Input
+                        id="about_page_hero_title_second_line"
+                        value={formData.about_page_hero_title_second_line}
+                        onChange={(e) => setFormData({...formData, about_page_hero_title_second_line: e.target.value})}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <ImageUpload
+                      label="Hero Background Image"
+                      value={formData.about_page_hero_background_url}
+                      onChange={(url) => setFormData({...formData, about_page_hero_background_url: url})}
+                      clientId={clientId!}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="about_page_hero_description">Hero Description</Label>
@@ -1745,21 +1647,29 @@ export default function ClientSettings() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="reviews_page_hero_title">Hero Title</Label>
+                      <Label htmlFor="reviews_page_hero_title_first_line">Hero Title (First Line)</Label>
                       <Input
-                        id="reviews_page_hero_title"
-                        value={formData.reviews_page_hero_title}
-                        onChange={(e) => setFormData({...formData, reviews_page_hero_title: e.target.value})}
+                        id="reviews_page_hero_title_first_line"
+                        value={formData.reviews_page_hero_title_first_line}
+                        onChange={(e) => setFormData({...formData, reviews_page_hero_title_first_line: e.target.value})}
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.reviews_page_hero_background_url}
-                        onChange={(url) => setFormData({...formData, reviews_page_hero_background_url: url})}
-                        clientId={clientId!}
+                      <Label htmlFor="reviews_page_hero_title_second_line">Hero Title (Second Line)</Label>
+                      <Input
+                        id="reviews_page_hero_title_second_line"
+                        value={formData.reviews_page_hero_title_second_line}
+                        onChange={(e) => setFormData({...formData, reviews_page_hero_title_second_line: e.target.value})}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <ImageUpload
+                      label="Hero Background Image"
+                      value={formData.reviews_page_hero_background_url}
+                      onChange={(url) => setFormData({...formData, reviews_page_hero_background_url: url})}
+                      clientId={clientId!}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="reviews_page_hero_description">Hero Description</Label>
@@ -2024,6 +1934,7 @@ export default function ClientSettings() {
           </div>
         </DialogContent>
       </Dialog>
+      </Tabs>
     </div>
   );
 }
