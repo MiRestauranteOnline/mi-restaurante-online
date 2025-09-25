@@ -94,10 +94,10 @@ const Contact = () => {
             </Card>
 
             {/* Phone */}
-            <Card className="border-2 border-accent/20 hover:border-accent/40 transition-colors md:col-span-2 lg:col-span-1">
+            <Card className="border-2 border-primary/20 hover:border-primary/40 transition-colors md:col-span-2 lg:col-span-1">
               <CardContent className="p-6 text-center space-y-4">
-                <div className="w-16 h-16 mx-auto bg-accent/10 rounded-full flex items-center justify-center">
-                  <Phone className="w-8 h-8 text-accent" />
+                <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                  <Phone className="w-8 h-8 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">
