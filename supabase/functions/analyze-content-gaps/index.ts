@@ -1,0 +1,160 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+);
+
+const openAIApiKey = Deno.env.get('chatgpt');
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    console.log('Starting content gap analysis...');
+    const startTime = Date.now();
+
+    // Log the analysis start
+    const { data: logData } = await supabase
+      .from('generation_logs')
+      .insert({
+        type: 'gap_analysis',
+        status: 'started',
+        details: { analysis_type: 'topical_authority' }
+      })
+      .select()
+      .single();
+
+    // Get existing articles and keywords
+    const { data: existingArticles } = await supabase
+      .from('generated_articles')
+      .select('title, category, keywords')
+      .eq('status', 'published');
+
+    const { data: targetKeywords } = await supabase
+      .from('target_keywords')
+      .select('*')
+      .eq('is_covered', false)
+      .order('priority', { ascending: false });
+
+    // Analyze content gaps using ChatGPT
+    const gapAnalysisPrompt = `
+You are a content strategist for "Mi Restaurante Online", a restaurant website design company in Peru.
+
+Current published articles:
+${JSON.stringify(existingArticles, null, 2)}
+
+Target keywords not yet covered:
+${JSON.stringify(targetKeywords, null, 2)}
+
+Restaurant industry categories we cover:
+- desarrollo-web (web development for restaurants)
+- marketing-digital (digital marketing for restaurants)  
+- tecnologia-restaurante (restaurant technology)
+- casos-exito (success cases)
+- guias-practicas (practical guides)
+
+Analyze the content gaps and identify the TOP 3 most important topics we should create articles about to build topical authority for restaurant websites in Peru. Consider:
+1. Keywords not yet covered
+2. Topics that support our main business (restaurant website design)
+3. Seasonal trends in Peru's restaurant industry
+4. Local market needs (Lima, Arequipa, Cusco, etc.)
+
+Return JSON format:
+{
+  "content_gaps": [
+    {
+      "topic": "Topic title",
+      "category": "one of the 5 categories",
+      "target_keywords": ["keyword1", "keyword2"],
+      "priority_score": 1-10,
+      "reasoning": "Why this topic is important"
+    }
+  ]
+}
+`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: 'You are an expert content strategist specializing in restaurant industry content in Peru.' },
+          { role: 'user', content: gapAnalysisPrompt }
+        ],
+        max_tokens: 2000,
+        temperature: 0.7,
+      }),
+    });
+
+    const gptData = await response.json();
+    const analysis = JSON.parse(gptData.choices[0].message.content);
+
+    // Store content gaps
+    const gaps = [];
+    for (const gap of analysis.content_gaps) {
+      const { data: insertedGap } = await supabase
+        .from('content_gaps')
+        .insert({
+          topic: gap.topic,
+          category: gap.category,
+          target_keywords: gap.target_keywords,
+          priority_score: gap.priority_score,
+          status: 'identified'
+        })
+        .select()
+        .single();
+      
+      gaps.push(insertedGap);
+    }
+
+    const processingTime = Date.now() - startTime;
+
+    // Update log
+    await supabase
+      .from('generation_logs')
+      .update({
+        status: 'completed',
+        details: { 
+          gaps_identified: gaps.length,
+          analysis_results: analysis
+        },
+        processing_time_ms: processingTime
+      })
+      .eq('id', logData.id);
+
+    console.log(`Content gap analysis completed in ${processingTime}ms`);
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      gaps,
+      analysis: analysis.content_gaps
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+
+  } catch (error) {
+    console.error('Error in content gap analysis:', error);
+    
+    return new Response(JSON.stringify({ 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      details: 'Failed to analyze content gaps'
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+});

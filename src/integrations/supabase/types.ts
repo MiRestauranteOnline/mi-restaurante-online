@@ -14,7 +14,214 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      content_gaps: {
+        Row: {
+          analysis_date: string
+          article_id: string | null
+          category: string
+          created_at: string
+          id: string
+          priority_score: number
+          status: string
+          target_keywords: string[]
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          analysis_date?: string
+          article_id?: string | null
+          category: string
+          created_at?: string
+          id?: string
+          priority_score?: number
+          status?: string
+          target_keywords?: string[]
+          topic: string
+          updated_at?: string
+        }
+        Update: {
+          analysis_date?: string
+          article_id?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          priority_score?: number
+          status?: string
+          target_keywords?: string[]
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_gaps_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "generated_articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_articles: {
+        Row: {
+          author: string
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          featured: boolean
+          featured_image_alt: string | null
+          featured_image_url: string | null
+          id: string
+          keywords: string[]
+          meta_description: string
+          publish_date: string | null
+          reading_time: number
+          related_articles: string[] | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string
+          category: string
+          content: string
+          created_at?: string
+          excerpt: string
+          featured?: boolean
+          featured_image_alt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          keywords?: string[]
+          meta_description: string
+          publish_date?: string | null
+          reading_time?: number
+          related_articles?: string[] | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          featured?: boolean
+          featured_image_alt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          keywords?: string[]
+          meta_description?: string
+          publish_date?: string | null
+          reading_time?: number
+          related_articles?: string[] | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      generation_logs: {
+        Row: {
+          article_id: string | null
+          content_gap_id: string | null
+          created_at: string
+          details: Json | null
+          error_message: string | null
+          id: string
+          processing_time_ms: number | null
+          status: string
+          type: string
+        }
+        Insert: {
+          article_id?: string | null
+          content_gap_id?: string | null
+          created_at?: string
+          details?: Json | null
+          error_message?: string | null
+          id?: string
+          processing_time_ms?: number | null
+          status: string
+          type: string
+        }
+        Update: {
+          article_id?: string | null
+          content_gap_id?: string | null
+          created_at?: string
+          details?: Json | null
+          error_message?: string | null
+          id?: string
+          processing_time_ms?: number | null
+          status?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generation_logs_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "generated_articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generation_logs_content_gap_id_fkey"
+            columns: ["content_gap_id"]
+            isOneToOne: false
+            referencedRelation: "content_gaps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      target_keywords: {
+        Row: {
+          category: string
+          covered_by_article_id: string | null
+          created_at: string
+          difficulty: number | null
+          id: string
+          is_covered: boolean
+          keyword: string
+          priority: number
+          search_volume: number | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          covered_by_article_id?: string | null
+          created_at?: string
+          difficulty?: number | null
+          id?: string
+          is_covered?: boolean
+          keyword: string
+          priority?: number
+          search_volume?: number | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          covered_by_article_id?: string | null
+          created_at?: string
+          difficulty?: number | null
+          id?: string
+          is_covered?: boolean
+          keyword?: string
+          priority?: number
+          search_volume?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "target_keywords_covered_by_article_id_fkey"
+            columns: ["covered_by_article_id"]
+            isOneToOne: false
+            referencedRelation: "generated_articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

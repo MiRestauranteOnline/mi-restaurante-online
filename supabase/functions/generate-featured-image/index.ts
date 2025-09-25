@@ -1,0 +1,156 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+);
+
+const leonardoApiKey = Deno.env.get('leonardo');
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { articleId, imagePrompt, altText } = await req.json();
+    
+    if (!articleId || !imagePrompt) {
+      throw new Error('Article ID and image prompt are required');
+    }
+
+    console.log('Starting image generation for article:', articleId);
+    const startTime = Date.now();
+
+    // Log generation start
+    const { data: logData } = await supabase
+      .from('generation_logs')
+      .insert({
+        type: 'image_generation',
+        status: 'started',
+        article_id: articleId,
+        details: { prompt: imagePrompt }
+      })
+      .select()
+      .single();
+
+    // Generate image with Leonardo AI
+    const imageGenerationPrompt = `
+    ${imagePrompt}
+    
+    Style: Realistic photograph, professional, high quality, restaurant industry related, 
+    no text overlay, clean composition, suitable for blog header, 16:9 aspect ratio,
+    vibrant colors, modern restaurant setting, Peruvian context when relevant
+    `;
+
+    const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${leonardoApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: imageGenerationPrompt,
+        modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3", // Leonardo Phoenix model for realistic photos
+        width: 1024,
+        height: 576, // 16:9 aspect ratio
+        num_images: 1,
+        guidance_scale: 7,
+        num_inference_steps: 15,
+        presetStyle: "PHOTOGRAPHY"
+      }),
+    });
+
+    const leonardoData = await leonardoResponse.json();
+    
+    if (!leonardoData.sdGenerationJob) {
+      throw new Error('Failed to start image generation');
+    }
+
+    const generationId = leonardoData.sdGenerationJob.generationId;
+    console.log('Image generation started with ID:', generationId);
+
+    // Poll for completion (Leonardo AI is async)
+    let imageUrl = null;
+    let attempts = 0;
+    const maxAttempts = 30; // 5 minutes max
+
+    while (!imageUrl && attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
+      attempts++;
+
+      const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
+        headers: {
+          'Authorization': `Bearer ${leonardoApiKey}`,
+        },
+      });
+
+      const statusData = await statusResponse.json();
+      
+      if (statusData.generations_by_pk?.status === 'COMPLETE' && statusData.generations_by_pk.generated_images?.length > 0) {
+        imageUrl = statusData.generations_by_pk.generated_images[0].url;
+        console.log('Image generation completed:', imageUrl);
+        break;
+      } else if (statusData.generations_by_pk?.status === 'FAILED') {
+        throw new Error('Image generation failed');
+      }
+    }
+
+    if (!imageUrl) {
+      throw new Error('Image generation timed out');
+    }
+
+    // Update article with featured image
+    await supabase
+      .from('generated_articles')
+      .update({
+        featured_image_url: imageUrl,
+        featured_image_alt: altText || 'Professional restaurant image'
+      })
+      .eq('id', articleId);
+
+    const processingTime = Date.now() - startTime;
+
+    // Update log
+    await supabase
+      .from('generation_logs')
+      .update({
+        status: 'completed',
+        details: { 
+          image_url: imageUrl,
+          generation_id: generationId,
+          attempts: attempts
+        },
+        processing_time_ms: processingTime
+      })
+      .eq('id', logData.id);
+
+    console.log(`Image generation completed in ${processingTime}ms`);
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      imageUrl,
+      message: 'Featured image generated successfully'
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+
+  } catch (error) {
+    console.error('Error generating image:', error);
+    
+    return new Response(JSON.stringify({ 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      details: 'Failed to generate featured image'
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+});
