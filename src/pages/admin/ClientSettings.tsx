@@ -522,11 +522,14 @@ export default function ClientSettings() {
         // Update form data with admin content
         setFormData(prev => ({
           ...prev,
-          homepage_hero_title: data.homepage_hero_title || '',
+          // Homepage hero split title
+          homepage_hero_title_first_line: data.homepage_hero_title_first_line || '',
+          homepage_hero_title_second_line: data.homepage_hero_title_second_line || '',
           homepage_hero_description: data.homepage_hero_description || '',
           homepage_hero_background_url: data.homepage_hero_background_url || '',
           homepage_hero_right_button_text: data.homepage_hero_right_button_text || 'Reservar Mesa',
           homepage_hero_right_button_link: data.homepage_hero_right_button_link || '#contact',
+          // Homepage sections
           homepage_about_section_title: data.homepage_about_section_title || 'Nuestra Historia',
           homepage_about_section_description: data.homepage_about_section_description || '',
           homepage_services_section_title: data.homepage_services_section_title || 'Nuestros Servicios',
@@ -538,17 +541,25 @@ export default function ClientSettings() {
           homepage_delivery_section_title: data.homepage_delivery_section_title || 'Delivery Partners',
           homepage_delivery_section_description: data.homepage_delivery_section_description || 'Ordena desde la comodidad de tu hogar',
           homepage_contact_hide_reservation_box: data.homepage_contact_hide_reservation_box || false,
-          menu_page_hero_title: data.menu_page_hero_title || 'Nuestro Menú',
+          // Menu page split title
+          menu_page_hero_title_first_line: data.menu_page_hero_title_first_line || '',
+          menu_page_hero_title_second_line: data.menu_page_hero_title_second_line || '',
           menu_page_hero_description: data.menu_page_hero_description || 'Explora nuestra carta completa de especialidades culinarias',
           menu_page_hero_background_url: data.menu_page_hero_background_url || '',
-          contact_page_hero_title: data.contact_page_hero_title || 'Contáctanos',
+          // Contact page split title
+          contact_page_hero_title_first_line: data.contact_page_hero_title_first_line || '',
+          contact_page_hero_title_second_line: data.contact_page_hero_title_second_line || '',
           contact_page_hero_description: data.contact_page_hero_description || 'Estamos aquí para hacer de tu experiencia algo inolvidable',
           contact_page_hero_background_url: data.contact_page_hero_background_url || '',
-          about_page_hero_title: data.about_page_hero_title || 'Nuestra Historia',
+          // About page split title
+          about_page_hero_title_first_line: data.about_page_hero_title_first_line || '',
+          about_page_hero_title_second_line: data.about_page_hero_title_second_line || '',
           about_page_hero_description: data.about_page_hero_description || 'Conoce la pasión y tradición detrás de cada plato',
           about_page_hero_background_url: data.about_page_hero_background_url || '',
           about_page_content: data.about_page_content || {},
-          reviews_page_hero_title: data.reviews_page_hero_title || 'Testimonios',
+          // Reviews page split title
+          reviews_page_hero_title_first_line: data.reviews_page_hero_title_first_line || '',
+          reviews_page_hero_title_second_line: data.reviews_page_hero_title_second_line || '',
           reviews_page_hero_description: data.reviews_page_hero_description || 'Lo que nuestros clientes dicen sobre nosotros',
           reviews_page_hero_background_url: data.reviews_page_hero_background_url || ''
         }));
