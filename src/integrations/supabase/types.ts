@@ -58,6 +58,7 @@ export type Database = {
           brand_colors: Json | null
           coordinates: Json | null
           created_at: string
+          delivery: Json | null
           email: string | null
           id: string
           opening_hours: Json | null
@@ -74,6 +75,7 @@ export type Database = {
           brand_colors?: Json | null
           coordinates?: Json | null
           created_at?: string
+          delivery?: Json | null
           email?: string | null
           id?: string
           opening_hours?: Json | null
@@ -90,6 +92,7 @@ export type Database = {
           brand_colors?: Json | null
           coordinates?: Json | null
           created_at?: string
+          delivery?: Json | null
           email?: string | null
           id?: string
           opening_hours?: Json | null

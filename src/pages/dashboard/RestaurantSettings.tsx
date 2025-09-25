@@ -126,6 +126,7 @@ export default function RestaurantSettings() {
           // Parse JSON fields
           const coordinates = client.coordinates || {};
           const socialMedia = client.social_media_links || {};
+          const delivery = client.delivery || {};
           const brandColors = client.brand_colors || {};
           const openingHours = client.opening_hours || {};
           const customizations = client.other_customizations || {};
@@ -144,9 +145,9 @@ export default function RestaurantSettings() {
             linkedin: socialMedia.linkedin || '',
             youtube: socialMedia.youtube || '',
             tiktok: socialMedia.tiktok || '',
-            rappi: socialMedia.rappi || '',
-            pedidos_ya: socialMedia.pedidos_ya || '',
-            didi_food: socialMedia.didi_food || '',
+            rappi: delivery.rappi || '',
+            pedidos_ya: delivery.pedidos_ya || '',
+            didi_food: delivery.didi_food || '',
             primary_color: brandColors.primary || '#22c55e',
             accent_color: brandColors.accent || '#eab308',
             currency: customizations.currency || 'S/',
@@ -200,6 +201,9 @@ export default function RestaurantSettings() {
         linkedin: data.linkedin || '',
         youtube: data.youtube || '',
         tiktok: data.tiktok || '',
+      };
+
+      const deliveryLinks = {
         rappi: data.rappi || '',
         pedidos_ya: data.pedidos_ya || '',
         didi_food: data.didi_food || '',
@@ -234,6 +238,7 @@ export default function RestaurantSettings() {
           address: data.address,
           coordinates,
           social_media_links: socialMediaLinks,
+          delivery: deliveryLinks,
           brand_colors: brandColors,
           opening_hours: openingHours,
           other_customizations: otherCustomizations,
