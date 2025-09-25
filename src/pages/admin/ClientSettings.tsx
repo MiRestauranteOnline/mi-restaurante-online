@@ -175,6 +175,27 @@ interface MenuItem {
   show_image_home: boolean;
 }
 
+interface TeamMember {
+  id: string;
+  name: string;
+  title: string;
+  bio?: string;
+  image_url?: string;
+  display_order: number;
+  is_active: boolean;
+  client_id: string;
+}
+
+interface Review {
+  id: string;
+  reviewer_name: string;
+  review_text: string;
+  star_rating: number;
+  display_order: number;
+  is_active: boolean;
+  client_id: string;
+}
+
 // Sortable Category Item Component
 function SortableCategoryItem({ category, onEdit, onDelete }: { 
   category: MenuCategory, 
@@ -273,6 +294,123 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete }: {
   );
 }
 
+// Sortable Team Member Component
+function SortableTeamMember({ member, onEdit, onDelete }: { 
+  member: TeamMember, 
+  onEdit: (member: TeamMember) => void,
+  onDelete: (id: string) => void 
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: member.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center justify-between p-3 border rounded bg-card"
+    >
+      <div className="flex items-center gap-3">
+        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </div>
+        <div className="flex items-center gap-3">
+          {member.image_url && (
+            <img src={member.image_url} alt={member.name} className="w-10 h-10 rounded-full object-cover" />
+          )}
+          <div>
+            <span className="font-medium">{member.name}</span>
+            <p className="text-sm text-muted-foreground">{member.title}</p>
+            {member.bio && (
+              <p className="text-xs text-muted-foreground max-w-xs truncate">{member.bio}</p>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" onClick={() => onEdit(member)}>
+          <Edit className="h-4 w-4" />
+        </Button>
+        <Button variant="destructive" size="sm" onClick={() => onDelete(member.id)}>
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Sortable Review Component
+function SortableReview({ review, onEdit, onDelete }: { 
+  review: Review, 
+  onEdit: (review: Review) => void,
+  onDelete: (id: string) => void 
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: review.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars.push(<span key={i} className="text-yellow-400">★</span>);
+      } else if (i - 0.5 <= rating) {
+        stars.push(<span key={i} className="text-yellow-400">☆</span>);
+      } else {
+        stars.push(<span key={i} className="text-gray-300">★</span>);
+      }
+    }
+    return stars;
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center justify-between p-3 border rounded bg-card"
+    >
+      <div className="flex items-center gap-3">
+        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </div>
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium">{review.reviewer_name}</span>
+            <div className="flex">{renderStars(review.star_rating)}</div>
+          </div>
+          <p className="text-sm text-muted-foreground max-w-xs truncate">{review.review_text}</p>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" onClick={() => onEdit(review)}>
+          <Edit className="h-4 w-4" />
+        </Button>
+        <Button variant="destructive" size="sm" onClick={() => onDelete(review.id)}>
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export default function ClientSettings() {
   console.log('ClientSettings component rendered'); // Debug log
   const { clientId } = useParams<{ clientId: string }>();
@@ -282,12 +420,18 @@ export default function ClientSettings() {
   const [adminContent, setAdminContent] = useState<AdminContent | null>(null);
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showCategoryDialog, setShowCategoryDialog] = useState(false);
   const [showMenuItemDialog, setShowMenuItemDialog] = useState(false);
+  const [showTeamMemberDialog, setShowTeamMemberDialog] = useState(false);
+  const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
+  const [editingTeamMember, setEditingTeamMember] = useState<TeamMember | null>(null);
+  const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [userRole, setUserRole] = useState<string | null>(null);
   const { toast } = useToast();
@@ -303,6 +447,14 @@ export default function ClientSettings() {
   const [menuItemForm, setMenuItemForm] = useState({
     name: '', description: '', price: 0, category: '', image_url: '',
     show_on_homepage: false, show_image_menu: true, show_image_home: false
+  });
+
+  const [teamMemberForm, setTeamMemberForm] = useState({
+    name: '', title: '', bio: '', image_url: '', display_order: 0
+  });
+
+  const [reviewForm, setReviewForm] = useState({
+    reviewer_name: '', review_text: '', star_rating: 5, display_order: 0
   });
 
   // Filter and group menu items by category
@@ -508,6 +660,8 @@ export default function ClientSettings() {
       fetchAdminContent();
       fetchCategories();
       fetchMenuItems();
+      fetchTeamMembers();
+      fetchReviews();
       fetchUserRole();
     }
   }, [clientId]);
@@ -800,6 +954,44 @@ export default function ClientSettings() {
       toast({
         title: "Error",
         description: "Failed to load menu items: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const fetchTeamMembers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('team_members')
+        .select('*')
+        .eq('client_id', clientId)
+        .order('display_order');
+
+      if (error) throw error;
+      setTeamMembers(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to load team members: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('client_id', clientId)
+        .order('display_order');
+
+      if (error) throw error;
+      setReviews(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to load reviews: " + error.message,
         variant: "destructive"
       });
     }
@@ -1167,6 +1359,152 @@ export default function ClientSettings() {
     }
   };
 
+  // Team Member CRUD Functions
+  const handleSaveTeamMember = async () => {
+    if (!clientId) return;
+    
+    try {
+      if (editingTeamMember) {
+        const { data, error } = await supabase
+          .from('team_members')
+          .update({
+            name: teamMemberForm.name,
+            title: teamMemberForm.title,
+            bio: teamMemberForm.bio,
+            image_url: teamMemberForm.image_url,
+            display_order: teamMemberForm.display_order,
+          })
+          .eq('id', editingTeamMember.id)
+          .select()
+          .maybeSingle();
+        if (error) throw error;
+        if (!data) throw new Error('Update blocked by RLS');
+      } else {
+        const { data, error } = await supabase
+          .from('team_members')
+          .insert({
+            client_id: clientId,
+            name: teamMemberForm.name,
+            title: teamMemberForm.title,
+            bio: teamMemberForm.bio,
+            image_url: teamMemberForm.image_url,
+            display_order: teamMemberForm.display_order,
+            is_active: true,
+          })
+          .select()
+          .maybeSingle();
+        if (error) throw error;
+        if (!data) throw new Error('Insert blocked by RLS');
+      }
+      
+      await fetchTeamMembers();
+      setShowTeamMemberDialog(false);
+      setEditingTeamMember(null);
+      setTeamMemberForm({ name: '', title: '', bio: '', image_url: '', display_order: 0 });
+      toast({ title: "Success", description: "Team member saved successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to save team member: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteTeamMember = async (id: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('team_members')
+        .delete()
+        .eq('id', id)
+        .select()
+        .maybeSingle();
+      
+      if (error) throw error;
+      if (!data) throw new Error('Delete blocked by RLS');
+      await fetchTeamMembers();
+      toast({ title: "Success", description: "Team member deleted successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to delete team member: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Review CRUD Functions
+  const handleSaveReview = async () => {
+    if (!clientId) return;
+    
+    try {
+      if (editingReview) {
+        const { data, error } = await supabase
+          .from('reviews')
+          .update({
+            reviewer_name: reviewForm.reviewer_name,
+            review_text: reviewForm.review_text,
+            star_rating: reviewForm.star_rating,
+            display_order: reviewForm.display_order,
+          })
+          .eq('id', editingReview.id)
+          .select()
+          .maybeSingle();
+        if (error) throw error;
+        if (!data) throw new Error('Update blocked by RLS');
+      } else {
+        const { data, error } = await supabase
+          .from('reviews')
+          .insert({
+            client_id: clientId,
+            reviewer_name: reviewForm.reviewer_name,
+            review_text: reviewForm.review_text,
+            star_rating: reviewForm.star_rating,
+            display_order: reviewForm.display_order,
+            is_active: true,
+          })
+          .select()
+          .maybeSingle();
+        if (error) throw error;
+        if (!data) throw new Error('Insert blocked by RLS');
+      }
+      
+      await fetchReviews();
+      setShowReviewDialog(false);
+      setEditingReview(null);
+      setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_order: 0 });
+      toast({ title: "Success", description: "Review saved successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to save review: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteReview = async (id: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .delete()
+        .eq('id', id)
+        .select()
+        .maybeSingle();
+      
+      if (error) throw error;
+      if (!data) throw new Error('Delete blocked by RLS');
+      await fetchReviews();
+      toast({ title: "Success", description: "Review deleted successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to delete review: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
   const openCategoryDialog = (category?: MenuCategory) => {
     if (category) {
       setEditingCategory(category);
@@ -1199,6 +1537,102 @@ export default function ClientSettings() {
       });
     }
     setShowMenuItemDialog(true);
+  };
+
+  // Team Member Drag Handler
+  const handleTeamMemberDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = teamMembers.findIndex((item) => item.id === active.id);
+      const newIndex = teamMembers.findIndex((item) => item.id === over?.id);
+
+      const reorderedMembers = arrayMove(teamMembers, oldIndex, newIndex);
+      
+      try {
+        for (let i = 0; i < reorderedMembers.length; i++) {
+          await supabase
+            .from('team_members')
+            .update({ display_order: i + 1 })
+            .eq('id', reorderedMembers[i].id);
+        }
+        
+        await fetchTeamMembers();
+        toast({ title: "Success", description: "Team member order updated" });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: "Failed to update team member order: " + error.message,
+          variant: "destructive"
+        });
+        await fetchTeamMembers();
+      }
+    }
+  };
+
+  // Review Drag Handler
+  const handleReviewDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = reviews.findIndex((item) => item.id === active.id);
+      const newIndex = reviews.findIndex((item) => item.id === over?.id);
+
+      const reorderedReviews = arrayMove(reviews, oldIndex, newIndex);
+      
+      try {
+        for (let i = 0; i < reorderedReviews.length; i++) {
+          await supabase
+            .from('reviews')
+            .update({ display_order: i + 1 })
+            .eq('id', reorderedReviews[i].id);
+        }
+        
+        await fetchReviews();
+        toast({ title: "Success", description: "Review order updated" });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: "Failed to update review order: " + error.message,
+          variant: "destructive"
+        });
+        await fetchReviews();
+      }
+    }
+  };
+
+  // Dialog Opening Functions
+  const openTeamMemberDialog = (member?: TeamMember) => {
+    if (member) {
+      setEditingTeamMember(member);
+      setTeamMemberForm({
+        name: member.name,
+        title: member.title,
+        bio: member.bio || '',
+        image_url: member.image_url || '',
+        display_order: member.display_order,
+      });
+    } else {
+      setEditingTeamMember(null);
+      setTeamMemberForm({ name: '', title: '', bio: '', image_url: '', display_order: 0 });
+    }
+    setShowTeamMemberDialog(true);
+  };
+
+  const openReviewDialog = (review?: Review) => {
+    if (review) {
+      setEditingReview(review);
+      setReviewForm({
+        reviewer_name: review.reviewer_name,
+        review_text: review.review_text,
+        star_rating: review.star_rating,
+        display_order: review.display_order,
+      });
+    } else {
+      setEditingReview(null);
+      setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_order: 0 });
+    }
+    setShowReviewDialog(true);
   };
 
   const handleCategoryDragEnd = async (event: DragEndEvent) => {
@@ -1332,6 +1766,8 @@ export default function ClientSettings() {
           {userRole === 'admin' && <TabsTrigger value="content">Change Content</TabsTrigger>}
           <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="menu">Menu Items</TabsTrigger>
+          <TabsTrigger value="team">Team Members</TabsTrigger>
+          <TabsTrigger value="reviews">Reviews</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
@@ -2579,6 +3015,84 @@ export default function ClientSettings() {
         </Card>
       </TabsContent>
 
+      {/* Team Members Tab */}
+      <TabsContent value="team">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Team Members
+              <Button onClick={() => openTeamMemberDialog()}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Team Member
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {teamMembers.length > 0 ? (
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleTeamMemberDragEnd}
+                >
+                  <SortableContext items={teamMembers.map(m => m.id)} strategy={verticalListSortingStrategy}>
+                    {teamMembers.map((member) => (
+                      <SortableTeamMember
+                        key={member.id}
+                        member={member}
+                        onEdit={openTeamMemberDialog}
+                        onDelete={handleDeleteTeamMember}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              ) : (
+                <p className="text-muted-foreground text-center py-4">No team members found. Add your first team member!</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Reviews Tab */}
+      <TabsContent value="reviews">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Reviews
+              <Button onClick={() => openReviewDialog()}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Review
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {reviews.length > 0 ? (
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleReviewDragEnd}
+                >
+                  <SortableContext items={reviews.map(r => r.id)} strategy={verticalListSortingStrategy}>
+                    {reviews.map((review) => (
+                      <SortableReview
+                        key={review.id}
+                        review={review}
+                        onEdit={openReviewDialog}
+                        onDelete={handleDeleteReview}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              ) : (
+                <p className="text-muted-foreground text-center py-4">No reviews found. Add your first review!</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
       {/* Category Dialog */}
       <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
         <DialogContent>
@@ -2708,6 +3222,119 @@ export default function ClientSettings() {
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowMenuItemDialog(false)}>Cancel</Button>
               <Button onClick={handleSaveMenuItem}>Save</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Team Member Dialog */}
+      <Dialog open={showTeamMemberDialog} onOpenChange={setShowTeamMemberDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{editingTeamMember ? 'Edit Team Member' : 'Add New Team Member'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Name</Label>
+                <Input
+                  value={teamMemberForm.name}
+                  onChange={(e) => setTeamMemberForm({...teamMemberForm, name: e.target.value})}
+                  placeholder="Team member name"
+                />
+              </div>
+              <div>
+                <Label>Title</Label>
+                <Input
+                  value={teamMemberForm.title}
+                  onChange={(e) => setTeamMemberForm({...teamMemberForm, title: e.target.value})}
+                  placeholder="Job title"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label>Bio</Label>
+              <Textarea
+                value={teamMemberForm.bio}
+                onChange={(e) => setTeamMemberForm({...teamMemberForm, bio: e.target.value})}
+                placeholder="Short bio"
+                rows={3}
+              />
+            </div>
+            
+            <div>
+              <Label>Profile Image</Label>
+              <ImageUpload
+                label="Profile Image"
+                value={teamMemberForm.image_url}
+                onChange={(url) => setTeamMemberForm({...teamMemberForm, image_url: url})}
+                clientId={clientId || ''}
+              />
+            </div>
+            
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowTeamMemberDialog(false)}>Cancel</Button>
+              <Button onClick={handleSaveTeamMember}>Save</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Review Dialog */}
+      <Dialog open={showReviewDialog} onOpenChange={setShowReviewDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{editingReview ? 'Edit Review' : 'Add New Review'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Reviewer Name</Label>
+                <Input
+                  value={reviewForm.reviewer_name}
+                  onChange={(e) => setReviewForm({...reviewForm, reviewer_name: e.target.value})}
+                  placeholder="Customer name"
+                />
+              </div>
+              <div>
+                <Label>Star Rating</Label>
+                <Select 
+                  value={reviewForm.star_rating.toString()} 
+                  onValueChange={(value) => setReviewForm({...reviewForm, star_rating: parseFloat(value)})}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0.5">0.5 Stars</SelectItem>
+                    <SelectItem value="1">1 Star</SelectItem>
+                    <SelectItem value="1.5">1.5 Stars</SelectItem>
+                    <SelectItem value="2">2 Stars</SelectItem>
+                    <SelectItem value="2.5">2.5 Stars</SelectItem>
+                    <SelectItem value="3">3 Stars</SelectItem>
+                    <SelectItem value="3.5">3.5 Stars</SelectItem>
+                    <SelectItem value="4">4 Stars</SelectItem>
+                    <SelectItem value="4.5">4.5 Stars</SelectItem>
+                    <SelectItem value="5">5 Stars</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div>
+              <Label>Review Text</Label>
+              <Textarea
+                value={reviewForm.review_text}
+                onChange={(e) => setReviewForm({...reviewForm, review_text: e.target.value})}
+                placeholder="Customer review"
+                rows={4}
+              />
+            </div>
+            
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowReviewDialog(false)}>Cancel</Button>
+              <Button onClick={handleSaveReview}>Save</Button>
             </div>
           </div>
         </DialogContent>
