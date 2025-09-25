@@ -268,6 +268,36 @@ const BlogGenerationAdmin: React.FC = () => {
     }
   };
 
+  const handleTestBlogFetch = async () => {
+    try {
+      console.log('Testing direct Supabase fetch for blog...');
+      
+      const { data, error } = await supabase
+        .from('generated_articles')
+        .select('*')
+        .eq('status', 'published')
+        .order('publish_date', { ascending: false });
+
+      console.log('Direct fetch result:', { data, error });
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      toast({
+        title: "Blog Fetch Test",
+        description: `Found ${data?.length || 0} published articles. Check console for details.`,
+      });
+    } catch (error) {
+      console.error('Error testing blog fetch:', error);
+      toast({
+        title: "Error", 
+        description: error instanceof Error ? error.message : 'Failed to test blog fetch',
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
@@ -362,6 +392,12 @@ const BlogGenerationAdmin: React.FC = () => {
           onClick={handleTestArticles}
         >
           🔍 Test Article Fetch
+        </Button>
+        <Button 
+          variant="outline"
+          onClick={handleTestBlogFetch}
+        >
+          🔍 Test Blog Fetch
         </Button>
       </div>
 

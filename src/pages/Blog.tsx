@@ -20,11 +20,15 @@ const Blog = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
+        console.log('Fetching articles from Supabase...');
+        
         const { data, error } = await supabase
           .from('generated_articles')
-          .select('id, title, slug, category, excerpt, content, keywords, meta_description, reading_time, publish_date, author, featured, related_articles, featured_image_url, featured_image_alt')
+          .select('*')
           .eq('status', 'published')
           .order('publish_date', { ascending: false });
+
+        console.log('Supabase response:', { data, error });
 
         if (error) {
           console.error('Error fetching generated articles:', error);
@@ -32,24 +36,30 @@ const Blog = () => {
           return;
         }
 
-        const dbArticles: Article[] = (data || []).map((a: any) => ({
-          id: a.id,
-          title: a.title,
-          slug: a.slug,
-          category: a.category,
-          excerpt: a.excerpt,
-          content: a.content,
-          keywords: a.keywords || [],
-          metaDescription: a.meta_description,
-          readingTime: a.reading_time || 5,
-          publishDate: a.publish_date ? new Date(a.publish_date).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Reciente',
-          author: a.author,
-          featured: a.featured,
-          relatedArticles: a.related_articles || [],
-          featuredImageUrl: a.featured_image_url || undefined,
-          featuredImageAlt: a.featured_image_alt || undefined,
-        }));
+        console.log('Raw data from Supabase:', data);
 
+        const dbArticles: Article[] = (data || []).map((a: any) => {
+          console.log('Processing article:', a.title);
+          return {
+            id: a.id,
+            title: a.title,
+            slug: a.slug,
+            category: a.category,
+            excerpt: a.excerpt,
+            content: a.content,
+            keywords: a.keywords || [],
+            metaDescription: a.meta_description,
+            readingTime: a.reading_time || 5,
+            publishDate: a.publish_date ? new Date(a.publish_date).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Reciente',
+            author: a.author,
+            featured: a.featured,
+            relatedArticles: a.related_articles || [],
+            featuredImageUrl: a.featured_image_url || undefined,
+            featuredImageAlt: a.featured_image_alt || undefined,
+          };
+        });
+
+        console.log('Processed articles:', dbArticles);
         setArticles(dbArticles);
       } catch (error) {
         console.error('Error fetching articles:', error);
@@ -142,76 +152,91 @@ const Blog = () => {
                 <Loader2 className="w-8 h-8 animate-spin mr-2" />
                 <span>Cargando artículos...</span>
               </div>
-            ) : filteredArticles.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-xl text-muted-foreground mb-4">
-                  No se encontraron artículos que coincidan con tu búsqueda.
-                </p>
-                <Button variant="outline" onClick={() => {
-                  setSearchTerm("");
-                  setSelectedCategory("all");
-                }}>
-                  Limpiar Filtros
-                </Button>
-              </div>
             ) : (
               <>
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-bold">
-                    {searchTerm || selectedCategory !== "all" 
-                      ? `Resultados de búsqueda (${filteredArticles.length})`
-                      : `Todos los Artículos (${filteredArticles.length})`
-                    }
-                  </h2>
+                {/* Debug Info */}
+                <div className="mb-4 p-4 bg-yellow-100 rounded-lg">
+                  <p className="text-sm">
+                    <strong>Debug:</strong> Artículos cargados: {articles.length} 
+                    {articles.length > 0 && ` | Títulos: ${articles.map(a => a.title).join(', ')}`}
+                  </p>
                 </div>
+                
+                {filteredArticles.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-xl text-muted-foreground mb-4">
+                      No se encontraron artículos que coincidan con tu búsqueda.
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Total de artículos: {articles.length} | Filtrados: {filteredArticles.length}
+                    </p>
+                    <Button variant="outline" onClick={() => {
+                      setSearchTerm("");
+                      setSelectedCategory("all");
+                    }}>
+                      Limpiar Filtros
+                    </Button>
+                  </div>
+                 ) : (
+                   <>
+                     <div className="flex items-center justify-between mb-8">
+                       <h2 className="text-2xl font-bold">
+                         {searchTerm || selectedCategory !== "all" 
+                           ? `Resultados de búsqueda (${filteredArticles.length})`
+                           : `Todos los Artículos (${filteredArticles.length})`
+                         }
+                       </h2>
+                     </div>
 
-                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-                  {filteredArticles.map((article) => {
-                    return (
-                      <Card key={article.id} className="hover:shadow-primary transition-smooth overflow-hidden">
-                        <div className="aspect-video overflow-hidden">
-                        <img 
-                          src={article.featuredImageUrl || '/src/assets/hero-restaurant-websites.jpg'} 
-                          alt={article.featuredImageAlt || article.title}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        />
-                        </div>
-                        <CardHeader>
-                          <div className="flex items-center justify-between mb-2">
-                            <Badge variant="outline">{categoryLabels[article.category]}</Badge>
-                            <div className="flex items-center text-sm text-muted-foreground">
-                              <Clock className="w-4 h-4 mr-1" />
-                              {article.readingTime} min
-                            </div>
-                          </div>
-                          <CardTitle className="line-clamp-2">
-                            <Link 
-                              to={`/guia/${article.category}/${article.slug}`}
-                              className="hover:text-primary transition-colors"
-                            >
-                              {article.title}
-                            </Link>
-                          </CardTitle>
-                          <CardDescription className="line-clamp-3">
-                            {article.excerpt}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">{article.publishDate}</span>
-                            <Link to={`/guia/${article.category}/${article.slug}`}>
-                              <Button variant="outline" size="sm">
-                                Leer Más
-                              </Button>
-                            </Link>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </>
-            )}
+                     <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+                       {filteredArticles.map((article) => {
+                         return (
+                           <Card key={article.id} className="hover:shadow-primary transition-smooth overflow-hidden">
+                             <div className="aspect-video overflow-hidden">
+                             <img 
+                               src={article.featuredImageUrl || '/src/assets/hero-restaurant-websites.jpg'} 
+                               alt={article.featuredImageAlt || article.title}
+                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                             />
+                             </div>
+                             <CardHeader>
+                               <div className="flex items-center justify-between mb-2">
+                                 <Badge variant="outline">{categoryLabels[article.category]}</Badge>
+                                 <div className="flex items-center text-sm text-muted-foreground">
+                                   <Clock className="w-4 h-4 mr-1" />
+                                   {article.readingTime} min
+                                 </div>
+                               </div>
+                               <CardTitle className="line-clamp-2">
+                                 <Link 
+                                   to={`/guia/${article.category}/${article.slug}`}
+                                   className="hover:text-primary transition-colors"
+                                 >
+                                   {article.title}
+                                 </Link>
+                               </CardTitle>
+                               <CardDescription className="line-clamp-3">
+                                 {article.excerpt}
+                               </CardDescription>
+                             </CardHeader>
+                             <CardContent>
+                               <div className="flex items-center justify-between">
+                                 <span className="text-sm text-muted-foreground">{article.publishDate}</span>
+                                 <Link to={`/guia/${article.category}/${article.slug}`}>
+                                   <Button variant="outline" size="sm">
+                                     Leer Más
+                                   </Button>
+                                 </Link>
+                               </div>
+                             </CardContent>
+                           </Card>
+                         );
+                       })}
+                     </div>
+                   </>
+                 )}
+               </>
+             )}
           </div>
         </div>
       </section>
