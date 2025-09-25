@@ -19,8 +19,11 @@ export type Database = {
           client_id: string
           created_at: string
           delivery_info: Json | null
+          header_background_enabled: boolean | null
+          header_background_style: string | null
           id: string
           other_customizations: Json | null
+          primary_color: string | null
           updated_at: string
           whatsapp_messages: Json | null
         }
@@ -28,8 +31,11 @@ export type Database = {
           client_id: string
           created_at?: string
           delivery_info?: Json | null
+          header_background_enabled?: boolean | null
+          header_background_style?: string | null
           id?: string
           other_customizations?: Json | null
+          primary_color?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
@@ -37,8 +43,11 @@ export type Database = {
           client_id?: string
           created_at?: string
           delivery_info?: Json | null
+          header_background_enabled?: boolean | null
+          header_background_style?: string | null
           id?: string
           other_customizations?: Json | null
+          primary_color?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
@@ -68,6 +77,7 @@ export type Database = {
           restaurant_name: string
           social_media_links: Json | null
           subdomain: string
+          theme: string | null
           updated_at: string
           whatsapp: string | null
         }
@@ -86,6 +96,7 @@ export type Database = {
           restaurant_name: string
           social_media_links?: Json | null
           subdomain: string
+          theme?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -104,6 +115,7 @@ export type Database = {
           restaurant_name?: string
           social_media_links?: Json | null
           subdomain?: string
+          theme?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
