@@ -184,101 +184,120 @@ serve(async (req) => {
 
     console.log('Content generated successfully');
 
-    // Step 2: Generate images with Leonardo AI
-    const imageUrls: Record<string, string> = {};
-    
-    for (const [key, prompt] of Object.entries(generatedContent.imagePrompts)) {
-      try {
-        console.log(`Generating image for ${key}`);
-        
-        const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${leonardoApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: `${prompt}, professional restaurant photography, high quality, vibrant colors, modern restaurant setting, Peruvian context, no text overlay, clean composition`,
-            modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3",
-            width: 1024,
-            height: 576,
-            num_images: 1,
-            guidance_scale: 7,
-            num_inference_steps: 15,
-            presetStyle: "PHOTOGRAPHY"
-          }),
-        });
-
-        const leonardoData = await leonardoResponse.json();
-        
-        if (leonardoData.sdGenerationJob) {
-          const generationId = leonardoData.sdGenerationJob.generationId;
-          
-          // Poll for completion
-          let imageUrl = null;
-          let attempts = 0;
-          const maxAttempts = 6; // ~60s max to avoid function timeout
-          
-          while (!imageUrl && attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
-            attempts++;
-
-            const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
-              headers: {
-                'Authorization': `Bearer ${leonardoApiKey}`,
-              },
-            });
-
-            const statusData = await statusResponse.json();
-            
-            if (statusData.generations_by_pk?.status === 'COMPLETE' && statusData.generations_by_pk.generated_images?.length > 0) {
-              imageUrl = statusData.generations_by_pk.generated_images[0].url;
-              imageUrls[key] = imageUrl;
-              console.log(`Image generated for ${key}:`, imageUrl);
-              break;
-            } else if (statusData.generations_by_pk?.status === 'FAILED') {
-              console.error(`Image generation failed for ${key}`);
-              break;
-            }
-          }
-        }
-      } catch (error) {
-        console.error(`Error generating image for ${key}:`, error);
-      }
-    }
-
-    // Step 3: Update admin_content table with generated content and images
-    const updateData = {
+    // Step 2: Save TEXT content immediately (no images yet)
+    const textUpdate = {
       ...generatedContent.content,
-      homepage_hero_background_url: imageUrls.homepage_hero_background || null,
-      homepage_about_section_image_url: imageUrls.homepage_about_section_image || null,
-      about_page_hero_background_url: imageUrls.about_page_hero_background || null,
-      menu_page_hero_background_url: imageUrls.menu_page_hero_background || null,
-      contact_page_hero_background_url: imageUrls.contact_page_hero_background || null,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
-    const { error: updateError } = await supabase
+    const { error: upsertError } = await supabase
       .from('admin_content')
       .upsert({
         client_id: clientId,
-        ...updateData
-      });
+        ...textUpdate,
+      }, { onConflict: 'client_id' as any });
 
-    if (updateError) {
-      throw new Error(`Failed to update content: ${updateError.message}`);
+    if (upsertError) {
+      throw new Error(`Failed to upsert content: ${upsertError.message}`);
     }
 
-    console.log('Content generation completed successfully');
+    // Step 3: Queue background image generation and DB updates
+    const imageFieldMap: Record<string, string> = {
+      homepage_hero_background: 'homepage_hero_background_url',
+      homepage_about_section_image: 'homepage_about_section_image_url',
+      about_page_hero_background: 'about_page_hero_background_url',
+      menu_page_hero_background: 'menu_page_hero_background_url',
+      contact_page_hero_background: 'contact_page_hero_background_url',
+    };
 
-    return new Response(JSON.stringify({ 
-      success: true, 
-      message: 'Contenido generado y actualizado exitosamente',
+    const backgroundTask = async () => {
+      try {
+        for (const [key, prompt] of Object.entries(generatedContent.imagePrompts || {})) {
+          const targetField = imageFieldMap[key as keyof typeof imageFieldMap];
+          if (!targetField) continue;
+
+          console.log(`[BG] Generating image for ${key}...`);
+          const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${leonardoApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              prompt: `${prompt}, professional restaurant photography, high quality, vibrant colors, modern restaurant setting, Peruvian context, no text overlay, clean composition`,
+              modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3",
+              width: 1024,
+              height: 576,
+              num_images: 1,
+              guidance_scale: 7,
+              num_inference_steps: 15,
+              presetStyle: "PHOTOGRAPHY"
+            }),
+          });
+
+          if (!leonardoResponse.ok) {
+            console.error(`[BG] Leonardo start failed for ${key}:`, await leonardoResponse.text());
+            continue;
+          }
+
+          const leonardoData = await leonardoResponse.json();
+          if (!leonardoData.sdGenerationJob) {
+            console.error(`[BG] No generation job for ${key}`);
+            continue;
+          }
+
+          const generationId = leonardoData.sdGenerationJob.generationId;
+
+          // Poll up to ~50s total
+          let imageUrl: string | null = null;
+          for (let attempts = 0; attempts < 5; attempts++) {
+            await new Promise((r) => setTimeout(r, 10000));
+            const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
+              headers: { 'Authorization': `Bearer ${leonardoApiKey}` },
+            });
+            if (!statusResponse.ok) continue;
+            const statusData = await statusResponse.json();
+            if (statusData.generations_by_pk?.status === 'COMPLETE' && statusData.generations_by_pk.generated_images?.length > 0) {
+              imageUrl = statusData.generations_by_pk.generated_images[0].url;
+              break;
+            }
+            if (statusData.generations_by_pk?.status === 'FAILED') break;
+          }
+
+          if (imageUrl) {
+            console.log(`[BG] Updating ${targetField} with generated image URL`);
+            await supabase
+              .from('admin_content')
+              .update({ [targetField]: imageUrl, updated_at: new Date().toISOString() })
+              .eq('client_id', clientId);
+          } else {
+            console.warn(`[BG] Timed out generating image for ${key}`);
+          }
+        }
+      } catch (bgErr) {
+        console.error('[BG] Background image generation error:', bgErr);
+      }
+    };
+
+    const edgeRt: any = (globalThis as any).EdgeRuntime;
+    if (edgeRt?.waitUntil) {
+      edgeRt.waitUntil(backgroundTask());
+    } else {
+      // Fallback: fire-and-forget
+      backgroundTask();
+    }
+
+    console.log('Returning success (images queued in background)');
+
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Contenido generado. Imágenes en proceso (se actualizarán automáticamente).',
       analysis: generatedContent.analysis,
-      generatedImages: Object.keys(imageUrls).length
+      imagesQueued: true
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
+
 
   } catch (error) {
     console.error('Error generating content:', error);
