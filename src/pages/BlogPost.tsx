@@ -197,7 +197,7 @@ const BlogPost = () => {
       <Navigation />
       
       {/* Breadcrumb Navigation */}
-      <nav className="bg-muted/30 border-b mt-16" role="navigation" aria-label="Breadcrumb">
+      <nav className="bg-muted/30 border-b mt-20" role="navigation" aria-label="Breadcrumb">
         <div className="container mx-auto px-4 py-3">
           <ol className="flex items-center space-x-2 text-sm">
             <li>
@@ -346,13 +346,19 @@ const BlogPost = () => {
           <div className="max-w-4xl mx-auto">
             <Card className="p-8">
               <div className="flex flex-col md:flex-row items-start gap-6">
-                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <User className="w-8 h-8 text-primary" />
+                <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                  <img 
+                    src="/src/assets/kevin-van-geffen-bio.webp" 
+                    alt="Kevin van Geffen" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold mb-2">Acerca del Autor</h3>
+                  <h4 className="text-lg font-medium text-primary mb-2">Kevin van Geffen</h4>
+                  <p className="text-sm text-muted-foreground mb-3">Fundador & CEO de Mi Restaurante Online</p>
                   <p className="text-muted-foreground mb-4">
-                    <strong>{article.author}</strong> es especialista en desarrollo web para restaurantes con más de 8 años de experiencia 
+                    Kevin es especialista en desarrollo web para restaurantes con más de 8 años de experiencia 
                     ayudando a restaurantes en Lima, Arequipa y Cusco a crear su presencia digital exitosa.
                   </p>
                   <p className="text-sm text-muted-foreground">
