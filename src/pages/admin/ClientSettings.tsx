@@ -46,6 +46,15 @@ interface Client {
   brand_colors?: any;
   delivery?: any;
   other_customizations?: any;
+  theme?: string;
+}
+
+interface ClientSettings {
+  id: string;
+  client_id: string;
+  primary_color: string;
+  header_background_enabled: boolean;
+  header_background_style: string;
 }
 
 interface MenuCategory {
@@ -173,6 +182,7 @@ export default function ClientSettings() {
   const { clientId } = useParams<{ clientId: string }>();
   const navigate = useNavigate();
   const [client, setClient] = useState<Client | null>(null);
+  const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -254,6 +264,7 @@ export default function ClientSettings() {
     address: '',
     whatsapp: '',
     coordinates: { lat: '', lng: '' },
+    theme: 'dark',
     opening_hours: {
       monday: { open: '09:00', close: '22:00', closed: false },
       tuesday: { open: '09:00', close: '22:00', closed: false },
@@ -282,12 +293,16 @@ export default function ClientSettings() {
     },
     other_customizations: {
       currency: 'S/'
-    }
+    },
+    primary_color: '#FFD700',
+    header_background_enabled: false,
+    header_background_style: 'dark'
   });
 
   useEffect(() => {
     if (clientId) {
       fetchClient();
+      fetchClientSettings();
       fetchCategories();
       fetchMenuItems();
     }
@@ -322,7 +337,8 @@ export default function ClientSettings() {
       
       console.log('Normalized opening hours:', normalizedOpeningHours); // Debug log
       
-      setFormData({
+      setFormData(prev => ({
+        ...prev,
         restaurant_name: data.restaurant_name || '',
         subdomain: data.subdomain || '',
         email: data.email || '',
@@ -330,6 +346,7 @@ export default function ClientSettings() {
         address: data.address || '',
         whatsapp: data.whatsapp || '',
         coordinates: (data.coordinates as any) || { lat: '', lng: '' },
+        theme: (data as any).theme || 'dark',
         opening_hours: normalizedOpeningHours,
         social_media_links: {
           facebook: '',
@@ -355,7 +372,7 @@ export default function ClientSettings() {
           currency: 'S/',
           ...(data.other_customizations as any || {})
         }
-      });
+      }));
     } catch (error: any) {
       toast({
         title: "Error",
@@ -364,6 +381,49 @@ export default function ClientSettings() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchClientSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('client_settings')
+        .select('*')
+        .eq('client_id', clientId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      
+      if (data) {
+        setClientSettings(data as any);
+        setFormData(prev => ({
+          ...prev,
+          primary_color: (data as any).primary_color || '#FFD700',
+          header_background_enabled: (data as any).header_background_enabled || false,
+          header_background_style: (data as any).header_background_style || 'dark'
+        }));
+      } else {
+        // Create default client_settings if none exist
+        const { data: newSettings, error: createError } = await supabase
+          .from('client_settings')
+          .insert({
+            client_id: clientId,
+            primary_color: '#FFD700',
+            header_background_enabled: false,
+            header_background_style: 'dark'
+          })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        setClientSettings(newSettings as any);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to load client settings: " + error.message,
+        variant: "destructive"
+      });
     }
   };
 
@@ -423,6 +483,7 @@ export default function ClientSettings() {
 
       console.log('Ordered opening hours to save:', orderedOpeningHours); // Debug log
 
+      // Update clients table
       const { data, error } = await supabase
         .from('clients')
         .update({
@@ -433,6 +494,7 @@ export default function ClientSettings() {
           address: formData.address,
           whatsapp: formData.whatsapp,
           coordinates: formData.coordinates,
+          theme: formData.theme,
           opening_hours: orderedOpeningHours,
           social_media_links: formData.social_media_links,
           delivery: formData.delivery,
@@ -446,6 +508,19 @@ export default function ClientSettings() {
 
       if (error) throw error;
       if (!data) throw new Error('Update blocked by RLS (no rows updated)');
+
+      // Update client_settings table
+      const { error: settingsError } = await supabase
+        .from('client_settings')
+        .upsert({
+          client_id: clientId,
+          primary_color: formData.primary_color,
+          header_background_enabled: formData.header_background_enabled,
+          header_background_style: formData.header_background_style,
+          updated_at: new Date().toISOString()
+        });
+
+      if (settingsError) throw settingsError;
 
       console.log('Saved data response:', data); // Debug log
       
@@ -1068,51 +1143,99 @@ export default function ClientSettings() {
             <CardHeader>
               <CardTitle>Branding & Customization</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="primary_color">Primary Color</Label>
                   <Input
                     id="primary_color"
                     type="color"
-                    value={formData.brand_colors.primary}
+                    value={formData.primary_color}
                     onChange={(e) => setFormData({
                       ...formData, 
-                      brand_colors: {
-                        ...formData.brand_colors,
-                        primary: e.target.value
-                      }
+                      primary_color: e.target.value
                     })}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="accent_color">Accent Color</Label>
-                  <Input
-                    id="accent_color"
-                    type="color"
-                    value={formData.brand_colors.accent}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      brand_colors: {
-                        ...formData.brand_colors,
-                        accent: e.target.value
-                      }
-                    })}
-                  />
+                  <Label htmlFor="theme">Theme</Label>
+                  <Select value={formData.theme} onValueChange={(value) => setFormData({...formData, theme: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="bright">Bright</SelectItem>
+                      <SelectItem value="dark">Dark</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div>
-                  <Label htmlFor="currency">Currency</Label>
-                  <Input
-                    id="currency"
-                    value={formData.other_customizations.currency}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      other_customizations: {
-                        ...formData.other_customizations,
-                        currency: e.target.value
-                      }
+              </div>
+
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="text-lg font-medium">Header Settings</h4>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="header_background_enabled"
+                    checked={formData.header_background_enabled}
+                    onCheckedChange={(checked) => setFormData({
+                      ...formData,
+                      header_background_enabled: checked
                     })}
                   />
+                  <Label htmlFor="header_background_enabled">Enable Header Background</Label>
+                </div>
+                
+                {formData.header_background_enabled && (
+                  <div>
+                    <Label htmlFor="header_background_style">Header Background Style</Label>
+                    <Select 
+                      value={formData.header_background_style} 
+                      onValueChange={(value) => setFormData({...formData, header_background_style: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="bright">Bright</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="text-lg font-medium">Additional Colors</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="accent_color">Accent Color</Label>
+                    <Input
+                      id="accent_color"
+                      type="color"
+                      value={formData.brand_colors.accent}
+                      onChange={(e) => setFormData({
+                        ...formData, 
+                        brand_colors: {
+                          ...formData.brand_colors,
+                          accent: e.target.value
+                        }
+                      })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="currency">Currency</Label>
+                    <Input
+                      id="currency"
+                      value={formData.other_customizations.currency}
+                      onChange={(e) => setFormData({
+                        ...formData, 
+                        other_customizations: {
+                          ...formData.other_customizations,
+                          currency: e.target.value
+                        }
+                      })}
+                    />
+                  </div>
                 </div>
               </div>
             </CardContent>
