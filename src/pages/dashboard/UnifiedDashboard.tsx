@@ -52,6 +52,8 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import TeamMembers from './TeamMembers';
+import Reviews from './Reviews';
 
 interface DashboardContext {
   selectedClientId: string;
@@ -1036,11 +1038,13 @@ export default function UnifiedDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Resumen</TabsTrigger>
           <TabsTrigger value="settings">Configuración</TabsTrigger>
           <TabsTrigger value="categories">Categorías</TabsTrigger>
           <TabsTrigger value="menu">Menú</TabsTrigger>
+          <TabsTrigger value="team">Equipo</TabsTrigger>
+          <TabsTrigger value="reviews">Reseñas</TabsTrigger>
           <TabsTrigger value="social">Redes Sociales</TabsTrigger>
         </TabsList>
 
@@ -1665,6 +1669,14 @@ export default function UnifiedDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="team">
+          <TeamMembers />
+        </TabsContent>
+
+        <TabsContent value="reviews">
+          <Reviews />
         </TabsContent>
       </Tabs>
 

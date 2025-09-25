@@ -16,20 +16,36 @@ export type Database = {
     Tables: {
       admin_content: {
         Row: {
+          about_chef_info: string | null
+          about_mission: string | null
+          about_page_about_section_image_url: string | null
           about_page_content: Json | null
           about_page_hero_background_url: string | null
           about_page_hero_description: string | null
           about_page_hero_title: string | null
+          about_page_hero_title_first_line: string | null
+          about_page_hero_title_second_line: string | null
+          about_story: string | null
+          about_team_section_description: string | null
+          about_team_section_title_first_line: string | null
+          about_team_section_title_second_line: string | null
           client_id: string
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
           contact_page_hero_title: string | null
+          contact_page_hero_title_first_line: string | null
+          contact_page_hero_title_second_line: string | null
           created_at: string
           homepage_about_section_description: string | null
+          homepage_about_section_image_url: string | null
           homepage_about_section_title: string | null
+          homepage_about_section_title_first_line: string | null
+          homepage_about_section_title_second_line: string | null
           homepage_contact_hide_reservation_box: boolean | null
           homepage_contact_section_description: string | null
           homepage_contact_section_title: string | null
+          homepage_contact_section_title_first_line: string | null
+          homepage_contact_section_title_second_line: string | null
           homepage_delivery_section_description: string | null
           homepage_delivery_section_title: string | null
           homepage_hero_background_url: string | null
@@ -37,34 +53,98 @@ export type Database = {
           homepage_hero_right_button_link: string | null
           homepage_hero_right_button_text: string | null
           homepage_hero_title: string | null
+          homepage_hero_title_first_line: string | null
+          homepage_hero_title_second_line: string | null
           homepage_menu_section_description: string | null
           homepage_menu_section_title: string | null
+          homepage_menu_section_title_first_line: string | null
+          homepage_menu_section_title_second_line: string | null
           homepage_services_section_description: string | null
           homepage_services_section_title: string | null
+          homepage_services_section_title_first_line: string | null
+          homepage_services_section_title_second_line: string | null
           id: string
           menu_page_hero_background_url: string | null
           menu_page_hero_description: string | null
           menu_page_hero_title: string | null
+          menu_page_hero_title_first_line: string | null
+          menu_page_hero_title_second_line: string | null
           reviews_page_hero_background_url: string | null
           reviews_page_hero_description: string | null
           reviews_page_hero_title: string | null
+          reviews_page_hero_title_first_line: string | null
+          reviews_page_hero_title_second_line: string | null
+          reviews_section_title_first_line: string | null
+          reviews_section_title_second_line: string | null
+          services_card1_button_link: string | null
+          services_card1_button_text: string | null
+          services_card1_description: string | null
+          services_card1_icon: string | null
+          services_card1_title: string | null
+          services_card2_button_link: string | null
+          services_card2_button_text: string | null
+          services_card2_description: string | null
+          services_card2_icon: string | null
+          services_card2_title: string | null
+          services_card3_button_link: string | null
+          services_card3_button_text: string | null
+          services_card3_description: string | null
+          services_card3_icon: string | null
+          services_card3_title: string | null
+          services_feature1_icon: string | null
+          services_feature1_text: string | null
+          services_feature2_icon: string | null
+          services_feature2_text: string | null
+          services_feature3_icon: string | null
+          services_feature3_text: string | null
+          stats_awards_label: string | null
+          stats_awards_number: string | null
+          stats_clients_label: string | null
+          stats_clients_number: string | null
+          stats_experience_label: string | null
+          stats_experience_number: string | null
+          stats_item1_icon: string | null
+          stats_item1_label: string | null
+          stats_item1_number: string | null
+          stats_item2_icon: string | null
+          stats_item2_label: string | null
+          stats_item2_number: string | null
+          stats_item3_icon: string | null
+          stats_item3_label: string | null
+          stats_item3_number: string | null
           updated_at: string
         }
         Insert: {
+          about_chef_info?: string | null
+          about_mission?: string | null
+          about_page_about_section_image_url?: string | null
           about_page_content?: Json | null
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
           about_page_hero_title?: string | null
+          about_page_hero_title_first_line?: string | null
+          about_page_hero_title_second_line?: string | null
+          about_story?: string | null
+          about_team_section_description?: string | null
+          about_team_section_title_first_line?: string | null
+          about_team_section_title_second_line?: string | null
           client_id: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
+          contact_page_hero_title_first_line?: string | null
+          contact_page_hero_title_second_line?: string | null
           created_at?: string
           homepage_about_section_description?: string | null
+          homepage_about_section_image_url?: string | null
           homepage_about_section_title?: string | null
+          homepage_about_section_title_first_line?: string | null
+          homepage_about_section_title_second_line?: string | null
           homepage_contact_hide_reservation_box?: boolean | null
           homepage_contact_section_description?: string | null
           homepage_contact_section_title?: string | null
+          homepage_contact_section_title_first_line?: string | null
+          homepage_contact_section_title_second_line?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
           homepage_hero_background_url?: string | null
@@ -72,34 +152,98 @@ export type Database = {
           homepage_hero_right_button_link?: string | null
           homepage_hero_right_button_text?: string | null
           homepage_hero_title?: string | null
+          homepage_hero_title_first_line?: string | null
+          homepage_hero_title_second_line?: string | null
           homepage_menu_section_description?: string | null
           homepage_menu_section_title?: string | null
+          homepage_menu_section_title_first_line?: string | null
+          homepage_menu_section_title_second_line?: string | null
           homepage_services_section_description?: string | null
           homepage_services_section_title?: string | null
+          homepage_services_section_title_first_line?: string | null
+          homepage_services_section_title_second_line?: string | null
           id?: string
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
+          menu_page_hero_title_first_line?: string | null
+          menu_page_hero_title_second_line?: string | null
           reviews_page_hero_background_url?: string | null
           reviews_page_hero_description?: string | null
           reviews_page_hero_title?: string | null
+          reviews_page_hero_title_first_line?: string | null
+          reviews_page_hero_title_second_line?: string | null
+          reviews_section_title_first_line?: string | null
+          reviews_section_title_second_line?: string | null
+          services_card1_button_link?: string | null
+          services_card1_button_text?: string | null
+          services_card1_description?: string | null
+          services_card1_icon?: string | null
+          services_card1_title?: string | null
+          services_card2_button_link?: string | null
+          services_card2_button_text?: string | null
+          services_card2_description?: string | null
+          services_card2_icon?: string | null
+          services_card2_title?: string | null
+          services_card3_button_link?: string | null
+          services_card3_button_text?: string | null
+          services_card3_description?: string | null
+          services_card3_icon?: string | null
+          services_card3_title?: string | null
+          services_feature1_icon?: string | null
+          services_feature1_text?: string | null
+          services_feature2_icon?: string | null
+          services_feature2_text?: string | null
+          services_feature3_icon?: string | null
+          services_feature3_text?: string | null
+          stats_awards_label?: string | null
+          stats_awards_number?: string | null
+          stats_clients_label?: string | null
+          stats_clients_number?: string | null
+          stats_experience_label?: string | null
+          stats_experience_number?: string | null
+          stats_item1_icon?: string | null
+          stats_item1_label?: string | null
+          stats_item1_number?: string | null
+          stats_item2_icon?: string | null
+          stats_item2_label?: string | null
+          stats_item2_number?: string | null
+          stats_item3_icon?: string | null
+          stats_item3_label?: string | null
+          stats_item3_number?: string | null
           updated_at?: string
         }
         Update: {
+          about_chef_info?: string | null
+          about_mission?: string | null
+          about_page_about_section_image_url?: string | null
           about_page_content?: Json | null
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
           about_page_hero_title?: string | null
+          about_page_hero_title_first_line?: string | null
+          about_page_hero_title_second_line?: string | null
+          about_story?: string | null
+          about_team_section_description?: string | null
+          about_team_section_title_first_line?: string | null
+          about_team_section_title_second_line?: string | null
           client_id?: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
+          contact_page_hero_title_first_line?: string | null
+          contact_page_hero_title_second_line?: string | null
           created_at?: string
           homepage_about_section_description?: string | null
+          homepage_about_section_image_url?: string | null
           homepage_about_section_title?: string | null
+          homepage_about_section_title_first_line?: string | null
+          homepage_about_section_title_second_line?: string | null
           homepage_contact_hide_reservation_box?: boolean | null
           homepage_contact_section_description?: string | null
           homepage_contact_section_title?: string | null
+          homepage_contact_section_title_first_line?: string | null
+          homepage_contact_section_title_second_line?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
           homepage_hero_background_url?: string | null
@@ -107,17 +251,65 @@ export type Database = {
           homepage_hero_right_button_link?: string | null
           homepage_hero_right_button_text?: string | null
           homepage_hero_title?: string | null
+          homepage_hero_title_first_line?: string | null
+          homepage_hero_title_second_line?: string | null
           homepage_menu_section_description?: string | null
           homepage_menu_section_title?: string | null
+          homepage_menu_section_title_first_line?: string | null
+          homepage_menu_section_title_second_line?: string | null
           homepage_services_section_description?: string | null
           homepage_services_section_title?: string | null
+          homepage_services_section_title_first_line?: string | null
+          homepage_services_section_title_second_line?: string | null
           id?: string
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
+          menu_page_hero_title_first_line?: string | null
+          menu_page_hero_title_second_line?: string | null
           reviews_page_hero_background_url?: string | null
           reviews_page_hero_description?: string | null
           reviews_page_hero_title?: string | null
+          reviews_page_hero_title_first_line?: string | null
+          reviews_page_hero_title_second_line?: string | null
+          reviews_section_title_first_line?: string | null
+          reviews_section_title_second_line?: string | null
+          services_card1_button_link?: string | null
+          services_card1_button_text?: string | null
+          services_card1_description?: string | null
+          services_card1_icon?: string | null
+          services_card1_title?: string | null
+          services_card2_button_link?: string | null
+          services_card2_button_text?: string | null
+          services_card2_description?: string | null
+          services_card2_icon?: string | null
+          services_card2_title?: string | null
+          services_card3_button_link?: string | null
+          services_card3_button_text?: string | null
+          services_card3_description?: string | null
+          services_card3_icon?: string | null
+          services_card3_title?: string | null
+          services_feature1_icon?: string | null
+          services_feature1_text?: string | null
+          services_feature2_icon?: string | null
+          services_feature2_text?: string | null
+          services_feature3_icon?: string | null
+          services_feature3_text?: string | null
+          stats_awards_label?: string | null
+          stats_awards_number?: string | null
+          stats_clients_label?: string | null
+          stats_clients_number?: string | null
+          stats_experience_label?: string | null
+          stats_experience_number?: string | null
+          stats_item1_icon?: string | null
+          stats_item1_label?: string | null
+          stats_item1_number?: string | null
+          stats_item2_icon?: string | null
+          stats_item2_label?: string | null
+          stats_item2_number?: string | null
+          stats_item3_icon?: string | null
+          stats_item3_label?: string | null
+          stats_item3_number?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -490,6 +682,42 @@ export type Database = {
           },
         ]
       }
+      reviews: {
+        Row: {
+          client_id: string
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          review_text: string
+          reviewer_name: string
+          star_rating: number
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          review_text: string
+          reviewer_name: string
+          star_rating: number
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          review_text?: string
+          reviewer_name?: string
+          star_rating?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       target_keywords: {
         Row: {
           category: string
@@ -536,6 +764,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      team_members: {
+        Row: {
+          bio: string | null
+          client_id: string
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          client_id: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          client_id?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_clients: {
         Row: {
