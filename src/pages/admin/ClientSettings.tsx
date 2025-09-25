@@ -520,6 +520,8 @@ export default function ClientSettings() {
           header_background_enabled: formData.header_background_enabled,
           header_background_style: formData.header_background_style,
           updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'client_id'
         });
 
       if (settingsError) throw settingsError;
