@@ -161,8 +161,50 @@ const BlogPost = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-5 gap-12">
-              {/* Main Content */}
-              <div className="lg:col-span-3">
+              {/* Sidebar - appears first on mobile, second on desktop */}
+              <div className="lg:col-span-2 lg:order-2">
+                <div className="sticky top-24 space-y-8">
+                  {/* Table of Contents - visible on mobile */}
+                  <Card className="lg:hidden">
+                    <CardHeader>
+                      <CardTitle className="text-lg">En este artículo</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm">
+                      <TableOfContents content={article.content} />
+                    </CardContent>
+                  </Card>
+
+                  {/* CTA Card */}
+                  <Card className="border-primary/20 bg-primary/5">
+                    <CardHeader>
+                      <CardTitle className="text-lg">¿Necesitas ayuda?</CardTitle>
+                      <CardDescription>
+                        Creamos tu página web para restaurante de forma profesional
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Link to="/">
+                        <Button className="w-full" size="sm">
+                          Ver Nuestros Planes
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+
+                  {/* Table of Contents - visible on desktop */}
+                  <Card className="hidden lg:block">
+                    <CardHeader>
+                      <CardTitle className="text-lg">En este artículo</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm">
+                      <TableOfContents content={article.content} />
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Main Content - appears second on mobile, first on desktop */}
+              <div className="lg:col-span-3 lg:order-1">
                 <article 
                   className="blog-content"
                   dangerouslySetInnerHTML={{ __html: article.content }}
@@ -229,38 +271,6 @@ const BlogPost = () => {
                       </Link>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Sidebar */}
-              <div className="lg:col-span-2">
-                <div className="sticky top-24 space-y-8">
-                  {/* CTA Card */}
-                  <Card className="border-primary/20 bg-primary/5">
-                    <CardHeader>
-                      <CardTitle className="text-lg">¿Necesitas ayuda?</CardTitle>
-                      <CardDescription>
-                        Creamos tu página web para restaurante de forma profesional
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Link to="/">
-                        <Button className="w-full" size="sm">
-                          Ver Nuestros Planes
-                        </Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
-
-                  {/* Table of Contents */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">En este artículo</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-sm">
-                      <TableOfContents content={article.content} />
-                    </CardContent>
-                  </Card>
                 </div>
               </div>
             </div>

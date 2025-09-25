@@ -69,9 +69,9 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
       <p className="text-muted-foreground mb-3">
         Navega rápidamente por las secciones principales:
       </p>
-      <ul className="space-y-2">
+      <ol className="space-y-2 list-decimal list-inside">
         {tocItems.map((item) => (
-          <li key={item.id} className={item.level === 3 ? 'ml-4' : ''}>
+          <li key={item.id} className={item.level === 3 ? 'ml-4 list-none' : ''}>
             <button
               onClick={() => handleClick(item.id)}
               className="text-left text-sm text-muted-foreground hover:text-primary transition-colors line-clamp-2"
@@ -80,7 +80,7 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
             </button>
           </li>
         ))}
-      </ul>
+      </ol>
     </nav>
   );
 };
