@@ -142,7 +142,7 @@
 
 .blog-content .cta-box a.inline-block:hover {
   background-color: hsl(var(--primary) / 0.9);
-  text-decoration: none;
+  text-decoration: none !important;
   transform: translateY(-1px);
 }
 
