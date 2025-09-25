@@ -131,19 +131,20 @@
 
 .blog-content .cta-box a.inline-block {
   background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+  color: white !important;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   text-decoration: none;
   display: inline-block;
   margin-right: 1rem;
   margin-bottom: 0.5rem;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .blog-content .cta-box a.inline-block:hover {
   background-color: hsl(var(--primary) / 0.9);
   text-decoration: none;
+  transform: translateY(-1px);
 }
 
 .blog-content .cta-box a.border {
