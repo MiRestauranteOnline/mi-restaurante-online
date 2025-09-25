@@ -130,7 +130,7 @@ export default function DashboardLayout() {
     },
   ];
 
-  if (!user || clients.length === 0) {
+  if (!user || (!isAdmin && clients.length === 0)) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -183,6 +183,13 @@ export default function DashboardLayout() {
           </div>
         )}
 
+        {/* Admin Notice */}
+        {sidebarOpen && isAdmin && clients.length === 0 && (
+          <div className="p-4 border-b border-border">
+            <p className="text-sm text-muted-foreground">Admin Dashboard</p>
+          </div>
+        )}
+
         {/* Sidebar Navigation */}
         <nav className="flex-1 p-4 space-y-2">
           {sidebarItems.map((item) => (
@@ -212,7 +219,7 @@ export default function DashboardLayout() {
         <header className="bg-card border-b border-border p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              {selectedClient && (
+              {selectedClient ? (
                 <div>
                   <h1 className="text-xl font-semibold text-foreground">
                     {selectedClient.restaurant_name}
@@ -221,7 +228,16 @@ export default function DashboardLayout() {
                     {selectedClient.subdomain}.mirestaurante.com
                   </p>
                 </div>
-              )}
+              ) : isAdmin ? (
+                <div>
+                  <h1 className="text-xl font-semibold text-foreground">
+                    Admin Panel
+                  </h1>
+                  <p className="text-sm text-muted-foreground">
+                    Sistema de administración
+                  </p>
+                </div>
+              ) : null}
             </div>
 
             <div className="flex items-center gap-4">
