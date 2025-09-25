@@ -20,15 +20,11 @@ const Blog = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        console.log('Fetching articles from Supabase...');
-        
         const { data, error } = await supabase
           .from('generated_articles')
           .select('*')
           .eq('status', 'published')
           .order('publish_date', { ascending: false });
-
-        console.log('Supabase response:', { data, error });
 
         if (error) {
           console.error('Error fetching generated articles:', error);
@@ -36,10 +32,7 @@ const Blog = () => {
           return;
         }
 
-        console.log('Raw data from Supabase:', data);
-
         const dbArticles: Article[] = (data || []).map((a: any) => {
-          console.log('Processing article:', a.title);
           return {
             id: a.id,
             title: a.title,
@@ -59,7 +52,6 @@ const Blog = () => {
           };
         });
 
-        console.log('Processed articles:', dbArticles);
         setArticles(dbArticles);
       } catch (error) {
         console.error('Error fetching articles:', error);
@@ -153,22 +145,11 @@ const Blog = () => {
                 <span>Cargando artículos...</span>
               </div>
             ) : (
-              <>
-                {/* Debug Info */}
-                <div className="mb-4 p-4 bg-yellow-100 rounded-lg">
-                  <p className="text-sm">
-                    <strong>Debug:</strong> Artículos cargados: {articles.length} 
-                    {articles.length > 0 && ` | Títulos: ${articles.map(a => a.title).join(', ')}`}
-                  </p>
-                </div>
-                
+                <>
                 {filteredArticles.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-xl text-muted-foreground mb-4">
                       No se encontraron artículos que coincidan con tu búsqueda.
-                    </p>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Total de artículos: {articles.length} | Filtrados: {filteredArticles.length}
                     </p>
                     <Button variant="outline" onClick={() => {
                       setSearchTerm("");
