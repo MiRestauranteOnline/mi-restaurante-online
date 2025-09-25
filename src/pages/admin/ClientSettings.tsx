@@ -720,6 +720,7 @@ export default function ClientSettings() {
       <Tabs defaultValue="basic" className="w-full">
         <TabsList>
           <TabsTrigger value="basic">Basic Info</TabsTrigger>
+          <TabsTrigger value="hours">Opening Hours</TabsTrigger>
           <TabsTrigger value="social">Social Media</TabsTrigger>
           <TabsTrigger value="delivery">Delivery</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
@@ -785,6 +786,72 @@ export default function ClientSettings() {
                   rows={3}
                 />
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="hours">
+          <Card>
+            <CardHeader>
+              <CardTitle>Opening Hours</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {Object.entries(formData.opening_hours).map(([day, hours]: [string, any]) => (
+                <div key={day} className="flex items-center gap-4 p-4 border rounded-lg">
+                  <div className="w-24">
+                    <Label className="text-sm font-medium capitalize">{day}</Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={!hours.closed}
+                      onCheckedChange={(checked) => setFormData({
+                        ...formData,
+                        opening_hours: {
+                          ...formData.opening_hours,
+                          [day]: { ...hours, closed: !checked }
+                        }
+                      })}
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      {hours.closed ? 'Closed' : 'Open'}
+                    </span>
+                  </div>
+                  {!hours.closed && (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm">Opens:</Label>
+                        <Input
+                          type="time"
+                          value={hours.open}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            opening_hours: {
+                              ...formData.opening_hours,
+                              [day]: { ...hours, open: e.target.value }
+                            }
+                          })}
+                          className="w-32"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm">Closes:</Label>
+                        <Input
+                          type="time"
+                          value={hours.close}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            opening_hours: {
+                              ...formData.opening_hours,
+                              [day]: { ...hours, close: e.target.value }
+                            }
+                          })}
+                          className="w-32"
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
             </CardContent>
           </Card>
         </TabsContent>
