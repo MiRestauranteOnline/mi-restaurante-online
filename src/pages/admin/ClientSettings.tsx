@@ -270,7 +270,25 @@ export default function ClientSettings() {
 
       if (error) throw error;
       
+      console.log('Fetched client data:', data); // Debug log
+      
       setClient(data);
+      
+      // Ensure opening_hours has all required days with proper defaults
+      const defaultHours = { open: '09:00', close: '22:00', closed: false };
+      const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+      const normalizedOpeningHours: any = {};
+      
+      dayOrder.forEach(day => {
+        if (data.opening_hours && typeof data.opening_hours === 'object' && data.opening_hours[day]) {
+          normalizedOpeningHours[day] = data.opening_hours[day];
+        } else {
+          normalizedOpeningHours[day] = { ...defaultHours };
+        }
+      });
+      
+      console.log('Normalized opening hours:', normalizedOpeningHours); // Debug log
+      
       setFormData({
         restaurant_name: data.restaurant_name || '',
         subdomain: data.subdomain || '',
@@ -279,15 +297,7 @@ export default function ClientSettings() {
         address: data.address || '',
         whatsapp: data.whatsapp || '',
         coordinates: (data.coordinates as any) || { lat: '', lng: '' },
-        opening_hours: (data.opening_hours as any) || {
-          monday: { open: '09:00', close: '22:00', closed: false },
-          tuesday: { open: '09:00', close: '22:00', closed: false },
-          wednesday: { open: '09:00', close: '22:00', closed: false },
-          thursday: { open: '09:00', close: '22:00', closed: false },
-          friday: { open: '09:00', close: '22:00', closed: false },
-          saturday: { open: '09:00', close: '22:00', closed: false },
-          sunday: { open: '09:00', close: '22:00', closed: false }
-        },
+        opening_hours: normalizedOpeningHours,
         social_media_links: {
           facebook: '',
           instagram: '',
@@ -367,6 +377,8 @@ export default function ClientSettings() {
     
     setSaving(true);
     try {
+      console.log('Saving opening hours:', formData.opening_hours); // Debug log
+      
       // Reorganize opening_hours in correct order (Monday to Sunday)
       const orderedOpeningHours = {};
       const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -375,6 +387,8 @@ export default function ClientSettings() {
           orderedOpeningHours[day] = formData.opening_hours[day];
         }
       });
+
+      console.log('Ordered opening hours to save:', orderedOpeningHours); // Debug log
 
       const { data, error } = await supabase
         .from('clients')
@@ -400,11 +414,39 @@ export default function ClientSettings() {
       if (error) throw error;
       if (!data) throw new Error('Update blocked by RLS (no rows updated)');
 
+      console.log('Saved data response:', data); // Debug log
+      
+      // Update local state with the response data to ensure UI reflects database state
+      setClient(data);
+      
+      // Properly update opening_hours from response with normalization
+      if (data.opening_hours && typeof data.opening_hours === 'object' && !Array.isArray(data.opening_hours)) {
+        const defaultHours = { open: '09:00', close: '22:00', closed: false };
+        const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        const normalizedOpeningHours: any = {};
+        
+        dayOrder.forEach(day => {
+          if (data.opening_hours[day]) {
+            normalizedOpeningHours[day] = data.opening_hours[day];
+          } else {
+            normalizedOpeningHours[day] = { ...defaultHours };
+          }
+        });
+        
+        console.log('Updated form with normalized opening hours:', normalizedOpeningHours); // Debug log
+        
+        setFormData(prevData => ({
+          ...prevData,
+          opening_hours: normalizedOpeningHours
+        }));
+      }
+
       toast({
         title: "Success",
         description: "Client settings updated successfully",
       });
     } catch (error: any) {
+      console.error('Save error:', error); // Debug log
       toast({
         title: "Error",
         description: "Failed to update client: " + error.message,
