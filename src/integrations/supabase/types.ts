@@ -62,6 +62,7 @@ export type Database = {
           email: string | null
           id: string
           opening_hours: Json | null
+          opening_hours_ordered: Json | null
           other_customizations: Json | null
           phone: string | null
           restaurant_name: string
@@ -79,6 +80,7 @@ export type Database = {
           email?: string | null
           id?: string
           opening_hours?: Json | null
+          opening_hours_ordered?: Json | null
           other_customizations?: Json | null
           phone?: string | null
           restaurant_name: string
@@ -96,6 +98,7 @@ export type Database = {
           email?: string | null
           id?: string
           opening_hours?: Json | null
+          opening_hours_ordered?: Json | null
           other_customizations?: Json | null
           phone?: string | null
           restaurant_name?: string
@@ -458,6 +461,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_opening_hours_ordered: {
+        Args: { opening_hours_obj: Json }
+        Returns: Json
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
