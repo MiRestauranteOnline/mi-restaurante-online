@@ -61,35 +61,58 @@ interface ClientSettings {
 interface AdminContent {
   id: string;
   client_id: string;
-  homepage_hero_title?: string;
+  // Two-part titles
+  homepage_hero_title_first_line?: string;
+  homepage_hero_title_second_line?: string;
+  homepage_menu_section_title_first_line?: string;
+  homepage_menu_section_title_second_line?: string;
+  homepage_contact_section_title_first_line?: string;
+  homepage_contact_section_title_second_line?: string;
+  homepage_services_section_title_first_line?: string;
+  homepage_services_section_title_second_line?: string;
+  homepage_about_section_title_first_line?: string;
+  homepage_about_section_title_second_line?: string;
+  reviews_section_title_first_line?: string;
+  reviews_section_title_second_line?: string;
+  about_page_hero_title_first_line?: string;
+  about_page_hero_title_second_line?: string;
+  contact_page_hero_title_first_line?: string;
+  contact_page_hero_title_second_line?: string;
+  menu_page_hero_title_first_line?: string;
+  menu_page_hero_title_second_line?: string;
+  reviews_page_hero_title_first_line?: string;
+  reviews_page_hero_title_second_line?: string;
+  // Other content fields
   homepage_hero_description?: string;
   homepage_hero_background_url?: string;
   homepage_hero_right_button_text?: string;
   homepage_hero_right_button_link?: string;
-  homepage_about_section_title?: string;
   homepage_about_section_description?: string;
-  homepage_services_section_title?: string;
   homepage_services_section_description?: string;
-  homepage_menu_section_title?: string;
   homepage_menu_section_description?: string;
-  homepage_contact_section_title?: string;
   homepage_contact_section_description?: string;
   homepage_delivery_section_title?: string;
   homepage_delivery_section_description?: string;
   homepage_contact_hide_reservation_box?: boolean;
-  menu_page_hero_title?: string;
   menu_page_hero_description?: string;
   menu_page_hero_background_url?: string;
-  contact_page_hero_title?: string;
   contact_page_hero_description?: string;
   contact_page_hero_background_url?: string;
-  about_page_hero_title?: string;
   about_page_hero_description?: string;
   about_page_hero_background_url?: string;
-  about_page_content?: any;
-  reviews_page_hero_title?: string;
   reviews_page_hero_description?: string;
   reviews_page_hero_background_url?: string;
+  // About content fields (replacing JSONB)
+  about_story?: string;
+  about_chef_info?: string;
+  about_mission?: string;
+  // Stats fields
+  stats_experience_number?: string;
+  stats_experience_label?: string;
+  stats_clients_number?: string;
+  stats_clients_label?: string;
+  stats_awards_number?: string;
+  stats_awards_label?: string;
 }
 
 interface MenuCategory {
@@ -334,41 +357,58 @@ export default function ClientSettings() {
     primary_color: '#FFD700',
     header_background_enabled: false,
     header_background_style: 'dark',
-    // Admin content fields
+    // Admin content fields - Two-part titles
     homepage_hero_title_first_line: '',
     homepage_hero_title_second_line: '',
+    homepage_menu_section_title_first_line: '',
+    homepage_menu_section_title_second_line: '',
+    homepage_contact_section_title_first_line: '',
+    homepage_contact_section_title_second_line: '',
+    homepage_services_section_title_first_line: '',
+    homepage_services_section_title_second_line: '',
+    homepage_about_section_title_first_line: '',
+    homepage_about_section_title_second_line: '',
+    reviews_section_title_first_line: '',
+    reviews_section_title_second_line: '',
+    about_page_hero_title_first_line: '',
+    about_page_hero_title_second_line: '',
+    contact_page_hero_title_first_line: '',
+    contact_page_hero_title_second_line: '',
+    menu_page_hero_title_first_line: '',
+    menu_page_hero_title_second_line: '',
+    reviews_page_hero_title_first_line: '',
+    reviews_page_hero_title_second_line: '',
+    // Other content fields
     homepage_hero_description: '',
     homepage_hero_background_url: '',
     homepage_hero_right_button_text: 'Reservar Mesa',
     homepage_hero_right_button_link: '#contact',
-    homepage_about_section_title: 'Nuestra Historia',
     homepage_about_section_description: '',
-    homepage_services_section_title: 'Nuestros Servicios',
     homepage_services_section_description: '',
-    homepage_menu_section_title: 'Nuestro Menú',
     homepage_menu_section_description: 'Descubre nuestra selección de platos cuidadosamente elaborados',
-    homepage_contact_section_title: 'Reserva Tu Experiencia',
     homepage_contact_section_description: 'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única',
     homepage_delivery_section_title: 'Delivery Partners',
     homepage_delivery_section_description: 'Ordena desde la comodidad de tu hogar',
     homepage_contact_hide_reservation_box: false,
-    menu_page_hero_title_first_line: '',
-    menu_page_hero_title_second_line: '',
     menu_page_hero_description: 'Explora nuestra carta completa de especialidades culinarias',
     menu_page_hero_background_url: '',
-    contact_page_hero_title_first_line: '',
-    contact_page_hero_title_second_line: '',
     contact_page_hero_description: 'Estamos aquí para hacer de tu experiencia algo inolvidable',
     contact_page_hero_background_url: '',
-    about_page_hero_title_first_line: '',
-    about_page_hero_title_second_line: '',
     about_page_hero_description: 'Conoce la pasión y tradición detrás de cada plato',
     about_page_hero_background_url: '',
-    about_page_content: {},
-    reviews_page_hero_title_first_line: '',
-    reviews_page_hero_title_second_line: '',
     reviews_page_hero_description: 'Lo que nuestros clientes dicen sobre nosotros',
-    reviews_page_hero_background_url: ''
+    reviews_page_hero_background_url: '',
+    // About content fields (replacing JSONB)
+    about_story: '',
+    about_chef_info: '',
+    about_mission: '',
+    // Stats fields
+    stats_experience_number: '',
+    stats_experience_label: '',
+    stats_clients_number: '',
+    stats_clients_label: '',
+    stats_awards_number: '',
+    stats_awards_label: ''
   });
 
   useEffect(() => {
@@ -522,46 +562,58 @@ export default function ClientSettings() {
         // Update form data with admin content
         setFormData(prev => ({
           ...prev,
-          // Homepage hero split title
+          // Two-part titles
           homepage_hero_title_first_line: data.homepage_hero_title_first_line || '',
           homepage_hero_title_second_line: data.homepage_hero_title_second_line || '',
+          homepage_menu_section_title_first_line: data.homepage_menu_section_title_first_line || '',
+          homepage_menu_section_title_second_line: data.homepage_menu_section_title_second_line || '',
+          homepage_contact_section_title_first_line: data.homepage_contact_section_title_first_line || '',
+          homepage_contact_section_title_second_line: data.homepage_contact_section_title_second_line || '',
+          homepage_services_section_title_first_line: data.homepage_services_section_title_first_line || '',
+          homepage_services_section_title_second_line: data.homepage_services_section_title_second_line || '',
+          homepage_about_section_title_first_line: data.homepage_about_section_title_first_line || '',
+          homepage_about_section_title_second_line: data.homepage_about_section_title_second_line || '',
+          reviews_section_title_first_line: data.reviews_section_title_first_line || '',
+          reviews_section_title_second_line: data.reviews_section_title_second_line || '',
+          about_page_hero_title_first_line: data.about_page_hero_title_first_line || '',
+          about_page_hero_title_second_line: data.about_page_hero_title_second_line || '',
+          contact_page_hero_title_first_line: data.contact_page_hero_title_first_line || '',
+          contact_page_hero_title_second_line: data.contact_page_hero_title_second_line || '',
+          menu_page_hero_title_first_line: data.menu_page_hero_title_first_line || '',
+          menu_page_hero_title_second_line: data.menu_page_hero_title_second_line || '',
+          reviews_page_hero_title_first_line: data.reviews_page_hero_title_first_line || '',
+          reviews_page_hero_title_second_line: data.reviews_page_hero_title_second_line || '',
+          // Other content fields
           homepage_hero_description: data.homepage_hero_description || '',
           homepage_hero_background_url: data.homepage_hero_background_url || '',
           homepage_hero_right_button_text: data.homepage_hero_right_button_text || 'Reservar Mesa',
           homepage_hero_right_button_link: data.homepage_hero_right_button_link || '#contact',
-          // Homepage sections
-          homepage_about_section_title: data.homepage_about_section_title || 'Nuestra Historia',
           homepage_about_section_description: data.homepage_about_section_description || '',
-          homepage_services_section_title: data.homepage_services_section_title || 'Nuestros Servicios',
           homepage_services_section_description: data.homepage_services_section_description || '',
-          homepage_menu_section_title: data.homepage_menu_section_title || 'Nuestro Menú',
           homepage_menu_section_description: data.homepage_menu_section_description || 'Descubre nuestra selección de platos cuidadosamente elaborados',
-          homepage_contact_section_title: data.homepage_contact_section_title || 'Reserva Tu Experiencia',
           homepage_contact_section_description: data.homepage_contact_section_description || 'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única',
           homepage_delivery_section_title: data.homepage_delivery_section_title || 'Delivery Partners',
           homepage_delivery_section_description: data.homepage_delivery_section_description || 'Ordena desde la comodidad de tu hogar',
           homepage_contact_hide_reservation_box: data.homepage_contact_hide_reservation_box || false,
-          // Menu page split title
-          menu_page_hero_title_first_line: data.menu_page_hero_title_first_line || '',
-          menu_page_hero_title_second_line: data.menu_page_hero_title_second_line || '',
           menu_page_hero_description: data.menu_page_hero_description || 'Explora nuestra carta completa de especialidades culinarias',
           menu_page_hero_background_url: data.menu_page_hero_background_url || '',
-          // Contact page split title
-          contact_page_hero_title_first_line: data.contact_page_hero_title_first_line || '',
-          contact_page_hero_title_second_line: data.contact_page_hero_title_second_line || '',
           contact_page_hero_description: data.contact_page_hero_description || 'Estamos aquí para hacer de tu experiencia algo inolvidable',
           contact_page_hero_background_url: data.contact_page_hero_background_url || '',
-          // About page split title
-          about_page_hero_title_first_line: data.about_page_hero_title_first_line || '',
-          about_page_hero_title_second_line: data.about_page_hero_title_second_line || '',
           about_page_hero_description: data.about_page_hero_description || 'Conoce la pasión y tradición detrás de cada plato',
           about_page_hero_background_url: data.about_page_hero_background_url || '',
-          about_page_content: data.about_page_content || {},
-          // Reviews page split title
-          reviews_page_hero_title_first_line: data.reviews_page_hero_title_first_line || '',
-          reviews_page_hero_title_second_line: data.reviews_page_hero_title_second_line || '',
           reviews_page_hero_description: data.reviews_page_hero_description || 'Lo que nuestros clientes dicen sobre nosotros',
-          reviews_page_hero_background_url: data.reviews_page_hero_background_url || ''
+          reviews_page_hero_background_url: data.reviews_page_hero_background_url || '',
+          // About content fields (replacing JSONB)
+          about_story: data.about_story || '',
+          about_chef_info: data.about_chef_info || '',
+          about_mission: data.about_mission || '',
+          // Stats fields
+          stats_experience_number: data.stats_experience_number || '',
+          stats_experience_label: data.stats_experience_label || '',
+          stats_clients_number: data.stats_clients_number || '',
+          stats_clients_label: data.stats_clients_label || '',
+          stats_awards_number: data.stats_awards_number || '',
+          stats_awards_label: data.stats_awards_label || ''
         }));
       }
     } catch (error: any) {
@@ -690,40 +742,58 @@ export default function ClientSettings() {
           .from('admin_content')
           .upsert({
             client_id: clientId,
+            // Two-part titles
             homepage_hero_title_first_line: formData.homepage_hero_title_first_line,
             homepage_hero_title_second_line: formData.homepage_hero_title_second_line,
+            homepage_menu_section_title_first_line: formData.homepage_menu_section_title_first_line,
+            homepage_menu_section_title_second_line: formData.homepage_menu_section_title_second_line,
+            homepage_contact_section_title_first_line: formData.homepage_contact_section_title_first_line,
+            homepage_contact_section_title_second_line: formData.homepage_contact_section_title_second_line,
+            homepage_services_section_title_first_line: formData.homepage_services_section_title_first_line,
+            homepage_services_section_title_second_line: formData.homepage_services_section_title_second_line,
+            homepage_about_section_title_first_line: formData.homepage_about_section_title_first_line,
+            homepage_about_section_title_second_line: formData.homepage_about_section_title_second_line,
+            reviews_section_title_first_line: formData.reviews_section_title_first_line,
+            reviews_section_title_second_line: formData.reviews_section_title_second_line,
+            about_page_hero_title_first_line: formData.about_page_hero_title_first_line,
+            about_page_hero_title_second_line: formData.about_page_hero_title_second_line,
+            contact_page_hero_title_first_line: formData.contact_page_hero_title_first_line,
+            contact_page_hero_title_second_line: formData.contact_page_hero_title_second_line,
+            menu_page_hero_title_first_line: formData.menu_page_hero_title_first_line,
+            menu_page_hero_title_second_line: formData.menu_page_hero_title_second_line,
+            reviews_page_hero_title_first_line: formData.reviews_page_hero_title_first_line,
+            reviews_page_hero_title_second_line: formData.reviews_page_hero_title_second_line,
+            // Other content fields
             homepage_hero_description: formData.homepage_hero_description,
             homepage_hero_background_url: formData.homepage_hero_background_url,
             homepage_hero_right_button_text: formData.homepage_hero_right_button_text,
             homepage_hero_right_button_link: formData.homepage_hero_right_button_link,
-            homepage_about_section_title: formData.homepage_about_section_title,
             homepage_about_section_description: formData.homepage_about_section_description,
-            homepage_services_section_title: formData.homepage_services_section_title,
             homepage_services_section_description: formData.homepage_services_section_description,
-            homepage_menu_section_title: formData.homepage_menu_section_title,
             homepage_menu_section_description: formData.homepage_menu_section_description,
-            homepage_contact_section_title: formData.homepage_contact_section_title,
             homepage_contact_section_description: formData.homepage_contact_section_description,
             homepage_delivery_section_title: formData.homepage_delivery_section_title,
             homepage_delivery_section_description: formData.homepage_delivery_section_description,
             homepage_contact_hide_reservation_box: formData.homepage_contact_hide_reservation_box,
-            menu_page_hero_title_first_line: formData.menu_page_hero_title_first_line,
-            menu_page_hero_title_second_line: formData.menu_page_hero_title_second_line,
             menu_page_hero_description: formData.menu_page_hero_description,
             menu_page_hero_background_url: formData.menu_page_hero_background_url,
-            contact_page_hero_title_first_line: formData.contact_page_hero_title_first_line,
-            contact_page_hero_title_second_line: formData.contact_page_hero_title_second_line,
             contact_page_hero_description: formData.contact_page_hero_description,
             contact_page_hero_background_url: formData.contact_page_hero_background_url,
-            about_page_hero_title_first_line: formData.about_page_hero_title_first_line,
-            about_page_hero_title_second_line: formData.about_page_hero_title_second_line,
             about_page_hero_description: formData.about_page_hero_description,
             about_page_hero_background_url: formData.about_page_hero_background_url,
-            about_page_content: formData.about_page_content,
-            reviews_page_hero_title_first_line: formData.reviews_page_hero_title_first_line,
-            reviews_page_hero_title_second_line: formData.reviews_page_hero_title_second_line,
             reviews_page_hero_description: formData.reviews_page_hero_description,
             reviews_page_hero_background_url: formData.reviews_page_hero_background_url,
+            // About content fields (replacing JSONB)
+            about_story: formData.about_story,
+            about_chef_info: formData.about_chef_info,
+            about_mission: formData.about_mission,
+            // Stats fields
+            stats_experience_number: formData.stats_experience_number,
+            stats_experience_label: formData.stats_experience_label,
+            stats_clients_number: formData.stats_clients_number,
+            stats_clients_label: formData.stats_clients_label,
+            stats_awards_number: formData.stats_awards_number,
+            stats_awards_label: formData.stats_awards_label,
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'client_id'
@@ -1524,13 +1594,23 @@ export default function ClientSettings() {
                   <CardTitle>Homepage - About Section</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_about_section_title">About Section Title</Label>
-                    <Input
-                      id="homepage_about_section_title"
-                      value={formData.homepage_about_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_about_section_title: e.target.value})}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="homepage_about_section_title_first_line">About Section Title (First Line)</Label>
+                      <Input
+                        id="homepage_about_section_title_first_line"
+                        value={formData.homepage_about_section_title_first_line}
+                        onChange={(e) => setFormData({...formData, homepage_about_section_title_first_line: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_about_section_title_second_line">About Section Title (Second Line)</Label>
+                      <Input
+                        id="homepage_about_section_title_second_line"
+                        value={formData.homepage_about_section_title_second_line}
+                        onChange={(e) => setFormData({...formData, homepage_about_section_title_second_line: e.target.value})}
+                      />
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor="homepage_about_section_description">About Section Description</Label>
@@ -1550,13 +1630,23 @@ export default function ClientSettings() {
                   <CardTitle>Homepage - Services Section</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_services_section_title">Services Section Title</Label>
-                    <Input
-                      id="homepage_services_section_title"
-                      value={formData.homepage_services_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_services_section_title: e.target.value})}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="homepage_services_section_title_first_line">Services Section Title (First Line)</Label>
+                      <Input
+                        id="homepage_services_section_title_first_line"
+                        value={formData.homepage_services_section_title_first_line}
+                        onChange={(e) => setFormData({...formData, homepage_services_section_title_first_line: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_services_section_title_second_line">Services Section Title (Second Line)</Label>
+                      <Input
+                        id="homepage_services_section_title_second_line"
+                        value={formData.homepage_services_section_title_second_line}
+                        onChange={(e) => setFormData({...formData, homepage_services_section_title_second_line: e.target.value})}
+                      />
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor="homepage_services_section_description">Services Section Description</Label>
@@ -1576,13 +1666,23 @@ export default function ClientSettings() {
                   <CardTitle>Homepage - Menu Section</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_menu_section_title">Menu Section Title</Label>
-                    <Input
-                      id="homepage_menu_section_title"
-                      value={formData.homepage_menu_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_menu_section_title: e.target.value})}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="homepage_menu_section_title_first_line">Menu Section Title (First Line)</Label>
+                      <Input
+                        id="homepage_menu_section_title_first_line"
+                        value={formData.homepage_menu_section_title_first_line}
+                        onChange={(e) => setFormData({...formData, homepage_menu_section_title_first_line: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_menu_section_title_second_line">Menu Section Title (Second Line)</Label>
+                      <Input
+                        id="homepage_menu_section_title_second_line"
+                        value={formData.homepage_menu_section_title_second_line}
+                        onChange={(e) => setFormData({...formData, homepage_menu_section_title_second_line: e.target.value})}
+                      />
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor="homepage_menu_section_description">Menu Section Description</Label>
@@ -1602,13 +1702,23 @@ export default function ClientSettings() {
                   <CardTitle>Homepage - Contact Section</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_contact_section_title">Contact Section Title</Label>
-                    <Input
-                      id="homepage_contact_section_title"
-                      value={formData.homepage_contact_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_contact_section_title: e.target.value})}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="homepage_contact_section_title_first_line">Contact Section Title (First Line)</Label>
+                      <Input
+                        id="homepage_contact_section_title_first_line"
+                        value={formData.homepage_contact_section_title_first_line}
+                        onChange={(e) => setFormData({...formData, homepage_contact_section_title_first_line: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_contact_section_title_second_line">Contact Section Title (Second Line)</Label>
+                      <Input
+                        id="homepage_contact_section_title_second_line"
+                        value={formData.homepage_contact_section_title_second_line}
+                        onChange={(e) => setFormData({...formData, homepage_contact_section_title_second_line: e.target.value})}
+                      />
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor="homepage_contact_section_description">Contact Section Description</Label>
@@ -1785,6 +1895,131 @@ export default function ClientSettings() {
                       value={formData.about_page_hero_description}
                       onChange={(e) => setFormData({...formData, about_page_hero_description: e.target.value})}
                       rows={2}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Stats Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Stats Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="stats_experience_number">Experience Number</Label>
+                      <Input
+                        id="stats_experience_number"
+                        value={formData.stats_experience_number}
+                        onChange={(e) => setFormData({...formData, stats_experience_number: e.target.value})}
+                        placeholder="15+"
+                      />
+                      <Label htmlFor="stats_experience_label">Experience Label</Label>
+                      <Input
+                        id="stats_experience_label"
+                        value={formData.stats_experience_label}
+                        onChange={(e) => setFormData({...formData, stats_experience_label: e.target.value})}
+                        placeholder="Años de Experiencia"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="stats_clients_number">Clients Number</Label>
+                      <Input
+                        id="stats_clients_number"
+                        value={formData.stats_clients_number}
+                        onChange={(e) => setFormData({...formData, stats_clients_number: e.target.value})}
+                        placeholder="5K+"
+                      />
+                      <Label htmlFor="stats_clients_label">Clients Label</Label>
+                      <Input
+                        id="stats_clients_label"
+                        value={formData.stats_clients_label}
+                        onChange={(e) => setFormData({...formData, stats_clients_label: e.target.value})}
+                        placeholder="Clientes Felices"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="stats_awards_number">Awards Number</Label>
+                      <Input
+                        id="stats_awards_number"
+                        value={formData.stats_awards_number}
+                        onChange={(e) => setFormData({...formData, stats_awards_number: e.target.value})}
+                        placeholder="10+"
+                      />
+                      <Label htmlFor="stats_awards_label">Awards Label</Label>
+                      <Input
+                        id="stats_awards_label"
+                        value={formData.stats_awards_label}
+                        onChange={(e) => setFormData({...formData, stats_awards_label: e.target.value})}
+                        placeholder="Reconocimientos"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Reviews Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Reviews Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="reviews_section_title_first_line">Reviews Section Title (First Line)</Label>
+                      <Input
+                        id="reviews_section_title_first_line"
+                        value={formData.reviews_section_title_first_line}
+                        onChange={(e) => setFormData({...formData, reviews_section_title_first_line: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="reviews_section_title_second_line">Reviews Section Title (Second Line)</Label>
+                      <Input
+                        id="reviews_section_title_second_line"
+                        value={formData.reviews_section_title_second_line}
+                        onChange={(e) => setFormData({...formData, reviews_section_title_second_line: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* About Content Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>About Page - Content</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="about_story">About Story</Label>
+                    <Textarea
+                      id="about_story"
+                      value={formData.about_story}
+                      onChange={(e) => setFormData({...formData, about_story: e.target.value})}
+                      rows={4}
+                      placeholder="Our restaurant's story and history..."
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="about_chef_info">Chef Information</Label>
+                    <Textarea
+                      id="about_chef_info"
+                      value={formData.about_chef_info}
+                      onChange={(e) => setFormData({...formData, about_chef_info: e.target.value})}
+                      rows={3}
+                      placeholder="Information about the chef and team..."
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="about_mission">Mission Statement</Label>
+                    <Textarea
+                      id="about_mission"
+                      value={formData.about_mission}
+                      onChange={(e) => setFormData({...formData, about_mission: e.target.value})}
+                      rows={3}
+                      placeholder="Restaurant mission and values..."
                     />
                   </div>
                 </CardContent>
