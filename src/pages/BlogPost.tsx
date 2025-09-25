@@ -17,9 +17,13 @@ const BlogPost = () => {
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   
+  // First useEffect - fetch article data
   useEffect(() => {
     const fetchArticle = async () => {
-      if (!slug) return;
+      if (!slug) {
+        setLoading(false);
+        return;
+      }
       
       setLoading(true);
       try {
@@ -37,29 +41,8 @@ const BlogPost = () => {
 
     fetchArticle();
   }, [slug]);
-  
-  if (!category || !slug) {
-    return <Navigate to="/guia" replace />;
-  }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin mr-2" />
-          <span>Cargando artículo...</span>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (!article) {
-    return <Navigate to="/guia" replace />;
-  }
-
-  // Update document title and meta description for SEO
+  // Second useEffect - handle SEO (only when article is loaded)
   useEffect(() => {
     if (!article) return;
     
@@ -173,6 +156,7 @@ const BlogPost = () => {
     };
   }, [article]);
 
+  // Helper function
   const getArticleImage = (slug: string) => {
     switch(slug) {
       case 'como-crear-sitio-web-restaurante-peru':
@@ -186,9 +170,27 @@ const BlogPost = () => {
     }
   };
 
-  const getWordCount = (content: string): number => {
-    return content.split(' ').filter(word => word.length > 0).length;
-  };
+  // NOW we can do conditional rendering AFTER all hooks are called
+  if (!category || !slug) {
+    return <Navigate to="/guia" replace />;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="w-8 h-8 animate-spin mr-2" />
+          <span>Cargando artículo...</span>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!article) {
+    return <Navigate to="/guia" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
