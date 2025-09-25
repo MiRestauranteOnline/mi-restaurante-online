@@ -19,6 +19,9 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import RestaurantSettings from "./pages/dashboard/RestaurantSettings";
 import MenuCategories from "./pages/dashboard/MenuCategories";
 import MenuItems from "./pages/dashboard/MenuItems";
+import ClientManagement from "./pages/admin/ClientManagement";
+import ClientSettings from "./pages/admin/ClientSettings";
+import ProjectConfiguration from "./pages/admin/ProjectConfiguration";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
@@ -47,6 +50,9 @@ const App = () => (
           </Route>
           <Route path="/admin" element={<DashboardLayout />}>
             <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="client-management" element={<ClientManagement />} />
+            <Route path="client-settings/:clientId" element={<ClientSettings />} />
+            <Route path="project-config" element={<ProjectConfiguration />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -112,6 +112,14 @@ export default function DashboardLayout() {
       title: 'Admin Dashboard',
       href: '/admin/dashboard',
       icon: Shield,
+    }, {
+      title: 'Client Management',
+      href: '/admin/client-management',
+      icon: Users,
+    }, {
+      title: 'Project Config',
+      href: '/admin/project-config',
+      icon: Settings,
     }] : []),
     {
       title: 'Configuración del Restaurante',
