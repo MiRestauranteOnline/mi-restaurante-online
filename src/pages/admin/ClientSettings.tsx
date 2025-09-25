@@ -210,8 +210,41 @@ export default function ClientSettings() {
       return acc;
     }, {} as Record<string, MenuItem[]>);
 
-    return grouped;
+   return grouped;
   }, [menuItems, categories, searchTerm]);
+
+  // Helpers to normalize time strings to 24h HH:mm
+  const normalizeTime = (value: any): string => {
+    if (!value || typeof value !== 'string') return '09:00';
+    const v = value.trim();
+    // Already 24h HH:mm
+    if (/^\d{2}:\d{2}$/.test(v)) return v;
+    // 1 or 2 digit hour with AM/PM
+    const ampmMatch = v.match(/^(\d{1,2}):(\d{2})\s*([AaPp][Mm])$/);
+    if (ampmMatch) {
+      let hour = parseInt(ampmMatch[1], 10);
+      const minute = ampmMatch[2];
+      const ampm = ampmMatch[3].toUpperCase();
+      if (ampm === 'PM' && hour !== 12) hour += 12;
+      if (ampm === 'AM' && hour === 12) hour = 0;
+      const hh = hour.toString().padStart(2, '0');
+      return `${hh}:${minute}`;
+    }
+    // Fallback: try to extract digits
+    const fallback = v.match(/(\d{1,2}):(\d{2})/);
+    if (fallback) {
+      const hh = Math.min(23, Math.max(0, parseInt(fallback[1], 10))).toString().padStart(2, '0');
+      const mm = Math.min(59, Math.max(0, parseInt(fallback[2], 10))).toString().padStart(2, '0');
+      return `${hh}:${mm}`;
+    }
+    return '09:00';
+  };
+
+  const normalizeDayHours = (dayObj: any) => ({
+    open: normalizeTime(dayObj?.open),
+    close: normalizeTime(dayObj?.close),
+    closed: Boolean(dayObj?.closed),
+  });
 
   const [formData, setFormData] = useState({
     restaurant_name: '',
@@ -280,8 +313,8 @@ export default function ClientSettings() {
       const normalizedOpeningHours: any = {};
       
       dayOrder.forEach(day => {
-        if (data.opening_hours && typeof data.opening_hours === 'object' && data.opening_hours[day]) {
-          normalizedOpeningHours[day] = data.opening_hours[day];
+        if (data.opening_hours && typeof data.opening_hours === 'object' && (data.opening_hours as any)[day]) {
+          normalizedOpeningHours[day] = normalizeDayHours((data.opening_hours as any)[day]);
         } else {
           normalizedOpeningHours[day] = { ...defaultHours };
         }
@@ -380,11 +413,11 @@ export default function ClientSettings() {
       console.log('Saving opening hours:', formData.opening_hours); // Debug log
       
       // Reorganize opening_hours in correct order (Monday to Sunday)
-      const orderedOpeningHours = {};
+      const orderedOpeningHours: any = {};
       const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
       dayOrder.forEach(day => {
         if (formData.opening_hours[day]) {
-          orderedOpeningHours[day] = formData.opening_hours[day];
+          orderedOpeningHours[day] = normalizeDayHours(formData.opening_hours[day]);
         }
       });
 
@@ -426,8 +459,8 @@ export default function ClientSettings() {
         const normalizedOpeningHours: any = {};
         
         dayOrder.forEach(day => {
-          if (data.opening_hours[day]) {
-            normalizedOpeningHours[day] = data.opening_hours[day];
+          if ((data.opening_hours as any)[day]) {
+            normalizedOpeningHours[day] = normalizeDayHours((data.opening_hours as any)[day]);
           } else {
             normalizedOpeningHours[day] = { ...defaultHours };
           }
