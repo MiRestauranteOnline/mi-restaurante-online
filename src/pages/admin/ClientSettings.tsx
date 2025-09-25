@@ -51,6 +51,7 @@ interface MenuItem {
 }
 
 export default function ClientSettings() {
+  console.log('ClientSettings component rendered'); // Debug log
   const { clientId } = useParams<{ clientId: string }>();
   const navigate = useNavigate();
   const [client, setClient] = useState<Client | null>(null);
@@ -239,10 +240,12 @@ export default function ClientSettings() {
   };
 
   const handleSaveCategory = async () => {
+    console.log('handleSaveCategory called'); // Debug log
     if (!clientId) return;
     
     try {
       if (editingCategory) {
+        console.log('Updating category:', editingCategory.id); // Debug log
         const { error } = await supabase
           .from('menu_categories')
           .update({ 
@@ -252,6 +255,7 @@ export default function ClientSettings() {
           .eq('id', editingCategory.id);
         if (error) throw error;
       } else {
+        console.log('Creating new category'); // Debug log
         const { error } = await supabase
           .from('menu_categories')
           .insert({
@@ -268,6 +272,7 @@ export default function ClientSettings() {
       setCategoryForm({ name: '', display_order: 0 });
       toast({ title: "Success", description: "Category saved successfully" });
     } catch (error: any) {
+      console.error('Category save error:', error); // Debug log
       toast({
         title: "Error",
         description: "Failed to save category: " + error.message,
@@ -802,7 +807,7 @@ export default function ClientSettings() {
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>Cancel</Button>
-              <Button onClick={handleSaveCategory}>Save</Button>
+              <Button onClick={() => handleSaveCategory()}>Save</Button>
             </div>
           </div>
         </DialogContent>
