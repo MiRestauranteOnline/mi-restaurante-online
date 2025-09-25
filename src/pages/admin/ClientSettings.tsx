@@ -366,7 +366,7 @@ export default function ClientSettings() {
     
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('clients')
         .update({
           restaurant_name: formData.restaurant_name,
@@ -383,9 +383,12 @@ export default function ClientSettings() {
           other_customizations: formData.other_customizations,
           updated_at: new Date().toISOString()
         })
-        .eq('id', clientId);
+        .eq('id', clientId)
+        .select()
+        .maybeSingle();
 
       if (error) throw error;
+      if (!data) throw new Error('Update blocked by RLS (no rows updated)');
 
       toast({
         title: "Success",
@@ -409,24 +412,30 @@ export default function ClientSettings() {
     try {
       if (editingCategory) {
         console.log('Updating category:', editingCategory.id); // Debug log
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('menu_categories')
           .update({ 
             name: categoryForm.name,
             display_order: categoryForm.display_order 
           })
-          .eq('id', editingCategory.id);
+          .eq('id', editingCategory.id)
+          .select()
+          .maybeSingle();
         if (error) throw error;
+        if (!data) throw new Error('Update blocked by RLS');
       } else {
         console.log('Creating new category'); // Debug log
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('menu_categories')
           .insert({
             client_id: clientId,
             name: categoryForm.name,
             display_order: categoryForm.display_order + 1  // Use 1-based indexing like regular system
-          });
+          })
+          .select()
+          .maybeSingle();
         if (error) throw error;
+        if (!data) throw new Error('Insert blocked by RLS');
       }
       
       await fetchCategories();
@@ -451,12 +460,15 @@ export default function ClientSettings() {
 
     try {
       // Soft delete like regular user system - set is_active to false
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('menu_categories')
         .update({ is_active: false })
-        .eq('id', id);
+        .eq('id', id)
+        .select()
+        .maybeSingle();
       
       if (error) throw error;
+      if (!data) throw new Error('Delete blocked by RLS');
       await fetchCategories();
       toast({ title: "Success", description: "Category deleted successfully" });
     } catch (error: any) {
@@ -473,7 +485,7 @@ export default function ClientSettings() {
     
     try {
       if (editingMenuItem) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('menu_items')
           .update({
             name: menuItemForm.name,
@@ -485,10 +497,13 @@ export default function ClientSettings() {
             show_image_menu: menuItemForm.show_image_menu,
             show_image_home: menuItemForm.show_image_home
           })
-          .eq('id', editingMenuItem.id);
+          .eq('id', editingMenuItem.id)
+          .select()
+          .maybeSingle();
         if (error) throw error;
+        if (!data) throw new Error('Update blocked by RLS');
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('menu_items')
           .insert({
             client_id: clientId,
@@ -500,8 +515,11 @@ export default function ClientSettings() {
             show_on_homepage: menuItemForm.show_on_homepage,
             show_image_menu: menuItemForm.show_image_menu,
             show_image_home: menuItemForm.show_image_home
-          });
+          })
+          .select()
+          .maybeSingle();
         if (error) throw error;
+        if (!data) throw new Error('Insert blocked by RLS');
       }
       
       await fetchMenuItems();
@@ -523,12 +541,15 @@ export default function ClientSettings() {
 
   const handleDeleteMenuItem = async (id: string) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('menu_items')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .select()
+        .maybeSingle();
       
       if (error) throw error;
+      if (!data) throw new Error('Delete blocked by RLS');
       await fetchMenuItems();
       toast({ title: "Success", description: "Menu item deleted successfully" });
     } catch (error: any) {
