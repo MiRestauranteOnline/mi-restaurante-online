@@ -58,6 +58,17 @@ serve(async (req) => {
       .update({ status: 'in_progress' })
       .eq('id', contentGapId);
 
+    // Get existing published articles for internal linking
+    const { data: existingArticles } = await supabase
+      .from('generated_articles')
+      .select('title, slug, category, keywords')
+      .eq('status', 'published')
+      .limit(20);
+
+    const availableArticles = existingArticles ? existingArticles.map(a => 
+      `- "${a.title}" (/guia/${a.category}/${a.slug}) [Keywords: ${a.keywords.join(', ')}]`
+    ).join('\n') : 'No existing articles available yet.';
+
     // Generate article using ChatGPT
     const articlePrompt = `
 You are a professional content writer for "Mi Restaurante Online", a restaurant website design company in Peru.
@@ -73,16 +84,30 @@ BRAND GUIDELINES:
 - Professional yet approachable tone
 - Include costs in Peruvian Soles when relevant
 
+INTERNAL LINKING REQUIREMENTS (MANDATORY):
+1. HOMEPAGE LINK: Include exactly 1 link to "/" with keyword-rich anchor text related to restaurant websites (e.g., "crear página web para restaurante", "diseño web restaurante Lima", "sitio web restaurante profesional")
+
+2. ARTICLE LINKS: Include 2-3 internal links to existing articles when contextually relevant:
+${availableArticles}
+
+3. CONTACT LINK: Include 1 link to "/contacto" with relevant anchor text (e.g., "contacta con nuestros especialistas", "solicita una consulta gratuita")
+
+LINK FORMATTING REQUIREMENTS:
+- Use relative paths only (/, /contacto, /guia/category/slug)
+- All links must have descriptive anchor text with target keywords
+- Add proper aria-labels for accessibility
+- Natural integration within the content flow
+- No external competitor links
+
 ARTICLE STRUCTURE REQUIREMENTS:
 1. ONE H1 title (engaging, includes main keyword)
 2. Multiple H2 and H3 headings for structure
 3. Use bullet points and numbered lists extensively
 4. Include at least one data table with relevant information
-5. Add internal links to our services (use relative paths like "/contacto")
-6. Include 3-5 high-quality external links (no competitors, use rel="nofollow")
-7. All links must have proper aria-labels for accessibility
-8. Word count: 2000-3000 words
-9. Include practical examples from Peruvian restaurant market
+5. Add the required internal links naturally throughout content
+6. Include 2-3 high-quality external links (authoritative sources, no competitors, use rel="nofollow")
+7. Word count: 2000-3000 words
+8. Include practical examples from Peruvian restaurant market
 
 CONTENT REQUIREMENTS:
 - Write in Spanish for Peruvian audience
