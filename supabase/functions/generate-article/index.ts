@@ -134,7 +134,10 @@ Return ONLY a JSON object with this structure:
     let articleData;
     
     try {
-      articleData = JSON.parse(gptData.choices[0].message.content);
+      let rawContent = gptData.choices[0].message.content;
+      // Clean markdown formatting from ChatGPT response
+      rawContent = rawContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      articleData = JSON.parse(rawContent);
     } catch (parseError) {
       console.error('Failed to parse GPT response:', gptData.choices[0].message.content);
       throw new Error('Invalid response format from AI');

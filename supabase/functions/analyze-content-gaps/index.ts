@@ -101,7 +101,12 @@ Return JSON format:
     });
 
     const gptData = await response.json();
-    const analysis = JSON.parse(gptData.choices[0].message.content);
+    let rawContent = gptData.choices[0].message.content;
+    
+    // Clean markdown formatting from ChatGPT response
+    rawContent = rawContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    const analysis = JSON.parse(rawContent);
 
     // Store content gaps
     const gaps = [];

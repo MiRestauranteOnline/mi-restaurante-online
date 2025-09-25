@@ -140,6 +140,35 @@ const BlogGenerationAdmin: React.FC = () => {
     }
   };
 
+  const handleSeedKeywords = async () => {
+    try {
+      const response = await supabase.functions.invoke('seed-keywords');
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      const result = response.data;
+      
+      if (result.success) {
+        toast({
+          title: "Keywords Seeded",
+          description: `Added ${result.total_keywords} target keywords for restaurant industry`,
+        });
+        await fetchData();
+      } else {
+        throw new Error(result.error || 'Seeding failed');
+      }
+    } catch (error) {
+      console.error('Error seeding keywords:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : 'Failed to seed keywords',
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
@@ -199,6 +228,12 @@ const BlogGenerationAdmin: React.FC = () => {
         >
           <Eye className="w-4 h-4 mr-2" />
           Analyze Content Gaps
+        </Button>
+        <Button 
+          variant="outline"
+          onClick={handleSeedKeywords}
+        >
+          Seed Keywords
         </Button>
       </div>
 

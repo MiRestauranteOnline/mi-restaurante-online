@@ -126,7 +126,10 @@ Return JSON format:
     let qualityReport;
     
     try {
-      qualityReport = JSON.parse(gptData.choices[0].message.content);
+      let rawContent = gptData.choices[0].message.content;
+      // Clean markdown formatting from ChatGPT response
+      rawContent = rawContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      qualityReport = JSON.parse(rawContent);
     } catch (parseError) {
       console.error('Failed to parse quality check response:', gptData.choices[0].message.content);
       throw new Error('Invalid quality check response format');

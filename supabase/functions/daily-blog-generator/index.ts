@@ -24,10 +24,15 @@ serve(async (req) => {
     // Step 1: Analyze content gaps
     console.log('Step 1: Analyzing content gaps...');
     const gapAnalysisResponse = await supabase.functions.invoke('analyze-content-gaps');
+    
+    if (gapAnalysisResponse.error) {
+      throw new Error('Content gap analysis failed: ' + gapAnalysisResponse.error.message);
+    }
+    
     const gapAnalysis = gapAnalysisResponse.data;
     
-    if (!gapAnalysis.success) {
-      throw new Error('Content gap analysis failed: ' + gapAnalysis.error);
+    if (!gapAnalysis || !gapAnalysis.success) {
+      throw new Error('Content gap analysis failed: ' + (gapAnalysis?.error || 'Unknown error'));
     }
 
     // Get the highest priority content gap
@@ -56,10 +61,15 @@ serve(async (req) => {
     const articleResponse = await supabase.functions.invoke('generate-article', {
       body: { contentGapId: topGap.id }
     });
+    
+    if (articleResponse.error) {
+      throw new Error('Article generation failed: ' + articleResponse.error.message);
+    }
+    
     const articleResult = articleResponse.data;
     
-    if (!articleResult.success) {
-      throw new Error('Article generation failed: ' + articleResult.error);
+    if (!articleResult || !articleResult.success) {
+      throw new Error('Article generation failed: ' + (articleResult?.error || 'Unknown error'));
     }
 
     const article = articleResult.article;
@@ -76,10 +86,11 @@ serve(async (req) => {
         altText: article.featured_image_alt
       }
     });
+    
     const imageResult = imageResponse.data;
     
-    if (!imageResult.success) {
-      console.warn('Image generation failed:', imageResult.error);
+    if (imageResponse.error || !imageResult || !imageResult.success) {
+      console.warn('Image generation failed:', imageResponse.error?.message || imageResult?.error || 'Unknown error');
       // Continue without image - not critical
     } else {
       console.log('Featured image generated successfully');
@@ -90,10 +101,15 @@ serve(async (req) => {
     const qualityResponse = await supabase.functions.invoke('quality-check-article', {
       body: { articleId: article.id }
     });
+    
+    if (qualityResponse.error) {
+      throw new Error('Quality check failed: ' + qualityResponse.error.message);
+    }
+    
     const qualityResult = qualityResponse.data;
     
-    if (!qualityResult.success) {
-      throw new Error('Quality check failed: ' + qualityResult.error);
+    if (!qualityResult || !qualityResult.success) {
+      throw new Error('Quality check failed: ' + (qualityResult?.error || 'Unknown error'));
     }
 
     const overallProcessingTime = Date.now() - overallStartTime;
