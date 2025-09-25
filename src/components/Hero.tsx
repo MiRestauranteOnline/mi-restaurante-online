@@ -33,12 +33,12 @@ export const Hero = () => {
             {/* Main Headline */}
             <div className="space-y-4">
               <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight">
-                Página Web para Restaurante
-                <span className="text-primary block">Profesional en 72h</span>
+                Tu Restaurante Online
+                <span className="text-primary block">en Solo 72 Horas</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-lg">
-                Diseño web restaurante especializado para Lima y todo Perú. Creamos tu sitio web restaurante con menú digital, 
-                sistema de reservas y optimización para Google desde S/297/mes.
+                Creamos sitios web profesionales que convierten visitantes en clientes. Con menú digital, 
+                reservas online y SEO optimizado para que te encuentren en Google. Desde S/297/mes, sin costos iniciales.
               </p>
             </div>
 
