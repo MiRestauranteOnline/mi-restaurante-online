@@ -14,6 +14,122 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_content: {
+        Row: {
+          about_page_content: Json | null
+          about_page_hero_background_url: string | null
+          about_page_hero_description: string | null
+          about_page_hero_title: string | null
+          client_id: string
+          contact_page_hero_background_url: string | null
+          contact_page_hero_description: string | null
+          contact_page_hero_title: string | null
+          created_at: string
+          homepage_about_section_description: string | null
+          homepage_about_section_title: string | null
+          homepage_contact_hide_reservation_box: boolean | null
+          homepage_contact_section_description: string | null
+          homepage_contact_section_title: string | null
+          homepage_delivery_section_description: string | null
+          homepage_delivery_section_title: string | null
+          homepage_hero_background_url: string | null
+          homepage_hero_description: string | null
+          homepage_hero_right_button_link: string | null
+          homepage_hero_right_button_text: string | null
+          homepage_hero_title: string | null
+          homepage_menu_section_description: string | null
+          homepage_menu_section_title: string | null
+          homepage_services_section_description: string | null
+          homepage_services_section_title: string | null
+          id: string
+          menu_page_hero_background_url: string | null
+          menu_page_hero_description: string | null
+          menu_page_hero_title: string | null
+          reviews_page_hero_background_url: string | null
+          reviews_page_hero_description: string | null
+          reviews_page_hero_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          about_page_content?: Json | null
+          about_page_hero_background_url?: string | null
+          about_page_hero_description?: string | null
+          about_page_hero_title?: string | null
+          client_id: string
+          contact_page_hero_background_url?: string | null
+          contact_page_hero_description?: string | null
+          contact_page_hero_title?: string | null
+          created_at?: string
+          homepage_about_section_description?: string | null
+          homepage_about_section_title?: string | null
+          homepage_contact_hide_reservation_box?: boolean | null
+          homepage_contact_section_description?: string | null
+          homepage_contact_section_title?: string | null
+          homepage_delivery_section_description?: string | null
+          homepage_delivery_section_title?: string | null
+          homepage_hero_background_url?: string | null
+          homepage_hero_description?: string | null
+          homepage_hero_right_button_link?: string | null
+          homepage_hero_right_button_text?: string | null
+          homepage_hero_title?: string | null
+          homepage_menu_section_description?: string | null
+          homepage_menu_section_title?: string | null
+          homepage_services_section_description?: string | null
+          homepage_services_section_title?: string | null
+          id?: string
+          menu_page_hero_background_url?: string | null
+          menu_page_hero_description?: string | null
+          menu_page_hero_title?: string | null
+          reviews_page_hero_background_url?: string | null
+          reviews_page_hero_description?: string | null
+          reviews_page_hero_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          about_page_content?: Json | null
+          about_page_hero_background_url?: string | null
+          about_page_hero_description?: string | null
+          about_page_hero_title?: string | null
+          client_id?: string
+          contact_page_hero_background_url?: string | null
+          contact_page_hero_description?: string | null
+          contact_page_hero_title?: string | null
+          created_at?: string
+          homepage_about_section_description?: string | null
+          homepage_about_section_title?: string | null
+          homepage_contact_hide_reservation_box?: boolean | null
+          homepage_contact_section_description?: string | null
+          homepage_contact_section_title?: string | null
+          homepage_delivery_section_description?: string | null
+          homepage_delivery_section_title?: string | null
+          homepage_hero_background_url?: string | null
+          homepage_hero_description?: string | null
+          homepage_hero_right_button_link?: string | null
+          homepage_hero_right_button_text?: string | null
+          homepage_hero_title?: string | null
+          homepage_menu_section_description?: string | null
+          homepage_menu_section_title?: string | null
+          homepage_services_section_description?: string | null
+          homepage_services_section_title?: string | null
+          id?: string
+          menu_page_hero_background_url?: string | null
+          menu_page_hero_description?: string | null
+          menu_page_hero_title?: string | null
+          reviews_page_hero_background_url?: string | null
+          reviews_page_hero_description?: string | null
+          reviews_page_hero_title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_content_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_settings: {
         Row: {
           client_id: string
@@ -22,7 +138,9 @@ export type Database = {
           header_background_enabled: boolean | null
           header_background_style: string | null
           id: string
+          layout_type: string | null
           other_customizations: Json | null
+          primary_button_text_style: string | null
           primary_color: string | null
           updated_at: string
           whatsapp_messages: Json | null
@@ -34,7 +152,9 @@ export type Database = {
           header_background_enabled?: boolean | null
           header_background_style?: string | null
           id?: string
+          layout_type?: string | null
           other_customizations?: Json | null
+          primary_button_text_style?: string | null
           primary_color?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
@@ -46,7 +166,9 @@ export type Database = {
           header_background_enabled?: boolean | null
           header_background_style?: string | null
           id?: string
+          layout_type?: string | null
           other_customizations?: Json | null
+          primary_button_text_style?: string | null
           primary_color?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
