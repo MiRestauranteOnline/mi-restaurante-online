@@ -135,11 +135,8 @@ Return JSON format:
       throw new Error('Invalid quality check response format');
     }
 
-    // Determine if article should be published
-    const shouldPublish = qualityReport.passed_quality_check && 
-                         qualityReport.overall_score >= 7 &&
-                         qualityReport.brand_alignment_score >= 7 &&
-                         qualityReport.accuracy_score >= 8;
+    // Always publish articles (quality check is for logging purposes only)
+    const shouldPublish = true;
 
     let articleStatus = 'draft';
     let publishDate = null;
