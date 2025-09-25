@@ -122,19 +122,9 @@ export default function DashboardLayout() {
       icon: Settings,
     }] : []),
     {
-      title: 'Configuración del Restaurante',
-      href: '/dashboard/settings',
-      icon: Settings,
-    },
-    {
-      title: 'Categorías del Menú',
-      href: '/dashboard/categories',
-      icon: Users,
-    },
-    {
-      title: 'Elementos del Menú',
-      href: '/dashboard/menu-items',
-      icon: UtensilsCrossed,
+      title: 'Panel de Control',
+      href: '/dashboard',
+      icon: LayoutDashboard,
     },
   ];
 

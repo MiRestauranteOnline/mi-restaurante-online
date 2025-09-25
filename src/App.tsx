@@ -15,10 +15,7 @@ import BlogGenerationAdmin from "./components/BlogGenerationAdmin";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
-import Dashboard from "./pages/dashboard/Dashboard";
-import RestaurantSettings from "./pages/dashboard/RestaurantSettings";
-import MenuCategories from "./pages/dashboard/MenuCategories";
-import MenuItems from "./pages/dashboard/MenuItems";
+import UnifiedDashboard from "./pages/dashboard/UnifiedDashboard";
 import ClientManagement from "./pages/admin/ClientManagement";
 import ClientSettings from "./pages/admin/ClientSettings";
 import ProjectConfiguration from "./pages/admin/ProjectConfiguration";
@@ -43,10 +40,7 @@ const App = () => (
           <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<RestaurantSettings />} />
-            <Route path="settings" element={<RestaurantSettings />} />
-            <Route path="categories" element={<MenuCategories />} />
-            <Route path="menu-items" element={<MenuItems />} />
+            <Route index element={<UnifiedDashboard />} />
           </Route>
           <Route path="/admin" element={<DashboardLayout />}>
             <Route path="dashboard" element={<AdminDashboard />} />
