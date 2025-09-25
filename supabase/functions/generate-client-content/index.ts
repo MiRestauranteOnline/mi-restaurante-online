@@ -21,7 +21,21 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Starting generate-client-content function');
+    
+    // Check if API keys are available
+    if (!openaiApiKey) {
+      console.error('OpenAI API key not found in environment');
+      throw new Error('OpenAI API key not configured');
+    }
+    
+    if (!leonardoApiKey) {
+      console.error('Leonardo API key not found in environment');
+      throw new Error('Leonardo API key not configured');
+    }
+    
     const { briefing, clientId, restaurantName, address } = await req.json();
+    console.log('Request body parsed:', { briefing: briefing?.substring(0, 100), clientId, restaurantName, address });
     
     if (!briefing || !clientId || !restaurantName) {
       throw new Error('Briefing, client ID, and restaurant name are required');
@@ -110,6 +124,7 @@ serve(async (req) => {
     - Los prompts de imágenes deben ser en inglés para Leonardo AI
     `;
 
+    console.log('Calling OpenAI API...');
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -127,8 +142,24 @@ serve(async (req) => {
       }),
     });
 
+    console.log('OpenAI response status:', openaiResponse.status);
+    
+    if (!openaiResponse.ok) {
+      const errorData = await openaiResponse.text();
+      console.error('OpenAI API error:', errorData);
+      throw new Error(`OpenAI API failed: ${openaiResponse.status} - ${errorData}`);
+    }
+
     const openaiData = await openaiResponse.json();
-    const generatedContent = JSON.parse(openaiData.choices[0].message.content);
+    console.log('OpenAI response received');
+    
+    let generatedContent;
+    try {
+      generatedContent = JSON.parse(openaiData.choices[0].message.content);
+    } catch (parseError) {
+      console.error('Failed to parse OpenAI response as JSON:', openaiData.choices[0].message.content);
+      throw new Error('Failed to parse AI response as JSON');
+    }
 
     console.log('Content generated successfully');
 
@@ -230,10 +261,14 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error generating content:', error);
+    if (error instanceof Error) {
+      console.error('Error stack:', error.stack);
+    }
     
     return new Response(JSON.stringify({ 
       error: error instanceof Error ? error.message : 'Unknown error',
-      details: 'Failed to generate client content'
+      details: 'Failed to generate client content',
+      stack: error instanceof Error ? error.stack : undefined
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
