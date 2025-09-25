@@ -1,8 +1,9 @@
 import { MessageCircle, Mail, MapPin } from "lucide-react";
+import { businessData } from "@/config/businessData";
 
 export const Footer = () => {
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/51999999999?text=Hola, quiero información sobre los sitios web para restaurantes", "_blank");
+    window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(businessData.contact.whatsapp.message)}`, "_blank");
   };
 
   return (
@@ -19,8 +20,7 @@ export const Footer = () => {
               />
             </div>
             <p className="text-muted-foreground text-sm mb-4">
-              Sitios web profesionales para restaurantes en Perú. 
-              Calidad internacional, precios locales.
+              {businessData.company.description}
             </p>
           </div>
 
@@ -64,15 +64,15 @@ export const Footer = () => {
                 className="flex items-center gap-2 text-muted-foreground hover:text-primary text-sm transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
-                WhatsApp: +51 999 999 999
+                WhatsApp: {businessData.contact.whatsapp.displayNumber}
               </button>
               <div className="flex items-center gap-2 text-muted-foreground text-sm">
                 <Mail className="w-4 h-4" />
-                info@mirestaurante.online
+                {businessData.contact.email.info}
               </div>
               <div className="flex items-center gap-2 text-muted-foreground text-sm">
                 <MapPin className="w-4 h-4" />
-                Lima, Perú
+                {businessData.address.displayShort}
               </div>
             </div>
           </div>
@@ -81,10 +81,10 @@ export const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-border mt-8 pt-8 text-center">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} Mi Restaurante Online. Todos los derechos reservados.
+            © {new Date().getFullYear()} {businessData.company.name}. Todos los derechos reservados.
           </p>
           <p className="text-muted-foreground text-xs mt-1">
-            Mi Restaurante Online es una marca de Mujeres y Madres Internacional SAC - RUC: 20610336869
+            {businessData.company.name} es una marca de {businessData.company.legalName} - RUC: {businessData.company.ruc}
           </p>
         </div>
       </div>
