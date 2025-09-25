@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Clock, Search, Filter, Loader2 } from "lucide-react";
-import { getAllArticles, categoryLabels, type ArticleCategory, type Article } from "@/data/articles";
+import { categoryLabels, type ArticleCategory, type Article } from "@/data/articles";
+import { supabase } from "@/integrations/supabase/client";
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,10 +20,40 @@ const Blog = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const allArticles = await getAllArticles();
-        setArticles(allArticles);
+        const { data, error } = await supabase
+          .from('generated_articles')
+          .select('id, title, slug, category, excerpt, content, keywords, meta_description, reading_time, publish_date, author, featured, related_articles, featured_image_url, featured_image_alt')
+          .eq('status', 'published')
+          .order('publish_date', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching generated articles:', error);
+          setArticles([]);
+          return;
+        }
+
+        const dbArticles: Article[] = (data || []).map((a: any) => ({
+          id: a.id,
+          title: a.title,
+          slug: a.slug,
+          category: a.category,
+          excerpt: a.excerpt,
+          content: a.content,
+          keywords: a.keywords || [],
+          metaDescription: a.meta_description,
+          readingTime: a.reading_time || 5,
+          publishDate: a.publish_date ? new Date(a.publish_date).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Reciente',
+          author: a.author,
+          featured: a.featured,
+          relatedArticles: a.related_articles || [],
+          featuredImageUrl: a.featured_image_url || undefined,
+          featuredImageAlt: a.featured_image_alt || undefined,
+        }));
+
+        setArticles(dbArticles);
       } catch (error) {
         console.error('Error fetching articles:', error);
+        setArticles([]);
       } finally {
         setLoading(false);
       }
@@ -136,33 +167,14 @@ const Blog = () => {
 
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
                   {filteredArticles.map((article) => {
-                    // Get article image (prioritize database featured_image_url)
-                    const getArticleImage = (article: Article) => {
-                      if (article.featuredImageUrl) {
-                        return article.featuredImageUrl;
-                      }
-                      
-                      // Fallback to static images for existing articles
-                      switch(article.slug) {
-                        case 'como-crear-sitio-web-restaurante-peru':
-                          return '/src/assets/blog-restaurant-website-design.jpg';
-                        case 'precio-pagina-web-restaurante-peru-2025':
-                          return '/src/assets/blog-restaurant-pricing.jpg';
-                        case 'menu-digital-qr-restaurante-lima':
-                          return '/src/assets/blog-digital-menu-qr.jpg';
-                        default:
-                          return '/src/assets/blog-restaurant-website-design.jpg';
-                      }
-                    };
-
                     return (
                       <Card key={article.id} className="hover:shadow-primary transition-smooth overflow-hidden">
                         <div className="aspect-video overflow-hidden">
-                          <img 
-                            src={getArticleImage(article)} 
-                            alt={article.featuredImageAlt || article.title}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                          />
+                        <img 
+                          src={article.featuredImageUrl || '/src/assets/hero-restaurant-websites.jpg'} 
+                          alt={article.featuredImageAlt || article.title}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
                         </div>
                         <CardHeader>
                           <div className="flex items-center justify-between mb-2">
