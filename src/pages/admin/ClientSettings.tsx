@@ -403,14 +403,16 @@ export default function ClientSettings() {
           header_background_style: (data as any).header_background_style || 'dark'
         }));
       } else {
-        // Create default client_settings if none exist
+        // Use upsert to create default client_settings if none exist
         const { data: newSettings, error: createError } = await supabase
           .from('client_settings')
-          .insert({
+          .upsert({
             client_id: clientId,
             primary_color: '#FFD700',
             header_background_enabled: false,
             header_background_style: 'dark'
+          }, {
+            onConflict: 'client_id'
           })
           .select()
           .single();
