@@ -82,7 +82,7 @@ const Blog = () => {
       
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [articles, searchTerm, selectedCategory]);
 
   return (
     <div className="min-h-screen bg-background">
