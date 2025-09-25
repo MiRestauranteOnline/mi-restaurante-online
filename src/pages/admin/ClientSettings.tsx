@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Client {
   id: string;
@@ -26,13 +28,47 @@ interface Client {
   other_customizations?: any;
 }
 
+interface MenuCategory {
+  id: string;
+  name: string;
+  display_order: number;
+  is_active: boolean;
+  client_id: string;
+}
+
+interface MenuItem {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  category: string;
+  image_url?: string;
+  is_active: boolean;
+  client_id: string;
+  show_on_homepage: boolean;
+  show_image_menu: boolean;
+  show_image_home: boolean;
+}
+
 export default function ClientSettings() {
   const { clientId } = useParams<{ clientId: string }>();
   const navigate = useNavigate();
   const [client, setClient] = useState<Client | null>(null);
+  const [categories, setCategories] = useState<MenuCategory[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showCategoryDialog, setShowCategoryDialog] = useState(false);
+  const [showMenuItemDialog, setShowMenuItemDialog] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
+  const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
   const { toast } = useToast();
+
+  const [categoryForm, setCategoryForm] = useState({ name: '', display_order: 0 });
+  const [menuItemForm, setMenuItemForm] = useState({
+    name: '', description: '', price: 0, category: '', image_url: '',
+    show_on_homepage: false, show_image_menu: true, show_image_home: false
+  });
 
   const [formData, setFormData] = useState({
     restaurant_name: '',
@@ -66,6 +102,8 @@ export default function ClientSettings() {
   useEffect(() => {
     if (clientId) {
       fetchClient();
+      fetchCategories();
+      fetchMenuItems();
     }
   }, [clientId]);
 
@@ -123,6 +161,44 @@ export default function ClientSettings() {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('menu_categories')
+        .select('*')
+        .eq('client_id', clientId)
+        .order('display_order');
+
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to load categories: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const fetchMenuItems = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('menu_items')
+        .select('*')
+        .eq('client_id', clientId)
+        .order('name');
+
+      if (error) throw error;
+      setMenuItems(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to load menu items: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleSave = async () => {
     if (!clientId) return;
     
@@ -160,6 +236,169 @@ export default function ClientSettings() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleSaveCategory = async () => {
+    if (!clientId) return;
+    
+    try {
+      if (editingCategory) {
+        const { error } = await supabase
+          .from('menu_categories')
+          .update({ 
+            name: categoryForm.name,
+            display_order: categoryForm.display_order 
+          })
+          .eq('id', editingCategory.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('menu_categories')
+          .insert({
+            client_id: clientId,
+            name: categoryForm.name,
+            display_order: categoryForm.display_order
+          });
+        if (error) throw error;
+      }
+      
+      await fetchCategories();
+      setShowCategoryDialog(false);
+      setEditingCategory(null);
+      setCategoryForm({ name: '', display_order: 0 });
+      toast({ title: "Success", description: "Category saved successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to save category: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('menu_categories')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      await fetchCategories();
+      toast({ title: "Success", description: "Category deleted successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error", 
+        description: "Failed to delete category: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleSaveMenuItem = async () => {
+    if (!clientId) return;
+    
+    try {
+      if (editingMenuItem) {
+        const { error } = await supabase
+          .from('menu_items')
+          .update({
+            name: menuItemForm.name,
+            description: menuItemForm.description,
+            price: menuItemForm.price,
+            category: menuItemForm.category,
+            image_url: menuItemForm.image_url,
+            show_on_homepage: menuItemForm.show_on_homepage,
+            show_image_menu: menuItemForm.show_image_menu,
+            show_image_home: menuItemForm.show_image_home
+          })
+          .eq('id', editingMenuItem.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('menu_items')
+          .insert({
+            client_id: clientId,
+            name: menuItemForm.name,
+            description: menuItemForm.description,
+            price: menuItemForm.price,
+            category: menuItemForm.category,
+            image_url: menuItemForm.image_url,
+            show_on_homepage: menuItemForm.show_on_homepage,
+            show_image_menu: menuItemForm.show_image_menu,
+            show_image_home: menuItemForm.show_image_home
+          });
+        if (error) throw error;
+      }
+      
+      await fetchMenuItems();
+      setShowMenuItemDialog(false);
+      setEditingMenuItem(null);
+      setMenuItemForm({
+        name: '', description: '', price: 0, category: '', image_url: '',
+        show_on_homepage: false, show_image_menu: true, show_image_home: false
+      });
+      toast({ title: "Success", description: "Menu item saved successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to save menu item: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteMenuItem = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('menu_items')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      await fetchMenuItems();
+      toast({ title: "Success", description: "Menu item deleted successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to delete menu item: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openCategoryDialog = (category?: MenuCategory) => {
+    if (category) {
+      setEditingCategory(category);
+      setCategoryForm({ name: category.name, display_order: category.display_order });
+    } else {
+      setEditingCategory(null);
+      setCategoryForm({ name: '', display_order: categories.length });
+    }
+    setShowCategoryDialog(true);
+  };
+
+  const openMenuItemDialog = (item?: MenuItem) => {
+    if (item) {
+      setEditingMenuItem(item);
+      setMenuItemForm({
+        name: item.name,
+        description: item.description || '',
+        price: item.price,
+        category: item.category,
+        image_url: item.image_url || '',
+        show_on_homepage: item.show_on_homepage,
+        show_image_menu: item.show_image_menu,
+        show_image_home: item.show_image_home
+      });
+    } else {
+      setEditingMenuItem(null);
+      setMenuItemForm({
+        name: '', description: '', price: 0, category: '', image_url: '',
+        show_on_homepage: false, show_image_menu: true, show_image_home: false
+      });
+    }
+    setShowMenuItemDialog(true);
   };
 
   if (loading) {
@@ -215,6 +454,8 @@ export default function ClientSettings() {
           <TabsTrigger value="social">Social Media</TabsTrigger>
           <TabsTrigger value="delivery">Delivery</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="menu">Menu Items</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
@@ -454,7 +695,184 @@ export default function ClientSettings() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="categories">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Menu Categories
+                <Button onClick={() => openCategoryDialog()}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Category
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {categories.map((category) => (
+                  <div key={category.id} className="flex items-center justify-between p-3 border rounded">
+                    <div>
+                      <span className="font-medium">{category.name}</span>
+                      <span className="text-sm text-muted-foreground ml-2">Order: {category.display_order}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => openCategoryDialog(category)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button variant="destructive" size="sm" onClick={() => handleDeleteCategory(category.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {categories.length === 0 && (
+                  <p className="text-muted-foreground text-center py-4">No categories found</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="menu">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Menu Items
+                <Button onClick={() => openMenuItemDialog()}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Menu Item
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {menuItems.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between p-3 border rounded">
+                    <div>
+                      <span className="font-medium">{item.name}</span>
+                      <span className="text-sm text-muted-foreground ml-2">
+                        {formData.other_customizations.currency}{item.price} - {item.category}
+                      </span>
+                      {item.description && (
+                        <p className="text-sm text-muted-foreground">{item.description}</p>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => openMenuItemDialog(item)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button variant="destructive" size="sm" onClick={() => handleDeleteMenuItem(item.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {menuItems.length === 0 && (
+                  <p className="text-muted-foreground text-center py-4">No menu items found</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
+
+      {/* Category Dialog */}
+      <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingCategory ? 'Edit Category' : 'Add Category'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="category_name">Name</Label>
+              <Input
+                id="category_name"
+                value={categoryForm.name}
+                onChange={(e) => setCategoryForm({...categoryForm, name: e.target.value})}
+              />
+            </div>
+            <div>
+              <Label htmlFor="display_order">Display Order</Label>
+              <Input
+                id="display_order"
+                type="number"
+                value={categoryForm.display_order}
+                onChange={(e) => setCategoryForm({...categoryForm, display_order: parseInt(e.target.value)})}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>Cancel</Button>
+              <Button onClick={handleSaveCategory}>Save</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Menu Item Dialog */}
+      <Dialog open={showMenuItemDialog} onOpenChange={setShowMenuItemDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{editingMenuItem ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="item_name">Name</Label>
+                <Input
+                  id="item_name"
+                  value={menuItemForm.name}
+                  onChange={(e) => setMenuItemForm({...menuItemForm, name: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="item_price">Price</Label>
+                <Input
+                  id="item_price"
+                  type="number"
+                  step="0.01"
+                  value={menuItemForm.price}
+                  onChange={(e) => setMenuItemForm({...menuItemForm, price: parseFloat(e.target.value)})}
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="item_description">Description</Label>
+              <Textarea
+                id="item_description"
+                value={menuItemForm.description}
+                onChange={(e) => setMenuItemForm({...menuItemForm, description: e.target.value})}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="item_category">Category</Label>
+                <Select value={menuItemForm.category} onValueChange={(value) => setMenuItemForm({...menuItemForm, category: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="item_image_url">Image URL</Label>
+                <Input
+                  id="item_image_url"
+                  value={menuItemForm.image_url}
+                  onChange={(e) => setMenuItemForm({...menuItemForm, image_url: e.target.value})}
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowMenuItemDialog(false)}>Cancel</Button>
+              <Button onClick={handleSaveMenuItem}>Save</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
