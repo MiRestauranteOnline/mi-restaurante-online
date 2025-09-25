@@ -97,11 +97,6 @@ export default function DashboardLayout() {
 
   const sidebarItems = [
     {
-      title: 'Panel de Control',
-      href: '/dashboard',
-      icon: LayoutDashboard,
-    },
-    {
       title: 'Configuración del Restaurante',
       href: '/dashboard/settings',
       icon: Settings,

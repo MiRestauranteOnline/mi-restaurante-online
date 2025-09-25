@@ -39,7 +39,7 @@ const App = () => (
           <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<RestaurantSettings />} />
             <Route path="settings" element={<RestaurantSettings />} />
             <Route path="categories" element={<MenuCategories />} />
             <Route path="menu-items" element={<MenuItems />} />

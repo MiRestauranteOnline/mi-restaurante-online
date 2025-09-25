@@ -32,7 +32,13 @@ const settingsSchema = z.object({
   coordinates_lng: z.string().optional(),
   facebook: z.string().optional(),
   instagram: z.string().optional(),
-  twitter: z.string().optional(),
+  x: z.string().optional(),
+  linkedin: z.string().optional(),
+  youtube: z.string().optional(),
+  tiktok: z.string().optional(),
+  rappi: z.string().optional(),
+  pedidos_ya: z.string().optional(),
+  didi_food: z.string().optional(),
   primary_color: z.string().optional(),
   accent_color: z.string().optional(),
   currency: z.string().optional(),
@@ -79,7 +85,13 @@ export default function RestaurantSettings() {
       coordinates_lng: '',
       facebook: '',
       instagram: '',
-      twitter: '',
+      x: '',
+      linkedin: '',
+      youtube: '',
+      tiktok: '',
+      rappi: '',
+      pedidos_ya: '',
+      didi_food: '',
       primary_color: '#22c55e',
       accent_color: '#eab308',
       currency: 'S/',
@@ -128,7 +140,13 @@ export default function RestaurantSettings() {
             coordinates_lng: coordinates.lng?.toString() || '',
             facebook: socialMedia.facebook || '',
             instagram: socialMedia.instagram || '',
-            twitter: socialMedia.twitter || '',
+            x: socialMedia.x || socialMedia.twitter || '',
+            linkedin: socialMedia.linkedin || '',
+            youtube: socialMedia.youtube || '',
+            tiktok: socialMedia.tiktok || '',
+            rappi: socialMedia.rappi || '',
+            pedidos_ya: socialMedia.pedidos_ya || '',
+            didi_food: socialMedia.didi_food || '',
             primary_color: brandColors.primary || '#22c55e',
             accent_color: brandColors.accent || '#eab308',
             currency: customizations.currency || 'S/',
@@ -178,7 +196,13 @@ export default function RestaurantSettings() {
       const socialMediaLinks = {
         facebook: data.facebook || '',
         instagram: data.instagram || '',
-        twitter: data.twitter || '',
+        x: data.x || '',
+        linkedin: data.linkedin || '',
+        youtube: data.youtube || '',
+        tiktok: data.tiktok || '',
+        rappi: data.rappi || '',
+        pedidos_ya: data.pedidos_ya || '',
+        didi_food: data.didi_food || '',
       };
 
       const brandColors = {
@@ -368,7 +392,7 @@ export default function RestaurantSettings() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="facebook"
@@ -399,12 +423,109 @@ export default function RestaurantSettings() {
 
                 <FormField
                   control={form.control}
-                  name="twitter"
+                  name="x"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Twitter</FormLabel>
+                      <FormLabel>X (Twitter)</FormLabel>
                       <FormControl>
-                        <Input placeholder="https://twitter.com/mirestaurante" {...field} />
+                        <Input placeholder="https://x.com/mirestaurante" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="linkedin"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>LinkedIn</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://linkedin.com/company/mirestaurante" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="youtube"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>YouTube</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://youtube.com/@mirestaurante" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="tiktok"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>TikTok</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://tiktok.com/@mirestaurante" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Delivery Platforms */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Plataformas de Delivery</CardTitle>
+              <CardDescription>
+                Enlaces directos a tu restaurante en plataformas de delivery
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="rappi"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rappi</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://rappi.com/restaurantes/..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="pedidos_ya"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>PedidosYa</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://pedidosya.com/restaurantes/..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="didi_food"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Didi Food</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://didifood.com/restaurantes/..." {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -422,65 +543,63 @@ export default function RestaurantSettings() {
                 Define los horarios de atención por día
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {days.map((day, index) => (
-                <div key={day}>
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{dayNames[index]}</h4>
-                    <FormField
-                      control={form.control}
-                      name={`${day}_closed` as any}
-                      render={({ field }) => (
-                        <FormItem className="flex items-center space-x-2">
-                          <FormControl>
-                            <input
-                              type="checkbox"
-                              checked={field.value}
-                              onChange={field.onChange}
-                              className="rounded border-gray-300"
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm">Cerrado</FormLabel>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  {!form.watch(`${day}_closed` as any) && (
-                    <div className="grid grid-cols-2 gap-4">
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {days.map((day, index) => (
+                  <div key={day} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-sm">{dayNames[index]}</h4>
                       <FormField
                         control={form.control}
-                        name={`${day}_open` as any}
+                        name={`${day}_closed` as any}
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Apertura</FormLabel>
+                          <FormItem className="flex items-center space-x-2">
                             <FormControl>
-                              <Input type="time" {...field} />
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="rounded border-gray-300"
+                              />
                             </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name={`${day}_close` as any}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Cierre</FormLabel>
-                            <FormControl>
-                              <Input type="time" {...field} />
-                            </FormControl>
-                            <FormMessage />
+                            <FormLabel className="text-xs">Cerrado</FormLabel>
                           </FormItem>
                         )}
                       />
                     </div>
-                  )}
-                  
-                  {index < days.length - 1 && <Separator className="mt-4" />}
-                </div>
-              ))}
+                    
+                    {!form.watch(`${day}_closed` as any) && (
+                      <div className="grid grid-cols-2 gap-2">
+                        <FormField
+                          control={form.control}
+                          name={`${day}_open` as any}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input type="time" {...field} className="text-sm" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`${day}_close` as any}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input type="time" {...field} className="text-sm" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 

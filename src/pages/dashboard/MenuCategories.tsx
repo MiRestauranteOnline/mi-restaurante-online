@@ -1,4 +1,3 @@
-import { useOutletContext } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +11,28 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2, GripVertical, Save, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, Loader2 } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 
 interface DashboardContext {
   selectedClientId: string;
@@ -39,6 +59,84 @@ const categorySchema = z.object({
 
 type CategoryFormData = z.infer<typeof categorySchema>;
 
+// SortableItem component for drag and drop
+function SortableItem({ category, onEdit, onDelete, onToggleStatus }: {
+  category: MenuCategory;
+  onEdit: (category: MenuCategory) => void;
+  onDelete: (id: string) => void;
+  onToggleStatus: (id: string, isActive: boolean) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: category.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style} className="transition-all duration-200 hover:shadow-md">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              {...attributes}
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing"
+            >
+              <GripVertical className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div>
+              <h3 className="text-lg font-medium text-foreground">
+                {category.name}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Orden: {category.display_order}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge 
+              variant={category.is_active ? "default" : "secondary"}
+              className={category.is_active ? "bg-green-600" : ""}
+            >
+              {category.is_active ? 'Activa' : 'Inactiva'}
+            </Badge>
+
+            <Switch
+              checked={category.is_active}
+              onCheckedChange={(checked) => onToggleStatus(category.id, checked)}
+            />
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onEdit(category)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onDelete(category.id)}
+              className="hover:bg-destructive hover:text-destructive-foreground"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function MenuCategories() {
   const { selectedClientId } = useOutletContext<DashboardContext>();
   const [categories, setCategories] = useState<MenuCategory[]>([]);
@@ -46,6 +144,13 @@ export default function MenuCategories() {
   const [saving, setSaving] = useState(false);
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const form = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema) as any,
@@ -194,6 +299,39 @@ export default function MenuCategories() {
     setIsDialogOpen(true);
   };
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = categories.findIndex((item) => item.id === active.id);
+      const newIndex = categories.findIndex((item) => item.id === over?.id);
+
+      const newCategories = arrayMove(categories, oldIndex, newIndex);
+      setCategories(newCategories);
+
+      // Update display_order in database
+      try {
+        const updates = newCategories.map((category, index) => ({
+          id: category.id,
+          display_order: index + 1,
+        }));
+
+        for (const update of updates) {
+          await (supabase as any)
+            .from('menu_categories')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado exitosamente');
+      } catch (error) {
+        toast.error('Error al actualizar el orden');
+        // Revert changes on error
+        fetchCategories();
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -336,56 +474,25 @@ export default function MenuCategories() {
             </CardContent>
           </Card>
         ) : (
-          categories.map((category, index) => (
-            <Card key={category.id} className="transition-all duration-200 hover:shadow-md">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
-                    <div>
-                      <h3 className="text-lg font-medium text-foreground">
-                        {category.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        Orden: {category.display_order || index + 1}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant={category.is_active ? "default" : "secondary"}
-                      className={category.is_active ? "bg-green-600" : ""}
-                    >
-                      {category.is_active ? 'Activa' : 'Inactiva'}
-                    </Badge>
-
-                    <Switch
-                      checked={category.is_active}
-                      onCheckedChange={(checked) => toggleCategoryStatus(category.id, checked)}
-                    />
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(category)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDelete(category.id)}
-                      className="hover:bg-destructive hover:text-destructive-foreground"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={categories.map(c => c.id)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-4">
+                {categories.map((category) => (
+                  <SortableItem
+                    key={category.id}
+                    category={category}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onToggleStatus={toggleCategoryStatus}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         )}
       </div>
 
