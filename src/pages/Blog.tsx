@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -7,12 +7,29 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Clock, Search, Filter } from "lucide-react";
-import { articles, categoryLabels, type ArticleCategory } from "@/data/articles";
+import { Clock, Search, Filter, Loader2 } from "lucide-react";
+import { getAllArticles, categoryLabels, type ArticleCategory, type Article } from "@/data/articles";
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const allArticles = await getAllArticles();
+        setArticles(allArticles);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
 
   const filteredArticles = useMemo(() => {
     return articles.filter(article => {
@@ -89,7 +106,12 @@ const Blog = () => {
       <section className="pb-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            {filteredArticles.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin mr-2" />
+                <span>Cargando artículos...</span>
+              </div>
+            ) : filteredArticles.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-xl text-muted-foreground mb-4">
                   No se encontraron artículos que coincidan con tu búsqueda.
@@ -114,9 +136,14 @@ const Blog = () => {
 
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
                   {filteredArticles.map((article) => {
-                    // Map articles to their featured images
-                    const getArticleImage = (slug: string) => {
-                      switch(slug) {
+                    // Get article image (prioritize database featured_image_url)
+                    const getArticleImage = (article: Article) => {
+                      if (article.featuredImageUrl) {
+                        return article.featuredImageUrl;
+                      }
+                      
+                      // Fallback to static images for existing articles
+                      switch(article.slug) {
                         case 'como-crear-sitio-web-restaurante-peru':
                           return '/src/assets/blog-restaurant-website-design.jpg';
                         case 'precio-pagina-web-restaurante-peru-2025':
@@ -132,8 +159,8 @@ const Blog = () => {
                       <Card key={article.id} className="hover:shadow-primary transition-smooth overflow-hidden">
                         <div className="aspect-video overflow-hidden">
                           <img 
-                            src={getArticleImage(article.slug)} 
-                            alt={article.title}
+                            src={getArticleImage(article)} 
+                            alt={article.featuredImageAlt || article.title}
                             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                           />
                         </div>

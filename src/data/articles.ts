@@ -1,6 +1,7 @@
 import blogRestaurantImage from "@/assets/blog-restaurant-website-design.jpg";
 import blogPricingImage from "@/assets/blog-restaurant-pricing.jpg";
 import blogMenuImage from "@/assets/blog-digital-menu-qr.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 export type ArticleCategory = 'desarrollo-web' | 'marketing-digital' | 'tecnologia-restaurante' | 'casos-exito' | 'guias-practicas';
 
@@ -18,6 +19,8 @@ export interface Article {
   author: string;
   featured: boolean;
   relatedArticles: string[];
+  featuredImageUrl?: string;
+  featuredImageAlt?: string;
 }
 
 export const categoryLabels: Record<ArticleCategory, string> = {
@@ -935,6 +938,57 @@ export const articles: Article[] = [
   // Add more articles as needed...
 ];
 
+// ... keep existing code (static articles array)
+
+// Fetch all articles (static + generated from database)
+export const getAllArticles = async (): Promise<Article[]> => {
+  try {
+    // Fetch generated articles from database
+    const { data: generatedArticles, error } = await supabase
+      .from('generated_articles')
+      .select('*')
+      .eq('status', 'published')
+      .order('publish_date', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching generated articles:', error);
+      return articles; // Return static articles if database fails
+    }
+
+    // Convert database articles to Article interface
+    const dbArticles: Article[] = (generatedArticles || []).map(dbArticle => ({
+      id: dbArticle.id,
+      title: dbArticle.title,
+      slug: dbArticle.slug,
+      category: dbArticle.category as ArticleCategory,
+      excerpt: dbArticle.excerpt,
+      content: dbArticle.content,
+      keywords: dbArticle.keywords || [],
+      metaDescription: dbArticle.meta_description,
+      readingTime: dbArticle.reading_time || 5,
+      publishDate: dbArticle.publish_date ? new Date(dbArticle.publish_date).toLocaleDateString('es-PE') : 'Reciente',
+      author: dbArticle.author,
+      featured: dbArticle.featured,
+      relatedArticles: dbArticle.related_articles || [],
+      featuredImageUrl: dbArticle.featured_image_url || undefined,
+      featuredImageAlt: dbArticle.featured_image_alt || undefined
+    }));
+
+    // Combine and sort all articles by publish date (newest first)
+    const allArticles = [...dbArticles, ...articles];
+    
+    return allArticles.sort((a, b) => {
+      const dateA = new Date(a.publishDate.includes('/') ? a.publishDate : a.publishDate);
+      const dateB = new Date(b.publishDate.includes('/') ? b.publishDate : b.publishDate);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+  } catch (error) {
+    console.error('Error in getAllArticles:', error);
+    return articles; // Return static articles as fallback
+  }
+};
+
 export const getArticlesByCategory = (category: ArticleCategory): Article[] => {
   return articles.filter(article => article.category === category);
 };
@@ -943,7 +997,40 @@ export const getFeaturedArticles = (): Article[] => {
   return articles.filter(article => article.featured);
 };
 
-export const getArticleBySlug = (slug: string): Article | undefined => {
+export const getArticleBySlug = async (slug: string): Promise<Article | undefined> => {
+  // First check generated articles in database
+  try {
+    const { data: generatedArticle } = await supabase
+      .from('generated_articles')
+      .select('*')
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .maybeSingle();
+
+    if (generatedArticle) {
+      return {
+        id: generatedArticle.id,
+        title: generatedArticle.title,
+        slug: generatedArticle.slug,
+        category: generatedArticle.category as ArticleCategory,
+        excerpt: generatedArticle.excerpt,
+        content: generatedArticle.content,
+        keywords: generatedArticle.keywords || [],
+        metaDescription: generatedArticle.meta_description,
+        readingTime: generatedArticle.reading_time || 5,
+        publishDate: generatedArticle.publish_date ? new Date(generatedArticle.publish_date).toLocaleDateString('es-PE') : 'Reciente',
+        author: generatedArticle.author,
+        featured: generatedArticle.featured,
+        relatedArticles: generatedArticle.related_articles || [],
+        featuredImageUrl: generatedArticle.featured_image_url || undefined,
+        featuredImageAlt: generatedArticle.featured_image_alt || undefined
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching generated article:', error);
+  }
+
+  // Fallback to static articles
   return articles.find(article => article.slug === slug);
 };
 
