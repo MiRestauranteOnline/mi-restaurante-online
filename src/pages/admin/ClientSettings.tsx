@@ -219,6 +219,16 @@ export default function ClientSettings() {
     phone: '',
     address: '',
     whatsapp: '',
+    coordinates: { lat: '', lng: '' },
+    opening_hours: {
+      monday: { open: '09:00', close: '22:00', closed: false },
+      tuesday: { open: '09:00', close: '22:00', closed: false },
+      wednesday: { open: '09:00', close: '22:00', closed: false },
+      thursday: { open: '09:00', close: '22:00', closed: false },
+      friday: { open: '09:00', close: '22:00', closed: false },
+      saturday: { open: '09:00', close: '22:00', closed: false },
+      sunday: { open: '09:00', close: '22:00', closed: false }
+    },
     social_media_links: {
       facebook: '',
       instagram: '',
@@ -267,6 +277,16 @@ export default function ClientSettings() {
         phone: data.phone || '',
         address: data.address || '',
         whatsapp: data.whatsapp || '',
+        coordinates: (data.coordinates as any) || { lat: '', lng: '' },
+        opening_hours: (data.opening_hours as any) || {
+          monday: { open: '09:00', close: '22:00', closed: false },
+          tuesday: { open: '09:00', close: '22:00', closed: false },
+          wednesday: { open: '09:00', close: '22:00', closed: false },
+          thursday: { open: '09:00', close: '22:00', closed: false },
+          friday: { open: '09:00', close: '22:00', closed: false },
+          saturday: { open: '09:00', close: '22:00', closed: false },
+          sunday: { open: '09:00', close: '22:00', closed: false }
+        },
         social_media_links: {
           facebook: '',
           instagram: '',
@@ -355,6 +375,8 @@ export default function ClientSettings() {
           phone: formData.phone,
           address: formData.address,
           whatsapp: formData.whatsapp,
+          coordinates: formData.coordinates,
+          opening_hours: formData.opening_hours,
           social_media_links: formData.social_media_links,
           delivery: formData.delivery,
           brand_colors: formData.brand_colors,
@@ -402,7 +424,7 @@ export default function ClientSettings() {
           .insert({
             client_id: clientId,
             name: categoryForm.name,
-            display_order: categoryForm.display_order
+            display_order: categoryForm.display_order + 1  // Use 1-based indexing like regular system
           });
         if (error) throw error;
       }
@@ -423,10 +445,15 @@ export default function ClientSettings() {
   };
 
   const handleDeleteCategory = async (id: string) => {
+    if (!confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
+      return;
+    }
+
     try {
+      // Soft delete like regular user system - set is_active to false
       const { error } = await supabase
         .from('menu_categories')
-        .delete()
+        .update({ is_active: false })
         .eq('id', id);
       
       if (error) throw error;
@@ -519,7 +546,7 @@ export default function ClientSettings() {
       setCategoryForm({ name: category.name, display_order: category.display_order });
     } else {
       setEditingCategory(null);
-      setCategoryForm({ name: '', display_order: categories.length });
+      setCategoryForm({ name: '', display_order: categories.length + 1 }); // Use 1-based indexing
     }
     setShowCategoryDialog(true);
   };
@@ -556,10 +583,10 @@ export default function ClientSettings() {
 
       const reorderedCategories = arrayMove(categories, oldIndex, newIndex);
       
-      // Update display_order values
+      // Update display_order values to match regular user system (1-based indexing)
       const updatedCategories = reorderedCategories.map((category, index) => ({
         ...category,
-        display_order: index
+        display_order: index + 1  // Changed from index to index + 1
       }));
 
       setCategories(updatedCategories);
