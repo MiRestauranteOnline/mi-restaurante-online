@@ -36,22 +36,54 @@ const BlogPost = () => {
       metaDescription.setAttribute('content', article.metaDescription);
     }
 
-    // Add structured data for SEO
-    const structuredData = {
+    // Helper function to get article featured image
+    const getArticleImage = (slug: string) => {
+      switch(slug) {
+        case 'como-crear-sitio-web-restaurante-peru':
+          return 'https://mirestauranteonline.com/src/assets/blog-restaurant-website-design.jpg';
+        case 'precio-pagina-web-restaurante-peru-2025':
+          return 'https://mirestauranteonline.com/src/assets/blog-restaurant-pricing.jpg';
+        case 'menu-digital-qr-restaurante-lima':
+          return 'https://mirestauranteonline.com/src/assets/blog-digital-menu-qr.jpg';
+        default:
+          return 'https://mirestauranteonline.com/src/assets/blog-restaurant-website-design.jpg';
+      }
+    };
+
+    // Calculate word count from content
+    const getWordCount = (htmlContent: string) => {
+      const textContent = htmlContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      return textContent.split(' ').length;
+    };
+
+    // Comprehensive Article Schema with all recommended fields
+    const articleSchema = {
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": article.title,
       "description": article.metaDescription,
+      "image": {
+        "@type": "ImageObject",
+        "url": getArticleImage(article.slug),
+        "width": 1200,
+        "height": 630
+      },
       "author": {
-        "@type": "Organization",
-        "name": article.author
+        "@type": "Person",
+        "name": "Kevin van Geffen",
+        "url": "https://mirestauranteonline.com",
+        "jobTitle": "Diseñador y Desarrollador Web Profesional",
+        "image": "https://mirestauranteonline.com/src/assets/kevin-van-geffen-bio.webp"
       },
       "publisher": {
         "@type": "Organization",
         "name": "Mi Restaurante Online",
+        "url": "https://mirestauranteonline.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://mirestauranteonline.com/logo.svg"
+          "url": "https://mirestauranteonline.com/logo.svg",
+          "width": 200,
+          "height": 60
         }
       },
       "datePublished": article.publishDate,
@@ -60,17 +92,107 @@ const BlogPost = () => {
         "@type": "WebPage",
         "@id": `https://mirestauranteonline.com/guia/${category}/${slug}`
       },
-      "keywords": article.keywords.join(", ")
+      "isPartOf": {
+        "@type": "Blog",
+        "name": "Guía de Restaurantes Online",
+        "@id": "https://mirestauranteonline.com/guia"
+      },
+      "articleSection": categoryLabels[article.category as keyof typeof categoryLabels],
+      "articleBody": article.excerpt,
+      "wordCount": getWordCount(article.content),
+      "timeRequired": `PT${article.readingTime}M`,
+      "inLanguage": "es-PE",
+      "keywords": article.keywords.join(", "),
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Restauranteros y propietarios de restaurantes en Perú"
+      }
     };
 
-    const scriptTag = document.createElement('script');
-    scriptTag.type = 'application/ld+json';
-    scriptTag.text = JSON.stringify(structuredData);
-    document.head.appendChild(scriptTag);
+    // Breadcrumb Schema
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://mirestauranteonline.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guía",
+          "item": "https://mirestauranteonline.com/guia"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": categoryLabels[article.category as keyof typeof categoryLabels],
+          "item": `https://mirestauranteonline.com/guia?category=${category}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": article.title,
+          "item": `https://mirestauranteonline.com/guia/${category}/${slug}`
+        }
+      ]
+    };
+
+    // FAQ Schema (if the article contains common restaurant questions)
+    const faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Cuánto cuesta una página web para restaurante en Perú?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Los precios varían desde S/297/mes para sitios web básicos hasta S/2,500+ para sitios web personalizados con todas las funcionalidades avanzadas."
+          }
+        },
+        {
+          "@type": "Question", 
+          "name": "¿Qué incluye una página web para restaurante?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Una página web completa para restaurante incluye: diseño responsive, menú digital, sistema de reservas, integración con redes sociales, SEO optimizado y soporte técnico."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Es necesario tener conocimientos técnicos para gestionar mi página web?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, los sistemas modernos están diseñados para ser fáciles de usar. Podrás actualizar tu menú, horarios y contenido sin conocimientos técnicos."
+          }
+        }
+      ]
+    };
+
+    // Add all schemas to the page
+    const schemas = [articleSchema, breadcrumbSchema, faqSchema];
+    const scriptTags: HTMLScriptElement[] = [];
+
+    schemas.forEach((schema, index) => {
+      const scriptTag = document.createElement('script');
+      scriptTag.type = 'application/ld+json';
+      scriptTag.text = JSON.stringify(schema);
+      scriptTag.setAttribute('data-schema-type', ['article', 'breadcrumb', 'faq'][index]);
+      document.head.appendChild(scriptTag);
+      scriptTags.push(scriptTag);
+    });
 
     // Cleanup function
     return () => {
-      document.head.removeChild(scriptTag);
+      scriptTags.forEach(tag => {
+        if (document.head.contains(tag)) {
+          document.head.removeChild(tag);
+        }
+      });
     };
   }, [article, category, slug]);
 
