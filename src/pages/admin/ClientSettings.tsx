@@ -1563,75 +1563,6 @@ export default function ClientSettings() {
       setIsGenerating(false);
     }
   };
-    if (!clientId) return;
-    
-    try {
-      if (editingReview) {
-        const { data, error } = await supabase
-          .from('reviews')
-          .update({
-            reviewer_name: reviewForm.reviewer_name,
-            review_text: reviewForm.review_text,
-            star_rating: reviewForm.star_rating,
-            display_order: reviewForm.display_order,
-          })
-          .eq('id', editingReview.id)
-          .select()
-          .maybeSingle();
-        if (error) throw error;
-        if (!data) throw new Error('Update blocked by RLS');
-      } else {
-        const { data, error } = await supabase
-          .from('reviews')
-          .insert({
-            client_id: clientId,
-            reviewer_name: reviewForm.reviewer_name,
-            review_text: reviewForm.review_text,
-            star_rating: reviewForm.star_rating,
-            display_order: reviewForm.display_order,
-            is_active: true,
-          })
-          .select()
-          .maybeSingle();
-        if (error) throw error;
-        if (!data) throw new Error('Insert blocked by RLS');
-      }
-      
-      await fetchReviews();
-      setShowReviewDialog(false);
-      setEditingReview(null);
-      setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_order: 0 });
-      toast({ title: "Success", description: "Review saved successfully" });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Failed to save review: " + error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleDeleteReview = async (id: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('reviews')
-        .delete()
-        .eq('id', id)
-        .select()
-        .maybeSingle();
-      
-      if (error) throw error;
-      if (!data) throw new Error('Delete blocked by RLS');
-      await fetchReviews();
-      toast({ title: "Success", description: "Review deleted successfully" });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Failed to delete review: " + error.message,
-        variant: "destructive"
-      });
-    }
-  };
 
   const openCategoryDialog = (category?: MenuCategory) => {
     if (category) {
@@ -3468,59 +3399,59 @@ export default function ClientSettings() {
           </div>
         </DialogContent>
       </Dialog>
-    </Tabs>
 
-    {/* Briefing Tab */}
-    <TabsContent value="briefing">
-      <Card>
-        <CardHeader>
-          <CardTitle>Briefing del Cliente</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="briefing">
-              Describe tu restaurante, tipo de comida, ambiente, ubicación y audiencia objetivo
-            </Label>
-            <Textarea
-              id="briefing"
-              value={briefing}
-              onChange={(e) => setBriefing(e.target.value)}
-              placeholder="Ejemplo: Somos un restaurante de comida peruana contemporánea ubicado en Miraflores. Nos especializamos en fusión nikkei con ingredientes frescos del mar peruano. Nuestro ambiente es moderno y elegante, dirigido a profesionales de 25-45 años que buscan experiencias gastronómicas únicas..."
-              rows={8}
-              className="mt-2"
-            />
-          </div>
-          
-          <div className="flex justify-end">
-            <Button 
-              onClick={handleGenerateContent}
-              disabled={isGenerating || !briefing.trim()}
-              className="min-w-32"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generando...
-                </>
-              ) : (
-                'Generar Contenido'
-              )}
-            </Button>
-          </div>
-          
-          <div className="text-sm text-muted-foreground">
-            <p><strong>¿Qué hace esta herramienta?</strong></p>
-            <ul className="mt-2 space-y-1 list-disc list-inside">
-              <li>Analiza tu nicho y audiencia objetivo</li>
-              <li>Genera contenido optimizado para SEO local</li>
-              <li>Crea títulos, descripciones y textos para todo el sitio web</li>
-              <li>Genera imágenes profesionales que coinciden con tu marca</li>
-              <li>Todo el contenido se crea en español y se optimiza para Lima, Perú</li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
-    </TabsContent>
+      {/* Briefing Tab */}
+      <TabsContent value="briefing">
+        <Card>
+          <CardHeader>
+            <CardTitle>Briefing del Cliente</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="briefing">
+                Describe tu restaurante, tipo de comida, ambiente, ubicación y audiencia objetivo
+              </Label>
+              <Textarea
+                id="briefing"
+                value={briefing}
+                onChange={(e) => setBriefing(e.target.value)}
+                placeholder="Ejemplo: Somos un restaurante de comida peruana contemporánea ubicado en Miraflores. Nos especializamos en fusión nikkei con ingredientes frescos del mar peruano. Nuestro ambiente es moderno y elegante, dirigido a profesionales de 25-45 años que buscan experiencias gastronómicas únicas..."
+                rows={8}
+                className="mt-2"
+              />
+            </div>
+            
+            <div className="flex justify-end">
+              <Button 
+                onClick={handleGenerateContent}
+                disabled={isGenerating || !briefing.trim()}
+                className="min-w-32"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generando...
+                  </>
+                ) : (
+                  'Generar Contenido'
+                )}
+              </Button>
+            </div>
+            
+            <div className="text-sm text-muted-foreground">
+              <p><strong>¿Qué hace esta herramienta?</strong></p>
+              <ul className="mt-2 space-y-1 list-disc list-inside">
+                <li>Analiza tu nicho y audiencia objetivo</li>
+                <li>Genera contenido optimizado para SEO local</li>
+                <li>Crea títulos, descripciones y textos para todo el sitio web</li>
+                <li>Genera imágenes profesionales que coinciden con tu marca</li>
+                <li>Todo el contenido se crea en español y se optimiza para Lima, Perú</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
   </div>
 );
 }
