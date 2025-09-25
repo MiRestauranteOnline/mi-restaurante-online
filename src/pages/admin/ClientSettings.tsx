@@ -76,6 +76,8 @@ interface AdminContent {
   reviews_section_title_second_line?: string;
   about_page_hero_title_first_line?: string;
   about_page_hero_title_second_line?: string;
+  about_team_section_title_first_line?: string;
+  about_team_section_title_second_line?: string;
   contact_page_hero_title_first_line?: string;
   contact_page_hero_title_second_line?: string;
   menu_page_hero_title_first_line?: string;
@@ -94,25 +96,52 @@ interface AdminContent {
   homepage_delivery_section_title?: string;
   homepage_delivery_section_description?: string;
   homepage_contact_hide_reservation_box?: boolean;
+  about_page_hero_description?: string;
+  about_page_hero_background_url?: string;
+  about_team_section_description?: string;
   menu_page_hero_description?: string;
   menu_page_hero_background_url?: string;
   contact_page_hero_description?: string;
   contact_page_hero_background_url?: string;
-  about_page_hero_description?: string;
-  about_page_hero_background_url?: string;
   reviews_page_hero_description?: string;
   reviews_page_hero_background_url?: string;
   // About content fields (replacing JSONB)
   about_story?: string;
   about_chef_info?: string;
   about_mission?: string;
-  // Stats fields
-  stats_experience_number?: string;
-  stats_experience_label?: string;
-  stats_clients_number?: string;
-  stats_clients_label?: string;
-  stats_awards_number?: string;
-  stats_awards_label?: string;
+  // Stats fields (3 items)
+  stats_item1_icon?: string;
+  stats_item1_number?: string;
+  stats_item1_label?: string;
+  stats_item2_icon?: string;
+  stats_item2_number?: string;
+  stats_item2_label?: string;
+  stats_item3_icon?: string;
+  stats_item3_number?: string;
+  stats_item3_label?: string;
+  // Services Cards (3 cards)
+  services_card1_icon?: string;
+  services_card1_title?: string;
+  services_card1_description?: string;
+  services_card1_button_text?: string;
+  services_card1_button_link?: string;
+  services_card2_icon?: string;
+  services_card2_title?: string;
+  services_card2_description?: string;
+  services_card2_button_text?: string;
+  services_card2_button_link?: string;
+  services_card3_icon?: string;
+  services_card3_title?: string;
+  services_card3_description?: string;
+  services_card3_button_text?: string;
+  services_card3_button_link?: string;
+  // Services Features (3 features)
+  services_feature1_icon?: string;
+  services_feature1_text?: string;
+  services_feature2_icon?: string;
+  services_feature2_text?: string;
+  services_feature3_icon?: string;
+  services_feature3_text?: string;
 }
 
 interface MenuCategory {
@@ -316,6 +345,20 @@ export default function ClientSettings() {
     closed: Boolean(dayObj?.closed),
   });
 
+  // Icon options for dropdowns
+  const iconOptions = [
+    { value: 'Utensils', label: 'Utensils' },
+    { value: 'Truck', label: 'Truck' },
+    { value: 'Users', label: 'Users' },
+    { value: 'Clock', label: 'Clock' },
+    { value: 'Star', label: 'Star' },
+    { value: 'MapPin', label: 'MapPin' },
+    { value: 'Award', label: 'Award' },
+    { value: 'Heart', label: 'Heart' },
+    { value: 'Coffee', label: 'Coffee' },
+    { value: 'Zap', label: 'Zap' }
+  ];
+
   const [formData, setFormData] = useState({
     restaurant_name: '',
     subdomain: '',
@@ -372,6 +415,8 @@ export default function ClientSettings() {
     reviews_section_title_second_line: '',
     about_page_hero_title_first_line: '',
     about_page_hero_title_second_line: '',
+    about_team_section_title_first_line: '',
+    about_team_section_title_second_line: '',
     contact_page_hero_title_first_line: '',
     contact_page_hero_title_second_line: '',
     menu_page_hero_title_first_line: '',
@@ -390,25 +435,52 @@ export default function ClientSettings() {
     homepage_delivery_section_title: 'Delivery Partners',
     homepage_delivery_section_description: 'Ordena desde la comodidad de tu hogar',
     homepage_contact_hide_reservation_box: false,
+    about_page_hero_description: 'Conoce la pasión y tradición detrás de cada plato',
+    about_page_hero_background_url: '',
+    about_team_section_description: '',
     menu_page_hero_description: 'Explora nuestra carta completa de especialidades culinarias',
     menu_page_hero_background_url: '',
     contact_page_hero_description: 'Estamos aquí para hacer de tu experiencia algo inolvidable',
     contact_page_hero_background_url: '',
-    about_page_hero_description: 'Conoce la pasión y tradición detrás de cada plato',
-    about_page_hero_background_url: '',
     reviews_page_hero_description: 'Lo que nuestros clientes dicen sobre nosotros',
     reviews_page_hero_background_url: '',
     // About content fields (replacing JSONB)
     about_story: '',
     about_chef_info: '',
     about_mission: '',
-    // Stats fields
-    stats_experience_number: '',
-    stats_experience_label: '',
-    stats_clients_number: '',
-    stats_clients_label: '',
-    stats_awards_number: '',
-    stats_awards_label: ''
+    // Stats fields (3 items)
+    stats_item1_icon: 'Clock',
+    stats_item1_number: '',
+    stats_item1_label: '',
+    stats_item2_icon: 'Users',
+    stats_item2_number: '',
+    stats_item2_label: '',
+    stats_item3_icon: 'Award',
+    stats_item3_number: '',
+    stats_item3_label: '',
+    // Services Cards (3 cards)
+    services_card1_icon: 'Utensils',
+    services_card1_title: '',
+    services_card1_description: '',
+    services_card1_button_text: '',
+    services_card1_button_link: '',
+    services_card2_icon: 'Truck',
+    services_card2_title: '',
+    services_card2_description: '',
+    services_card2_button_text: '',
+    services_card2_button_link: '',
+    services_card3_icon: 'Users',
+    services_card3_title: '',
+    services_card3_description: '',
+    services_card3_button_text: '',
+    services_card3_button_link: '',
+    // Services Features (3 features)
+    services_feature1_icon: 'Clock',
+    services_feature1_text: '',
+    services_feature2_icon: 'Star',
+    services_feature2_text: '',
+    services_feature3_icon: 'MapPin',
+    services_feature3_text: ''
   });
 
   useEffect(() => {
@@ -577,6 +649,8 @@ export default function ClientSettings() {
           reviews_section_title_second_line: data.reviews_section_title_second_line || '',
           about_page_hero_title_first_line: data.about_page_hero_title_first_line || '',
           about_page_hero_title_second_line: data.about_page_hero_title_second_line || '',
+          about_team_section_title_first_line: data.about_team_section_title_first_line || '',
+          about_team_section_title_second_line: data.about_team_section_title_second_line || '',
           contact_page_hero_title_first_line: data.contact_page_hero_title_first_line || '',
           contact_page_hero_title_second_line: data.contact_page_hero_title_second_line || '',
           menu_page_hero_title_first_line: data.menu_page_hero_title_first_line || '',
@@ -595,25 +669,52 @@ export default function ClientSettings() {
           homepage_delivery_section_title: data.homepage_delivery_section_title || 'Delivery Partners',
           homepage_delivery_section_description: data.homepage_delivery_section_description || 'Ordena desde la comodidad de tu hogar',
           homepage_contact_hide_reservation_box: data.homepage_contact_hide_reservation_box || false,
+          about_page_hero_description: data.about_page_hero_description || 'Conoce la pasión y tradición detrás de cada plato',
+          about_page_hero_background_url: data.about_page_hero_background_url || '',
+          about_team_section_description: data.about_team_section_description || '',
           menu_page_hero_description: data.menu_page_hero_description || 'Explora nuestra carta completa de especialidades culinarias',
           menu_page_hero_background_url: data.menu_page_hero_background_url || '',
           contact_page_hero_description: data.contact_page_hero_description || 'Estamos aquí para hacer de tu experiencia algo inolvidable',
           contact_page_hero_background_url: data.contact_page_hero_background_url || '',
-          about_page_hero_description: data.about_page_hero_description || 'Conoce la pasión y tradición detrás de cada plato',
-          about_page_hero_background_url: data.about_page_hero_background_url || '',
           reviews_page_hero_description: data.reviews_page_hero_description || 'Lo que nuestros clientes dicen sobre nosotros',
           reviews_page_hero_background_url: data.reviews_page_hero_background_url || '',
           // About content fields (replacing JSONB)
           about_story: data.about_story || '',
           about_chef_info: data.about_chef_info || '',
           about_mission: data.about_mission || '',
-          // Stats fields
-          stats_experience_number: data.stats_experience_number || '',
-          stats_experience_label: data.stats_experience_label || '',
-          stats_clients_number: data.stats_clients_number || '',
-          stats_clients_label: data.stats_clients_label || '',
-          stats_awards_number: data.stats_awards_number || '',
-          stats_awards_label: data.stats_awards_label || ''
+          // Stats fields (3 items)
+          stats_item1_icon: data.stats_item1_icon || 'Clock',
+          stats_item1_number: data.stats_item1_number || '',
+          stats_item1_label: data.stats_item1_label || '',
+          stats_item2_icon: data.stats_item2_icon || 'Users',
+          stats_item2_number: data.stats_item2_number || '',
+          stats_item2_label: data.stats_item2_label || '',
+          stats_item3_icon: data.stats_item3_icon || 'Award',
+          stats_item3_number: data.stats_item3_number || '',
+          stats_item3_label: data.stats_item3_label || '',
+          // Services Cards (3 cards)
+          services_card1_icon: data.services_card1_icon || 'Utensils',
+          services_card1_title: data.services_card1_title || '',
+          services_card1_description: data.services_card1_description || '',
+          services_card1_button_text: data.services_card1_button_text || '',
+          services_card1_button_link: data.services_card1_button_link || '',
+          services_card2_icon: data.services_card2_icon || 'Truck',
+          services_card2_title: data.services_card2_title || '',
+          services_card2_description: data.services_card2_description || '',
+          services_card2_button_text: data.services_card2_button_text || '',
+          services_card2_button_link: data.services_card2_button_link || '',
+          services_card3_icon: data.services_card3_icon || 'Users',
+          services_card3_title: data.services_card3_title || '',
+          services_card3_description: data.services_card3_description || '',
+          services_card3_button_text: data.services_card3_button_text || '',
+          services_card3_button_link: data.services_card3_button_link || '',
+          // Services Features (3 features)
+          services_feature1_icon: data.services_feature1_icon || 'Clock',
+          services_feature1_text: data.services_feature1_text || '',
+          services_feature2_icon: data.services_feature2_icon || 'Star',
+          services_feature2_text: data.services_feature2_text || '',
+          services_feature3_icon: data.services_feature3_icon || 'MapPin',
+          services_feature3_text: data.services_feature3_text || ''
         }));
       }
     } catch (error: any) {
@@ -757,6 +858,8 @@ export default function ClientSettings() {
             reviews_section_title_second_line: formData.reviews_section_title_second_line,
             about_page_hero_title_first_line: formData.about_page_hero_title_first_line,
             about_page_hero_title_second_line: formData.about_page_hero_title_second_line,
+            about_team_section_title_first_line: formData.about_team_section_title_first_line,
+            about_team_section_title_second_line: formData.about_team_section_title_second_line,
             contact_page_hero_title_first_line: formData.contact_page_hero_title_first_line,
             contact_page_hero_title_second_line: formData.contact_page_hero_title_second_line,
             menu_page_hero_title_first_line: formData.menu_page_hero_title_first_line,
@@ -775,25 +878,52 @@ export default function ClientSettings() {
             homepage_delivery_section_title: formData.homepage_delivery_section_title,
             homepage_delivery_section_description: formData.homepage_delivery_section_description,
             homepage_contact_hide_reservation_box: formData.homepage_contact_hide_reservation_box,
+            about_page_hero_description: formData.about_page_hero_description,
+            about_page_hero_background_url: formData.about_page_hero_background_url,
+            about_team_section_description: formData.about_team_section_description,
             menu_page_hero_description: formData.menu_page_hero_description,
             menu_page_hero_background_url: formData.menu_page_hero_background_url,
             contact_page_hero_description: formData.contact_page_hero_description,
             contact_page_hero_background_url: formData.contact_page_hero_background_url,
-            about_page_hero_description: formData.about_page_hero_description,
-            about_page_hero_background_url: formData.about_page_hero_background_url,
             reviews_page_hero_description: formData.reviews_page_hero_description,
             reviews_page_hero_background_url: formData.reviews_page_hero_background_url,
             // About content fields (replacing JSONB)
             about_story: formData.about_story,
             about_chef_info: formData.about_chef_info,
             about_mission: formData.about_mission,
-            // Stats fields
-            stats_experience_number: formData.stats_experience_number,
-            stats_experience_label: formData.stats_experience_label,
-            stats_clients_number: formData.stats_clients_number,
-            stats_clients_label: formData.stats_clients_label,
-            stats_awards_number: formData.stats_awards_number,
-            stats_awards_label: formData.stats_awards_label,
+            // Stats fields (3 items)
+            stats_item1_icon: formData.stats_item1_icon,
+            stats_item1_number: formData.stats_item1_number,
+            stats_item1_label: formData.stats_item1_label,
+            stats_item2_icon: formData.stats_item2_icon,
+            stats_item2_number: formData.stats_item2_number,
+            stats_item2_label: formData.stats_item2_label,
+            stats_item3_icon: formData.stats_item3_icon,
+            stats_item3_number: formData.stats_item3_number,
+            stats_item3_label: formData.stats_item3_label,
+            // Services Cards (3 cards)
+            services_card1_icon: formData.services_card1_icon,
+            services_card1_title: formData.services_card1_title,
+            services_card1_description: formData.services_card1_description,
+            services_card1_button_text: formData.services_card1_button_text,
+            services_card1_button_link: formData.services_card1_button_link,
+            services_card2_icon: formData.services_card2_icon,
+            services_card2_title: formData.services_card2_title,
+            services_card2_description: formData.services_card2_description,
+            services_card2_button_text: formData.services_card2_button_text,
+            services_card2_button_link: formData.services_card2_button_link,
+            services_card3_icon: formData.services_card3_icon,
+            services_card3_title: formData.services_card3_title,
+            services_card3_description: formData.services_card3_description,
+            services_card3_button_text: formData.services_card3_button_text,
+            services_card3_button_link: formData.services_card3_button_link,
+            // Services Features (3 features)
+            services_feature1_icon: formData.services_feature1_icon,
+            services_feature1_text: formData.services_feature1_text,
+            services_feature2_icon: formData.services_feature2_icon,
+            services_feature2_text: formData.services_feature2_text,
+            services_feature3_icon: formData.services_feature3_icon,
+            services_feature3_text: formData.services_feature3_text,
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'client_id'
@@ -1859,7 +1989,7 @@ export default function ClientSettings() {
               {/* About Page Content */}
               <Card>
                 <CardHeader>
-                  <CardTitle>About Page</CardTitle>
+                  <CardTitle>About Page - Hero Section</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1900,64 +2030,205 @@ export default function ClientSettings() {
                 </CardContent>
               </Card>
 
-              {/* Stats Section */}
+              {/* About Page - Team Section */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Homepage - Stats Section</CardTitle>
+                  <CardTitle>About Page - Team Section</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="stats_experience_number">Experience Number</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="about_team_section_title_first_line">Team Section Title (First Line)</Label>
                       <Input
-                        id="stats_experience_number"
-                        value={formData.stats_experience_number}
-                        onChange={(e) => setFormData({...formData, stats_experience_number: e.target.value})}
-                        placeholder="15+"
-                      />
-                      <Label htmlFor="stats_experience_label">Experience Label</Label>
-                      <Input
-                        id="stats_experience_label"
-                        value={formData.stats_experience_label}
-                        onChange={(e) => setFormData({...formData, stats_experience_label: e.target.value})}
-                        placeholder="Años de Experiencia"
+                        id="about_team_section_title_first_line"
+                        value={formData.about_team_section_title_first_line}
+                        onChange={(e) => setFormData({...formData, about_team_section_title_first_line: e.target.value})}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="stats_clients_number">Clients Number</Label>
+                    <div>
+                      <Label htmlFor="about_team_section_title_second_line">Team Section Title (Second Line)</Label>
                       <Input
-                        id="stats_clients_number"
-                        value={formData.stats_clients_number}
-                        onChange={(e) => setFormData({...formData, stats_clients_number: e.target.value})}
-                        placeholder="5K+"
-                      />
-                      <Label htmlFor="stats_clients_label">Clients Label</Label>
-                      <Input
-                        id="stats_clients_label"
-                        value={formData.stats_clients_label}
-                        onChange={(e) => setFormData({...formData, stats_clients_label: e.target.value})}
-                        placeholder="Clientes Felices"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="stats_awards_number">Awards Number</Label>
-                      <Input
-                        id="stats_awards_number"
-                        value={formData.stats_awards_number}
-                        onChange={(e) => setFormData({...formData, stats_awards_number: e.target.value})}
-                        placeholder="10+"
-                      />
-                      <Label htmlFor="stats_awards_label">Awards Label</Label>
-                      <Input
-                        id="stats_awards_label"
-                        value={formData.stats_awards_label}
-                        onChange={(e) => setFormData({...formData, stats_awards_label: e.target.value})}
-                        placeholder="Reconocimientos"
+                        id="about_team_section_title_second_line"
+                        value={formData.about_team_section_title_second_line}
+                        onChange={(e) => setFormData({...formData, about_team_section_title_second_line: e.target.value})}
                       />
                     </div>
                   </div>
+                  <div>
+                    <Label htmlFor="about_team_section_description">Team Section Description</Label>
+                    <Textarea
+                      id="about_team_section_description"
+                      value={formData.about_team_section_description}
+                      onChange={(e) => setFormData({...formData, about_team_section_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
                 </CardContent>
               </Card>
+
+              {/* Stats Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Stats Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {[1, 2, 3].map(num => (
+                    <div key={num} className="border p-4 rounded-lg">
+                      <h4 className="font-medium mb-3">Stats Item {num}</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor={`stats_item${num}_icon`}>Icon</Label>
+                          <Select
+                            value={formData[`stats_item${num}_icon` as keyof typeof formData] as string}
+                            onValueChange={(value) => setFormData({...formData, [`stats_item${num}_icon`]: value})}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-background border border-border shadow-md z-50">
+                              {iconOptions.map(option => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor={`stats_item${num}_number`}>Number</Label>
+                          <Input
+                            id={`stats_item${num}_number`}
+                            value={formData[`stats_item${num}_number` as keyof typeof formData] as string}
+                            onChange={(e) => setFormData({...formData, [`stats_item${num}_number`]: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor={`stats_item${num}_label`}>Label</Label>
+                          <Input
+                            id={`stats_item${num}_label`}
+                            value={formData[`stats_item${num}_label` as keyof typeof formData] as string}
+                            onChange={(e) => setFormData({...formData, [`stats_item${num}_label`]: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* Services Cards Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Services Cards Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {[1, 2, 3].map(num => (
+                    <div key={num} className="border p-4 rounded-lg">
+                      <h4 className="font-medium mb-3">Service Card {num}</h4>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor={`services_card${num}_icon`}>Icon</Label>
+                            <Select
+                              value={formData[`services_card${num}_icon` as keyof typeof formData] as string}
+                              onValueChange={(value) => setFormData({...formData, [`services_card${num}_icon`]: value})}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-background border border-border shadow-md z-50">
+                                {iconOptions.map(option => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label htmlFor={`services_card${num}_title`}>Title</Label>
+                            <Input
+                              id={`services_card${num}_title`}
+                              value={formData[`services_card${num}_title` as keyof typeof formData] as string}
+                              onChange={(e) => setFormData({...formData, [`services_card${num}_title`]: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor={`services_card${num}_description`}>Description</Label>
+                          <Textarea
+                            id={`services_card${num}_description`}
+                            value={formData[`services_card${num}_description` as keyof typeof formData] as string}
+                            onChange={(e) => setFormData({...formData, [`services_card${num}_description`]: e.target.value})}
+                            rows={2}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor={`services_card${num}_button_text`}>Button Text</Label>
+                            <Input
+                              id={`services_card${num}_button_text`}
+                              value={formData[`services_card${num}_button_text` as keyof typeof formData] as string}
+                              onChange={(e) => setFormData({...formData, [`services_card${num}_button_text`]: e.target.value})}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor={`services_card${num}_button_link`}>Button Link</Label>
+                            <Input
+                              id={`services_card${num}_button_link`}
+                              value={formData[`services_card${num}_button_link` as keyof typeof formData] as string}
+                              onChange={(e) => setFormData({...formData, [`services_card${num}_button_link`]: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* Services Features Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Services Features Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {[1, 2, 3].map(num => (
+                    <div key={num} className="border p-4 rounded-lg">
+                      <h4 className="font-medium mb-3">Service Feature {num}</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor={`services_feature${num}_icon`}>Icon</Label>
+                          <Select
+                            value={formData[`services_feature${num}_icon` as keyof typeof formData] as string}
+                            onValueChange={(value) => setFormData({...formData, [`services_feature${num}_icon`]: value})}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-background border border-border shadow-md z-50">
+                              {iconOptions.map(option => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor={`services_feature${num}_text`}>Text</Label>
+                          <Input
+                            id={`services_feature${num}_text`}
+                            value={formData[`services_feature${num}_text` as keyof typeof formData] as string}
+                            onChange={(e) => setFormData({...formData, [`services_feature${num}_text`]: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
 
               {/* Reviews Section */}
               <Card>
