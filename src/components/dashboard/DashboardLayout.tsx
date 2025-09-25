@@ -13,7 +13,8 @@ import {
   LogOut,
   ChevronLeft,
   LayoutDashboard,
-  UtensilsCrossed
+  UtensilsCrossed,
+  Shield
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -34,6 +35,7 @@ export default function DashboardLayout() {
   const [clients, setClients] = useState<UserClient[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string>('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +47,16 @@ export default function DashboardLayout() {
       }
 
       setUser(session.user);
+      
+      // Check if user is admin
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .single();
+      
+      setIsAdmin(!!roleData);
       
       // Fetch user's accessible restaurants
       const { data: userClients, error } = await (supabase as any)
@@ -96,6 +108,11 @@ export default function DashboardLayout() {
   const selectedClient = clients.find(c => c.client_id === selectedClientId)?.clients;
 
   const sidebarItems = [
+    ...(isAdmin ? [{
+      title: 'Admin Dashboard',
+      href: '/admin/dashboard',
+      icon: Shield,
+    }] : []),
     {
       title: 'Configuración del Restaurante',
       href: '/dashboard/settings',

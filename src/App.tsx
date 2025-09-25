@@ -19,6 +19,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import RestaurantSettings from "./pages/dashboard/RestaurantSettings";
 import MenuCategories from "./pages/dashboard/MenuCategories";
 import MenuItems from "./pages/dashboard/MenuItems";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,9 @@ const App = () => (
             <Route path="settings" element={<RestaurantSettings />} />
             <Route path="categories" element={<MenuCategories />} />
             <Route path="menu-items" element={<MenuItems />} />
+          </Route>
+          <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="dashboard" element={<AdminDashboard />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
