@@ -1,0 +1,1 @@
+UPDATE generated_articles SET status = 'published', publish_date = NOW() WHERE status = 'draft';
