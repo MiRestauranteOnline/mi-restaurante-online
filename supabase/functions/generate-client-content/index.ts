@@ -15,6 +15,21 @@ const supabase = createClient(
 const openaiApiKey = Deno.env.get('chatgpt');
 const leonardoApiKey = Deno.env.get('leonardo');
 
+function extractJson(text: string): string {
+  // Remove code fences if present
+  let cleaned = text.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```[a-zA-Z]*\n/, '').replace(/```\s*$/, '');
+  }
+  // Extract between first { and last }
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start !== -1 && end !== -1 && end > start) {
+    return cleaned.slice(start, end + 1);
+  }
+  return cleaned;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -153,9 +168,15 @@ serve(async (req) => {
     const openaiData = await openaiResponse.json();
     console.log('OpenAI response received');
     
+    if (!openaiData?.choices?.[0]?.message?.content) {
+      console.error('Unexpected OpenAI response shape:', JSON.stringify(openaiData).slice(0, 1000));
+      throw new Error('OpenAI response did not contain content');
+    }
+    
     let generatedContent;
     try {
-      generatedContent = JSON.parse(openaiData.choices[0].message.content);
+      const contentText = extractJson(openaiData.choices[0].message.content);
+      generatedContent = JSON.parse(contentText);
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', openaiData.choices[0].message.content);
       throw new Error('Failed to parse AI response as JSON');
@@ -196,7 +217,7 @@ serve(async (req) => {
           // Poll for completion
           let imageUrl = null;
           let attempts = 0;
-          const maxAttempts = 20; // 3.5 minutes max
+          const maxAttempts = 6; // ~60s max to avoid function timeout
           
           while (!imageUrl && attempts < maxAttempts) {
             await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
