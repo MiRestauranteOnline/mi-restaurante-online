@@ -796,7 +796,9 @@ export default function ClientSettings() {
               <CardTitle>Opening Hours</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {Object.entries(formData.opening_hours).map(([day, hours]: [string, any]) => (
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
+                const hours = formData.opening_hours[day] || { closed: true, open: '09:00', close: '17:00' };
+                return (
                 <div key={day} className="flex items-center gap-4 p-4 border rounded-lg">
                   <div className="w-24">
                     <Label className="text-sm font-medium capitalize">{day}</Label>
@@ -850,8 +852,9 @@ export default function ClientSettings() {
                       </div>
                     </>
                   )}
-                </div>
-              ))}
+                 </div>
+                );
+              })}
             </CardContent>
           </Card>
         </TabsContent>
