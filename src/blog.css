@@ -70,6 +70,7 @@
 }
 
 .blog-content a {
+  color: hsl(var(--primary));
   text-decoration: none;
 }
 
