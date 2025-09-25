@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -1166,6 +1167,42 @@ export default function ClientSettings() {
                   id="item_image_url"
                   value={menuItemForm.image_url}
                   onChange={(e) => setMenuItemForm({...menuItemForm, image_url: e.target.value})}
+                />
+              </div>
+            </div>
+            
+            {/* Visibility Options */}
+            <div className="space-y-4 pt-4 border-t">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Show on Homepage</Label>
+                  <p className="text-sm text-muted-foreground">Display this item on the homepage (max 8 items)</p>
+                </div>
+                <Switch
+                  checked={menuItemForm.show_on_homepage || false}
+                  onCheckedChange={(checked) => setMenuItemForm({...menuItemForm, show_on_homepage: checked})}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Show Image on Homepage</Label>
+                  <p className="text-sm text-muted-foreground">Display image when shown on homepage</p>
+                </div>
+                <Switch
+                  checked={menuItemForm.show_image_home || false}
+                  onCheckedChange={(checked) => setMenuItemForm({...menuItemForm, show_image_home: checked})}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Show Image on Menu Page</Label>
+                  <p className="text-sm text-muted-foreground">Display image on the full menu page</p>
+                </div>
+                <Switch
+                  checked={menuItemForm.show_image_menu !== false}
+                  onCheckedChange={(checked) => setMenuItemForm({...menuItemForm, show_image_menu: checked})}
                 />
               </div>
             </div>
