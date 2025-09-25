@@ -90,6 +90,7 @@ interface AdminContent {
   homepage_hero_right_button_text?: string;
   homepage_hero_right_button_link?: string;
   homepage_about_section_description?: string;
+  homepage_about_section_image_url?: string;
   homepage_services_section_description?: string;
   homepage_menu_section_description?: string;
   homepage_contact_section_description?: string;
@@ -98,6 +99,7 @@ interface AdminContent {
   homepage_contact_hide_reservation_box?: boolean;
   about_page_hero_description?: string;
   about_page_hero_background_url?: string;
+  about_page_about_section_image_url?: string;
   about_team_section_description?: string;
   menu_page_hero_description?: string;
   menu_page_hero_background_url?: string;
@@ -429,6 +431,7 @@ export default function ClientSettings() {
     homepage_hero_right_button_text: 'Reservar Mesa',
     homepage_hero_right_button_link: '#contact',
     homepage_about_section_description: '',
+    homepage_about_section_image_url: '',
     homepage_services_section_description: '',
     homepage_menu_section_description: 'Descubre nuestra selección de platos cuidadosamente elaborados',
     homepage_contact_section_description: 'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única',
@@ -437,6 +440,7 @@ export default function ClientSettings() {
     homepage_contact_hide_reservation_box: false,
     about_page_hero_description: 'Conoce la pasión y tradición detrás de cada plato',
     about_page_hero_background_url: '',
+    about_page_about_section_image_url: '',
     about_team_section_description: '',
     menu_page_hero_description: 'Explora nuestra carta completa de especialidades culinarias',
     menu_page_hero_background_url: '',
@@ -663,6 +667,7 @@ export default function ClientSettings() {
           homepage_hero_right_button_text: data.homepage_hero_right_button_text || 'Reservar Mesa',
           homepage_hero_right_button_link: data.homepage_hero_right_button_link || '#contact',
           homepage_about_section_description: data.homepage_about_section_description || '',
+          homepage_about_section_image_url: data.homepage_about_section_image_url || '',
           homepage_services_section_description: data.homepage_services_section_description || '',
           homepage_menu_section_description: data.homepage_menu_section_description || 'Descubre nuestra selección de platos cuidadosamente elaborados',
           homepage_contact_section_description: data.homepage_contact_section_description || 'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única',
@@ -671,6 +676,7 @@ export default function ClientSettings() {
           homepage_contact_hide_reservation_box: data.homepage_contact_hide_reservation_box || false,
           about_page_hero_description: data.about_page_hero_description || 'Conoce la pasión y tradición detrás de cada plato',
           about_page_hero_background_url: data.about_page_hero_background_url || '',
+          about_page_about_section_image_url: data.about_page_about_section_image_url || '',
           about_team_section_description: data.about_team_section_description || '',
           menu_page_hero_description: data.menu_page_hero_description || 'Explora nuestra carta completa de especialidades culinarias',
           menu_page_hero_background_url: data.menu_page_hero_background_url || '',
@@ -872,6 +878,7 @@ export default function ClientSettings() {
             homepage_hero_right_button_text: formData.homepage_hero_right_button_text,
             homepage_hero_right_button_link: formData.homepage_hero_right_button_link,
             homepage_about_section_description: formData.homepage_about_section_description,
+            homepage_about_section_image_url: formData.homepage_about_section_image_url,
             homepage_services_section_description: formData.homepage_services_section_description,
             homepage_menu_section_description: formData.homepage_menu_section_description,
             homepage_contact_section_description: formData.homepage_contact_section_description,
@@ -880,6 +887,7 @@ export default function ClientSettings() {
             homepage_contact_hide_reservation_box: formData.homepage_contact_hide_reservation_box,
             about_page_hero_description: formData.about_page_hero_description,
             about_page_hero_background_url: formData.about_page_hero_background_url,
+            about_page_about_section_image_url: formData.about_page_about_section_image_url,
             about_team_section_description: formData.about_team_section_description,
             menu_page_hero_description: formData.menu_page_hero_description,
             menu_page_hero_background_url: formData.menu_page_hero_background_url,
@@ -1742,17 +1750,25 @@ export default function ClientSettings() {
                       />
                     </div>
                   </div>
-                  <div>
-                    <Label htmlFor="homepage_about_section_description">About Section Description</Label>
-                    <Textarea
-                      id="homepage_about_section_description"
-                      value={formData.homepage_about_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_about_section_description: e.target.value})}
-                      rows={3}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+                   <div>
+                     <Label htmlFor="homepage_about_section_description">About Section Description</Label>
+                     <Textarea
+                       id="homepage_about_section_description"
+                       value={formData.homepage_about_section_description}
+                       onChange={(e) => setFormData({...formData, homepage_about_section_description: e.target.value})}
+                       rows={3}
+                     />
+                   </div>
+                   <div>
+                     <ImageUpload
+                       label="About Section Image"
+                       value={formData.homepage_about_section_image_url || ''}
+                       onChange={(url) => setFormData({...formData, homepage_about_section_image_url: url})}
+                       clientId={clientId!}
+                     />
+                   </div>
+                 </CardContent>
+               </Card>
 
               {/* Homepage Services Section */}
               <Card>
@@ -2018,17 +2034,25 @@ export default function ClientSettings() {
                       clientId={clientId!}
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="about_page_hero_description">Hero Description</Label>
-                    <Textarea
-                      id="about_page_hero_description"
-                      value={formData.about_page_hero_description}
-                      onChange={(e) => setFormData({...formData, about_page_hero_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+                   <div>
+                     <Label htmlFor="about_page_hero_description">Hero Description</Label>
+                     <Textarea
+                       id="about_page_hero_description"
+                       value={formData.about_page_hero_description}
+                       onChange={(e) => setFormData({...formData, about_page_hero_description: e.target.value})}
+                       rows={2}
+                     />
+                   </div>
+                   <div>
+                     <ImageUpload
+                       label="About Section Image"
+                       value={formData.about_page_about_section_image_url || ''}
+                       onChange={(url) => setFormData({...formData, about_page_about_section_image_url: url})}
+                       clientId={clientId!}
+                     />
+                   </div>
+                 </CardContent>
+               </Card>
 
               {/* About Page - Team Section */}
               <Card>
