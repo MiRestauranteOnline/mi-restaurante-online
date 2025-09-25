@@ -42,6 +42,7 @@ const BlogGenerationAdmin: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
+  const [isCleaningUp, setIsCleaningUp] = useState(false);
   const [logs, setLogs] = useState<GenerationLog[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [contentGaps, setContentGaps] = useState<ContentGap[]>([]);
@@ -82,7 +83,7 @@ const BlogGenerationAdmin: React.FC = () => {
   }, []);
 
   const handleGenerateDaily = async () => {
-    if (isAnalyzing || isGenerating || isSeeding) {
+    if (isAnalyzing || isGenerating || isSeeding || isCleaningUp) {
       toast({
         title: "Operation in progress",
         description: "Please wait for the current operation to complete",
@@ -123,7 +124,7 @@ const BlogGenerationAdmin: React.FC = () => {
   };
 
   const handleAnalyzeGaps = async () => {
-    if (isAnalyzing || isGenerating || isSeeding) {
+    if (isAnalyzing || isGenerating || isSeeding || isCleaningUp) {
       toast({
         title: "Operation in progress",
         description: "Please wait for the current operation to complete",
@@ -164,7 +165,7 @@ const BlogGenerationAdmin: React.FC = () => {
   };
 
   const handleSeedKeywords = async () => {
-    if (isAnalyzing || isGenerating || isSeeding) {
+    if (isAnalyzing || isGenerating || isSeeding || isCleaningUp) {
       toast({
         title: "Operation in progress",
         description: "Please wait for the current operation to complete",
@@ -201,6 +202,47 @@ const BlogGenerationAdmin: React.FC = () => {
       });
     } finally {
       setIsSeeding(false);
+    }
+  };
+
+  const handleCleanupStuck = async () => {
+    if (isAnalyzing || isGenerating || isSeeding || isCleaningUp) {
+      toast({
+        title: "Operation in progress",
+        description: "Please wait for the current operation to complete",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsCleaningUp(true);
+    try {
+      const response = await supabase.functions.invoke('fix-stuck-generations');
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      const result = response.data;
+      
+      if (result.success) {
+        toast({
+          title: "Cleanup Completed",
+          description: `Fixed ${result.stuck_generations_cleaned + result.stuck_gaps_reset} stuck operations and published ${result.articles_published} articles`,
+        });
+        await fetchData();
+      } else {
+        throw new Error(result.error || 'Cleanup failed');
+      }
+    } catch (error) {
+      console.error('Error in cleanup:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : 'Failed to cleanup stuck operations',
+        variant: "destructive",
+      });
+    } finally {
+      setIsCleaningUp(false);
     }
   };
 
@@ -247,7 +289,7 @@ const BlogGenerationAdmin: React.FC = () => {
       <div className="flex gap-4">
         <Button 
           onClick={handleGenerateDaily}
-          disabled={isGenerating || isAnalyzing || isSeeding}
+          disabled={isGenerating || isAnalyzing || isSeeding || isCleaningUp}
           className="flex items-center gap-2"
         >
           {isGenerating ? (
@@ -260,7 +302,7 @@ const BlogGenerationAdmin: React.FC = () => {
         <Button 
           variant="outline"
           onClick={handleAnalyzeGaps}
-          disabled={isGenerating || isAnalyzing || isSeeding}
+          disabled={isGenerating || isAnalyzing || isSeeding || isCleaningUp}
         >
           {isAnalyzing ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -280,6 +322,18 @@ const BlogGenerationAdmin: React.FC = () => {
             <Eye className="w-4 h-4 mr-2" />
           )}
           Seed Keywords
+        </Button>
+        <Button 
+          variant="outline"
+          onClick={handleCleanupStuck}
+          disabled={isGenerating || isAnalyzing || isSeeding || isCleaningUp}
+        >
+          {isCleaningUp ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <AlertCircle className="w-4 h-4 mr-2" />
+          )}
+          Fix Stuck Operations
         </Button>
       </div>
 

@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.seed-keywords]
 verify_jwt = false
+
+[functions.fix-stuck-generations]
+verify_jwt = false
