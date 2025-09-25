@@ -457,6 +457,10 @@ export default function ClientSettings() {
     reviewer_name: '', review_text: '', star_rating: 5, display_order: 0
   });
 
+  // Briefing state
+  const [briefing, setBriefing] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+
   // Filter and group menu items by category
   const filteredAndGroupedMenuItems = useMemo(() => {
     const filtered = menuItems.filter(item => 
@@ -1445,6 +1449,130 @@ export default function ClientSettings() {
             reviewer_name: reviewForm.reviewer_name,
             review_text: reviewForm.review_text,
             star_rating: reviewForm.star_rating,
+            display_order: reviewForm.display_order
+          })
+          .eq('id', editingReview.id);
+
+        if (error) throw error;
+        
+        setReviews(reviews.map(r => r.id === editingReview.id ? { ...r, ...reviewForm } : r) as Review[]);
+        setEditingReview(null);
+      } else {
+        const maxOrder = reviews.reduce((max, r) => Math.max(max, r.display_order), 0);
+        
+        const { data, error } = await supabase
+          .from('reviews')
+          .insert({
+            client_id: clientId,
+            reviewer_name: reviewForm.reviewer_name,
+            review_text: reviewForm.review_text,
+            star_rating: reviewForm.star_rating,
+            display_order: maxOrder + 1,
+            is_active: true
+          })
+          .select();
+
+        if (error) throw error;
+        
+        if (data?.[0]) {
+          setReviews([...reviews, data[0] as Review]);
+        }
+      }
+      
+      setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_order: 0 });
+      setShowReviewDialog(false);
+      
+      toast({
+        title: "Success",
+        description: editingReview ? "Review updated successfully" : "Review added successfully"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to save review: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteReview = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setReviews(reviews.filter(r => r.id !== id));
+      
+      toast({
+        title: "Success",
+        description: "Review deleted successfully"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to delete review: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Briefing AI content generation
+  const handleGenerateContent = async () => {
+    if (!briefing.trim()) {
+      toast({
+        title: "Error",
+        description: "Por favor ingresa un briefing antes de generar contenido",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-client-content', {
+        body: {
+          briefing,
+          clientId,
+          restaurantName: client?.restaurant_name,
+          address: client?.address
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "¡Éxito!",
+        description: "Contenido generado exitosamente. Revisa la pestaña 'Change Content' para ver los cambios.",
+      });
+
+      // Reload admin content to show updated data
+      fetchAdminContent();
+      
+    } catch (error: any) {
+      console.error('Error generating content:', error);
+      toast({
+        title: "Error",
+        description: "Error al generar contenido: " + error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+    if (!clientId) return;
+    
+    try {
+      if (editingReview) {
+        const { data, error } = await supabase
+          .from('reviews')
+          .update({
+            reviewer_name: reviewForm.reviewer_name,
+            review_text: reviewForm.review_text,
+            star_rating: reviewForm.star_rating,
             display_order: reviewForm.display_order,
           })
           .eq('id', editingReview.id)
@@ -1764,6 +1892,7 @@ export default function ClientSettings() {
           <TabsTrigger value="delivery">Delivery</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
           {userRole === 'admin' && <TabsTrigger value="content">Change Content</TabsTrigger>}
+          {userRole === 'admin' && <TabsTrigger value="briefing">Briefing</TabsTrigger>}
           <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="menu">Menu Items</TabsTrigger>
           <TabsTrigger value="team">Team Members</TabsTrigger>
@@ -3340,6 +3469,58 @@ export default function ClientSettings() {
         </DialogContent>
       </Dialog>
     </Tabs>
+
+    {/* Briefing Tab */}
+    <TabsContent value="briefing">
+      <Card>
+        <CardHeader>
+          <CardTitle>Briefing del Cliente</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label htmlFor="briefing">
+              Describe tu restaurante, tipo de comida, ambiente, ubicación y audiencia objetivo
+            </Label>
+            <Textarea
+              id="briefing"
+              value={briefing}
+              onChange={(e) => setBriefing(e.target.value)}
+              placeholder="Ejemplo: Somos un restaurante de comida peruana contemporánea ubicado en Miraflores. Nos especializamos en fusión nikkei con ingredientes frescos del mar peruano. Nuestro ambiente es moderno y elegante, dirigido a profesionales de 25-45 años que buscan experiencias gastronómicas únicas..."
+              rows={8}
+              className="mt-2"
+            />
+          </div>
+          
+          <div className="flex justify-end">
+            <Button 
+              onClick={handleGenerateContent}
+              disabled={isGenerating || !briefing.trim()}
+              className="min-w-32"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generando...
+                </>
+              ) : (
+                'Generar Contenido'
+              )}
+            </Button>
+          </div>
+          
+          <div className="text-sm text-muted-foreground">
+            <p><strong>¿Qué hace esta herramienta?</strong></p>
+            <ul className="mt-2 space-y-1 list-disc list-inside">
+              <li>Analiza tu nicho y audiencia objetivo</li>
+              <li>Genera contenido optimizado para SEO local</li>
+              <li>Crea títulos, descripciones y textos para todo el sitio web</li>
+              <li>Genera imágenes profesionales que coinciden con tu marca</li>
+              <li>Todo el contenido se crea en español y se optimiza para Lima, Perú</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </TabsContent>
   </div>
 );
 }
