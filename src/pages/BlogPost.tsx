@@ -79,7 +79,7 @@ const BlogPost = () => {
       <Navigation />
       
       {/* Breadcrumbs */}
-      <nav className="py-0 mt-16 border-b">
+      <nav className="py-0 mt-20 border-b">
         <div className="container mx-auto px-4">
           <ol className="flex items-center space-x-2 text-sm text-muted-foreground py-4">
             <li>
