@@ -2,10 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Star, CheckCircle } from "lucide-react";
 import heroImage from "@/assets/hero-restaurant-websites.jpg";
+import { businessData } from "@/config/businessData";
 
 export const Hero = () => {
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/51999999999?text=Hola, quiero información sobre los sitios web para restaurantes", "_blank");
+    window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(businessData.contact.whatsapp.message)}`, "_blank");
   };
 
   return (

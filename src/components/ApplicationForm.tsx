@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Upload, CheckCircle } from "lucide-react";
+import { businessData } from "@/config/businessData";
 import { useToast } from "@/hooks/use-toast";
 
 export const ApplicationForm = () => {
@@ -89,7 +90,7 @@ Estilo: ${formData.desiredStyle}
 
 ${formData.aboutRestaurant ? `Información adicional: ${formData.aboutRestaurant}` : ''}`;
 
-    window.open(`https://wa.me/51999999999?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   if (isSubmitted) {

@@ -11,6 +11,7 @@ import {
   Users,
   Smartphone
 } from "lucide-react";
+import { businessData } from "@/config/businessData";
 
 export const ProblemSolutionSection = () => {
   const problems = [
@@ -219,7 +220,7 @@ export const ProblemSolutionSection = () => {
               <Button 
                 variant="outline"
                 className="border-primary text-primary hover:bg-primary/5"
-                onClick={() => window.open("https://wa.me/51999999999?text=Hola, quiero saber más sobre cómo Mi Restaurante Online puede ayudar a mi negocio", "_blank")}
+                onClick={() => window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent("Hola, quiero saber más sobre cómo Mi Restaurante Online puede ayudar a mi negocio")}`, "_blank")}
               >
                 Conversemos por WhatsApp
               </Button>

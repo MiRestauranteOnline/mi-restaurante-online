@@ -2,11 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Star, MessageCircle } from "lucide-react";
+import { businessData } from "@/config/businessData";
 
 export const PricingSection = () => {
   const handleWhatsAppClick = (plan: string) => {
     const message = `Hola, quiero información sobre el plan ${plan}`;
-    window.open(`https://wa.me/51999999999?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   const handleApplicationClick = () => {

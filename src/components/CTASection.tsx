@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { businessData } from "@/config/businessData";
 import restaurantInterior from "@/assets/restaurant-interior.jpg";
 
 export const CTASection = () => {
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/51999999999?text=Hola, quiero información sobre los sitios web para restaurantes", "_blank");
+    window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(businessData.contact.whatsapp.message)}`, "_blank");
   };
 
   const handleScrollToPricing = () => {

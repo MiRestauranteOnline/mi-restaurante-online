@@ -1,6 +1,8 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
+import { businessData } from "@/config/businessData";
 
 export const FAQSection = () => {
   const faqs = [
@@ -47,7 +49,7 @@ export const FAQSection = () => {
   ];
 
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/51999999999?text=Hola, tengo una pregunta sobre los sitios web para restaurantes", "_blank");
+    window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent("Hola, tengo una pregunta sobre los sitios web para restaurantes")}`, "_blank");
   };
 
   return (
@@ -102,13 +104,13 @@ export const FAQSection = () => {
               Nuestro equipo está disponible por WhatsApp para resolver cualquier duda específica 
               sobre tu proyecto. ¡No esperes más!
             </p>
-            <button 
+            <Button 
               onClick={handleWhatsAppClick}
               className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 rounded-lg font-semibold transition-smooth shadow-accent flex items-center gap-3 mx-auto"
             >
               <MessageCircle className="w-5 h-5" />
               Preguntar por WhatsApp
-            </button>
+            </Button>
           </div>
         </div>
       </div>
