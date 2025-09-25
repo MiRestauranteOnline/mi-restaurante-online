@@ -212,6 +212,29 @@ const BlogPost = () => {
                   dangerouslySetInnerHTML={{ __html: article.content }}
                 />
                 
+                {/* Template CTA Section */}
+                <div className="my-12 p-6 bg-[hsl(var(--primary)_/_0.05)] border-l-4 border-primary rounded-lg">
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">¿Listo para crear tu página web para restaurante?</h3>
+                  <p className="mb-4 text-muted-foreground">
+                    En <span className="text-primary font-medium">Mi Restaurante Online</span> creamos sitios web especializados para restaurantes en Lima y todo Perú. Desde S/297/mes, sin costo inicial, con todo incluido:
+                  </p>
+                  <ul className="list-disc list-inside mb-4 text-muted-foreground space-y-1">
+                    <li>Diseño profesional personalizado</li>
+                    <li>Menú digital con código QR</li>
+                    <li>Sistema de reservas integrado</li>
+                    <li>SEO optimizado para Lima</li>
+                    <li>Soporte técnico 24/7</li>
+                  </ul>
+                  <div className="text-center">
+                    <Button 
+                      className="px-6 py-3 font-semibold"
+                      onClick={() => window.location.href = '/'}
+                    >
+                      Ver Nuestros Planes
+                    </Button>
+                  </div>
+                </div>
+                
                 {/* Article Footer */}
                 <div className="mt-12 pt-8 border-t">
                   <div className="flex flex-wrap gap-2 mb-6">
