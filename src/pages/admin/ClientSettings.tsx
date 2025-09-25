@@ -12,6 +12,7 @@ import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical } fr
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ImageUpload } from "@/components/ImageUpload";
 import {
   DndContext,
   closestCenter,
@@ -498,9 +499,58 @@ export default function ClientSettings() {
   };
 
   const fetchAdminContent = async () => {
-    // Skip admin content fetch for now due to TypeScript type issues
-    // Will be implemented once types are updated
-    console.log('Admin content fetch skipped - using defaults');
+    try {
+      // Use type assertion to bypass TypeScript errors until types are updated
+      const { data, error } = await (supabase as any)
+        .from('admin_content')
+        .select('*')
+        .eq('client_id', clientId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Failed to load admin content:', error);
+        return;
+      }
+      
+      if (data) {
+        setAdminContent(data);
+        // Update form data with admin content
+        setFormData(prev => ({
+          ...prev,
+          homepage_hero_title: data.homepage_hero_title || '',
+          homepage_hero_description: data.homepage_hero_description || '',
+          homepage_hero_background_url: data.homepage_hero_background_url || '',
+          homepage_hero_right_button_text: data.homepage_hero_right_button_text || 'Reservar Mesa',
+          homepage_hero_right_button_link: data.homepage_hero_right_button_link || '#contact',
+          homepage_about_section_title: data.homepage_about_section_title || 'Nuestra Historia',
+          homepage_about_section_description: data.homepage_about_section_description || '',
+          homepage_services_section_title: data.homepage_services_section_title || 'Nuestros Servicios',
+          homepage_services_section_description: data.homepage_services_section_description || '',
+          homepage_menu_section_title: data.homepage_menu_section_title || 'Nuestro Menú',
+          homepage_menu_section_description: data.homepage_menu_section_description || 'Descubre nuestra selección de platos cuidadosamente elaborados',
+          homepage_contact_section_title: data.homepage_contact_section_title || 'Reserva Tu Experiencia',
+          homepage_contact_section_description: data.homepage_contact_section_description || 'Contáctanos para reservar tu mesa y vivir una experiencia gastronómica única',
+          homepage_delivery_section_title: data.homepage_delivery_section_title || 'Delivery Partners',
+          homepage_delivery_section_description: data.homepage_delivery_section_description || 'Ordena desde la comodidad de tu hogar',
+          homepage_contact_hide_reservation_box: data.homepage_contact_hide_reservation_box || false,
+          menu_page_hero_title: data.menu_page_hero_title || 'Nuestro Menú',
+          menu_page_hero_description: data.menu_page_hero_description || 'Explora nuestra carta completa de especialidades culinarias',
+          menu_page_hero_background_url: data.menu_page_hero_background_url || '',
+          contact_page_hero_title: data.contact_page_hero_title || 'Contáctanos',
+          contact_page_hero_description: data.contact_page_hero_description || 'Estamos aquí para hacer de tu experiencia algo inolvidable',
+          contact_page_hero_background_url: data.contact_page_hero_background_url || '',
+          about_page_hero_title: data.about_page_hero_title || 'Nuestra Historia',
+          about_page_hero_description: data.about_page_hero_description || 'Conoce la pasión y tradición detrás de cada plato',
+          about_page_hero_background_url: data.about_page_hero_background_url || '',
+          about_page_content: data.about_page_content || {},
+          reviews_page_hero_title: data.reviews_page_hero_title || 'Testimonios',
+          reviews_page_hero_description: data.reviews_page_hero_description || 'Lo que nuestros clientes dicen sobre nosotros',
+          reviews_page_hero_background_url: data.reviews_page_hero_background_url || ''
+        }));
+      }
+    } catch (error: any) {
+      console.error('Failed to load admin content:', error);
+    }
   };
 
   const fetchUserRole = async () => {
@@ -618,10 +668,47 @@ export default function ClientSettings() {
 
       if (settingsError) throw settingsError;
 
-      // TODO: Update admin_content table once types are regenerated
-      // Currently skipped due to TypeScript type issues
+      // Update admin_content table if user is admin
       if (userRole === 'admin') {
-        console.log('Admin content save skipped - types need to be regenerated');
+        const { error: adminContentError } = await (supabase as any)
+          .from('admin_content')
+          .upsert({
+            client_id: clientId,
+            homepage_hero_title: formData.homepage_hero_title,
+            homepage_hero_description: formData.homepage_hero_description,
+            homepage_hero_background_url: formData.homepage_hero_background_url,
+            homepage_hero_right_button_text: formData.homepage_hero_right_button_text,
+            homepage_hero_right_button_link: formData.homepage_hero_right_button_link,
+            homepage_about_section_title: formData.homepage_about_section_title,
+            homepage_about_section_description: formData.homepage_about_section_description,
+            homepage_services_section_title: formData.homepage_services_section_title,
+            homepage_services_section_description: formData.homepage_services_section_description,
+            homepage_menu_section_title: formData.homepage_menu_section_title,
+            homepage_menu_section_description: formData.homepage_menu_section_description,
+            homepage_contact_section_title: formData.homepage_contact_section_title,
+            homepage_contact_section_description: formData.homepage_contact_section_description,
+            homepage_delivery_section_title: formData.homepage_delivery_section_title,
+            homepage_delivery_section_description: formData.homepage_delivery_section_description,
+            homepage_contact_hide_reservation_box: formData.homepage_contact_hide_reservation_box,
+            menu_page_hero_title: formData.menu_page_hero_title,
+            menu_page_hero_description: formData.menu_page_hero_description,
+            menu_page_hero_background_url: formData.menu_page_hero_background_url,
+            contact_page_hero_title: formData.contact_page_hero_title,
+            contact_page_hero_description: formData.contact_page_hero_description,
+            contact_page_hero_background_url: formData.contact_page_hero_background_url,
+            about_page_hero_title: formData.about_page_hero_title,
+            about_page_hero_description: formData.about_page_hero_description,
+            about_page_hero_background_url: formData.about_page_hero_background_url,
+            about_page_content: formData.about_page_content,
+            reviews_page_hero_title: formData.reviews_page_hero_title,
+            reviews_page_hero_description: formData.reviews_page_hero_description,
+            reviews_page_hero_background_url: formData.reviews_page_hero_background_url,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'client_id'
+          });
+
+        if (adminContentError) throw adminContentError;
       }
 
       console.log('Saved data response:', data); // Debug log
@@ -1364,11 +1451,11 @@ export default function ClientSettings() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="homepage_hero_background_url">Hero Background Image URL</Label>
-                      <Input
-                        id="homepage_hero_background_url"
+                      <ImageUpload
+                        label="Hero Background Image"
                         value={formData.homepage_hero_background_url}
-                        onChange={(e) => setFormData({...formData, homepage_hero_background_url: e.target.value})}
+                        onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
+                        clientId={clientId!}
                       />
                     </div>
                   </div>
@@ -1558,11 +1645,11 @@ export default function ClientSettings() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="menu_page_hero_background_url">Hero Background Image URL</Label>
-                      <Input
-                        id="menu_page_hero_background_url"
+                      <ImageUpload
+                        label="Hero Background Image"
                         value={formData.menu_page_hero_background_url}
-                        onChange={(e) => setFormData({...formData, menu_page_hero_background_url: e.target.value})}
+                        onChange={(url) => setFormData({...formData, menu_page_hero_background_url: url})}
+                        clientId={clientId!}
                       />
                     </div>
                   </div>
@@ -1594,11 +1681,11 @@ export default function ClientSettings() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="contact_page_hero_background_url">Hero Background Image URL</Label>
-                      <Input
-                        id="contact_page_hero_background_url"
+                      <ImageUpload
+                        label="Hero Background Image"
                         value={formData.contact_page_hero_background_url}
-                        onChange={(e) => setFormData({...formData, contact_page_hero_background_url: e.target.value})}
+                        onChange={(url) => setFormData({...formData, contact_page_hero_background_url: url})}
+                        clientId={clientId!}
                       />
                     </div>
                   </div>
@@ -1630,11 +1717,11 @@ export default function ClientSettings() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="about_page_hero_background_url">Hero Background Image URL</Label>
-                      <Input
-                        id="about_page_hero_background_url"
+                      <ImageUpload
+                        label="Hero Background Image"
                         value={formData.about_page_hero_background_url}
-                        onChange={(e) => setFormData({...formData, about_page_hero_background_url: e.target.value})}
+                        onChange={(url) => setFormData({...formData, about_page_hero_background_url: url})}
+                        clientId={clientId!}
                       />
                     </div>
                   </div>
@@ -1666,11 +1753,11 @@ export default function ClientSettings() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="reviews_page_hero_background_url">Hero Background Image URL</Label>
-                      <Input
-                        id="reviews_page_hero_background_url"
+                      <ImageUpload
+                        label="Hero Background Image"
                         value={formData.reviews_page_hero_background_url}
-                        onChange={(e) => setFormData({...formData, reviews_page_hero_background_url: e.target.value})}
+                        onChange={(url) => setFormData({...formData, reviews_page_hero_background_url: url})}
+                        clientId={clientId!}
                       />
                     </div>
                   </div>
