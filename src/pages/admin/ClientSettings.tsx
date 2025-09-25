@@ -121,6 +121,13 @@ interface AdminContent {
   stats_item3_icon?: string;
   stats_item3_number?: string;
   stats_item3_label?: string;
+  // Legacy stats fields
+  stats_experience_number?: string;
+  stats_experience_label?: string;
+  stats_clients_number?: string;
+  stats_clients_label?: string;
+  stats_awards_number?: string;
+  stats_awards_label?: string;
   // Services Cards (3 cards)
   services_card1_icon?: string;
   services_card1_title?: string;
@@ -462,6 +469,13 @@ export default function ClientSettings() {
     stats_item3_icon: 'Award',
     stats_item3_number: '',
     stats_item3_label: '',
+    // Legacy stats fields
+    stats_experience_number: '',
+    stats_experience_label: '',
+    stats_clients_number: '',
+    stats_clients_label: '',
+    stats_awards_number: '',
+    stats_awards_label: '',
     // Services Cards (3 cards)
     services_card1_icon: 'Utensils',
     services_card1_title: '',
@@ -698,6 +712,13 @@ export default function ClientSettings() {
           stats_item3_icon: data.stats_item3_icon || 'Award',
           stats_item3_number: data.stats_item3_number || '',
           stats_item3_label: data.stats_item3_label || '',
+          // Legacy stats fields
+          stats_experience_number: data.stats_experience_number || '',
+          stats_experience_label: data.stats_experience_label || '',
+          stats_clients_number: data.stats_clients_number || '',
+          stats_clients_label: data.stats_clients_label || '',
+          stats_awards_number: data.stats_awards_number || '',
+          stats_awards_label: data.stats_awards_label || '',
           // Services Cards (3 cards)
           services_card1_icon: data.services_card1_icon || 'Utensils',
           services_card1_title: data.services_card1_title || '',
@@ -909,6 +930,13 @@ export default function ClientSettings() {
             stats_item3_icon: formData.stats_item3_icon,
             stats_item3_number: formData.stats_item3_number,
             stats_item3_label: formData.stats_item3_label,
+            // Legacy stats fields
+            stats_experience_number: formData.stats_experience_number,
+            stats_experience_label: formData.stats_experience_label,
+            stats_clients_number: formData.stats_clients_number,
+            stats_clients_label: formData.stats_clients_label,
+            stats_awards_number: formData.stats_awards_number,
+            stats_awards_label: formData.stats_awards_label,
             // Services Cards (3 cards)
             services_card1_icon: formData.services_card1_icon,
             services_card1_title: formData.services_card1_title,
@@ -2086,6 +2114,76 @@ export default function ClientSettings() {
                       onChange={(e) => setFormData({...formData, about_team_section_description: e.target.value})}
                       rows={2}
                     />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Legacy Stats Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Legacy Stats Section</CardTitle>
+                  <p className="text-sm text-muted-foreground">Original stats fields that may still be used in some templates</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="stats_experience_number">Experience Number</Label>
+                      <Input
+                        id="stats_experience_number"
+                        value={formData.stats_experience_number}
+                        onChange={(e) => setFormData({...formData, stats_experience_number: e.target.value})}
+                        placeholder="15+"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="stats_experience_label">Experience Label</Label>
+                      <Input
+                        id="stats_experience_label"
+                        value={formData.stats_experience_label}
+                        onChange={(e) => setFormData({...formData, stats_experience_label: e.target.value})}
+                        placeholder="Años de Experiencia"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="stats_clients_number">Clients Number</Label>
+                      <Input
+                        id="stats_clients_number"
+                        value={formData.stats_clients_number}
+                        onChange={(e) => setFormData({...formData, stats_clients_number: e.target.value})}
+                        placeholder="5K+"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="stats_clients_label">Clients Label</Label>
+                      <Input
+                        id="stats_clients_label"
+                        value={formData.stats_clients_label}
+                        onChange={(e) => setFormData({...formData, stats_clients_label: e.target.value})}
+                        placeholder="Clientes Felices"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="stats_awards_number">Awards Number</Label>
+                      <Input
+                        id="stats_awards_number"
+                        value={formData.stats_awards_number}
+                        onChange={(e) => setFormData({...formData, stats_awards_number: e.target.value})}
+                        placeholder="10+"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="stats_awards_label">Awards Label</Label>
+                      <Input
+                        id="stats_awards_label"
+                        value={formData.stats_awards_label}
+                        onChange={(e) => setFormData({...formData, stats_awards_label: e.target.value})}
+                        placeholder="Reconocimientos"
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
