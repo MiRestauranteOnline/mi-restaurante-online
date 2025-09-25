@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +7,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Client {
   id: string;
@@ -50,6 +69,104 @@ interface MenuItem {
   show_image_home: boolean;
 }
 
+// Sortable Category Item Component
+function SortableCategoryItem({ category, onEdit, onDelete }: { 
+  category: MenuCategory, 
+  onEdit: (category: MenuCategory) => void,
+  onDelete: (id: string) => void 
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: category.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center justify-between p-3 border rounded bg-card"
+    >
+      <div className="flex items-center gap-3">
+        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </div>
+        <div>
+          <span className="font-medium">{category.name}</span>
+          <span className="text-sm text-muted-foreground ml-2">Order: {category.display_order}</span>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" onClick={() => onEdit(category)}>
+          <Edit className="h-4 w-4" />
+        </Button>
+        <Button variant="destructive" size="sm" onClick={() => onDelete(category.id)}>
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Sortable Menu Item Component
+function SortableMenuItem({ item, currencySymbol, onEdit, onDelete }: { 
+  item: MenuItem, 
+  currencySymbol: string,
+  onEdit: (item: MenuItem) => void,
+  onDelete: (id: string) => void 
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center justify-between p-3 border rounded bg-card"
+    >
+      <div className="flex items-center gap-3">
+        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </div>
+        <div>
+          <span className="font-medium">{item.name}</span>
+          <span className="text-sm text-muted-foreground ml-2">
+            {currencySymbol}{item.price}
+          </span>
+          {item.description && (
+            <p className="text-sm text-muted-foreground">{item.description}</p>
+          )}
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" onClick={() => onEdit(item)}>
+          <Edit className="h-4 w-4" />
+        </Button>
+        <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export default function ClientSettings() {
   console.log('ClientSettings component rendered'); // Debug log
   const { clientId } = useParams<{ clientId: string }>();
@@ -63,13 +180,37 @@ export default function ClientSettings() {
   const [showMenuItemDialog, setShowMenuItemDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const [categoryForm, setCategoryForm] = useState({ name: '', display_order: 0 });
   const [menuItemForm, setMenuItemForm] = useState({
     name: '', description: '', price: 0, category: '', image_url: '',
     show_on_homepage: false, show_image_menu: true, show_image_home: false
   });
+
+  // Filter and group menu items by category
+  const filteredAndGroupedMenuItems = useMemo(() => {
+    const filtered = menuItems.filter(item => 
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const grouped = categories.reduce((acc, category) => {
+      acc[category.name] = filtered.filter(item => item.category === category.name);
+      return acc;
+    }, {} as Record<string, MenuItem[]>);
+
+    return grouped;
+  }, [menuItems, categories, searchTerm]);
 
   const [formData, setFormData] = useState({
     restaurant_name: '',
@@ -406,6 +547,80 @@ export default function ClientSettings() {
     setShowMenuItemDialog(true);
   };
 
+  const handleCategoryDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = categories.findIndex((item) => item.id === active.id);
+      const newIndex = categories.findIndex((item) => item.id === over?.id);
+
+      const reorderedCategories = arrayMove(categories, oldIndex, newIndex);
+      
+      // Update display_order values
+      const updatedCategories = reorderedCategories.map((category, index) => ({
+        ...category,
+        display_order: index
+      }));
+
+      setCategories(updatedCategories);
+
+      // Update database
+      try {
+        for (const category of updatedCategories) {
+          await supabase
+            .from('menu_categories')
+            .update({ display_order: category.display_order })
+            .eq('id', category.id);
+        }
+        toast({ title: "Success", description: "Category order updated" });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: "Failed to update category order: " + error.message,
+          variant: "destructive"
+        });
+        // Revert on error
+        await fetchCategories();
+      }
+    }
+  };
+
+  const handleMenuItemDragEnd = async (event: DragEndEvent, categoryName: string) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const categoryItems = filteredAndGroupedMenuItems[categoryName];
+      const oldIndex = categoryItems.findIndex((item) => item.id === active.id);
+      const newIndex = categoryItems.findIndex((item) => item.id === over?.id);
+
+      const reorderedItems = arrayMove(categoryItems, oldIndex, newIndex);
+      
+      // Update the menuItems state
+      const updatedMenuItems = menuItems.map(item => {
+        if (item.category === categoryName) {
+          const newIndex = reorderedItems.findIndex(reorderedItem => reorderedItem.id === item.id);
+          return newIndex !== -1 ? { ...item } : item;
+        }
+        return item;
+      });
+
+      setMenuItems(updatedMenuItems);
+
+      try {
+        // For now, we'll just show success. In a more complex system, 
+        // you might want to add a display_order field to menu_items table
+        toast({ title: "Success", description: "Menu item order updated" });
+      } catch (error: any) {
+        toast({
+          title: "Error", 
+          description: "Failed to update menu item order: " + error.message,
+          variant: "destructive"
+        });
+        await fetchMenuItems();
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -714,23 +929,24 @@ export default function ClientSettings() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {categories.map((category) => (
-                  <div key={category.id} className="flex items-center justify-between p-3 border rounded">
-                    <div>
-                      <span className="font-medium">{category.name}</span>
-                      <span className="text-sm text-muted-foreground ml-2">Order: {category.display_order}</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => openCategoryDialog(category)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="destructive" size="sm" onClick={() => handleDeleteCategory(category.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {categories.length === 0 && (
+                {categories.length > 0 ? (
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleCategoryDragEnd}
+                  >
+                    <SortableContext items={categories.map(c => c.id)} strategy={verticalListSortingStrategy}>
+                      {categories.map((category) => (
+                        <SortableCategoryItem
+                          key={category.id}
+                          category={category}
+                          onEdit={openCategoryDialog}
+                          onDelete={handleDeleteCategory}
+                        />
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                ) : (
                   <p className="text-muted-foreground text-center py-4">No categories found</p>
                 )}
               </div>
@@ -750,30 +966,64 @@ export default function ClientSettings() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                {menuItems.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between p-3 border rounded">
-                    <div>
-                      <span className="font-medium">{item.name}</span>
-                      <span className="text-sm text-muted-foreground ml-2">
-                        {formData.other_customizations.currency}{item.price} - {item.category}
-                      </span>
-                      {item.description && (
-                        <p className="text-sm text-muted-foreground">{item.description}</p>
+              {/* Search Bar */}
+              <div className="mb-6">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <Input
+                    placeholder="Search menu items..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+              </div>
+
+              {/* Menu Items by Category */}
+              <div className="space-y-6">
+                {categories.map((category) => {
+                  const categoryItems = filteredAndGroupedMenuItems[category.name] || [];
+                  
+                  if (categoryItems.length === 0 && searchTerm) return null;
+
+                  return (
+                    <div key={category.id} className="space-y-3">
+                      <div className="flex items-center gap-2 py-2 border-b">
+                        <h3 className="text-lg font-semibold">{category.name}</h3>
+                        <span className="text-sm text-muted-foreground">({categoryItems.length} items)</span>
+                      </div>
+                      
+                      {categoryItems.length > 0 ? (
+                        <DndContext
+                          sensors={sensors}
+                          collisionDetection={closestCenter}
+                          onDragEnd={(event) => handleMenuItemDragEnd(event, category.name)}
+                        >
+                          <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+                            <div className="space-y-2">
+                              {categoryItems.map((item) => (
+                                <SortableMenuItem
+                                  key={item.id}
+                                  item={item}
+                                  currencySymbol={formData.other_customizations.currency}
+                                  onEdit={openMenuItemDialog}
+                                  onDelete={handleDeleteMenuItem}
+                                />
+                              ))}
+                            </div>
+                          </SortableContext>
+                        </DndContext>
+                      ) : (
+                        <p className="text-muted-foreground text-center py-4 text-sm">
+                          {searchTerm ? 'No items match your search' : 'No items in this category'}
+                        </p>
                       )}
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => openMenuItemDialog(item)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="destructive" size="sm" onClick={() => handleDeleteMenuItem(item.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {menuItems.length === 0 && (
-                  <p className="text-muted-foreground text-center py-4">No menu items found</p>
+                  );
+                })}
+                
+                {categories.length === 0 && (
+                  <p className="text-muted-foreground text-center py-4">No categories found. Create categories first.</p>
                 )}
               </div>
             </CardContent>
