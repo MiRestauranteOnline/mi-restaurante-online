@@ -61,7 +61,7 @@ export const Navigation = () => {
                 className="bg-primary hover:bg-primary/90"
                 onClick={() => handleNavClick({ href: "/", section: "application" })}
               >
-                Aplicar Ahora
+                Quiero Mi Sitio Web
               </Button>
             </Link>
           </div>
@@ -101,7 +101,7 @@ export const Navigation = () => {
                   className="bg-primary hover:bg-primary/90 mt-4"
                   onClick={() => handleNavClick({ href: "/", section: "application" })}
                 >
-                  Aplicar Ahora
+                  Quiero Mi Sitio Web
                 </Button>
               </Link>
             </div>
