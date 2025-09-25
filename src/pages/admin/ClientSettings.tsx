@@ -1518,6 +1518,146 @@ export default function ClientSettings() {
                 </CardContent>
               </Card>
 
+              {/* Homepage About Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - About Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_about_section_title">About Section Title</Label>
+                    <Input
+                      id="homepage_about_section_title"
+                      value={formData.homepage_about_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_about_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_about_section_description">About Section Description</Label>
+                    <Textarea
+                      id="homepage_about_section_description"
+                      value={formData.homepage_about_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_about_section_description: e.target.value})}
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage Services Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Services Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_services_section_title">Services Section Title</Label>
+                    <Input
+                      id="homepage_services_section_title"
+                      value={formData.homepage_services_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_services_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_services_section_description">Services Section Description</Label>
+                    <Textarea
+                      id="homepage_services_section_description"
+                      value={formData.homepage_services_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_services_section_description: e.target.value})}
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage Menu Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Menu Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_menu_section_title">Menu Section Title</Label>
+                    <Input
+                      id="homepage_menu_section_title"
+                      value={formData.homepage_menu_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_menu_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_menu_section_description">Menu Section Description</Label>
+                    <Textarea
+                      id="homepage_menu_section_description"
+                      value={formData.homepage_menu_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_menu_section_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage Contact Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Contact Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_contact_section_title">Contact Section Title</Label>
+                    <Input
+                      id="homepage_contact_section_title"
+                      value={formData.homepage_contact_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_contact_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_contact_section_description">Contact Section Description</Label>
+                    <Textarea
+                      id="homepage_contact_section_description"
+                      value={formData.homepage_contact_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_contact_section_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Hide Reservation Box</Label>
+                      <p className="text-sm text-muted-foreground">Hide the reservation form box in contact section</p>
+                    </div>
+                    <Switch
+                      checked={formData.homepage_contact_hide_reservation_box}
+                      onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: checked})}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage Delivery Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Delivery Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_delivery_section_title">Delivery Section Title</Label>
+                    <Input
+                      id="homepage_delivery_section_title"
+                      value={formData.homepage_delivery_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_delivery_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_delivery_section_description">Delivery Section Description</Label>
+                    <Textarea
+                      id="homepage_delivery_section_description"
+                      value={formData.homepage_delivery_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_delivery_section_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Menu Page Content */}
               <Card>
                 <CardHeader>
