@@ -1348,9 +1348,10 @@ export default function ClientSettings() {
         {userRole === 'admin' && (
           <TabsContent value="content">
             <div className="space-y-6">
+              {/* Homepage Content */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Homepage Content</CardTitle>
+                  <CardTitle>Homepage - Hero Section</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1363,11 +1364,11 @@ export default function ClientSettings() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="homepage_hero_right_button_text">Hero Button Text</Label>
+                      <Label htmlFor="homepage_hero_background_url">Hero Background Image URL</Label>
                       <Input
-                        id="homepage_hero_right_button_text"
-                        value={formData.homepage_hero_right_button_text}
-                        onChange={(e) => setFormData({...formData, homepage_hero_right_button_text: e.target.value})}
+                        id="homepage_hero_background_url"
+                        value={formData.homepage_hero_background_url}
+                        onChange={(e) => setFormData({...formData, homepage_hero_background_url: e.target.value})}
                       />
                     </div>
                   </div>
@@ -1380,12 +1381,171 @@ export default function ClientSettings() {
                       rows={3}
                     />
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="homepage_hero_right_button_text">Hero Button Text</Label>
+                      <Input
+                        id="homepage_hero_right_button_text"
+                        value={formData.homepage_hero_right_button_text}
+                        onChange={(e) => setFormData({...formData, homepage_hero_right_button_text: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_hero_right_button_link">Hero Button Link</Label>
+                      <Input
+                        id="homepage_hero_right_button_link"
+                        value={formData.homepage_hero_right_button_link}
+                        onChange={(e) => setFormData({...formData, homepage_hero_right_button_link: e.target.value})}
+                      />
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
+              {/* Homepage About Section */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Menu Page Content</CardTitle>
+                  <CardTitle>Homepage - About Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_about_section_title">About Section Title</Label>
+                    <Input
+                      id="homepage_about_section_title"
+                      value={formData.homepage_about_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_about_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_about_section_description">About Section Description</Label>
+                    <Textarea
+                      id="homepage_about_section_description"
+                      value={formData.homepage_about_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_about_section_description: e.target.value})}
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage Services Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Services Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_services_section_title">Services Section Title</Label>
+                    <Input
+                      id="homepage_services_section_title"
+                      value={formData.homepage_services_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_services_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_services_section_description">Services Section Description</Label>
+                    <Textarea
+                      id="homepage_services_section_description"
+                      value={formData.homepage_services_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_services_section_description: e.target.value})}
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage Menu Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Menu Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_menu_section_title">Menu Section Title</Label>
+                    <Input
+                      id="homepage_menu_section_title"
+                      value={formData.homepage_menu_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_menu_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_menu_section_description">Menu Section Description</Label>
+                    <Textarea
+                      id="homepage_menu_section_description"
+                      value={formData.homepage_menu_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_menu_section_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage Contact Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Contact Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_contact_section_title">Contact Section Title</Label>
+                    <Input
+                      id="homepage_contact_section_title"
+                      value={formData.homepage_contact_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_contact_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_contact_section_description">Contact Section Description</Label>
+                    <Textarea
+                      id="homepage_contact_section_description"
+                      value={formData.homepage_contact_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_contact_section_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Hide Reservation Box</Label>
+                      <p className="text-sm text-muted-foreground">Hide the reservation form box in contact section</p>
+                    </div>
+                    <Switch
+                      checked={formData.homepage_contact_hide_reservation_box}
+                      onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: checked})}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage Delivery Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - Delivery Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_delivery_section_title">Delivery Section Title</Label>
+                    <Input
+                      id="homepage_delivery_section_title"
+                      value={formData.homepage_delivery_section_title}
+                      onChange={(e) => setFormData({...formData, homepage_delivery_section_title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_delivery_section_description">Delivery Section Description</Label>
+                    <Textarea
+                      id="homepage_delivery_section_description"
+                      value={formData.homepage_delivery_section_description}
+                      onChange={(e) => setFormData({...formData, homepage_delivery_section_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Menu Page Content */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Menu Page</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1395,6 +1555,14 @@ export default function ClientSettings() {
                         id="menu_page_hero_title"
                         value={formData.menu_page_hero_title}
                         onChange={(e) => setFormData({...formData, menu_page_hero_title: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="menu_page_hero_background_url">Hero Background Image URL</Label>
+                      <Input
+                        id="menu_page_hero_background_url"
+                        value={formData.menu_page_hero_background_url}
+                        onChange={(e) => setFormData({...formData, menu_page_hero_background_url: e.target.value})}
                       />
                     </div>
                   </div>
@@ -1410,9 +1578,10 @@ export default function ClientSettings() {
                 </CardContent>
               </Card>
 
+              {/* Contact Page Content */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Contact Page Content</CardTitle>
+                  <CardTitle>Contact Page</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1424,6 +1593,14 @@ export default function ClientSettings() {
                         onChange={(e) => setFormData({...formData, contact_page_hero_title: e.target.value})}
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="contact_page_hero_background_url">Hero Background Image URL</Label>
+                      <Input
+                        id="contact_page_hero_background_url"
+                        value={formData.contact_page_hero_background_url}
+                        onChange={(e) => setFormData({...formData, contact_page_hero_background_url: e.target.value})}
+                      />
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor="contact_page_hero_description">Hero Description</Label>
@@ -1431,6 +1608,78 @@ export default function ClientSettings() {
                       id="contact_page_hero_description"
                       value={formData.contact_page_hero_description}
                       onChange={(e) => setFormData({...formData, contact_page_hero_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* About Page Content */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>About Page</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="about_page_hero_title">Hero Title</Label>
+                      <Input
+                        id="about_page_hero_title"
+                        value={formData.about_page_hero_title}
+                        onChange={(e) => setFormData({...formData, about_page_hero_title: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="about_page_hero_background_url">Hero Background Image URL</Label>
+                      <Input
+                        id="about_page_hero_background_url"
+                        value={formData.about_page_hero_background_url}
+                        onChange={(e) => setFormData({...formData, about_page_hero_background_url: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="about_page_hero_description">Hero Description</Label>
+                    <Textarea
+                      id="about_page_hero_description"
+                      value={formData.about_page_hero_description}
+                      onChange={(e) => setFormData({...formData, about_page_hero_description: e.target.value})}
+                      rows={2}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Reviews Page Content */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Reviews Page</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="reviews_page_hero_title">Hero Title</Label>
+                      <Input
+                        id="reviews_page_hero_title"
+                        value={formData.reviews_page_hero_title}
+                        onChange={(e) => setFormData({...formData, reviews_page_hero_title: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="reviews_page_hero_background_url">Hero Background Image URL</Label>
+                      <Input
+                        id="reviews_page_hero_background_url"
+                        value={formData.reviews_page_hero_background_url}
+                        onChange={(e) => setFormData({...formData, reviews_page_hero_background_url: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="reviews_page_hero_description">Hero Description</Label>
+                    <Textarea
+                      id="reviews_page_hero_description"
+                      value={formData.reviews_page_hero_description}
+                      onChange={(e) => setFormData({...formData, reviews_page_hero_description: e.target.value})}
                       rows={2}
                     />
                   </div>
