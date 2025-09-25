@@ -23,8 +23,8 @@ export const ProblemSolutionSection = () => {
     },
     {
       icon: Clock,
-      title: "Pedidos solo por teléfono",
-      description: "Atender llamadas interrumpe el servicio y genera confusión en pedidos.",
+      title: "Sin menú ni información online",
+      description: "Clientes no pueden ver tu menú o información antes de decidir visitarte.",
       color: "text-destructive"
     },
     {
@@ -44,8 +44,8 @@ export const ProblemSolutionSection = () => {
   const solutions = [
     {
       icon: CheckCircle,
-      title: "Te encuentran fácilmente",
-      description: "SEO optimizado para aparecer en 'restaurantes cerca de mí' en Google.",
+      title: "Presencia online profesional",
+      description: "Tu restaurante visible en Google con información completa y atractiva.",
       color: "text-primary"
     },
     {
@@ -215,7 +215,7 @@ export const ProblemSolutionSection = () => {
                 className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary"
                 onClick={() => document.getElementById('application')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Comenzar Ahora
+                Quiero Mi Sitio Web
               </Button>
               <Button 
                 variant="outline"
