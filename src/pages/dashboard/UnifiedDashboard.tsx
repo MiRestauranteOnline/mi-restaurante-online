@@ -1038,10 +1038,9 @@ export default function UnifiedDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Resumen</TabsTrigger>
           <TabsTrigger value="settings">Configuración</TabsTrigger>
-          <TabsTrigger value="categories">Categorías</TabsTrigger>
           <TabsTrigger value="menu">Menú</TabsTrigger>
           <TabsTrigger value="team">Equipo</TabsTrigger>
           <TabsTrigger value="reviews">Reseñas</TabsTrigger>
@@ -1534,62 +1533,6 @@ export default function UnifiedDashboard() {
               </div>
             </form>
           </Form>
-        </TabsContent>
-
-        <TabsContent value="categories">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Categorías del Menú
-                <Button onClick={handleNewCategory}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Nueva Categoría
-                </Button>
-              </CardTitle>
-              <CardDescription>
-                Organiza y gestiona las categorías de tu menú
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {categories.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="text-muted-foreground">
-                      <Plus className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <h3 className="text-lg font-medium mb-2">No hay categorías</h3>
-                      <p className="text-sm mb-4">
-                        Crea tu primera categoría para empezar a organizar tu menú
-                      </p>
-                      <Button onClick={handleNewCategory}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Crear Primera Categoría
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleCategoryDragEnd}
-                  >
-                    <SortableContext items={categories.map(c => c.id)} strategy={verticalListSortingStrategy}>
-                      <div className="space-y-4">
-                        {categories.map((category) => (
-                          <SortableCategoryItem
-                            key={category.id}
-                            category={category}
-                            onEdit={handleEditCategory}
-                            onDelete={handleDeleteCategory}
-                            onToggleStatus={toggleCategoryStatus}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                )}
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         <TabsContent value="menu">

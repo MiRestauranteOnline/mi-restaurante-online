@@ -14,7 +14,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2, Upload, Eye, Home, Save, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit, Trash2, Upload, Eye, Home, Save, Loader2, Image as ImageIcon, GripVertical, ChevronDown, ChevronRight, FolderPlus } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface DashboardContext {
   selectedClientId: string;
@@ -43,7 +63,14 @@ interface MenuItem {
 interface MenuCategory {
   id: string;
   name: string;
+  display_order: number;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface CategoryWithItems extends MenuCategory {
+  items: MenuItem[];
 }
 
 const menuItemSchema = z.object({
@@ -57,21 +84,226 @@ const menuItemSchema = z.object({
   show_on_homepage: z.boolean().default(false),
 });
 
+const categorySchema = z.object({
+  name: z.string().min(1, 'El nombre de la categoría es requerido'),
+  is_active: z.boolean().default(true),
+});
+
 type MenuItemFormData = z.infer<typeof menuItemSchema>;
+type CategoryFormData = z.infer<typeof categorySchema>;
+
+// Sortable Category Component
+function SortableCategory({ 
+  category, 
+  onEditCategory, 
+  onDeleteCategory, 
+  onEditItem, 
+  onDeleteItem, 
+  onNewItem,
+  isOpen,
+  onToggleOpen 
+}: {
+  category: CategoryWithItems;
+  onEditCategory: (category: MenuCategory) => void;
+  onDeleteCategory: (id: string) => void;
+  onEditItem: (item: MenuItem) => void;
+  onDeleteItem: (id: string) => void;
+  onNewItem: (categoryName: string) => void;
+  isOpen: boolean;
+  onToggleOpen: (categoryId: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: category.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style} className="mb-4">
+      <Collapsible open={isOpen} onOpenChange={() => onToggleOpen(category.id)}>
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div
+                  {...attributes}
+                  {...listeners}
+                  className="cursor-grab active:cursor-grabbing p-1"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <GripVertical className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="flex items-center gap-2">
+                  {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                  <CardTitle className="text-lg">{category.name}</CardTitle>
+                  <Badge variant={category.is_active ? "default" : "secondary"}>
+                    {category.is_active ? 'Activo' : 'Inactivo'}
+                  </Badge>
+                  <Badge variant="outline">
+                    {category.items.length} platos
+                  </Badge>
+                </div>
+              </div>
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNewItem(category.name)}
+                >
+                  <Plus className="h-4 w-4" />
+                  Agregar Plato
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onEditCategory(category)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDeleteCategory(category.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent>
+          <CardContent className="pt-0">
+            {category.items.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No hay platos en esta categoría</p>
+                <Button
+                  variant="outline"
+                  className="mt-2"
+                  onClick={() => onNewItem(category.name)}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Agregar primer plato
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {category.items.map((item) => (
+                  <Card key={item.id} className="overflow-hidden">
+                    <div className="aspect-video bg-muted flex items-center justify-center relative">
+                      {item.image_url ? (
+                        <img
+                          src={item.image_url}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                      )}
+                      <div className="absolute top-2 right-2 flex gap-1">
+                        {item.show_on_homepage && (
+                          <Badge variant="secondary" className="text-xs">
+                            <Home className="h-3 w-3 mr-1" />
+                            Inicio
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-sm leading-tight mb-1">
+                            {item.name}
+                          </h3>
+                          <p className="text-lg font-bold text-primary">
+                            S/ {item.price.toFixed(2)}
+                          </p>
+                        </div>
+                        <Badge variant={item.is_active ? "default" : "secondary"} className="ml-2">
+                          {item.is_active ? 'Activo' : 'Inactivo'}
+                        </Badge>
+                      </div>
+
+                      {item.description && (
+                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                          {item.description}
+                        </p>
+                      )}
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex gap-1">
+                          {item.show_image_home && (
+                            <Badge variant="outline" className="text-xs">
+                              <Eye className="h-3 w-3 mr-1" />
+                              IMG-Inicio
+                            </Badge>
+                          )}
+                          {item.show_image_menu && (
+                            <Badge variant="outline" className="text-xs">
+                              <Eye className="h-3 w-3 mr-1" />
+                              IMG-Menú
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onEditItem(item)}
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onDeleteItem(item.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
+    </Card>
+  );
+}
 
 export default function MenuItems() {
   const { selectedClientId } = useOutletContext<DashboardContext>();
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [categories, setCategories] = useState<MenuCategory[]>([]);
+  const [categoriesWithItems, setCategoriesWithItems] = useState<CategoryWithItems[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
+  const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [openCategories, setOpenCategories] = useState<Set<string>>(new Set());
 
-  const form = useForm<MenuItemFormData>({
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const itemForm = useForm<MenuItemFormData>({
     resolver: zodResolver(menuItemSchema) as any,
     defaultValues: {
       name: '',
@@ -85,102 +317,93 @@ export default function MenuItems() {
     },
   });
 
+  const categoryForm = useForm<CategoryFormData>({
+    resolver: zodResolver(categorySchema) as any,
+    defaultValues: {
+      name: '',
+      is_active: true,
+    },
+  });
+
   useEffect(() => {
-    Promise.all([fetchMenuItems(), fetchCategories()]);
+    fetchData();
   }, [selectedClientId]);
 
-  const fetchMenuItems = async () => {
+  const fetchData = async () => {
     if (!selectedClientId) return;
 
     try {
-      const { data, error } = await (supabase as any)
+      // Fetch categories
+      const { data: categories, error: categoriesError } = await (supabase as any)
+        .from('menu_categories')
+        .select('*')
+        .eq('client_id', selectedClientId)
+        .order('display_order', { ascending: true });
+
+      if (categoriesError) throw categoriesError;
+
+      // Fetch menu items
+      const { data: menuItems, error: itemsError } = await (supabase as any)
         .from('menu_items')
         .select('*')
         .eq('client_id', selectedClientId)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        toast.error('Error al cargar elementos del menú');
-        return;
-      }
+      if (itemsError) throw itemsError;
 
-      setMenuItems(data || []);
+      // Group items by category
+      const categoriesWithItems: CategoryWithItems[] = (categories || []).map((category: MenuCategory) => ({
+        ...category,
+        items: (menuItems || []).filter((item: MenuItem) => item.category === category.name)
+      }));
+
+      setCategoriesWithItems(categoriesWithItems);
+      
+      // Open first few categories by default
+      const initialOpenCategories = new Set(
+        categoriesWithItems.slice(0, 2).map(cat => cat.id)
+      );
+      setOpenCategories(initialOpenCategories);
     } catch (error) {
-      toast.error('Error al cargar elementos del menú');
-    }
-  };
-
-  const fetchCategories = async () => {
-    if (!selectedClientId) return;
-
-    try {
-      const { data, error } = await (supabase as any)
-        .from('menu_categories')
-        .select('id, name, is_active')
-        .eq('client_id', selectedClientId)
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
-
-      if (error) {
-        toast.error('Error al cargar categorías');
-        return;
-      }
-
-      setCategories(data || []);
-    } catch (error) {
-      toast.error('Error al cargar categorías');
+      toast.error('Error al cargar datos');
     } finally {
       setLoading(false);
     }
   };
 
   const uploadImage = async (file: File): Promise<string | null> => {
-    setUploading(true);
-    try {
-      const fileName = `${selectedClientId}/menu-items/${Date.now()}-${file.name}`;
-      
-      const { data, error } = await supabase.storage
-        .from('client-assets')
-        .upload(fileName, file);
-        
-      if (error) {
-        toast.error('Error al subir imagen');
-        return null;
-      }
-      
-      const { data: { publicUrl } } = supabase.storage
-        .from('client-assets')
-        .getPublicUrl(fileName);
-        
-      return publicUrl;
-    } catch (error) {
-      toast.error('Error al subir imagen');
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `menu-items/${selectedClientId}/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('menu-items')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error('Error uploading image:', uploadError);
       return null;
-    } finally {
-      setUploading(false);
     }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('menu-items')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
   };
 
-  const onSubmit = async (data: MenuItemFormData) => {
+  const onSubmitItem = async (data: MenuItemFormData) => {
     setSaving(true);
     try {
       let imageUrl = editingItem?.image_url || '';
 
-      // Upload image if selected
       if (selectedFile) {
+        setUploading(true);
         const uploadedUrl = await uploadImage(selectedFile);
         if (uploadedUrl) {
           imageUrl = uploadedUrl;
         }
-      }
-
-      // Check homepage limit
-      if (data.show_on_homepage && !editingItem) {
-        const homepageCount = menuItems.filter(item => item.show_on_homepage).length;
-        if (homepageCount >= 8) {
-          toast.error('Máximo 8 elementos pueden aparecer en la página de inicio');
-          return;
-        }
+        setUploading(false);
       }
 
       if (editingItem) {
@@ -197,16 +420,27 @@ export default function MenuItems() {
             show_image_home: data.show_image_home,
             show_image_menu: data.show_image_menu,
             show_on_homepage: data.show_on_homepage,
+            updated_at: new Date().toISOString(),
           })
           .eq('id', editingItem.id);
 
-        if (error) {
-          toast.error('Error al actualizar elemento');
-          return;
+        if (error) throw error;
+        toast.success('Plato actualizado exitosamente');
+      } else {
+        // Check homepage item limit
+        if (data.show_on_homepage) {
+          const { data: homepageItems } = await (supabase as any)
+            .from('menu_items')
+            .select('id')
+            .eq('client_id', selectedClientId)
+            .eq('show_on_homepage', true);
+
+          if (homepageItems && homepageItems.length >= 6) {
+            toast.error('Solo puedes mostrar máximo 6 platos en la página de inicio');
+            return;
+          }
         }
 
-        toast.success('Elemento actualizado exitosamente');
-      } else {
         // Create new item
         const { error } = await (supabase as any)
           .from('menu_items')
@@ -223,29 +457,88 @@ export default function MenuItems() {
             show_on_homepage: data.show_on_homepage,
           });
 
-        if (error) {
-          toast.error('Error al crear elemento');
-          return;
-        }
-
-        toast.success('Elemento creado exitosamente');
+        if (error) throw error;
+        toast.success('Plato creado exitosamente');
       }
 
-      setIsDialogOpen(false);
+      setIsItemDialogOpen(false);
       setEditingItem(null);
       setSelectedFile(null);
-      form.reset();
-      fetchMenuItems();
+      itemForm.reset();
+      fetchData();
     } catch (error) {
-      toast.error('Error al guardar elemento');
+      toast.error('Error al guardar plato');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleEdit = (item: MenuItem) => {
+  const onSubmitCategory = async (data: CategoryFormData) => {
+    setSaving(true);
+    try {
+      if (editingCategory) {
+        // Update existing category
+        const { error } = await (supabase as any)
+          .from('menu_categories')
+          .update({
+            name: data.name,
+            is_active: data.is_active,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', editingCategory.id);
+
+        if (error) throw error;
+
+        // Update category name in menu items
+        const { error: itemsError } = await (supabase as any)
+          .from('menu_items')
+          .update({ category: data.name })
+          .eq('client_id', selectedClientId)
+          .eq('category', editingCategory.name);
+
+        if (itemsError) throw itemsError;
+
+        toast.success('Categoría actualizada exitosamente');
+      } else {
+        // Create new category
+        const { data: categories } = await (supabase as any)
+          .from('menu_categories')
+          .select('display_order')
+          .eq('client_id', selectedClientId)
+          .order('display_order', { ascending: false })
+          .limit(1);
+
+        const nextDisplayOrder = categories && categories.length > 0 
+          ? categories[0].display_order + 1 
+          : 0;
+
+        const { error } = await (supabase as any)
+          .from('menu_categories')
+          .insert({
+            client_id: selectedClientId,
+            name: data.name,
+            is_active: data.is_active,
+            display_order: nextDisplayOrder,
+          });
+
+        if (error) throw error;
+        toast.success('Categoría creada exitosamente');
+      }
+
+      setIsCategoryDialogOpen(false);
+      setEditingCategory(null);
+      categoryForm.reset();
+      fetchData();
+    } catch (error) {
+      toast.error('Error al guardar categoría');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEditItem = (item: MenuItem) => {
     setEditingItem(item);
-    form.reset({
+    itemForm.reset({
       name: item.name,
       description: item.description || '',
       price: item.price,
@@ -256,13 +549,11 @@ export default function MenuItems() {
       show_on_homepage: item.show_on_homepage,
     });
     setSelectedFile(null);
-    setIsDialogOpen(true);
+    setIsItemDialogOpen(true);
   };
 
-  const handleDelete = async (itemId: string) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar este elemento?')) {
-      return;
-    }
+  const handleDeleteItem = async (itemId: string) => {
+    if (!confirm('¿Estás seguro de que quieres eliminar este plato?')) return;
 
     try {
       const { error } = await (supabase as any)
@@ -270,58 +561,138 @@ export default function MenuItems() {
         .delete()
         .eq('id', itemId);
 
-      if (error) {
-        toast.error('Error al eliminar elemento');
-        return;
-      }
-
-      toast.success('Elemento eliminado exitosamente');
-      fetchMenuItems();
+      if (error) throw error;
+      toast.success('Plato eliminado exitosamente');
+      fetchData();
     } catch (error) {
-      toast.error('Error al eliminar elemento');
+      toast.error('Error al eliminar plato');
     }
   };
 
-  const handleNewItem = () => {
+  const handleNewItem = (categoryName?: string) => {
     setEditingItem(null);
     setSelectedFile(null);
-    form.reset({
+    itemForm.reset({
       name: '',
       description: '',
       price: 0,
-      category: '',
+      category: categoryName || '',
       is_active: true,
       show_image_home: false,
       show_image_menu: true,
       show_on_homepage: false,
     });
-    setIsDialogOpen(true);
+    setIsItemDialogOpen(true);
   };
 
-  const filteredItems = filterCategory === 'all' 
-    ? menuItems 
-    : menuItems.filter(item => item.category === filterCategory);
+  const handleEditCategory = (category: MenuCategory) => {
+    setEditingCategory(category);
+    categoryForm.reset({
+      name: category.name,
+      is_active: category.is_active,
+    });
+    setIsCategoryDialogOpen(true);
+  };
 
-  const homepageItemsCount = menuItems.filter(item => item.show_on_homepage).length;
+  const handleDeleteCategory = async (categoryId: string) => {
+    const category = categoriesWithItems.find(c => c.id === categoryId);
+    if (!category) return;
+
+    if (category.items.length > 0) {
+      toast.error('No puedes eliminar una categoría que tiene platos. Elimina o mueve los platos primero.');
+      return;
+    }
+
+    if (!confirm('¿Estás seguro de que quieres eliminar esta categoría?')) return;
+
+    try {
+      const { error } = await (supabase as any)
+        .from('menu_categories')
+        .delete()
+        .eq('id', categoryId);
+
+      if (error) throw error;
+      toast.success('Categoría eliminada exitosamente');
+      fetchData();
+    } catch (error) {
+      toast.error('Error al eliminar categoría');
+    }
+  };
+
+  const handleNewCategory = () => {
+    setEditingCategory(null);
+    categoryForm.reset({
+      name: '',
+      is_active: true,
+    });
+    setIsCategoryDialogOpen(true);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = categoriesWithItems.findIndex(cat => cat.id === active.id);
+    const newIndex = categoriesWithItems.findIndex(cat => cat.id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const newCategories = arrayMove(categoriesWithItems, oldIndex, newIndex);
+    setCategoriesWithItems(newCategories);
+
+    // Update display_order in database
+    try {
+      const updates = newCategories.map((category, index) => ({
+        id: category.id,
+        display_order: index,
+      }));
+
+      for (const update of updates) {
+        await (supabase as any)
+          .from('menu_categories')
+          .update({ display_order: update.display_order })
+          .eq('id', update.id);
+      }
+
+      toast.success('Orden actualizado exitosamente');
+    } catch (error) {
+      toast.error('Error al actualizar orden');
+      fetchData(); // Refresh data on error
+    }
+  };
+
+  const toggleCategoryOpen = (categoryId: string) => {
+    const newOpenCategories = new Set(openCategories);
+    if (newOpenCategories.has(categoryId)) {
+      newOpenCategories.delete(categoryId);
+    } else {
+      newOpenCategories.add(categoryId);
+    }
+    setOpenCategories(newOpenCategories);
+  };
 
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <div className="w-48 h-6 bg-muted animate-pulse rounded mb-2"></div>
-            <div className="w-64 h-4 bg-muted animate-pulse rounded"></div>
+            <h1 className="text-3xl font-bold text-foreground">Gestión de Menú</h1>
+            <p className="text-muted-foreground">Organiza tu menú por categorías y platos</p>
           </div>
-          <div className="w-32 h-10 bg-muted animate-pulse rounded"></div>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
-            <Card key={i}>
-              <div className="w-full h-48 bg-muted animate-pulse"></div>
-              <CardContent className="p-4 space-y-2">
-                <div className="w-3/4 h-5 bg-muted animate-pulse rounded"></div>
-                <div className="w-full h-4 bg-muted animate-pulse rounded"></div>
-                <div className="w-1/2 h-6 bg-muted animate-pulse rounded"></div>
+        <div className="grid gap-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <CardHeader>
+                <div className="h-6 bg-muted rounded w-1/3"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[1, 2, 3].map((j) => (
+                    <div key={j} className="h-40 bg-muted rounded"></div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -334,204 +705,225 @@ export default function MenuItems() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Elementos del Menú</h1>
-          <p className="text-muted-foreground mt-2">
-            Gestiona los platos y bebidas de tu menú
+          <h1 className="text-3xl font-bold text-foreground">Gestión de Menú</h1>
+          <p className="text-muted-foreground">
+            Organiza tu menú por categorías y platos. Arrastra las categorías para cambiar su orden.
           </p>
         </div>
+        <div className="flex gap-2">
+          <Button onClick={handleNewCategory}>
+            <FolderPlus className="h-4 w-4 mr-2" />
+            Nueva Categoría
+          </Button>
+          <Button onClick={() => handleNewItem()}>
+            <Plus className="h-4 w-4 mr-2" />
+            Nuevo Plato
+          </Button>
+        </div>
+      </div>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={handleNewItem}>
-              <Plus className="mr-2 h-4 w-4" />
-              Nuevo Elemento
+      {categoriesWithItems.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <p className="text-muted-foreground mb-4">No hay categorías creadas</p>
+            <Button onClick={handleNewCategory}>
+              <FolderPlus className="h-4 w-4 mr-2" />
+              Crear primera categoría
             </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingItem ? 'Editar Elemento' : 'Nuevo Elemento del Menú'}
-              </DialogTitle>
-              <DialogDescription>
-                {editingItem 
-                  ? 'Modifica los datos del elemento existente' 
-                  : 'Agrega un nuevo elemento a tu menú'
-                }
-              </DialogDescription>
-            </DialogHeader>
+          </CardContent>
+        </Card>
+      ) : (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={categoriesWithItems.map(c => c.id)} strategy={verticalListSortingStrategy}>
+            {categoriesWithItems.map((category) => (
+              <SortableCategory
+                key={category.id}
+                category={category}
+                onEditCategory={handleEditCategory}
+                onDeleteCategory={handleDeleteCategory}
+                onEditItem={handleEditItem}
+                onDeleteItem={handleDeleteItem}
+                onNewItem={handleNewItem}
+                isOpen={openCategories.has(category.id)}
+                onToggleOpen={toggleCategoryOpen}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+      )}
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nombre del Plato *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Ej: Lomo Saltado" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+      {/* Item Dialog */}
+      <Dialog open={isItemDialogOpen} onOpenChange={setIsItemDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingItem ? 'Editar Plato' : 'Nuevo Plato'}
+            </DialogTitle>
+            <DialogDescription>
+              {editingItem ? 'Modifica los detalles del plato' : 'Agrega un nuevo plato al menú'}
+            </DialogDescription>
+          </DialogHeader>
 
-                  <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Precio *</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01" 
-                            placeholder="0.00"
-                            {...field}
-                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+          <Form {...itemForm}>
+            <form onSubmit={itemForm.handleSubmit(onSubmitItem)} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
-                  control={form.control}
-                  name="category"
+                  control={itemForm.control}
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Categoría *</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona una categoría" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.name}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descripción</FormLabel>
+                      <FormLabel>Nombre del Plato</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="Describe los ingredientes y preparación..."
-                          className="resize-none"
-                          rows={3}
-                          {...field} 
-                        />
+                        <Input placeholder="Ej: Ceviche de pescado" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Image Upload */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Imagen del Plato</label>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                <FormField
+                  control={itemForm.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Precio (S/)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={itemForm.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Categoría</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona una categoría" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categoriesWithItems.map((category) => (
+                          <SelectItem key={category.id} value={category.name}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={itemForm.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción (Opcional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe el plato..."
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div>
+                <FormLabel>Imagen del Plato</FormLabel>
+                <div className="mt-2">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                    className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
+                  />
+                  {editingItem?.image_url && !selectedFile && (
+                    <div className="mt-2">
+                      <img
+                        src={editingItem.image_url}
+                        alt="Imagen actual"
+                        className="w-20 h-20 object-cover rounded"
                       />
                     </div>
-                    {(editingItem?.image_url || selectedFile) && (
-                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted">
-                        {selectedFile ? (
-                          <img 
-                            src={URL.createObjectURL(selectedFile)} 
-                            alt="Preview"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : editingItem?.image_url ? (
-                          <img 
-                            src={editingItem.image_url} 
-                            alt="Current"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
+              </div>
 
-                {/* Toggles */}
-                <div className="space-y-4 pt-4 border-t">
-                  <FormField
-                    control={form.control}
-                    name="is_active"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between">
-                        <div>
-                          <FormLabel>Elemento Activo</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Los elementos inactivos no aparecen en el sitio web
-                          </p>
+              <div className="space-y-4">
+                <FormField
+                  control={itemForm.control}
+                  name="is_active"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel>Plato Activo</FormLabel>
+                        <div className="text-sm text-muted-foreground">
+                          El plato aparecerá en el menú público
                         </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="show_on_homepage"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between">
-                        <div>
-                          <FormLabel>Mostrar en Página de Inicio</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Máximo 8 elementos ({homepageItemsCount}/8 usados)
-                          </p>
+                <FormField
+                  control={itemForm.control}
+                  name="show_on_homepage"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel>Mostrar en Página de Inicio</FormLabel>
+                        <div className="text-sm text-muted-foreground">
+                          El plato aparecerá en la sección de platos destacados (máximo 6)
                         </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            disabled={!field.value && homepageItemsCount >= 8}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
-                    control={form.control}
+                    control={itemForm.control}
                     name="show_image_home"
                     render={({ field }) => (
-                      <FormItem className="flex items-center justify-between">
-                        <div>
-                          <FormLabel>Mostrar Imagen en Página de Inicio</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Solo si el elemento aparece en la página de inicio
-                          </p>
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel>Imagen en Inicio</FormLabel>
+                          <div className="text-sm text-muted-foreground">
+                            Mostrar imagen en página de inicio
+                          </div>
                         </div>
                         <FormControl>
                           <Switch
@@ -544,15 +936,15 @@ export default function MenuItems() {
                   />
 
                   <FormField
-                    control={form.control}
+                    control={itemForm.control}
                     name="show_image_menu"
                     render={({ field }) => (
-                      <FormItem className="flex items-center justify-between">
-                        <div>
-                          <FormLabel>Mostrar Imagen en Página de Menú</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            La imagen aparece en la página del menú completo
-                          </p>
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel>Imagen en Menú</FormLabel>
+                          <div className="text-sm text-muted-foreground">
+                            Mostrar imagen en página de menú
+                          </div>
                         </div>
                         <FormControl>
                           <Switch
@@ -564,151 +956,110 @@ export default function MenuItems() {
                     )}
                   />
                 </div>
+              </div>
 
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsDialogOpen(false)}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button type="submit" disabled={saving || uploading}>
-                    {saving || uploading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {uploading ? 'Subiendo...' : 'Guardando...'}
-                      </>
-                    ) : (
-                      <>
-                        <Save className="mr-2 h-4 w-4" />
-                        {editingItem ? 'Actualizar' : 'Crear'}
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
-      </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsItemDialogOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={saving || uploading}>
+                  {saving || uploading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {uploading ? 'Subiendo...' : 'Guardando...'}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      {editingItem ? 'Actualizar' : 'Crear'} Plato
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
 
-      {/* Filter */}
-      <div className="flex items-center gap-4">
-        <label className="text-sm font-medium">Filtrar por categoría:</label>
-        <Select value={filterCategory} onValueChange={setFilterCategory}>
-          <SelectTrigger className="w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas las categorías</SelectItem>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.name}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Category Dialog */}
+      <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
+            </DialogTitle>
+            <DialogDescription>
+              {editingCategory ? 'Modifica los detalles de la categoría' : 'Agrega una nueva categoría al menú'}
+            </DialogDescription>
+          </DialogHeader>
 
-      {/* Menu Items Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredItems.length === 0 ? (
-          <div className="col-span-full">
-            <Card>
-              <CardContent className="text-center py-12">
-                <div className="text-muted-foreground">
-                  <Plus className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-medium mb-2">No hay elementos</h3>
-                  <p className="text-sm mb-4">
-                    {filterCategory === 'all' 
-                      ? 'Crea tu primer elemento del menú'
-                      : `No hay elementos en la categoría "${filterCategory}"`
-                    }
-                  </p>
-                  <Button onClick={handleNewItem}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Crear Primer Elemento
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        ) : (
-          filteredItems.map((item) => (
-            <Card key={item.id} className="overflow-hidden">
-              {item.image_url ? (
-                <div className="relative h-48 bg-muted">
-                  <img 
-                    src={item.image_url} 
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2 right-2 flex gap-1">
-                    {item.show_on_homepage && (
-                      <Badge variant="secondary" className="bg-primary text-primary-foreground">
-                        <Home className="h-3 w-3 mr-1" />
-                        Inicio
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="h-48 bg-muted flex items-center justify-center">
-                  <ImageIcon className="h-12 w-12 text-muted-foreground" />
-                </div>
-              )}
-              
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-lg font-semibold line-clamp-1">{item.name}</h3>
-                  <Badge variant={item.is_active ? "default" : "secondary"}>
-                    {item.is_active ? 'Activo' : 'Inactivo'}
-                  </Badge>
-                </div>
-                
-                {item.description && (
-                  <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                    {item.description}
-                  </p>
+          <Form {...categoryForm}>
+            <form onSubmit={categoryForm.handleSubmit(onSubmitCategory)} className="space-y-4">
+              <FormField
+                control={categoryForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre de la Categoría</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej: Entradas, Platos Principales, Postres" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-                
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-lg font-bold text-primary">
-                    S/ {item.price.toFixed(2)}
-                  </span>
-                  <Badge variant="outline">{item.category}</Badge>
-                </div>
+              />
 
-                <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                  <div className="flex items-center gap-2">
-                    {item.show_image_home && <Eye className="h-3 w-3" />}
-                    {item.show_image_menu && <ImageIcon className="h-3 w-3" />}
-                  </div>
-                </div>
-                
-                <div className="flex justify-end gap-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(item)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDelete(item.id)}
-                    className="hover:bg-destructive hover:text-destructive-foreground"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+              <FormField
+                control={categoryForm.control}
+                name="is_active"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel>Categoría Activa</FormLabel>
+                      <div className="text-sm text-muted-foreground">
+                        La categoría aparecerá en el menú público
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsCategoryDialogOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={saving}>
+                  {saving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      {editingCategory ? 'Actualizar' : 'Crear'} Categoría
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
