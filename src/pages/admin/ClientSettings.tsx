@@ -947,7 +947,12 @@ export default function ClientSettings() {
           header_background_style: (data as any).header_background_style || 'dark',
           title_font: (data as any).title_font || 'Cormorant Garamond',
           body_font: (data as any).body_font || 'Inter',
-          title_font_weight: (data as any).title_font_weight || '400'
+          title_font_weight: (data as any).title_font_weight || '400',
+          hide_whatsapp_button_menu: (data as any).hide_whatsapp_button_menu || false,
+          hide_phone_button_menu: (data as any).hide_phone_button_menu || false,
+          custom_cta_button_text: (data as any).custom_cta_button_text || '',
+          custom_cta_button_link: (data as any).custom_cta_button_link || '',
+          show_whatsapp_popup: (data as any).show_whatsapp_popup || false
         }));
       } else {
         // Use upsert to create default client_settings if none exist
@@ -960,7 +965,12 @@ export default function ClientSettings() {
             header_background_style: 'dark',
             title_font: 'Cormorant Garamond',
             body_font: 'Inter',
-            title_font_weight: '400'
+            title_font_weight: '400',
+            hide_whatsapp_button_menu: false,
+            hide_phone_button_menu: false,
+            custom_cta_button_text: '',
+            custom_cta_button_link: '',
+            show_whatsapp_popup: false
           }, {
             onConflict: 'client_id'
           })
@@ -1228,11 +1238,6 @@ export default function ClientSettings() {
           whatsapp_country_code: formData.whatsapp_country_code,
           coordinates: formData.coordinates,
           theme: formData.theme,
-          hide_whatsapp_button_menu: formData.hide_whatsapp_button_menu,
-          hide_phone_button_menu: formData.hide_phone_button_menu,
-          custom_cta_button_text: formData.custom_cta_button_text,
-          custom_cta_button_link: formData.custom_cta_button_link,
-          show_whatsapp_popup: formData.show_whatsapp_popup,
           opening_hours: orderedOpeningHours,
           social_media_links: formData.social_media_links,
           delivery: formData.delivery,
@@ -1258,6 +1263,11 @@ export default function ClientSettings() {
           title_font: formData.title_font,
           body_font: formData.body_font,
           title_font_weight: formData.title_font_weight,
+          hide_whatsapp_button_menu: formData.hide_whatsapp_button_menu,
+          hide_phone_button_menu: formData.hide_phone_button_menu,
+          custom_cta_button_text: formData.custom_cta_button_text,
+          custom_cta_button_link: formData.custom_cta_button_link,
+          show_whatsapp_popup: formData.show_whatsapp_popup,
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'client_id'
