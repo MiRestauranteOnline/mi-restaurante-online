@@ -250,6 +250,7 @@ serve(async (req) => {
       homepage_hero_background: 'homepage_hero_background_url',
       homepage_about_section_image: 'homepage_about_section_image_url',
       about_page_hero_background: 'about_page_hero_background_url',
+      about_page_about_section_image: 'about_page_about_section_image_url',
       menu_page_hero_background: 'menu_page_hero_background_url',
       contact_page_hero_background: 'contact_page_hero_background_url',
       reviews_page_hero_background: 'reviews_page_hero_background_url',
