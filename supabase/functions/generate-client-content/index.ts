@@ -154,12 +154,12 @@ serve(async (req) => {
         "services_feature3_text": "Texto feature 3"
       },
       "imagePrompts": {
-        "homepage_hero_background": "Prompt para imagen del hero principal",
-        "homepage_about_section_image": "Prompt para imagen de la sección about",
-        "about_page_hero_background": "Prompt para imagen del hero de la página about",
-        "menu_page_hero_background": "Prompt para imagen del hero del menú",
-        "contact_page_hero_background": "Prompt para imagen del hero de contacto",
-        "reviews_page_hero_background": "Prompt para imagen del hero de reviews"
+        "homepage_hero_background": "Prompt para imagen del hero principal - enfócate en platos de comida, ingredientes frescos, detalles culinarios, ambiente gastronómico sin mostrar un restaurante específico ficticio",
+        "homepage_about_section_image": "Prompt para imagen de la sección about - enfócate en ingredientes frescos, proceso de cocina, manos del chef preparando comida, detalles artesanales",
+        "about_page_hero_background": "Prompt para imagen del hero de la página about - enfócate en la cocina, ingredientes, proceso culinario, ambiente de cocina profesional",
+        "menu_page_hero_background": "Prompt para imagen del hero del menú - enfócate en platos principales, presentación de comida, ingredientes frescos, detalles gastronómicos",
+        "contact_page_hero_background": "Prompt para imagen del hero de contacto - enfócate en ambiente acogedor, mesa con comida, detalles del servicio, sin mostrar restaurante específico",
+        "reviews_page_hero_background": "Prompt para imagen del hero de reviews - enfócate en clientes satisfechos disfrutando la comida, momentos de felicidad, ambiente familiar"
       }
     }
 
@@ -262,14 +262,18 @@ serve(async (req) => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              prompt: `${prompt}, professional restaurant photography, high quality, vibrant colors, modern restaurant setting, Peruvian context, no text overlay, clean composition`,
-              modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3",
+              prompt: `${prompt}, ultra-realistic professional restaurant photography, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, ${restaurantName} style, no text overlay, photojournalistic quality, commercial food photography`,
+              modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3", // Leonardo Phoenix 1.0 - latest foundational model
+              styleUUID: "7c3f932b-a572-47cb-9b9b-f20211e63b5b", // Pro color photography style
               width: 1024,
               height: 576,
               num_images: 1,
-              guidance_scale: 7,
-              num_inference_steps: 15,
-              presetStyle: "PHOTOGRAPHY"
+              contrast: 4, // High contrast for sharp, professional look
+              enhancePrompt: true, // AI prompt enhancement for better results
+              ultra: true, // Ultra quality for highest resolution output
+              alchemy: true, // Quality mode enabled
+              num_inference_steps: 25, // Higher steps for better quality (default is 15)
+              guidance_scale: 8 // Higher guidance for better prompt adherence
             }),
           });
 
