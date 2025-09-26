@@ -271,7 +271,7 @@ serve(async (req) => {
       throw new Error(`Failed to upsert content: ${upsertError.message}`);
     }
 
-    // Step 3: Generate images synchronously before responding
+    // Step 3: Generate images in parallel to avoid timeouts
     const imageFieldMap: Record<string, string> = {
       homepage_hero_background: 'homepage_hero_background_url',
       homepage_about_section_image: 'homepage_about_section_image_url',
@@ -284,9 +284,10 @@ serve(async (req) => {
 
     const imageUpdates: Record<string, string> = {};
 
-    for (const [key, prompt] of Object.entries(generatedContent.imagePrompts || {})) {
+    // Generate all images in parallel to prevent timeouts
+    const imageGenerationPromises = Object.entries(generatedContent.imagePrompts || {}).map(async ([key, prompt]) => {
       const targetField = imageFieldMap[key as keyof typeof imageFieldMap];
-      if (!targetField) continue;
+      if (!targetField) return null;
 
       try {
         console.log(`Generating image for ${key}...`);
@@ -313,21 +314,21 @@ serve(async (req) => {
 
         if (!leonardoResponse.ok) {
           console.error(`Leonardo start failed for ${key}:`, await leonardoResponse.text());
-          continue;
+          return null;
         }
 
         const leonardoData = await leonardoResponse.json();
         if (!leonardoData.sdGenerationJob) {
           console.error(`No generation job for ${key}`);
-          continue;
+          return null;
         }
 
         const generationId = leonardoData.sdGenerationJob.generationId;
 
-        // Poll for completion (up to 2 minutes)
+        // Poll for completion (reduced to 6 attempts x 5s = 30s max)
         let imageUrl: string | null = null;
-        for (let attempts = 0; attempts < 12; attempts++) {
-          await new Promise((r) => setTimeout(r, 10000)); // Wait 10 seconds
+        for (let attempts = 0; attempts < 6; attempts++) {
+          await new Promise((r) => setTimeout(r, 5000)); // Wait 5 seconds
           
           const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
             headers: { 'Authorization': `Bearer ${leonardoApiKey}` },
@@ -360,8 +361,7 @@ serve(async (req) => {
             });
 
             if (optimizeResponse.data?.success) {
-              imageUpdates[targetField] = optimizeResponse.data.optimizedUrl;
-              console.log(`Optimized image stored for ${key}: ${optimizeResponse.data.optimizedUrl}`);
+              return { [targetField]: optimizeResponse.data.optimizedUrl };
             } else {
               console.error(`Image optimization failed for ${key}:`, optimizeResponse.error);
               // Fallback: upload the Leonardo image directly to Supabase (never store CDN URL)
@@ -380,10 +380,11 @@ serve(async (req) => {
                 const { data: { publicUrl: supaUrl } } = supabase.storage
                   .from('client-assets')
                   .getPublicUrl(optimizedPath);
-                imageUpdates[targetField] = supaUrl;
                 console.log(`Uploaded fallback image for ${key}: ${supaUrl}`);
+                return { [targetField]: supaUrl };
               } catch (uploadErr) {
                 console.error(`Fallback upload failed for ${key}`, uploadErr);
+                return null;
               }
             }
           } catch (optimizationError) {
@@ -404,19 +405,32 @@ serve(async (req) => {
               const { data: { publicUrl: supaUrl } } = supabase.storage
                 .from('client-assets')
                 .getPublicUrl(optimizedPath);
-              imageUpdates[targetField] = supaUrl;
               console.log(`Uploaded fallback image for ${key}: ${supaUrl}`);
+              return { [targetField]: supaUrl };
             } catch (uploadErr) {
               console.error(`Fallback upload failed for ${key}`, uploadErr);
+              return null;
             }
           }
         } else {
           console.warn(`Timed out generating image for ${key}`);
+          return null;
         }
       } catch (error) {
         console.error(`Error generating image for ${key}:`, error);
+        return null;
       }
-    }
+    });
+
+    // Wait for all image generations to complete
+    const imageResults = await Promise.all(imageGenerationPromises);
+    
+    // Merge all successful image updates
+    imageResults.forEach(result => {
+      if (result) {
+        Object.assign(imageUpdates, result);
+      }
+    });
 
     // Step 4: Update database with all content including generated images
     const finalUpdate = {
