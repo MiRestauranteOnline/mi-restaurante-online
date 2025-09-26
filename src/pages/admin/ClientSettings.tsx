@@ -570,6 +570,8 @@ export default function ClientSettings() {
     primary_color: '#FFD700',
     header_background_enabled: false,
     header_background_style: 'dark',
+    title_font: 'Cormorant Garamond',
+    body_font: 'Inter',
     // Admin content fields - Two-part titles
     homepage_hero_title_first_line: '',
     homepage_hero_title_second_line: '',
@@ -772,7 +774,9 @@ export default function ClientSettings() {
           ...prev,
           primary_color: (data as any).primary_color || '#FFD700',
           header_background_enabled: (data as any).header_background_enabled || false,
-          header_background_style: (data as any).header_background_style || 'dark'
+          header_background_style: (data as any).header_background_style || 'dark',
+          title_font: (data as any).title_font || 'Cormorant Garamond',
+          body_font: (data as any).body_font || 'Inter'
         }));
       } else {
         // Use upsert to create default client_settings if none exist
@@ -782,7 +786,9 @@ export default function ClientSettings() {
             client_id: clientId,
             primary_color: '#FFD700',
             header_background_enabled: false,
-            header_background_style: 'dark'
+            header_background_style: 'dark',
+            title_font: 'Cormorant Garamond',
+            body_font: 'Inter'
           }, {
             onConflict: 'client_id'
           })
@@ -1068,6 +1074,8 @@ export default function ClientSettings() {
           primary_color: formData.primary_color,
           header_background_enabled: formData.header_background_enabled,
           header_background_style: formData.header_background_style,
+          title_font: formData.title_font,
+          body_font: formData.body_font,
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'client_id'
@@ -2185,6 +2193,85 @@ export default function ClientSettings() {
                       onChange={(url) => setFormData({...formData, footer_logo_url: url})}
                       clientId={clientId!}
                     />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="text-lg font-medium">Typography</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="title_font">Title Font</Label>
+                    <Select
+                      value={formData.title_font || 'Cormorant Garamond'}
+                      onValueChange={(value) => setFormData({...formData, title_font: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-md z-50 max-h-60">
+                        <SelectItem value="Cormorant Garamond">Cormorant Garamond</SelectItem>
+                        <SelectItem value="Playfair Display">Playfair Display</SelectItem>
+                        <SelectItem value="Merriweather">Merriweather</SelectItem>
+                        <SelectItem value="Lora">Lora</SelectItem>
+                        <SelectItem value="Crimson Text">Crimson Text</SelectItem>
+                        <SelectItem value="Bitter">Bitter</SelectItem>
+                        <SelectItem value="PT Serif">PT Serif</SelectItem>
+                        <SelectItem value="Libre Baskerville">Libre Baskerville</SelectItem>
+                        <SelectItem value="Source Serif Pro">Source Serif Pro</SelectItem>
+                        <SelectItem value="Abril Fatface">Abril Fatface</SelectItem>
+                        <SelectItem value="Montserrat">Montserrat</SelectItem>
+                        <SelectItem value="Oswald">Oswald</SelectItem>
+                        <SelectItem value="Roboto">Roboto</SelectItem>
+                        <SelectItem value="Open Sans">Open Sans</SelectItem>
+                        <SelectItem value="Poppins">Poppins</SelectItem>
+                        <SelectItem value="Nunito">Nunito</SelectItem>
+                        <SelectItem value="Raleway">Raleway</SelectItem>
+                        <SelectItem value="Inter">Inter</SelectItem>
+                        <SelectItem value="Lato">Lato</SelectItem>
+                        <SelectItem value="Dancing Script">Dancing Script</SelectItem>
+                        <SelectItem value="Great Vibes">Great Vibes</SelectItem>
+                        <SelectItem value="Lobster">Lobster</SelectItem>
+                        <SelectItem value="Pacifico">Pacifico</SelectItem>
+                        <SelectItem value="Satisfy">Satisfy</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="body_font">Body Font</Label>
+                    <Select
+                      value={formData.body_font || 'Inter'}
+                      onValueChange={(value) => setFormData({...formData, body_font: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-md z-50 max-h-60">
+                        <SelectItem value="Inter">Inter</SelectItem>
+                        <SelectItem value="Roboto">Roboto</SelectItem>
+                        <SelectItem value="Open Sans">Open Sans</SelectItem>
+                        <SelectItem value="Lato">Lato</SelectItem>
+                        <SelectItem value="Poppins">Poppins</SelectItem>
+                        <SelectItem value="Nunito">Nunito</SelectItem>
+                        <SelectItem value="Source Sans Pro">Source Sans Pro</SelectItem>
+                        <SelectItem value="Raleway">Raleway</SelectItem>
+                        <SelectItem value="PT Sans">PT Sans</SelectItem>
+                        <SelectItem value="Fira Sans">Fira Sans</SelectItem>
+                        <SelectItem value="Montserrat">Montserrat</SelectItem>
+                        <SelectItem value="Work Sans">Work Sans</SelectItem>
+                        <SelectItem value="Noto Sans">Noto Sans</SelectItem>
+                        <SelectItem value="Rubik">Rubik</SelectItem>
+                        <SelectItem value="DM Sans">DM Sans</SelectItem>
+                        <SelectItem value="Merriweather">Merriweather</SelectItem>
+                        <SelectItem value="Lora">Lora</SelectItem>
+                        <SelectItem value="Crimson Text">Crimson Text</SelectItem>
+                        <SelectItem value="PT Serif">PT Serif</SelectItem>
+                        <SelectItem value="Libre Baskerville">Libre Baskerville</SelectItem>
+                        <SelectItem value="Source Serif Pro">Source Serif Pro</SelectItem>
+                        <SelectItem value="Cormorant Garamond">Cormorant Garamond</SelectItem>
+                        <SelectItem value="Playfair Display">Playfair Display</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
