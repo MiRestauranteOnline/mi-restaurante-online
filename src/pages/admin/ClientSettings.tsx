@@ -151,6 +151,11 @@ interface AdminContent {
   services_feature2_text?: string;
   services_feature3_icon?: string;
   services_feature3_text?: string;
+  // Footer description
+  footer_description?: string;
+  // Logo URLs
+  header_logo_url?: string;
+  footer_logo_url?: string;
 }
 
 interface MenuCategory {
@@ -654,7 +659,12 @@ export default function ClientSettings() {
     services_feature2_icon: 'Star',
     services_feature2_text: '',
     services_feature3_icon: 'MapPin',
-    services_feature3_text: ''
+    services_feature3_text: '',
+    // Footer description
+    footer_description: '',
+    // Logo URLs
+    header_logo_url: '',
+    footer_logo_url: ''
   });
 
   useEffect(() => {
@@ -899,7 +909,12 @@ export default function ClientSettings() {
           services_feature2_icon: data.services_feature2_icon || 'Star',
           services_feature2_text: data.services_feature2_text || '',
           services_feature3_icon: data.services_feature3_icon || 'MapPin',
-          services_feature3_text: data.services_feature3_text || ''
+          services_feature3_text: data.services_feature3_text || '',
+          // Footer description
+          footer_description: data.footer_description || '',
+          // Logo URLs
+          header_logo_url: data.header_logo_url || '',
+          footer_logo_url: data.footer_logo_url || ''
         }));
       }
     } catch (error: any) {
@@ -2188,6 +2203,31 @@ export default function ClientSettings() {
         {userRole === 'admin' && (
           <TabsContent value="content">
             <div className="space-y-6">
+              {/* Logo Upload Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Logo Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <ImageUpload
+                      label="Header Logo"
+                      value={formData.header_logo_url || ''}
+                      onChange={(url) => setFormData({...formData, header_logo_url: url})}
+                      clientId={clientId!}
+                    />
+                  </div>
+                  <div>
+                    <ImageUpload
+                      label="Footer Logo"
+                      value={formData.footer_logo_url || ''}
+                      onChange={(url) => setFormData({...formData, footer_logo_url: url})}
+                      clientId={clientId!}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Homepage Content */}
               <Card>
                 <CardHeader>
@@ -2953,6 +2993,25 @@ export default function ClientSettings() {
                       value={formData.reviews_page_hero_description}
                       onChange={(e) => setFormData({...formData, reviews_page_hero_description: e.target.value})}
                       rows={2}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Footer Description Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Footer Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="footer_description">Footer Description</Label>
+                    <Textarea
+                      id="footer_description"
+                      value={formData.footer_description}
+                      onChange={(e) => setFormData({...formData, footer_description: e.target.value})}
+                      rows={3}
+                      placeholder="Brief description for the footer section..."
                     />
                   </div>
                 </CardContent>

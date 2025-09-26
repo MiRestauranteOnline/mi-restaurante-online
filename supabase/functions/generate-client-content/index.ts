@@ -157,7 +157,8 @@ serve(async (req) => {
         "services_feature2_icon": "Star",
         "services_feature2_text": "Texto feature 2",
         "services_feature3_icon": "MapPin",
-        "services_feature3_text": "Texto feature 3"
+        "services_feature3_text": "Texto feature 3",
+        "footer_description": "Descripción del footer del restaurante"
       },
       "imagePrompts": {
         "homepage_hero_background": "Prompt para imagen del hero principal - enfócate en platos de comida, ingredientes frescos, detalles culinarios, ambiente gastronómico sin mostrar un restaurante específico ficticio",
