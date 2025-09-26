@@ -173,7 +173,8 @@ interface MenuItem {
   name: string;
   description?: string;
   price: number;
-  category: string;
+  category?: string; // legacy field, do not rely on this for linking
+  category_id?: string | null;
   image_url?: string;
   is_active: boolean;
   client_id: string;
@@ -222,10 +223,10 @@ function SortableCategoryCard({
   searchTerm: string;
   sensors: any;
   filteredAndGroupedMenuItems: Record<string, MenuItem[]>;
-  openMenuItemDialog: (item?: MenuItem, defaultCategory?: string) => void;
+  openMenuItemDialog: (item?: MenuItem, defaultCategoryId?: string) => void;
   openCategoryDialog: (category?: MenuCategory) => void;
   handleDeleteCategory: (id: string) => void;
-  handleMenuItemDragEnd: (event: DragEndEvent, categoryName: string) => void;
+  handleMenuItemDragEnd: (event: DragEndEvent, categoryId: string) => void;
   formData: any;
   handleDeleteMenuItem: (id: string) => void;
 }) {
@@ -316,7 +317,7 @@ function SortableCategoryCard({
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
-                onDragEnd={(event) => handleMenuItemDragEnd(event, category.name)}
+                onDragEnd={(event) => handleMenuItemDragEnd(event, category.id)}
               >
                 <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
                   <div className="space-y-2">
@@ -587,7 +588,7 @@ export default function ClientSettings() {
 
   const [categoryForm, setCategoryForm] = useState({ name: '', display_order: 0 });
   const [menuItemForm, setMenuItemForm] = useState({
-    name: '', description: '', price: 0, category: '', image_url: '',
+    name: '', description: '', price: 0, category_id: '', image_url: '',
     show_on_homepage: false, show_image_menu: true, show_image_home: false
   });
 
@@ -603,20 +604,25 @@ export default function ClientSettings() {
   const [briefing, setBriefing] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Filter and group menu items by category
+  // Filter and group menu items by category (using category_id)
   const filteredAndGroupedMenuItems = useMemo(() => {
-    const filtered = menuItems.filter(item => 
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const nameById = Object.fromEntries(categories.map(c => [c.id, c.name]));
+    const term = searchTerm.toLowerCase();
+    const filtered = menuItems.filter(item => {
+      const catName = nameById[item.category_id || '']?.toLowerCase() || '';
+      return (
+        item.name.toLowerCase().includes(term) ||
+        (item.description?.toLowerCase().includes(term) ?? false) ||
+        catName.includes(term)
+      );
+    });
 
     const grouped = categories.reduce((acc, category) => {
-      acc[category.name] = filtered.filter(item => item.category === category.name);
+      acc[category.id] = filtered.filter(item => item.category_id === category.id);
       return acc;
     }, {} as Record<string, MenuItem[]>);
 
-   return grouped;
+    return grouped;
   }, [menuItems, categories, searchTerm]);
 
   // Helpers to normalize time strings to 24h HH:mm
@@ -1455,6 +1461,8 @@ export default function ClientSettings() {
     if (!clientId) return;
     
     try {
+      const selectedCategoryName = categories.find(c => c.id === menuItemForm.category_id)?.name || null;
+
       if (editingMenuItem) {
         const { data, error } = await supabase
           .from('menu_items')
@@ -1462,7 +1470,8 @@ export default function ClientSettings() {
             name: menuItemForm.name,
             description: menuItemForm.description,
             price: menuItemForm.price,
-            category: menuItemForm.category,
+            category_id: menuItemForm.category_id || null,
+            category: selectedCategoryName || undefined,
             image_url: menuItemForm.image_url,
             show_on_homepage: menuItemForm.show_on_homepage,
             show_image_menu: menuItemForm.show_image_menu,
@@ -1481,7 +1490,8 @@ export default function ClientSettings() {
             name: menuItemForm.name,
             description: menuItemForm.description,
             price: menuItemForm.price,
-            category: menuItemForm.category,
+            category_id: menuItemForm.category_id || null,
+            category: selectedCategoryName || undefined,
             image_url: menuItemForm.image_url,
             show_on_homepage: menuItemForm.show_on_homepage,
             show_image_menu: menuItemForm.show_image_menu,
@@ -1497,7 +1507,7 @@ export default function ClientSettings() {
       setShowMenuItemDialog(false);
       setEditingMenuItem(null);
       setMenuItemForm({
-        name: '', description: '', price: 0, category: '', image_url: '',
+        name: '', description: '', price: 0, category_id: '', image_url: '',
         show_on_homepage: false, show_image_menu: true, show_image_home: false
       });
       toast({ title: "Success", description: "Menu item saved successfully" });
@@ -1744,14 +1754,14 @@ export default function ClientSettings() {
     setShowCategoryDialog(true);
   };
 
-  const openMenuItemDialog = (item?: MenuItem, defaultCategory?: string) => {
+  const openMenuItemDialog = (item?: MenuItem, defaultCategoryId?: string) => {
     if (item) {
       setEditingMenuItem(item);
       setMenuItemForm({
         name: item.name,
         description: item.description || '',
         price: item.price,
-        category: item.category,
+        category_id: item.category_id || '',
         image_url: item.image_url || '',
         show_on_homepage: item.show_on_homepage,
         show_image_menu: item.show_image_menu,
@@ -1760,7 +1770,7 @@ export default function ClientSettings() {
     } else {
       setEditingMenuItem(null);
       setMenuItemForm({
-        name: '', description: '', price: 0, category: defaultCategory || '', image_url: '',
+        name: '', description: '', price: 0, category_id: defaultCategoryId || '', image_url: '',
         show_on_homepage: false, show_image_menu: true, show_image_home: false
       });
     }
@@ -1901,11 +1911,11 @@ export default function ClientSettings() {
     }
   };
 
-  const handleMenuItemDragEnd = async (event: DragEndEvent, categoryName: string) => {
+  const handleMenuItemDragEnd = async (event: DragEndEvent, categoryId: string) => {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      const categoryItems = filteredAndGroupedMenuItems[categoryName];
+      const categoryItems = filteredAndGroupedMenuItems[categoryId] || [];
       const oldIndex = categoryItems.findIndex((item) => item.id === active.id);
       const newIndex = categoryItems.findIndex((item) => item.id === over?.id);
 
@@ -1913,9 +1923,9 @@ export default function ClientSettings() {
       
       // Update the menuItems state
       const updatedMenuItems = menuItems.map(item => {
-        if (item.category === categoryName) {
-          const newIndex = reorderedItems.findIndex(reorderedItem => reorderedItem.id === item.id);
-          return newIndex !== -1 ? { ...item } : item;
+        if (item.category_id === categoryId) {
+          const exists = reorderedItems.find(reorderedItem => reorderedItem.id === item.id);
+          return exists ? { ...item } : item;
         }
         return item;
       });
@@ -3326,7 +3336,7 @@ export default function ClientSettings() {
                   <SortableContext items={categories.map(c => c.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-4">
                       {categories.map((category) => {
-                        const categoryItems = filteredAndGroupedMenuItems[category.name] || [];
+                        const categoryItems = filteredAndGroupedMenuItems[category.id] || [];
                         const hasMatchingItems = searchTerm ? categoryItems.length > 0 : true;
                         
                         if (!hasMatchingItems) return null;
@@ -3504,13 +3514,13 @@ export default function ClientSettings() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="item_category">Category</Label>
-                <Select value={menuItemForm.category} onValueChange={(value) => setMenuItemForm({...menuItemForm, category: value})}>
+                <Select value={menuItemForm.category_id} onValueChange={(value) => setMenuItemForm({...menuItemForm, category_id: value})}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
+                      <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
