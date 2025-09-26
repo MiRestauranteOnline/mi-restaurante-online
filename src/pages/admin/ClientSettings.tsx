@@ -1,17 +1,19 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ImageUpload } from "@/components/ImageUpload";
 import {
   DndContext,
@@ -1607,7 +1609,7 @@ export default function ClientSettings() {
     setShowCategoryDialog(true);
   };
 
-  const openMenuItemDialog = (item?: MenuItem) => {
+  const openMenuItemDialog = (item?: MenuItem, defaultCategory?: string) => {
     if (item) {
       setEditingMenuItem(item);
       setMenuItemForm({
@@ -1623,7 +1625,7 @@ export default function ClientSettings() {
     } else {
       setEditingMenuItem(null);
       setMenuItemForm({
-        name: '', description: '', price: 0, category: '', image_url: '',
+        name: '', description: '', price: 0, category: defaultCategory || '', image_url: '',
         show_on_homepage: false, show_image_menu: true, show_image_home: false
       });
     }
@@ -3138,12 +3140,21 @@ export default function ClientSettings() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                Menu Items
-                <Button onClick={() => openMenuItemDialog()}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Menu Item
-                </Button>
+                Menu Management
+                <div className="flex gap-2">
+                  <Button onClick={() => openCategoryDialog()}>
+                    <FolderPlus className="h-4 w-4 mr-2" />
+                    New Category
+                  </Button>
+                  <Button onClick={() => openMenuItemDialog()}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Item
+                  </Button>
+                </div>
               </CardTitle>
+              <CardDescription>
+                Manage your menu categories and items. Drag categories to reorder them.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {/* Search Bar */}
@@ -3159,55 +3170,140 @@ export default function ClientSettings() {
                 </div>
               </div>
 
-              {/* Menu Items by Category */}
-              <div className="space-y-6">
-                {categories.map((category) => {
-                  const categoryItems = filteredAndGroupedMenuItems[category.name] || [];
-                  
-                  if (categoryItems.length === 0 && searchTerm) return null;
+              {categories.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-muted-foreground">
+                    <FolderPlus className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <h3 className="text-lg font-medium mb-2">No categories found</h3>
+                    <p className="text-sm mb-4">Create your first category to start organizing your menu</p>
+                    <Button onClick={() => openCategoryDialog()}>
+                      <FolderPlus className="mr-2 h-4 w-4" />
+                      Create First Category
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleCategoryDragEnd}
+                >
+                  <SortableContext items={categories.map(c => c.id)} strategy={verticalListSortingStrategy}>
+                    <div className="space-y-4">
+                      {categories.map((category) => {
+                        const categoryItems = filteredAndGroupedMenuItems[category.name] || [];
+                        const hasMatchingItems = searchTerm ? categoryItems.length > 0 : true;
+                        
+                        if (!hasMatchingItems) return null;
 
-                  return (
-                    <div key={category.id} className="space-y-3">
-                      <div className="flex items-center gap-2 py-2 border-b">
-                        <h3 className="text-lg font-semibold">{category.name}</h3>
-                        <span className="text-sm text-muted-foreground">({categoryItems.length} items)</span>
-                      </div>
-                      
-                      {categoryItems.length > 0 ? (
-                        <DndContext
-                          sensors={sensors}
-                          collisionDetection={closestCenter}
-                          onDragEnd={(event) => handleMenuItemDragEnd(event, category.name)}
-                        >
-                          <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
-                            <div className="space-y-2">
-                              {categoryItems.map((item) => (
-                                <SortableMenuItem
-                                  key={item.id}
-                                  item={item}
-                                  currencySymbol={formData.other_customizations.currency}
-                                  onEdit={openMenuItemDialog}
-                                  onDelete={handleDeleteMenuItem}
-                                />
-                              ))}
-                            </div>
-                          </SortableContext>
-                        </DndContext>
-                      ) : (
-                        <p className="text-muted-foreground text-center py-4 text-sm">
-                          {searchTerm ? 'No items match your search' : 'No items in this category'}
-                        </p>
-                      )}
+                        return (
+                          <Card key={category.id} className="overflow-hidden">
+                            <Collapsible defaultOpen={!searchTerm || categoryItems.length > 0}>
+                              <CollapsibleTrigger asChild>
+                                <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors pb-3">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                      <div
+                                        className="cursor-grab active:cursor-grabbing p-1"
+                                        onClick={(e) => e.stopPropagation()}
+                                        {...useSortable({ id: category.id }).attributes}
+                                        {...useSortable({ id: category.id }).listeners}
+                                        ref={useSortable({ id: category.id }).setNodeRef}
+                                        style={{
+                                          transform: CSS.Transform.toString(useSortable({ id: category.id }).transform),
+                                          transition: useSortable({ id: category.id }).transition,
+                                        }}
+                                      >
+                                        <GripVertical className="h-4 w-4 text-muted-foreground" />
+                                      </div>
+                                      <ChevronRight className="h-4 w-4 transition-transform duration-200 data-[state=open]:rotate-90" />
+                                      <div className="flex items-center gap-2">
+                                        <CardTitle className="text-lg">{category.name}</CardTitle>
+                                        <Badge variant={category.is_active ? "default" : "secondary"}>
+                                          {category.is_active ? 'Active' : 'Inactive'}
+                                        </Badge>
+                                        <Badge variant="outline">
+                                          {categoryItems.length} items
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => openMenuItemDialog(null, category.name)}
+                                      >
+                                        <Plus className="h-4 w-4" />
+                                        Add Item
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => openCategoryDialog(category)}
+                                      >
+                                        <Edit className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleDeleteCategory(category.id)}
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </CardHeader>
+                              </CollapsibleTrigger>
+                              
+                              <CollapsibleContent>
+                                <CardContent className="pt-0">
+                                  {categoryItems.length === 0 ? (
+                                    <div className="text-center py-8 text-muted-foreground">
+                                      <p>{searchTerm ? 'No items match your search' : 'No items in this category'}</p>
+                                      {!searchTerm && (
+                                        <Button
+                                          variant="outline"
+                                          className="mt-2"
+                                          onClick={() => openMenuItemDialog(null, category.name)}
+                                        >
+                                          <Plus className="h-4 w-4 mr-2" />
+                                          Add first item
+                                        </Button>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <DndContext
+                                      sensors={sensors}
+                                      collisionDetection={closestCenter}
+                                      onDragEnd={(event) => handleMenuItemDragEnd(event, category.name)}
+                                    >
+                                      <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+                                        <div className="space-y-2">
+                                          {categoryItems.map((item) => (
+                                            <SortableMenuItem
+                                              key={item.id}
+                                              item={item}
+                                              currencySymbol={formData.other_customizations.currency}
+                                              onEdit={openMenuItemDialog}
+                                              onDelete={handleDeleteMenuItem}
+                                            />
+                                          ))}
+                                        </div>
+                                      </SortableContext>
+                                    </DndContext>
+                                  )}
+                                </CardContent>
+                              </CollapsibleContent>
+                            </Collapsible>
+                          </Card>
+                        );
+                      })}
                     </div>
-                  );
-                })}
-                
-                {categories.length === 0 && (
-                  <p className="text-muted-foreground text-center py-4">No categories found. Create categories first.</p>
-                )}
-              </div>
+                  </SortableContext>
+                </DndContext>
+              )}
             </CardContent>
-        </Card>
+          </Card>
       </TabsContent>
 
       {/* Team Members Tab */}
