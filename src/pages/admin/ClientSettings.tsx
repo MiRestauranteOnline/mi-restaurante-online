@@ -3134,44 +3134,6 @@ export default function ClientSettings() {
           </TabsContent>
         )}
 
-        <TabsContent value="categories">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Menu Categories
-                <Button onClick={() => openCategoryDialog()}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Category
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {categories.length > 0 ? (
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleCategoryDragEnd}
-                  >
-                    <SortableContext items={categories.map(c => c.id)} strategy={verticalListSortingStrategy}>
-                      {categories.map((category) => (
-                        <SortableCategoryItem
-                          key={category.id}
-                          category={category}
-                          onEdit={openCategoryDialog}
-                          onDelete={handleDeleteCategory}
-                        />
-                      ))}
-                    </SortableContext>
-                  </DndContext>
-                ) : (
-                  <p className="text-muted-foreground text-center py-4">No categories found</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="menu">
           <Card>
             <CardHeader>
