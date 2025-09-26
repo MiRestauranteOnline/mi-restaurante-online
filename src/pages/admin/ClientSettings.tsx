@@ -2111,6 +2111,16 @@ export default function ClientSettings() {
                 </div>
               </div>
               
+              <div>
+                <Label htmlFor="address">Address</Label>
+                <Textarea
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  rows={3}
+                />
+              </div>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="space-y-2">
                   <Label htmlFor="hide_whatsapp_button_menu">Hide WhatsApp Button from Menu</Label>
