@@ -203,7 +203,142 @@ interface Review {
   client_id: string;
 }
 
-// Sortable Category Item Component
+// Sortable Category Card Component for Menu Tab
+function SortableCategoryCard({ 
+  category, 
+  categoryItems,
+  searchTerm,
+  sensors,
+  filteredAndGroupedMenuItems,
+  openMenuItemDialog,
+  openCategoryDialog,
+  handleDeleteCategory,
+  handleMenuItemDragEnd,
+  formData,
+  handleDeleteMenuItem
+}: {
+  category: MenuCategory;
+  categoryItems: MenuItem[];
+  searchTerm: string;
+  sensors: any;
+  filteredAndGroupedMenuItems: Record<string, MenuItem[]>;
+  openMenuItemDialog: (item?: MenuItem, defaultCategory?: string) => void;
+  openCategoryDialog: (category?: MenuCategory) => void;
+  handleDeleteCategory: (id: string) => void;
+  handleMenuItemDragEnd: (event: DragEndEvent, categoryName: string) => void;
+  formData: any;
+  handleDeleteMenuItem: (id: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: category.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style} className="overflow-hidden">
+      <Collapsible defaultOpen={!searchTerm || categoryItems.length > 0}>
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div
+                  className="cursor-grab active:cursor-grabbing p-1"
+                  onClick={(e) => e.stopPropagation()}
+                  {...attributes}
+                  {...listeners}
+                >
+                  <GripVertical className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <ChevronRight className="h-4 w-4 transition-transform duration-200 data-[state=open]:rotate-90" />
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-lg">{category.name}</CardTitle>
+                  <Badge variant={category.is_active ? "default" : "secondary"}>
+                    {category.is_active ? 'Active' : 'Inactive'}
+                  </Badge>
+                  <Badge variant="outline">
+                    {categoryItems.length} items
+                  </Badge>
+                </div>
+              </div>
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => openMenuItemDialog(undefined, category.name)}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Item
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => openCategoryDialog(category)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDeleteCategory(category.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent>
+          <CardContent className="pt-0">
+            {categoryItems.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>{searchTerm ? 'No items match your search' : 'No items in this category'}</p>
+                {!searchTerm && (
+                  <Button
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => openMenuItemDialog(undefined, category.name)}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add first item
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={(event) => handleMenuItemDragEnd(event, category.name)}
+              >
+                <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+                  <div className="space-y-2">
+                    {categoryItems.map((item) => (
+                      <SortableMenuItem
+                        key={item.id}
+                        item={item}
+                        currencySymbol={formData.other_customizations.currency}
+                        onEdit={openMenuItemDialog}
+                        onDelete={handleDeleteMenuItem}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            )}
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
+    </Card>
+  );
+}
 function SortableCategoryItem({ category, onEdit, onDelete }: { 
   category: MenuCategory, 
   onEdit: (category: MenuCategory) => void,
@@ -3197,105 +3332,20 @@ export default function ClientSettings() {
                         if (!hasMatchingItems) return null;
 
                         return (
-                          <Card key={category.id} className="overflow-hidden">
-                            <Collapsible defaultOpen={!searchTerm || categoryItems.length > 0}>
-                              <CollapsibleTrigger asChild>
-                                <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors pb-3">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                      <div
-                                        className="cursor-grab active:cursor-grabbing p-1"
-                                        onClick={(e) => e.stopPropagation()}
-                                        {...useSortable({ id: category.id }).attributes}
-                                        {...useSortable({ id: category.id }).listeners}
-                                        ref={useSortable({ id: category.id }).setNodeRef}
-                                        style={{
-                                          transform: CSS.Transform.toString(useSortable({ id: category.id }).transform),
-                                          transition: useSortable({ id: category.id }).transition,
-                                        }}
-                                      >
-                                        <GripVertical className="h-4 w-4 text-muted-foreground" />
-                                      </div>
-                                      <ChevronRight className="h-4 w-4 transition-transform duration-200 data-[state=open]:rotate-90" />
-                                      <div className="flex items-center gap-2">
-                                        <CardTitle className="text-lg">{category.name}</CardTitle>
-                                        <Badge variant={category.is_active ? "default" : "secondary"}>
-                                          {category.is_active ? 'Active' : 'Inactive'}
-                                        </Badge>
-                                        <Badge variant="outline">
-                                          {categoryItems.length} items
-                                        </Badge>
-                                      </div>
-                                    </div>
-                                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => openMenuItemDialog(null, category.name)}
-                                      >
-                                        <Plus className="h-4 w-4" />
-                                        Add Item
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => openCategoryDialog(category)}
-                                      >
-                                        <Edit className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleDeleteCategory(category.id)}
-                                      >
-                                        <Trash2 className="h-4 w-4" />
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </CardHeader>
-                              </CollapsibleTrigger>
-                              
-                              <CollapsibleContent>
-                                <CardContent className="pt-0">
-                                  {categoryItems.length === 0 ? (
-                                    <div className="text-center py-8 text-muted-foreground">
-                                      <p>{searchTerm ? 'No items match your search' : 'No items in this category'}</p>
-                                      {!searchTerm && (
-                                        <Button
-                                          variant="outline"
-                                          className="mt-2"
-                                          onClick={() => openMenuItemDialog(null, category.name)}
-                                        >
-                                          <Plus className="h-4 w-4 mr-2" />
-                                          Add first item
-                                        </Button>
-                                      )}
-                                    </div>
-                                  ) : (
-                                    <DndContext
-                                      sensors={sensors}
-                                      collisionDetection={closestCenter}
-                                      onDragEnd={(event) => handleMenuItemDragEnd(event, category.name)}
-                                    >
-                                      <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
-                                        <div className="space-y-2">
-                                          {categoryItems.map((item) => (
-                                            <SortableMenuItem
-                                              key={item.id}
-                                              item={item}
-                                              currencySymbol={formData.other_customizations.currency}
-                                              onEdit={openMenuItemDialog}
-                                              onDelete={handleDeleteMenuItem}
-                                            />
-                                          ))}
-                                        </div>
-                                      </SortableContext>
-                                    </DndContext>
-                                  )}
-                                </CardContent>
-                              </CollapsibleContent>
-                            </Collapsible>
-                          </Card>
+                          <SortableCategoryCard
+                            key={category.id}
+                            category={category}
+                            categoryItems={categoryItems}
+                            searchTerm={searchTerm}
+                            sensors={sensors}
+                            filteredAndGroupedMenuItems={filteredAndGroupedMenuItems}
+                            openMenuItemDialog={openMenuItemDialog}
+                            openCategoryDialog={openCategoryDialog}
+                            handleDeleteCategory={handleDeleteCategory}
+                            handleMenuItemDragEnd={handleMenuItemDragEnd}
+                            formData={formData}
+                            handleDeleteMenuItem={handleDeleteMenuItem}
+                          />
                         );
                       })}
                     </div>
