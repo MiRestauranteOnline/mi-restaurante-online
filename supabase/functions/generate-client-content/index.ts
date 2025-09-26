@@ -172,7 +172,7 @@ serve(async (req) => {
 
     IMPORTANTE:
     - Todo el contenido debe estar en español
-    - Los títulos de dos partes deben dividirse equilibradamente
+    - TÍTULOS DIVIDIDOS: Los campos "_first_line" y "_second_line" NO son dos títulos separados. Son UN SOLO título SEO optimizado que se divide en dos partes equilibradas sin romper palabras. Ejemplo: Si el título optimizado es "Auténtica Comida Peruana Tradicional", lo divides en "Auténtica Comida" (primera línea) y "Peruana Tradicional" (segunda línea)
     - Optimiza para SEO local de Lima, Perú (o la ubicación especificada)
     - Usa el tono de marca apropiado para el tipo de restaurante
     - Los prompts de imágenes deben ser en inglés para Leonardo AI
