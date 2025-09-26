@@ -337,13 +337,51 @@ serve(async (req) => {
               console.log(`Optimized image stored for ${key}: ${optimizeResponse.data.optimizedUrl}`);
             } else {
               console.error(`Image optimization failed for ${key}:`, optimizeResponse.error);
-              // Fallback to original URL if optimization fails
-              imageUpdates[targetField] = imageUrl;
+              // Fallback: upload the Leonardo image directly to Supabase (never store CDN URL)
+              try {
+                const imgResp = await fetch(imageUrl);
+                const buffer = await imgResp.arrayBuffer();
+                const fallbackName = `${restaurantName}-${key}`
+                  .toLowerCase()
+                  .replace(/[^a-z0-9\-]+/g, '-')
+                  .replace(/-+/g, '-');
+                const optimizedPath = `optimized-images/${fallbackName}-${Date.now()}.webp`;
+                const { error: upErr } = await supabase.storage
+                  .from('client-assets')
+                  .upload(optimizedPath, buffer, { contentType: 'image/webp', upsert: true });
+                if (upErr) throw upErr;
+                const { data: { publicUrl: supaUrl } } = supabase.storage
+                  .from('client-assets')
+                  .getPublicUrl(optimizedPath);
+                imageUpdates[targetField] = supaUrl;
+                console.log(`Uploaded fallback image for ${key}: ${supaUrl}`);
+              } catch (uploadErr) {
+                console.error(`Fallback upload failed for ${key}`, uploadErr);
+              }
             }
           } catch (optimizationError) {
             console.error(`Error optimizing image for ${key}:`, optimizationError);
-            // Fallback to original URL if optimization fails
-            imageUpdates[targetField] = imageUrl;
+            // Fallback: upload the Leonardo image directly to Supabase (never store CDN URL)
+            try {
+              const imgResp = await fetch(imageUrl);
+              const buffer = await imgResp.arrayBuffer();
+              const fallbackName = `${restaurantName}-${key}`
+                .toLowerCase()
+                .replace(/[^a-z0-9\-]+/g, '-')
+                .replace(/-+/g, '-');
+              const optimizedPath = `optimized-images/${fallbackName}-${Date.now()}.webp`;
+              const { error: upErr } = await supabase.storage
+                .from('client-assets')
+                .upload(optimizedPath, buffer, { contentType: 'image/webp', upsert: true });
+              if (upErr) throw upErr;
+              const { data: { publicUrl: supaUrl } } = supabase.storage
+                .from('client-assets')
+                .getPublicUrl(optimizedPath);
+              imageUpdates[targetField] = supaUrl;
+              console.log(`Uploaded fallback image for ${key}: ${supaUrl}`);
+            } catch (uploadErr) {
+              console.error(`Fallback upload failed for ${key}`, uploadErr);
+            }
           }
         } else {
           console.warn(`Timed out generating image for ${key}`);

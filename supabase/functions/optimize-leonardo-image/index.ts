@@ -60,9 +60,39 @@ serve(async (req) => {
     });
 
     const filenameData = await filenameResponse.json();
-    const { filename, altText } = JSON.parse(filenameData.choices[0].message.content);
-    
-    console.log('Generated SEO data:', { filename, altText });
+    let filename = '';
+    let altText = '';
+    const extractJson = (text: string): string => {
+      let cleaned = (text || '').trim();
+      if (cleaned.startsWith('```')) {
+        cleaned = cleaned.replace(/^```[a-zA-Z]*\n/, '').replace(/```\s*$/, '');
+      }
+      const start = cleaned.indexOf('{');
+      const end = cleaned.lastIndexOf('}');
+      if (start !== -1 && end !== -1 && end > start) {
+        return cleaned.slice(start, end + 1);
+      }
+      return cleaned;
+    };
+
+    try {
+      const contentText = extractJson(filenameData.choices?.[0]?.message?.content || '');
+      const parsed = JSON.parse(contentText);
+      filename = parsed.filename;
+      altText = parsed.altText;
+    } catch (e) {
+      console.warn('Failed to parse OpenAI SEO JSON. Falling back to slugified values.', e);
+      const slugify = (s: string) => s.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+      const base = slugify(`${context} ${originalPrompt}`);
+      const words = base.split('-').filter(Boolean).slice(0, 6);
+      filename = (words.length ? words.join('-') : 'optimized-image') + '-' + Date.now();
+      const altWords = (originalPrompt || context || 'restaurant image').split(/\s+/).slice(0, 15);
+      altText = altWords.join(' ');
+    }
 
     // Step 2: Download the original image
     const imageResponse = await fetch(imageUrl);
