@@ -107,14 +107,34 @@ serve(async (req) => {
       throw new Error('Image generation timed out');
     }
 
-    // Update article with featured image
-    await supabase
-      .from('generated_articles')
-      .update({
-        featured_image_url: imageUrl,
-        featured_image_alt: altText || 'Professional restaurant image'
-      })
-      .eq('id', articleId);
+    // Optimize the generated image
+    const optimizeResponse = await supabase.functions.invoke('optimize-leonardo-image', {
+      body: {
+        imageUrl,
+        originalPrompt: imagePrompt,
+        articleId,
+        context: 'restaurant blog'
+      }
+    });
+
+    let finalImageUrl = imageUrl;
+    let finalAltText = altText || 'Professional restaurant image';
+
+    if (optimizeResponse.data?.success) {
+      finalImageUrl = optimizeResponse.data.optimizedUrl;
+      finalAltText = optimizeResponse.data.altText;
+      console.log('Image optimized successfully:', finalImageUrl);
+    } else {
+      console.warn('Image optimization failed, using original:', optimizeResponse.error);
+      // Fall back to updating with original image
+      await supabase
+        .from('generated_articles')
+        .update({
+          featured_image_url: imageUrl,
+          featured_image_alt: altText || 'Professional restaurant image'
+        })
+        .eq('id', articleId);
+    }
 
     const processingTime = Date.now() - startTime;
 
@@ -124,20 +144,23 @@ serve(async (req) => {
       .update({
         status: 'completed',
         details: { 
-          image_url: imageUrl,
+          image_url: finalImageUrl,
           generation_id: generationId,
-          attempts: attempts
+          attempts: attempts,
+          optimized: optimizeResponse.data?.success || false
         },
         processing_time_ms: processingTime
       })
       .eq('id', logData.id);
 
-    console.log(`Image generation completed in ${processingTime}ms`);
+    console.log(`Image generation and optimization completed in ${processingTime}ms`);
 
     return new Response(JSON.stringify({ 
       success: true, 
-      imageUrl,
-      message: 'Featured image generated successfully'
+      imageUrl: finalImageUrl,
+      altText: finalAltText,
+      optimized: optimizeResponse.data?.success || false,
+      message: 'Featured image generated and optimized successfully'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
