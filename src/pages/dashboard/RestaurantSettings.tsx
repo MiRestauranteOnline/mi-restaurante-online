@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { toast } from 'sonner';
 import { Save, Loader2 } from 'lucide-react';
 
@@ -24,9 +25,11 @@ interface DashboardContext {
 
 const settingsSchema = z.object({
   restaurant_name: z.string().min(1, 'El nombre del restaurante es requerido'),
-  phone: z.string().optional(),
+  phone: z.string().regex(/^\d*$/, 'El teléfono debe contener solo números').max(12, 'El teléfono no puede exceder 12 dígitos').optional(),
+  phone_country_code: z.string().default('+51'),
   email: z.string().email('Email inválido').optional().or(z.literal('')),
-  whatsapp: z.string().optional(),
+  whatsapp: z.string().regex(/^\d*$/, 'El WhatsApp debe contener solo números').max(12, 'El WhatsApp no puede exceder 12 dígitos').optional(),
+  whatsapp_country_code: z.string().default('+51'),
   address: z.string().optional(),
   coordinates_lat: z.string().optional(),
   coordinates_lng: z.string().optional(),
@@ -78,8 +81,10 @@ export default function RestaurantSettings() {
     defaultValues: {
       restaurant_name: '',
       phone: '',
+      phone_country_code: '+51',
       email: '',
       whatsapp: '',
+      whatsapp_country_code: '+51',
       address: '',
       coordinates_lat: '',
       coordinates_lng: '',
@@ -134,8 +139,10 @@ export default function RestaurantSettings() {
           form.reset({
             restaurant_name: client.restaurant_name || '',
             phone: client.phone || '',
+            phone_country_code: client.phone_country_code || '+51',
             email: client.email || '',
             whatsapp: client.whatsapp || '',
+            whatsapp_country_code: client.whatsapp_country_code || '+51',
             address: client.address || '',
             coordinates_lat: coordinates.lat?.toString() || '',
             coordinates_lng: coordinates.lng?.toString() || '',
@@ -233,8 +240,10 @@ export default function RestaurantSettings() {
         .update({
           restaurant_name: data.restaurant_name,
           phone: data.phone,
+          phone_country_code: data.phone_country_code,
           email: data.email,
           whatsapp: data.whatsapp,
+          whatsapp_country_code: data.whatsapp_country_code,
           address: data.address,
           coordinates,
           social_media_links: socialMediaLinks,
@@ -324,19 +333,38 @@ export default function RestaurantSettings() {
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Teléfono</FormLabel>
-                      <FormControl>
-                        <Input placeholder="+51 123 456 789" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="space-y-2">
+                  <FormLabel>Teléfono</FormLabel>
+                  <div className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name="phone_country_code"
+                      render={({ field }) => (
+                        <FormItem className="w-[120px]">
+                          <FormControl>
+                            <PhoneInput
+                              countryCode={form.watch('phone_country_code')}
+                              phoneNumber={form.watch('phone')}
+                              onCountryCodeChange={(code) => form.setValue('phone_country_code', code)}
+                              onPhoneNumberChange={(number) => form.setValue('phone', number)}
+                              placeholder="123 456 789"
+                              maxLength={12}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={() => (
+                      <FormItem>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <FormField
                   control={form.control}
@@ -353,19 +381,38 @@ export default function RestaurantSettings() {
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="whatsapp"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>WhatsApp</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+51 987 654 321" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <FormLabel>WhatsApp</FormLabel>
+                <div className="flex gap-2">
+                  <FormField
+                    control={form.control}  
+                    name="whatsapp_country_code"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <PhoneInput
+                            countryCode={form.watch('whatsapp_country_code')}
+                            phoneNumber={form.watch('whatsapp')}
+                            onCountryCodeChange={(code) => form.setValue('whatsapp_country_code', code)}
+                            onPhoneNumberChange={(number) => form.setValue('whatsapp', number)}
+                            placeholder="987 654 321"
+                            maxLength={12}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="whatsapp"
+                  render={() => (
+                    <FormItem>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}
