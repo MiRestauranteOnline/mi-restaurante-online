@@ -86,6 +86,8 @@ serve(async (req) => {
         "homepage_hero_title_first_line": "Primera parte del título",
         "homepage_hero_title_second_line": "Segunda parte del título",
         "homepage_hero_description": "Descripción del hero",
+        "homepage_hero_right_button_text": "Texto del botón",
+        "homepage_hero_right_button_link": "#contact",
         "homepage_about_section_title_first_line": "Primera parte",
         "homepage_about_section_title_second_line": "Segunda parte",
         "homepage_about_section_description": "Descripción de la sección about",
@@ -100,6 +102,23 @@ serve(async (req) => {
         "homepage_contact_section_description": "Descripción de contacto",
         "homepage_delivery_section_title": "Título de delivery",
         "homepage_delivery_section_description": "Descripción de delivery",
+        "reviews_section_title_first_line": "Primera parte reviews",
+        "reviews_section_title_second_line": "Segunda parte reviews",
+        "about_page_hero_title_first_line": "Primera parte about hero",
+        "about_page_hero_title_second_line": "Segunda parte about hero",
+        "about_page_hero_description": "Descripción about hero",
+        "about_team_section_title_first_line": "Primera parte team",
+        "about_team_section_title_second_line": "Segunda parte team",
+        "about_team_section_description": "Descripción team section",
+        "contact_page_hero_title_first_line": "Primera parte contact hero",
+        "contact_page_hero_title_second_line": "Segunda parte contact hero",
+        "contact_page_hero_description": "Descripción contact hero",
+        "menu_page_hero_title_first_line": "Primera parte menu hero",
+        "menu_page_hero_title_second_line": "Segunda parte menu hero",
+        "menu_page_hero_description": "Descripción menu hero",
+        "reviews_page_hero_title_first_line": "Primera parte reviews hero",
+        "reviews_page_hero_title_second_line": "Segunda parte reviews hero",
+        "reviews_page_hero_description": "Descripción reviews hero",
         "about_story": "Historia del restaurante (2-3 párrafos)",
         "about_chef_info": "Información del chef/equipo",
         "about_mission": "Misión del restaurante",
@@ -115,28 +134,46 @@ serve(async (req) => {
         "services_card1_title": "Título del servicio 1",
         "services_card1_description": "Descripción del servicio 1",
         "services_card1_icon": "Utensils",
+        "services_card1_button_text": "Más Info",
+        "services_card1_button_link": "https://wa.me/51987654321?text=Hola, me gustaría saber más sobre el servicio",
         "services_card2_title": "Título del servicio 2",
         "services_card2_description": "Descripción del servicio 2",
         "services_card2_icon": "Truck",
+        "services_card2_button_text": "Más Info",
+        "services_card2_button_link": "https://wa.me/51987654321?text=Hola, me gustaría saber más sobre delivery",
         "services_card3_title": "Título del servicio 3",
         "services_card3_description": "Descripción del servicio 3",
-        "services_card3_icon": "Users"
+        "services_card3_icon": "Users",
+        "services_card3_button_text": "Más Info",
+        "services_card3_button_link": "https://wa.me/51987654321?text=Hola, me gustaría saber más sobre eventos",
+        "services_feature1_icon": "Clock",
+        "services_feature1_text": "Texto feature 1",
+        "services_feature2_icon": "Star",
+        "services_feature2_text": "Texto feature 2",
+        "services_feature3_icon": "MapPin",
+        "services_feature3_text": "Texto feature 3"
       },
       "imagePrompts": {
         "homepage_hero_background": "Prompt para imagen del hero principal",
         "homepage_about_section_image": "Prompt para imagen de la sección about",
         "about_page_hero_background": "Prompt para imagen del hero de la página about",
         "menu_page_hero_background": "Prompt para imagen del hero del menú",
-        "contact_page_hero_background": "Prompt para imagen del hero de contacto"
+        "contact_page_hero_background": "Prompt para imagen del hero de contacto",
+        "reviews_page_hero_background": "Prompt para imagen del hero de reviews"
       }
     }
 
     IMPORTANTE:
     - Todo el contenido debe estar en español
     - Los títulos de dos partes deben dividirse equilibradamente
-    - Optimiza para SEO local de Lima, Perú
+    - Optimiza para SEO local de Lima, Perú (o la ubicación especificada)
     - Usa el tono de marca apropiado para el tipo de restaurante
     - Los prompts de imágenes deben ser en inglés para Leonardo AI
+    - Para los iconos, selecciona de esta lista según el contexto: Utensils, Truck, Users, Clock, Star, MapPin, Award, Heart, Coffee, Zap
+    - Los stats deben ser realistas y apropiados para el tipo de restaurante
+    - Los servicios deben reflejar lo que realmente ofrece el restaurante según el briefing
+    - Los botones de servicios deben usar enlaces de WhatsApp apropiados
+    - Crea contenido coherente que refleje la personalidad del restaurante
     `;
 
     console.log('Calling OpenAI API...');
@@ -208,6 +245,7 @@ serve(async (req) => {
       about_page_hero_background: 'about_page_hero_background_url',
       menu_page_hero_background: 'menu_page_hero_background_url',
       contact_page_hero_background: 'contact_page_hero_background_url',
+      reviews_page_hero_background: 'reviews_page_hero_background_url',
     };
 
     const backgroundTask = async () => {
