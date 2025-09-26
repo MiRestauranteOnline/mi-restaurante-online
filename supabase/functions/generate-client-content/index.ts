@@ -131,6 +131,12 @@ serve(async (req) => {
         "stats_item3_number": "10+",
         "stats_item3_label": "Reconocimientos",
         "stats_item3_icon": "Award",
+        "stats_experience_number": "15+",
+        "stats_experience_label": "Años de Experiencia",
+        "stats_clients_number": "5K+",
+        "stats_clients_label": "Clientes Felices",
+        "stats_awards_number": "10+",
+        "stats_awards_label": "Reconocimientos",
         "services_card1_title": "Título del servicio 1",
         "services_card1_description": "Descripción del servicio 1",
         "services_card1_icon": "Utensils",
@@ -238,7 +244,7 @@ serve(async (req) => {
       throw new Error(`Failed to upsert content: ${upsertError.message}`);
     }
 
-    // Step 3: Queue background image generation and DB updates
+    // Step 3: Generate images synchronously before responding
     const imageFieldMap: Record<string, string> = {
       homepage_hero_background: 'homepage_hero_background_url',
       homepage_about_section_image: 'homepage_about_section_image_url',
@@ -248,94 +254,106 @@ serve(async (req) => {
       reviews_page_hero_background: 'reviews_page_hero_background_url',
     };
 
-    const backgroundTask = async () => {
+    const imageUpdates: Record<string, string> = {};
+
+    for (const [key, prompt] of Object.entries(generatedContent.imagePrompts || {})) {
+      const targetField = imageFieldMap[key as keyof typeof imageFieldMap];
+      if (!targetField) continue;
+
       try {
-        for (const [key, prompt] of Object.entries(generatedContent.imagePrompts || {})) {
-          const targetField = imageFieldMap[key as keyof typeof imageFieldMap];
-          if (!targetField) continue;
+        console.log(`Generating image for ${key}...`);
+        const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${leonardoApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: `${prompt}, ultra-realistic professional restaurant photography, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, ${restaurantName} style, no text overlay, photojournalistic quality, commercial food photography`,
+            modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3", // Leonardo Phoenix 1.0 - latest foundational model
+            styleUUID: "7c3f932b-a572-47cb-9b9b-f20211e63b5b", // Pro color photography style
+            width: 1024,
+            height: 576,
+            num_images: 1,
+            contrast: 4, // High contrast for sharp, professional look
+            enhancePrompt: true, // AI prompt enhancement for better results
+            alchemy: true, // Quality mode enabled (removes ultra as they conflict)
+            num_inference_steps: 25, // Higher steps for better quality (default is 15)
+            guidance_scale: 8 // Higher guidance for better prompt adherence
+          }),
+        });
 
-          console.log(`[BG] Generating image for ${key}...`);
-          const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${leonardoApiKey}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              prompt: `${prompt}, ultra-realistic professional restaurant photography, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, ${restaurantName} style, no text overlay, photojournalistic quality, commercial food photography`,
-              modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3", // Leonardo Phoenix 1.0 - latest foundational model
-              styleUUID: "7c3f932b-a572-47cb-9b9b-f20211e63b5b", // Pro color photography style
-              width: 1024,
-              height: 576,
-              num_images: 1,
-              contrast: 4, // High contrast for sharp, professional look
-              enhancePrompt: true, // AI prompt enhancement for better results
-              ultra: true, // Ultra quality for highest resolution output
-              alchemy: true, // Quality mode enabled
-              num_inference_steps: 25, // Higher steps for better quality (default is 15)
-              guidance_scale: 8 // Higher guidance for better prompt adherence
-            }),
+        if (!leonardoResponse.ok) {
+          console.error(`Leonardo start failed for ${key}:`, await leonardoResponse.text());
+          continue;
+        }
+
+        const leonardoData = await leonardoResponse.json();
+        if (!leonardoData.sdGenerationJob) {
+          console.error(`No generation job for ${key}`);
+          continue;
+        }
+
+        const generationId = leonardoData.sdGenerationJob.generationId;
+
+        // Poll for completion (up to 2 minutes)
+        let imageUrl: string | null = null;
+        for (let attempts = 0; attempts < 12; attempts++) {
+          await new Promise((r) => setTimeout(r, 10000)); // Wait 10 seconds
+          
+          const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
+            headers: { 'Authorization': `Bearer ${leonardoApiKey}` },
           });
-
-          if (!leonardoResponse.ok) {
-            console.error(`[BG] Leonardo start failed for ${key}:`, await leonardoResponse.text());
-            continue;
+          
+          if (!statusResponse.ok) continue;
+          
+          const statusData = await statusResponse.json();
+          if (statusData.generations_by_pk?.status === 'COMPLETE' && statusData.generations_by_pk.generated_images?.length > 0) {
+            imageUrl = statusData.generations_by_pk.generated_images[0].url;
+            break;
           }
-
-          const leonardoData = await leonardoResponse.json();
-          if (!leonardoData.sdGenerationJob) {
-            console.error(`[BG] No generation job for ${key}`);
-            continue;
-          }
-
-          const generationId = leonardoData.sdGenerationJob.generationId;
-
-          // Poll up to ~50s total
-          let imageUrl: string | null = null;
-          for (let attempts = 0; attempts < 5; attempts++) {
-            await new Promise((r) => setTimeout(r, 10000));
-            const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
-              headers: { 'Authorization': `Bearer ${leonardoApiKey}` },
-            });
-            if (!statusResponse.ok) continue;
-            const statusData = await statusResponse.json();
-            if (statusData.generations_by_pk?.status === 'COMPLETE' && statusData.generations_by_pk.generated_images?.length > 0) {
-              imageUrl = statusData.generations_by_pk.generated_images[0].url;
-              break;
-            }
-            if (statusData.generations_by_pk?.status === 'FAILED') break;
-          }
-
-          if (imageUrl) {
-            console.log(`[BG] Updating ${targetField} with generated image URL`);
-            await supabase
-              .from('admin_content')
-              .update({ [targetField]: imageUrl, updated_at: new Date().toISOString() })
-              .eq('client_id', clientId);
-          } else {
-            console.warn(`[BG] Timed out generating image for ${key}`);
+          if (statusData.generations_by_pk?.status === 'FAILED') {
+            console.error(`Image generation failed for ${key}`);
+            break;
           }
         }
-      } catch (bgErr) {
-        console.error('[BG] Background image generation error:', bgErr);
-      }
-    };
 
-    const edgeRt: any = (globalThis as any).EdgeRuntime;
-    if (edgeRt?.waitUntil) {
-      edgeRt.waitUntil(backgroundTask());
-    } else {
-      // Fallback: fire-and-forget
-      backgroundTask();
+        if (imageUrl) {
+          imageUpdates[targetField] = imageUrl;
+          console.log(`Generated image URL for ${key}: ${imageUrl}`);
+        } else {
+          console.warn(`Timed out generating image for ${key}`);
+        }
+      } catch (error) {
+        console.error(`Error generating image for ${key}:`, error);
+      }
     }
 
-    console.log('Returning success (images queued in background)');
+    // Step 4: Update database with all content including generated images
+    const finalUpdate = {
+      ...generatedContent.content,
+      ...imageUpdates,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error: finalUpdateError } = await supabase
+      .from('admin_content')
+      .upsert({
+        client_id: clientId,
+        ...finalUpdate,
+      }, { onConflict: 'client_id' as any });
+
+    if (finalUpdateError) {
+      throw new Error(`Failed to update content with images: ${finalUpdateError.message}`);
+    }
+
+    console.log('Content and images generated successfully');
 
     return new Response(JSON.stringify({
       success: true,
-      message: 'Contenido generado. Imágenes en proceso (se actualizarán automáticamente).',
+      message: 'Contenido e imágenes generados exitosamente.',
       analysis: generatedContent.analysis,
-      imagesQueued: true
+      imagesGenerated: Object.keys(imageUpdates).length
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
