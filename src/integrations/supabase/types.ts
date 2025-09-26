@@ -36,6 +36,9 @@ export type Database = {
           contact_page_hero_title_first_line: string | null
           contact_page_hero_title_second_line: string | null
           created_at: string
+          footer_description: string | null
+          footer_logo_url: string | null
+          header_logo_url: string | null
           homepage_about_section_description: string | null
           homepage_about_section_image_url: string | null
           homepage_about_section_title: string | null
@@ -135,6 +138,9 @@ export type Database = {
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
           created_at?: string
+          footer_description?: string | null
+          footer_logo_url?: string | null
+          header_logo_url?: string | null
           homepage_about_section_description?: string | null
           homepage_about_section_image_url?: string | null
           homepage_about_section_title?: string | null
@@ -234,6 +240,9 @@ export type Database = {
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
           created_at?: string
+          footer_description?: string | null
+          footer_logo_url?: string | null
+          header_logo_url?: string | null
           homepage_about_section_description?: string | null
           homepage_about_section_image_url?: string | null
           homepage_about_section_title?: string | null
