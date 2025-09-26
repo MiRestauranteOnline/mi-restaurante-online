@@ -158,6 +158,8 @@ interface AdminContent {
   // Logo URLs
   header_logo_url?: string;
   footer_logo_url?: string;
+  // Downloadable menu
+  downloadable_menu_url?: string;
 }
 
 interface MenuCategory {
@@ -810,7 +812,9 @@ export default function ClientSettings() {
     footer_description: '',
     // Logo URLs
     header_logo_url: '',
-    footer_logo_url: ''
+    footer_logo_url: '',
+    // Downloadable menu
+    downloadable_menu_url: ''
   });
 
   useEffect(() => {
@@ -1066,7 +1070,9 @@ export default function ClientSettings() {
           footer_description: data.footer_description || '',
           // Logo URLs
           header_logo_url: data.header_logo_url || '',
-          footer_logo_url: data.footer_logo_url || ''
+          footer_logo_url: data.footer_logo_url || '',
+          // Downloadable menu
+          downloadable_menu_url: data.downloadable_menu_url || ''
         }));
       }
     } catch (error: any) {
@@ -1331,6 +1337,8 @@ export default function ClientSettings() {
             // Logo URLs
             header_logo_url: formData.header_logo_url,
             footer_logo_url: formData.footer_logo_url,
+            // Downloadable menu
+            downloadable_menu_url: formData.downloadable_menu_url,
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'client_id'
@@ -3282,6 +3290,112 @@ export default function ClientSettings() {
         )}
 
         <TabsContent value="menu">
+          {/* Downloadable Menu Upload Section */}
+          <Card className="mb-6 border-2 border-dashed border-primary/30 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Downloadable Menu PDF
+              </CardTitle>
+              <CardDescription>
+                Upload a PDF version of your menu that customers can download. This will be displayed on your website with a download button.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                <div>
+                  <Label htmlFor="downloadable_menu">Menu PDF File</Label>
+                  <div className="mt-2">
+                    <Input
+                      id="downloadable_menu"
+                      type="file"
+                      accept=".pdf"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                            toast({
+                              title: "Error",
+                              description: "File size must be less than 10MB",
+                              variant: "destructive"
+                            });
+                            return;
+                          }
+                          
+                          setSaving(true);
+                          try {
+                            const fileExt = file.name.split('.').pop();
+                            const fileName = `${clientId}/menu/menu.${fileExt}`;
+                            
+                            const { error: uploadError } = await supabase.storage
+                              .from('client-assets')
+                              .upload(fileName, file, { upsert: true });
+
+                            if (uploadError) throw uploadError;
+
+                            const { data } = supabase.storage
+                              .from('client-assets')
+                              .getPublicUrl(fileName);
+
+                            setFormData({...formData, downloadable_menu_url: data.publicUrl});
+                            toast({
+                              title: "Success",
+                              description: "Menu PDF uploaded successfully",
+                            });
+                          } catch (error: any) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to upload menu: " + error.message,
+                              variant: "destructive"
+                            });
+                          } finally {
+                            setSaving(false);
+                          }
+                        }
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                  {formData.downloadable_menu_url && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Current menu: 
+                      <a 
+                        href={formData.downloadable_menu_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline ml-1"
+                      >
+                        View PDF
+                      </a>
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Button 
+                    onClick={handleSave} 
+                    disabled={saving}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  >
+                    {saving ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Menu PDF
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Menu Management Section */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">

@@ -36,6 +36,7 @@ export type Database = {
           contact_page_hero_title_first_line: string | null
           contact_page_hero_title_second_line: string | null
           created_at: string
+          downloadable_menu_url: string | null
           footer_description: string | null
           footer_logo_url: string | null
           header_logo_url: string | null
@@ -138,6 +139,7 @@ export type Database = {
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
           created_at?: string
+          downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
           header_logo_url?: string | null
@@ -240,6 +242,7 @@ export type Database = {
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
           created_at?: string
+          downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
           header_logo_url?: string | null
@@ -333,6 +336,7 @@ export type Database = {
       }
       client_settings: {
         Row: {
+          body_font: string | null
           client_id: string
           created_at: string
           delivery_info: Json | null
@@ -343,10 +347,13 @@ export type Database = {
           other_customizations: Json | null
           primary_button_text_style: string | null
           primary_color: string | null
+          title_font: string | null
+          title_font_weight: string | null
           updated_at: string
           whatsapp_messages: Json | null
         }
         Insert: {
+          body_font?: string | null
           client_id: string
           created_at?: string
           delivery_info?: Json | null
@@ -357,10 +364,13 @@ export type Database = {
           other_customizations?: Json | null
           primary_button_text_style?: string | null
           primary_color?: string | null
+          title_font?: string | null
+          title_font_weight?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
         Update: {
+          body_font?: string | null
           client_id?: string
           created_at?: string
           delivery_info?: Json | null
@@ -371,6 +381,8 @@ export type Database = {
           other_customizations?: Json | null
           primary_button_text_style?: string | null
           primary_color?: string | null
+          title_font?: string | null
+          title_font_weight?: string | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
@@ -638,6 +650,7 @@ export type Database = {
       menu_items: {
         Row: {
           category: string
+          category_id: string | null
           client_id: string
           created_at: string
           description: string | null
@@ -653,6 +666,7 @@ export type Database = {
         }
         Insert: {
           category: string
+          category_id?: string | null
           client_id: string
           created_at?: string
           description?: string | null
@@ -668,6 +682,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          category_id?: string | null
           client_id?: string
           created_at?: string
           description?: string | null
@@ -682,6 +697,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_menu_items_category_id"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "menu_items_client_id_fkey"
             columns: ["client_id"]
@@ -871,6 +893,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_fast_load_data: {
+        Args: { client_domain: string }
+        Returns: undefined
+      }
       generate_opening_hours_ordered: {
         Args: { opening_hours_obj: Json }
         Returns: Json
