@@ -572,6 +572,7 @@ export default function ClientSettings() {
     header_background_style: 'dark',
     title_font: 'Cormorant Garamond',
     body_font: 'Inter',
+    title_font_weight: '400',
     // Admin content fields - Two-part titles
     homepage_hero_title_first_line: '',
     homepage_hero_title_second_line: '',
@@ -776,7 +777,8 @@ export default function ClientSettings() {
           header_background_enabled: (data as any).header_background_enabled || false,
           header_background_style: (data as any).header_background_style || 'dark',
           title_font: (data as any).title_font || 'Cormorant Garamond',
-          body_font: (data as any).body_font || 'Inter'
+          body_font: (data as any).body_font || 'Inter',
+          title_font_weight: (data as any).title_font_weight || '400'
         }));
       } else {
         // Use upsert to create default client_settings if none exist
@@ -788,7 +790,8 @@ export default function ClientSettings() {
             header_background_enabled: false,
             header_background_style: 'dark',
             title_font: 'Cormorant Garamond',
-            body_font: 'Inter'
+            body_font: 'Inter',
+            title_font_weight: '400'
           }, {
             onConflict: 'client_id'
           })
@@ -1076,6 +1079,7 @@ export default function ClientSettings() {
           header_background_style: formData.header_background_style,
           title_font: formData.title_font,
           body_font: formData.body_font,
+          title_font_weight: formData.title_font_weight,
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'client_id'
@@ -2199,7 +2203,7 @@ export default function ClientSettings() {
 
               <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">Typography</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <Label htmlFor="title_font">Title Font</Label>
                     <Select
@@ -2234,6 +2238,28 @@ export default function ClientSettings() {
                         <SelectItem value="Lobster">Lobster</SelectItem>
                         <SelectItem value="Pacifico">Pacifico</SelectItem>
                         <SelectItem value="Satisfy">Satisfy</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="title_font_weight">Title Font Weight</Label>
+                    <Select
+                      value={formData.title_font_weight || '400'}
+                      onValueChange={(value) => setFormData({...formData, title_font_weight: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-md z-50">
+                        <SelectItem value="100">100 - Thin</SelectItem>
+                        <SelectItem value="200">200 - Extra Light</SelectItem>
+                        <SelectItem value="300">300 - Light</SelectItem>
+                        <SelectItem value="400">400 - Normal</SelectItem>
+                        <SelectItem value="500">500 - Medium</SelectItem>
+                        <SelectItem value="600">600 - Semi Bold</SelectItem>
+                        <SelectItem value="700">700 - Bold</SelectItem>
+                        <SelectItem value="800">800 - Extra Bold</SelectItem>
+                        <SelectItem value="900">900 - Black</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
