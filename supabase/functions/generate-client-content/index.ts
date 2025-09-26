@@ -164,6 +164,7 @@ serve(async (req) => {
         "homepage_hero_background": "Prompt para imagen del hero principal - enfócate en platos de comida, ingredientes frescos, detalles culinarios, ambiente gastronómico sin mostrar un restaurante específico ficticio",
         "homepage_about_section_image": "Prompt para imagen de la sección about - enfócate en ingredientes frescos, proceso de cocina, manos del chef preparando comida, detalles artesanales",
         "about_page_hero_background": "Prompt para imagen del hero de la página about - enfócate en la cocina, ingredientes, proceso culinario, ambiente de cocina profesional",
+        "about_page_about_section_image": "Prompt para la imagen de la sección 'about' en la página About - enfócate en un solo encuadre con ingredientes frescos y proceso artesanal del chef, sin collage ni mosaicos",
         "menu_page_hero_background": "Prompt para imagen del hero del menú - enfócate en platos principales, presentación de comida, ingredientes frescos, detalles gastronómicos",
         "contact_page_hero_background": "Prompt para imagen del hero de contacto - enfócate en ambiente acogedor, mesa con comida, detalles del servicio, sin mostrar restaurante específico",
         "reviews_page_hero_background": "Prompt para imagen del hero de reviews - enfócate en clientes satisfechos disfrutando la comida, momentos de felicidad, ambiente familiar"
@@ -271,7 +272,7 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            prompt: `${prompt}, ultra-realistic professional restaurant photography, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, ${restaurantName} style, no text overlay, photojournalistic quality, commercial food photography`,
+            prompt: `${prompt}, ultra-realistic professional restaurant photography, single composition, single scene, no collage, no grid, no split-panel, no montage, no multi-image, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, ${restaurantName} style, no text overlay, photojournalistic quality, commercial food photography`,
             modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3", // Leonardo Phoenix 1.0 - latest foundational model
             styleUUID: "7c3f932b-a572-47cb-9b9b-f20211e63b5b", // Pro color photography style
             width: 1024,
