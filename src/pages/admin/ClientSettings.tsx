@@ -40,6 +40,7 @@ interface Client {
   id: string;
   restaurant_name: string;
   subdomain: string;
+  domain?: string;
   email?: string;
   phone?: string;
   phone_country_code?: string;
@@ -685,6 +686,7 @@ export default function ClientSettings() {
   const [formData, setFormData] = useState({
     restaurant_name: '',
     subdomain: '',
+    domain: '',
     email: '',
     phone: '',
     phone_country_code: '+51',
@@ -878,6 +880,7 @@ export default function ClientSettings() {
         ...prev,
         restaurant_name: data.restaurant_name || '',
         subdomain: data.subdomain || '',
+        domain: (data as any).domain || '',
         email: data.email || '',
         phone: data.phone || '',
         phone_country_code: (data as any).phone_country_code || '+51',
@@ -1230,6 +1233,7 @@ export default function ClientSettings() {
         .update({
           restaurant_name: formData.restaurant_name,
           subdomain: formData.subdomain,
+          domain: formData.domain,
           email: formData.email,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
@@ -2044,6 +2048,7 @@ export default function ClientSettings() {
       <Tabs defaultValue="basic" className="w-full">
         <TabsList>
           <TabsTrigger value="basic">Basic Info</TabsTrigger>
+          <TabsTrigger value="domain">Domain</TabsTrigger>
           <TabsTrigger value="hours">Opening Hours</TabsTrigger>
           <TabsTrigger value="social">Social Media</TabsTrigger>
           <TabsTrigger value="delivery">Delivery</TabsTrigger>
@@ -2068,14 +2073,6 @@ export default function ClientSettings() {
                     id="restaurant_name"
                     value={formData.restaurant_name}
                     onChange={(e) => setFormData({...formData, restaurant_name: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="subdomain">Subdomain</Label>
-                  <Input
-                    id="subdomain"
-                    value={formData.subdomain}
-                    onChange={(e) => setFormData({...formData, subdomain: e.target.value})}
                   />
                 </div>
                 <div>
@@ -2184,6 +2181,47 @@ export default function ClientSettings() {
                     placeholder="#contact or https://example.com"
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="domain">
+          <Card>
+            <CardHeader>
+              <CardTitle>Domain Configuration</CardTitle>
+              <CardDescription>
+                Manage hosting settings for this client's website.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="subdomain">Subdomain</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="subdomain"
+                    value={formData.subdomain}
+                    onChange={(e) => setFormData({...formData, subdomain: e.target.value})}
+                    placeholder="clientname"
+                  />
+                  <span className="text-sm text-muted-foreground">.mirestaurante.online</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Used for hosting on our subdomain: clientname.mirestaurante.online
+                </p>
+              </div>
+              
+              <div>
+                <Label htmlFor="domain">Custom Domain</Label>
+                <Input
+                  id="domain"
+                  value={formData.domain}
+                  onChange={(e) => setFormData({...formData, domain: e.target.value})}
+                  placeholder="www.clientrestaurant.com"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Client's custom domain. Client must configure DNS to point to our hosting.
+                </p>
               </div>
             </CardContent>
           </Card>
