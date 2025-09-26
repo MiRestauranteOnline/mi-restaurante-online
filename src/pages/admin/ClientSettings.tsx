@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ImageUpload } from "@/components/ImageUpload";
+import { PhoneInput } from "@/components/ui/phone-input";
 import {
   DndContext,
   closestCenter,
@@ -41,8 +42,10 @@ interface Client {
   subdomain: string;
   email?: string;
   phone?: string;
+  phone_country_code?: string;
   address?: string;
   whatsapp?: string;
+  whatsapp_country_code?: string;
   coordinates?: any;
   opening_hours?: any;
   social_media_links?: any;
@@ -679,8 +682,10 @@ export default function ClientSettings() {
     subdomain: '',
     email: '',
     phone: '',
+    phone_country_code: '+51',
     address: '',
     whatsapp: '',
+    whatsapp_country_code: '+51',
     coordinates: { lat: '', lng: '' },
     theme: 'dark',
     opening_hours: {
@@ -865,8 +870,10 @@ export default function ClientSettings() {
         subdomain: data.subdomain || '',
         email: data.email || '',
         phone: data.phone || '',
+        phone_country_code: (data as any).phone_country_code || '+51',
         address: data.address || '',
         whatsapp: data.whatsapp || '',
+        whatsapp_country_code: (data as any).whatsapp_country_code || '+51',
         coordinates: (data.coordinates as any) || { lat: '', lng: '' },
         theme: (data as any).theme || 'dark',
         opening_hours: normalizedOpeningHours,
@@ -1200,8 +1207,10 @@ export default function ClientSettings() {
           subdomain: formData.subdomain,
           email: formData.email,
           phone: formData.phone,
+          phone_country_code: formData.phone_country_code,
           address: formData.address,
           whatsapp: formData.whatsapp,
+          whatsapp_country_code: formData.whatsapp_country_code,
           coordinates: formData.coordinates,
           theme: formData.theme,
           opening_hours: orderedOpeningHours,
@@ -2050,18 +2059,24 @@ export default function ClientSettings() {
                 </div>
                 <div>
                   <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  <PhoneInput
+                    countryCode={formData.phone_country_code}
+                    phoneNumber={formData.phone}
+                    onCountryCodeChange={(code) => setFormData({...formData, phone_country_code: code})}
+                    onPhoneNumberChange={(number) => setFormData({...formData, phone: number})}
+                    placeholder="123 456 789"
+                    maxLength={12}
                   />
                 </div>
                 <div>
                   <Label htmlFor="whatsapp">WhatsApp</Label>
-                  <Input
-                    id="whatsapp"
-                    value={formData.whatsapp}
-                    onChange={(e) => setFormData({...formData, whatsapp: e.target.value})}
+                  <PhoneInput
+                    countryCode={formData.whatsapp_country_code}
+                    phoneNumber={formData.whatsapp}
+                    onCountryCodeChange={(code) => setFormData({...formData, whatsapp_country_code: code})}
+                    onPhoneNumberChange={(number) => setFormData({...formData, whatsapp: number})}
+                    placeholder="987 654 321"
+                    maxLength={12}
                   />
                 </div>
               </div>
