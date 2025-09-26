@@ -15,6 +15,13 @@ const supabase = createClient(
 const openaiApiKey = Deno.env.get('chatgpt');
 const leonardoApiKey = Deno.env.get('leonardo');
 
+console.log('Environment check:', { 
+  hasOpenAI: !!openaiApiKey, 
+  hasLeonardo: !!leonardoApiKey,
+  openaiLength: openaiApiKey?.length || 0,
+  leonardoLength: leonardoApiKey?.length || 0
+});
+
 function extractJson(text: string): string {
   // Remove code fences if present
   let cleaned = text.trim();
@@ -37,16 +44,34 @@ serve(async (req) => {
 
   try {
     console.log('Starting generate-client-content function');
+    console.log('Environment check:', { 
+      hasOpenAI: !!openaiApiKey, 
+      hasLeonardo: !!leonardoApiKey,
+      openaiLength: openaiApiKey?.length || 0,
+      leonardoLength: leonardoApiKey?.length || 0
+    });
     
     // Check if API keys are available
     if (!openaiApiKey) {
       console.error('OpenAI API key not found in environment');
-      throw new Error('OpenAI API key not configured');
+      return new Response(JSON.stringify({ 
+        error: 'OpenAI API key not configured',
+        details: 'The chatgpt secret is missing or empty'
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
     
     if (!leonardoApiKey) {
       console.error('Leonardo API key not found in environment');
-      throw new Error('Leonardo API key not configured');
+      return new Response(JSON.stringify({ 
+        error: 'Leonardo API key not configured',
+        details: 'The leonardo secret is missing or empty'
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
     
     const { briefing, clientId, restaurantName, address } = await req.json();
