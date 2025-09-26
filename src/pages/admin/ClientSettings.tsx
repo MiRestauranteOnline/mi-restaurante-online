@@ -1171,6 +1171,11 @@ export default function ClientSettings() {
             services_feature2_text: formData.services_feature2_text,
             services_feature3_icon: formData.services_feature3_icon,
             services_feature3_text: formData.services_feature3_text,
+            // Footer description
+            footer_description: formData.footer_description,
+            // Logo URLs
+            header_logo_url: formData.header_logo_url,
+            footer_logo_url: formData.footer_logo_url,
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'client_id'
