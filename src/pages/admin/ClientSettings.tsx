@@ -3297,25 +3297,77 @@ export default function ClientSettings() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Downloadable Menu PDF
+                Downloadable Menu
               </CardTitle>
               <CardDescription>
-                Upload a PDF version of your menu that customers can download. This will be displayed on your website with a download button.
+                Upload a PDF/image of your menu or paste a link. This will be displayed on your website with a download button.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                <div>
-                  <Label htmlFor="downloadable_menu">Menu PDF File</Label>
-                  <div className="mt-2">
+              <div className="space-y-4">
+                {/* Current Menu Preview */}
+                {formData.downloadable_menu_url && (
+                  <div className="p-4 bg-muted/50 rounded-lg border">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span className="text-sm font-medium">Current menu file</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <a 
+                          href={formData.downloadable_menu_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-sm text-primary hover:underline"
+                        >
+                          View File
+                        </a>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setFormData({...formData, downloadable_menu_url: ''})}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Upload Options */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* File Upload */}
+                  <div className="space-y-2">
+                    <Label>Upload File</Label>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => document.getElementById('menu-file-input')?.click()}
+                        disabled={saving}
+                        className="flex-1"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        {saving ? 'Uploading...' : 'Choose File'}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Supports PDF, JPG, PNG (max 10MB)
+                    </p>
                     <Input
-                      id="downloadable_menu"
+                      id="menu-file-input"
                       type="file"
-                      accept=".pdf"
+                      accept=".pdf,.jpg,.jpeg,.png"
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                          if (file.size > 10 * 1024 * 1024) {
                             toast({
                               title: "Error",
                               description: "File size must be less than 10MB",
@@ -3327,7 +3379,7 @@ export default function ClientSettings() {
                           setSaving(true);
                           try {
                             const fileExt = file.name.split('.').pop();
-                            const fileName = `${clientId}/menu/menu.${fileExt}`;
+                            const fileName = `${clientId}/menu/menu-${Date.now()}.${fileExt}`;
                             
                             const { error: uploadError } = await supabase.storage
                               .from('client-assets')
@@ -3342,7 +3394,7 @@ export default function ClientSettings() {
                             setFormData({...formData, downloadable_menu_url: data.publicUrl});
                             toast({
                               title: "Success",
-                              description: "Menu PDF uploaded successfully",
+                              description: "Menu file uploaded successfully",
                             });
                           } catch (error: any) {
                             toast({
@@ -3355,24 +3407,29 @@ export default function ClientSettings() {
                           }
                         }
                       }}
-                      className="w-full"
+                      className="hidden"
                     />
                   </div>
-                  {formData.downloadable_menu_url && (
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Current menu: 
-                      <a 
-                        href={formData.downloadable_menu_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline ml-1"
-                      >
-                        View PDF
-                      </a>
+
+                  {/* URL Input */}
+                  <div className="space-y-2">
+                    <Label>Or Paste URL</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="https://example.com/menu.pdf"
+                        value={formData.downloadable_menu_url || ''}
+                        onChange={(e) => setFormData({...formData, downloadable_menu_url: e.target.value})}
+                        className="flex-1"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Link to your menu file hosted elsewhere
                     </p>
-                  )}
+                  </div>
                 </div>
-                <div>
+
+                {/* Save Button */}
+                <div className="flex justify-end">
                   <Button 
                     onClick={handleSave} 
                     disabled={saving}
@@ -3386,7 +3443,7 @@ export default function ClientSettings() {
                     ) : (
                       <>
                         <Save className="mr-2 h-4 w-4" />
-                        Save Menu PDF
+                        Save Menu
                       </>
                     )}
                   </Button>
