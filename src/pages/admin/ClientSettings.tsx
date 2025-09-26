@@ -2168,6 +2168,28 @@ export default function ClientSettings() {
               </div>
 
               <div className="space-y-4 border-t pt-4">
+                <h4 className="text-lg font-medium">Logo Settings</h4>
+                <div className="space-y-4">
+                  <div>
+                    <ImageUpload
+                      label="Header Logo"
+                      value={formData.header_logo_url || ''}
+                      onChange={(url) => setFormData({...formData, header_logo_url: url})}
+                      clientId={clientId!}
+                    />
+                  </div>
+                  <div>
+                    <ImageUpload
+                      label="Footer Logo"
+                      value={formData.footer_logo_url || ''}
+                      onChange={(url) => setFormData({...formData, footer_logo_url: url})}
+                      clientId={clientId!}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">Additional Colors</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -2208,31 +2230,6 @@ export default function ClientSettings() {
         {userRole === 'admin' && (
           <TabsContent value="content">
             <div className="space-y-6">
-              {/* Logo Upload Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Logo Settings</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <ImageUpload
-                      label="Header Logo"
-                      value={formData.header_logo_url || ''}
-                      onChange={(url) => setFormData({...formData, header_logo_url: url})}
-                      clientId={clientId!}
-                    />
-                  </div>
-                  <div>
-                    <ImageUpload
-                      label="Footer Logo"
-                      value={formData.footer_logo_url || ''}
-                      onChange={(url) => setFormData({...formData, footer_logo_url: url})}
-                      clientId={clientId!}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
               {/* Homepage Content */}
               <Card>
                 <CardHeader>
