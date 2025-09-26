@@ -320,8 +320,31 @@ serve(async (req) => {
         }
 
         if (imageUrl) {
-          imageUpdates[targetField] = imageUrl;
           console.log(`Generated image URL for ${key}: ${imageUrl}`);
+          
+          // Optimize the Leonardo image using our optimization function
+          try {
+            const optimizeResponse = await supabase.functions.invoke('optimize-leonardo-image', {
+              body: {
+                imageUrl,
+                originalPrompt: generatedContent.imagePrompts[key],
+                context: `restaurant website ${key.replace(/_/g, ' ')}`
+              }
+            });
+
+            if (optimizeResponse.data?.success) {
+              imageUpdates[targetField] = optimizeResponse.data.optimizedUrl;
+              console.log(`Optimized image stored for ${key}: ${optimizeResponse.data.optimizedUrl}`);
+            } else {
+              console.error(`Image optimization failed for ${key}:`, optimizeResponse.error);
+              // Fallback to original URL if optimization fails
+              imageUpdates[targetField] = imageUrl;
+            }
+          } catch (optimizationError) {
+            console.error(`Error optimizing image for ${key}:`, optimizationError);
+            // Fallback to original URL if optimization fails
+            imageUpdates[targetField] = imageUrl;
+          }
         } else {
           console.warn(`Timed out generating image for ${key}`);
         }
