@@ -53,6 +53,11 @@ interface Client {
   delivery?: any;
   other_customizations?: any;
   theme?: string;
+  hide_whatsapp_button_menu?: boolean;
+  hide_phone_button_menu?: boolean;
+  custom_cta_button_text?: string;
+  custom_cta_button_link?: string;
+  show_whatsapp_popup?: boolean;
 }
 
 interface ClientSettings {
@@ -688,6 +693,11 @@ export default function ClientSettings() {
     whatsapp_country_code: '+51',
     coordinates: { lat: '', lng: '' },
     theme: 'dark',
+    hide_whatsapp_button_menu: false,
+    hide_phone_button_menu: false,
+    custom_cta_button_text: '',
+    custom_cta_button_link: '',
+    show_whatsapp_popup: false,
     opening_hours: {
       monday: { open: '09:00', close: '22:00', closed: false },
       tuesday: { open: '09:00', close: '22:00', closed: false },
@@ -876,6 +886,11 @@ export default function ClientSettings() {
         whatsapp_country_code: (data as any).whatsapp_country_code || '+51',
         coordinates: (data.coordinates as any) || { lat: '', lng: '' },
         theme: (data as any).theme || 'dark',
+        hide_whatsapp_button_menu: (data as any).hide_whatsapp_button_menu || false,
+        hide_phone_button_menu: (data as any).hide_phone_button_menu || false,
+        custom_cta_button_text: (data as any).custom_cta_button_text || '',
+        custom_cta_button_link: (data as any).custom_cta_button_link || '',
+        show_whatsapp_popup: (data as any).show_whatsapp_popup || false,
         opening_hours: normalizedOpeningHours,
         social_media_links: {
           facebook: '',
@@ -1213,6 +1228,11 @@ export default function ClientSettings() {
           whatsapp_country_code: formData.whatsapp_country_code,
           coordinates: formData.coordinates,
           theme: formData.theme,
+          hide_whatsapp_button_menu: formData.hide_whatsapp_button_menu,
+          hide_phone_button_menu: formData.hide_phone_button_menu,
+          custom_cta_button_text: formData.custom_cta_button_text,
+          custom_cta_button_link: formData.custom_cta_button_link,
+          show_whatsapp_popup: formData.show_whatsapp_popup,
           opening_hours: orderedOpeningHours,
           social_media_links: formData.social_media_links,
           delivery: formData.delivery,
@@ -2080,14 +2100,70 @@ export default function ClientSettings() {
                   />
                 </div>
               </div>
-              <div>
-                <Label htmlFor="address">Address</Label>
-                <Textarea
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
-                  rows={3}
-                />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="hide_whatsapp_button_menu">Hide WhatsApp Button from Menu</Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="hide_whatsapp_button_menu"
+                      checked={formData.hide_whatsapp_button_menu}
+                      onCheckedChange={(checked) => setFormData({...formData, hide_whatsapp_button_menu: checked})}
+                    />
+                    <Label htmlFor="hide_whatsapp_button_menu" className="text-sm text-muted-foreground">
+                      {formData.hide_whatsapp_button_menu ? 'Hidden' : 'Visible'}
+                    </Label>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="hide_phone_button_menu">Hide Phone Button from Menu</Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="hide_phone_button_menu"
+                      checked={formData.hide_phone_button_menu}
+                      onCheckedChange={(checked) => setFormData({...formData, hide_phone_button_menu: checked})}
+                    />
+                    <Label htmlFor="hide_phone_button_menu" className="text-sm text-muted-foreground">
+                      {formData.hide_phone_button_menu ? 'Hidden' : 'Visible'}
+                    </Label>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="show_whatsapp_popup">Show WhatsApp Popup</Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="show_whatsapp_popup"
+                      checked={formData.show_whatsapp_popup}
+                      onCheckedChange={(checked) => setFormData({...formData, show_whatsapp_popup: checked})}
+                    />
+                    <Label htmlFor="show_whatsapp_popup" className="text-sm text-muted-foreground">
+                      {formData.show_whatsapp_popup ? 'Enabled' : 'Disabled'}
+                    </Label>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <Label htmlFor="custom_cta_button_text">Custom Menu CTA Button Text</Label>
+                  <Input
+                    id="custom_cta_button_text"
+                    value={formData.custom_cta_button_text}
+                    onChange={(e) => setFormData({...formData, custom_cta_button_text: e.target.value})}
+                    placeholder="Reserve Table"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="custom_cta_button_link">Custom Menu CTA Button Link</Label>
+                  <Input
+                    id="custom_cta_button_link"
+                    value={formData.custom_cta_button_link}
+                    onChange={(e) => setFormData({...formData, custom_cta_button_link: e.target.value})}
+                    placeholder="#contact or https://example.com"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
