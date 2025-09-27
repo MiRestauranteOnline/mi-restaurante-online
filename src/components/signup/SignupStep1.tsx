@@ -9,7 +9,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, CreditCard, Shield, Clock } from "lucide-react";
+import { Loader2, CreditCard, Shield, Clock, CheckCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { SignupData } from "@/pages/Signup";
@@ -30,13 +32,20 @@ const signupSchema = z.object({
 type SignupFormData = z.infer<typeof signupSchema>;
 
 interface SignupStep1Props {
-  onComplete: (data: SignupData) => Promise<void>;
+  onComplete: (data: SignupData, selectedPlan: 'basic' | 'advanced') => Promise<void>;
   initialData: SignupData;
   isProcessingPayment?: boolean;
 }
 
+declare global {
+  interface Window {
+    Rebill: any;
+  }
+}
+
 export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = false }: SignupStep1Props) => {
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
+  const [paymentMethod, setPaymentMethod] = useState<'rebill' | 'demo'>('demo');
 
   const { toast } = useToast();
 
@@ -79,11 +88,11 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
         customDomain: data.hasCustomDomain && data.customDomain ? cleanDomain(data.customDomain) : "",
       };
       
-      await onComplete(cleanedData);
+      await onComplete(cleanedData, selectedPlan);
       
       toast({
         title: "Información guardada",
-        description: "Redirigiendo al sistema de pago...",
+        description: paymentMethod === 'demo' ? "Continuando sin pago..." : "Procesando pago...",
       });
     } catch (error) {
       toast({
@@ -368,6 +377,138 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             )}
           />
 
+          {/* Plan Selection Section */}
+          <div className="space-y-6 pt-6 border-t">
+            <div className="text-center">
+              <h3 className="text-xl font-semibold mb-2">Elige tu Plan</h3>
+              <p className="text-sm text-muted-foreground">Precio fijo de por vida</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Plan Básico */}
+              <Card 
+                className={`cursor-pointer transition-all ${
+                  selectedPlan === 'basic' 
+                    ? 'border-primary shadow-primary ring-2 ring-primary/20' 
+                    : 'border-muted hover:border-primary/50'
+                }`}
+                onClick={() => setSelectedPlan('basic')}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-primary text-primary-foreground">Más Popular</Badge>
+                    <div className="w-4 h-4 rounded-full border-2 border-primary bg-primary flex items-center justify-center">
+                      {selectedPlan === 'basic' && <div className="w-2 h-2 bg-white rounded-full" />}
+                    </div>
+                  </div>
+                  <CardTitle className="text-lg">Plan Básico</CardTitle>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold text-primary">S/297</span>
+                    <span className="text-sm text-muted-foreground">/mes</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm line-through text-muted-foreground">S/500</span>
+                    <Badge variant="destructive" className="text-xs">-41%</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <ul className="space-y-1 text-xs">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-primary" />
+                      Sitio profesional en 72 horas
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-primary" />
+                      Hosting + SSL incluido
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-primary" />
+                      SEO básico optimizado
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-primary" />
+                      Hasta 3,000 visitas/mes
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Plan Avanzado */}
+              <Card 
+                className={`cursor-pointer transition-all ${
+                  selectedPlan === 'advanced' 
+                    ? 'border-accent shadow-accent ring-2 ring-accent/20' 
+                    : 'border-muted hover:border-accent/50'
+                }`}
+                onClick={() => setSelectedPlan('advanced')}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-end">
+                    <div className="w-4 h-4 rounded-full border-2 border-accent bg-accent flex items-center justify-center">
+                      {selectedPlan === 'advanced' && <div className="w-2 h-2 bg-white rounded-full" />}
+                    </div>
+                  </div>
+                  <CardTitle className="text-lg">Plan Avanzado</CardTitle>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold text-accent">S/497</span>
+                    <span className="text-sm text-muted-foreground">/mes</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm line-through text-muted-foreground">S/1000</span>
+                    <Badge variant="destructive" className="text-xs">-50%</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <ul className="space-y-1 text-xs">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-accent" />
+                      Todo lo del Plan Básico
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-accent" />
+                      1 hora/mes cambios extendidos
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-accent" />
+                      Nuevas secciones personalizadas
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-accent" />
+                      Soporte prioritario
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Payment Method Selection */}
+            <div className="space-y-4">
+              <h4 className="font-semibold">Método de Pago</h4>
+              <RadioGroup value={paymentMethod} onValueChange={(value) => setPaymentMethod(value as 'rebill' | 'demo')}>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                    <RadioGroupItem value="demo" id="demo" />
+                    <label htmlFor="demo" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Continuar sin Pago (Demo)</div>
+                      <div className="text-sm text-muted-foreground">
+                        Tu cuenta Rebill está en revisión. Puedes crear tu sitio web gratis mientras tanto.
+                      </div>
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg opacity-50">
+                    <RadioGroupItem value="rebill" id="rebill" disabled />
+                    <label htmlFor="rebill" className="flex-1">
+                      <div className="font-medium text-muted-foreground">Pago con Tarjeta (Próximamente)</div>
+                      <div className="text-sm text-muted-foreground">
+                        Disponible cuando se active tu cuenta Rebill
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+
           <Button 
             type="submit" 
             className="w-full" 
@@ -376,13 +517,13 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
           >
             {isProcessingPayment ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 Procesando Pago...
               </>
             ) : (
               <>
                 <CreditCard className="w-4 h-4 mr-2" />
-                Crear Cuenta
+                {paymentMethod === 'demo' ? 'Crear Cuenta (Demo)' : `Pagar ${selectedPlan === 'basic' ? 'S/297' : 'S/497'} y Crear Cuenta`}
               </>
             )}
           </Button>
