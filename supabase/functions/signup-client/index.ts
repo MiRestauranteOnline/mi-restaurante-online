@@ -33,6 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const reqBody: any = await req.json();
     const {
       email,
       password,
@@ -41,8 +42,12 @@ const handler = async (req: Request): Promise<Response> => {
       phone,
       paymentId,
       customDomain,
-      referralSource
-    }: SignupRequest = await req.json();
+      referralSource,
+      address
+    } = reqBody;
+
+    const signupFormData = reqBody.signupFormData;
+    const websiteRequirements = reqBody.websiteRequirements as any;
 
     console.log('Creating user for:', email, 'with subdomain:', subdomain);
 
@@ -168,6 +173,38 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log('Client signup completed successfully');
+
+    // Auto-generate and store briefings right after signup
+    try {
+      const contentBriefing = `${websiteRequirements?.additionalInfo || ''}\n\nTipo de restaurante: ${websiteRequirements?.businessType || ''}\nPúblico objetivo: ${websiteRequirements?.targetAudience || ''}\nEstilo del sitio web: ${websiteRequirements?.websiteStyle || ''}`;
+      const styleBriefing = `Estilo del sitio web: ${websiteRequirements?.websiteStyle || ''}\nInformación de marca: ${websiteRequirements?.brandInfo || 'No especificado'}\nLogo: ${(websiteRequirements?.logoUrl ? 'Proporcionado' : 'No proporcionado')}`;
+      const contactDeliveryBriefing = `Nombre del restaurante: ${restaurantName}\nTeléfono: ${phone}\nEmail: ${email}\nDirección: ${address || ''}\nTiene delivery: ${websiteRequirements?.hasDelivery ? 'Sí' : 'No'}\nPlatformas de delivery: ${Object.entries(websiteRequirements?.deliveryPlatforms || {}).filter(([_, url]) => typeof url === 'string' && (url as string).trim()).map(([platform]) => platform).join(', ')}\nDelivery por WhatsApp/Teléfono: ${websiteRequirements?.deliveryPhoneWhatsapp || ''}\nRedes sociales: ${(websiteRequirements?.socialMedia || []).map((sm: any) => `${sm.platform}: ${sm.url}`).join(', ')}`;
+
+      const { error: briefingsInvokeError } = await supabaseAdmin.functions.invoke('store-briefings', {
+        body: {
+          clientId: client.id, // pass UUID to avoid ambiguity
+          contentBriefing,
+          styleBriefing,
+          contactDeliveryBriefing,
+          signupData: {
+            email,
+            restaurantName,
+            subdomain: subdomain.toLowerCase(),
+            phone,
+            address: address || null,
+          },
+          websiteRequirements,
+        },
+      });
+
+      if (briefingsInvokeError) {
+        console.error('Error invoking store-briefings after signup:', briefingsInvokeError);
+      } else {
+        console.log('store-briefings invoked successfully after signup for client:', client.id);
+      }
+    } catch (postSignupBriefingError) {
+      console.error('Failed to auto-store briefings after signup:', postSignupBriefingError);
+    }
 
     return new Response(
       JSON.stringify({

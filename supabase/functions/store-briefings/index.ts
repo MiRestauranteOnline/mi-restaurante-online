@@ -33,19 +33,35 @@ serve(async (req) => {
 
     console.log('Storing briefings for client:', clientId);
 
-    // Find the client by subdomain (since we're passing subdomain as clientId during signup)
-    const { data: client, error: clientFindError } = await supabase
-      .from('clients')
-      .select('id')
-      .eq('subdomain', clientId)
-      .single();
+    // Resolve client by UUID or subdomain
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(clientId);
+    let actualClientId = clientId;
 
-    if (clientFindError || !client) {
-      console.error('Client not found:', clientFindError);
-      throw new Error('Client not found');
+    if (isUUID) {
+      console.log('Looking up client by UUID');
+      const { data: cById, error: eById } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('id', clientId)
+        .single();
+      if (eById || !cById) {
+        console.error('Client not found by id:', eById);
+        throw new Error('Client not found');
+      }
+      actualClientId = cById.id;
+    } else {
+      console.log('Looking up client by subdomain');
+      const { data: cBySub, error: eBySub } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('subdomain', clientId)
+        .single();
+      if (eBySub || !cBySub) {
+        console.error('Client not found by subdomain:', eBySub);
+        throw new Error('Client not found');
+      }
+      actualClientId = cBySub.id;
     }
-
-    const actualClientId = client.id;
 
     // Store the briefings in admin_content
     const { error: briefingError } = await supabase
