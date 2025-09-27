@@ -11,3 +11,15 @@ verify_jwt = false
 
 [functions.rebill-plans]
 verify_jwt = false
+
+[functions.populate-practical-info]
+verify_jwt = false
+
+[functions.generate-branding]
+verify_jwt = false
+
+[functions.store-briefings]
+verify_jwt = false
+
+[functions.generate-client-content]
+verify_jwt = false

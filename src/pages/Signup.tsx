@@ -13,6 +13,7 @@ export interface SignupData {
   restaurantName: string;
   subdomain: string;
   phone: string;
+  address: string; // New address field
   paymentId?: string;
   hasCustomDomain?: boolean;
   customDomain?: string;
@@ -50,6 +51,7 @@ const Signup = () => {
     restaurantName: "",
     subdomain: "",
     phone: "",
+    address: "", // New address field
     hasCustomDomain: false,
     customDomain: "",
     referralSource: "",
@@ -84,9 +86,13 @@ const Signup = () => {
           restaurantName: formData.restaurantName,
           subdomain: formData.subdomain.toLowerCase(),
           phone: formData.phone,
+          address: formData.address, // Include address field
           paymentId: 'demo-payment-success',
           customDomain: formData.customDomain,
           referralSource: formData.referralSource,
+          // Include all signup data for briefing generation
+          signupFormData: formData,
+          websiteRequirements: websiteRequirements,
         },
       });
 
@@ -125,8 +131,36 @@ const Signup = () => {
     }
   };
 
-  const handleStep2Complete = (requirements: WebsiteRequirements) => {
+  const handleStep2Complete = async (requirements: WebsiteRequirements) => {
     setWebsiteRequirements(requirements);
+    
+    try {
+      // Create briefing summaries from accumulated data
+      const contentBriefing = `${requirements.additionalInfo}\n\nTipo de restaurante: ${requirements.businessType}\nPúblico objetivo: ${requirements.targetAudience}\nEstilo del sitio web: ${requirements.websiteStyle}`;
+      
+      const styleBriefing = `Estilo del sitio web: ${requirements.websiteStyle}\nInformación de marca: ${requirements.brandInfo || 'No especificado'}\nLogo: ${requirements.logoUrl ? 'Proporcionado' : 'No proporcionado'}`;
+      
+      const contactDeliveryBriefing = `Nombre del restaurante: ${signupData.restaurantName}\nTeléfono: ${signupData.phone}\nEmail: ${signupData.email}\nDirección: ${signupData.address}\nTiene delivery: ${requirements.hasDelivery ? 'Sí' : 'No'}\nPlatformas de delivery: ${Object.entries(requirements.deliveryPlatforms).filter(([_, url]) => url).map(([platform, _]) => platform).join(', ')}\nDelivery por WhatsApp/Teléfono: ${requirements.deliveryPhoneWhatsapp}\nRedes sociales: ${requirements.socialMedia.map(sm => `${sm.platform}: ${sm.url}`).join(', ')}`;
+
+      // Store the briefings in the database
+      const { error } = await supabase.functions.invoke('store-briefings', {
+        body: {
+          clientId: signupData.subdomain, // We'll use subdomain to identify the client
+          contentBriefing,
+          styleBriefing,
+          contactDeliveryBriefing,
+          signupData,
+          websiteRequirements: requirements
+        }
+      });
+
+      if (error) {
+        console.error('Error storing briefings:', error);
+      }
+    } catch (error) {
+      console.error('Error processing briefings:', error);
+    }
+    
     setCurrentStep(3); // Move to success (was step 4)
   };
 

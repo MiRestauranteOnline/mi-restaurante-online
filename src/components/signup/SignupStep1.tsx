@@ -24,6 +24,7 @@ const signupSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
   phone: z.string().min(10, "Número de teléfono inválido"),
+  address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"), // New address validation
   hasCustomDomain: z.boolean().optional(),
   customDomain: z.string().optional(),
   referralSource: z.string().optional(),
@@ -60,6 +61,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       email: initialData.email,
       password: initialData.password,
       phone: initialData.phone,
+      address: initialData.address || "", // New address field
       hasCustomDomain: initialData.hasCustomDomain || false,
       customDomain: initialData.customDomain || "",
       referralSource: initialData.referralSource || "",
@@ -371,6 +373,23 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   <Input 
                     type="tel"
                     placeholder="+57 300 123 4567"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dirección del Restaurante</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Av. Larco 123, Miraflores, Lima"
                     {...field}
                   />
                 </FormControl>

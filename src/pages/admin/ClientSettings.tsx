@@ -81,6 +81,11 @@ interface AdminContent {
   id: string;
   client_id: string;
   
+  // Three new briefing fields
+  content_briefing?: string;
+  style_briefing?: string;
+  contact_delivery_briefing?: string;
+  
   // Two-part titles
   homepage_hero_title_first_line?: string;
   homepage_hero_title_second_line?: string;
@@ -645,8 +650,10 @@ const [reviewForm, setReviewForm] = useState({
   reviewer_name: '', review_text: '', star_rating: 5, display_order: 0, review_date: null as Date | null,
 });
 
-  // Briefing state
-  const [briefing, setBriefing] = useState('');
+  // Briefing state - now three separate briefings
+  const [contentBriefing, setContentBriefing] = useState('');
+  const [styleBriefing, setStyleBriefing] = useState('');
+  const [contactDeliveryBriefing, setContactDeliveryBriefing] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Filter and group menu items by category (using category_id)
@@ -882,6 +889,10 @@ const [reviewForm, setReviewForm] = useState({
     // WhatsApp Message Fields
     whatsapp_reservation_message: '',
     whatsapp_general_message: '',
+    // New Briefing Fields
+    content_briefing: '',
+    style_briefing: '',
+    contact_delivery_briefing: '',
     // New Label Fields
     our_story_label: '',
     culinary_masterpieces_label: '',
@@ -974,7 +985,6 @@ const [reviewForm, setReviewForm] = useState({
         },
         brand_colors: {
           primary: '#8B5CF6',
-          accent: '#F59E0B',
           ...(data.brand_colors as any || {})
         },
         other_customizations: {
@@ -1069,10 +1079,22 @@ const [reviewForm, setReviewForm] = useState({
       }
       
       if (data) {
+        console.log('Fetched admin content data:', data); // Debug log
+        
         setAdminContent(data);
+        
+        // Set briefing states
+        setContentBriefing(data.content_briefing || '');
+        setStyleBriefing(data.style_briefing || '');
+        setContactDeliveryBriefing(data.contact_delivery_briefing || '');
+        
         // Update form data with admin content
         setFormData(prev => ({
           ...prev,
+          // Briefing fields
+          content_briefing: data.content_briefing || '',
+          style_briefing: data.style_briefing || '',
+          contact_delivery_briefing: data.contact_delivery_briefing || '',
           // Two-part titles
           homepage_hero_title_first_line: data.homepage_hero_title_first_line || '',
           homepage_hero_title_second_line: data.homepage_hero_title_second_line || '',
@@ -1182,7 +1204,16 @@ const [reviewForm, setReviewForm] = useState({
           contact_reservation_description: data.contact_reservation_description || '',
           // WhatsApp Message Fields
           whatsapp_reservation_message: data.whatsapp_reservation_message || '',
-          whatsapp_general_message: data.whatsapp_general_message || ''
+          whatsapp_general_message: data.whatsapp_general_message || '',
+          // New Label Fields
+          our_story_label: data.our_story_label || '',
+          culinary_masterpieces_label: data.culinary_masterpieces_label || '',
+          testimonials_label: data.testimonials_label || '',
+          our_services_label: data.our_services_label || '',
+          contact_us_label: data.contact_us_label || '',
+          about_us_label: data.about_us_label || '',
+          our_menu_label: data.our_menu_label || '',
+          our_team_label: data.our_team_label || ''
         }));
       }
     } catch (error: any) {
@@ -1842,12 +1873,12 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
     }
   };
 
-  // Briefing AI content generation
+  // Three separate generation processes
   const handleGenerateContent = async () => {
-    if (!briefing.trim()) {
+    if (!contentBriefing.trim()) {
       toast({
         title: "Error",
-        description: "Por favor ingresa un briefing antes de generar contenido",
+        description: "Por favor ingresa el briefing de contenido antes de generar",
         variant: "destructive"
       });
       return;
@@ -1856,23 +1887,55 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
     setIsGenerating(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('generate-client-content', {
+      // Process 1: Content Generation (existing process)
+      const { data: contentData, error: contentError } = await supabase.functions.invoke('generate-client-content', {
         body: {
-          briefing,
+          briefing: contentBriefing,
           clientId,
           restaurantName: client?.restaurant_name,
           address: client?.address
         }
       });
 
-      if (error) throw error;
+      if (contentError) throw contentError;
+
+      // Process 2: Practical Info Population
+      if (contactDeliveryBriefing.trim()) {
+        const { data: practicalData, error: practicalError } = await supabase.functions.invoke('populate-practical-info', {
+          body: {
+            briefing: contactDeliveryBriefing,
+            clientId,
+          }
+        });
+
+        if (practicalError) {
+          console.error('Error populating practical info:', practicalError);
+        }
+      }
+
+      // Process 3: Style/Branding Generation
+      if (styleBriefing.trim()) {
+        const { data: styleData, error: styleError } = await supabase.functions.invoke('generate-branding', {
+          body: {
+            briefing: styleBriefing,
+            clientId,
+            restaurantName: client?.restaurant_name
+          }
+        });
+
+        if (styleError) {
+          console.error('Error generating branding:', styleError);
+        }
+      }
 
       toast({
         title: "¡Éxito!",
-        description: "Contenido generado exitosamente. Revisa la pestaña 'Change Content' para ver los cambios.",
+        description: "Todo el contenido ha sido generado exitosamente. Revisa las pestañas para ver los cambios.",
       });
 
-      // Reload admin content to show updated data
+      // Reload all data to show updates
+      fetchClient();
+      fetchClientSettings();
       fetchAdminContent();
       
     } catch (error: any) {
@@ -4578,19 +4641,62 @@ setReviewForm({
       <TabsContent value="briefing">
         <Card>
           <CardHeader>
-            <CardTitle>Briefing del Cliente</CardTitle>
+            <CardTitle>Briefings del Cliente</CardTitle>
+            <CardDescription>
+              Administra los tres tipos de briefings para generar contenido personalizado
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
+            {/* Content Briefing */}
             <div>
-              <Label htmlFor="briefing">
-                Describe tu restaurante, tipo de comida, ambiente, ubicación y audiencia objetivo
+              <Label htmlFor="content-briefing" className="text-base font-semibold">
+                Content Briefing
               </Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Describe tu restaurante, tipo de comida, ambiente, ubicación y audiencia objetivo
+              </p>
               <Textarea
-                id="briefing"
-                value={briefing}
-                onChange={(e) => setBriefing(e.target.value)}
+                id="content-briefing"
+                value={contentBriefing}
+                onChange={(e) => setContentBriefing(e.target.value)}
                 placeholder="Ejemplo: Somos un restaurante de comida peruana contemporánea ubicado en Miraflores. Nos especializamos en fusión nikkei con ingredientes frescos del mar peruano. Nuestro ambiente es moderno y elegante, dirigido a profesionales de 25-45 años que buscan experiencias gastronómicas únicas..."
-                rows={8}
+                rows={6}
+                className="mt-2"
+              />
+            </div>
+
+            {/* Style Briefing */}
+            <div>
+              <Label htmlFor="style-briefing" className="text-base font-semibold">
+                Style Briefing
+              </Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Especifica preferencias de estilo, colores, fuentes y diseño para el sitio web
+              </p>
+              <Textarea
+                id="style-briefing"
+                value={styleBriefing}
+                onChange={(e) => setStyleBriefing(e.target.value)}
+                placeholder="Ejemplo: Queremos un diseño elegante y moderno con colores oscuros (negro, dorado). Fuentes serif para títulos, sans-serif para texto. Estilo minimalista pero sofisticado. Logo ya disponible en formato PNG..."
+                rows={4}
+                className="mt-2"
+              />
+            </div>
+
+            {/* Contact/Delivery/Social Media Briefing */}
+            <div>
+              <Label htmlFor="contact-delivery-briefing" className="text-base font-semibold">
+                Contact/Delivery/Social Media Details
+              </Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Información práctica del negocio: contacto, delivery, redes sociales, horarios
+              </p>
+              <Textarea
+                id="contact-delivery-briefing"
+                value={contactDeliveryBriefing}
+                onChange={(e) => setContactDeliveryBriefing(e.target.value)}
+                placeholder="Ejemplo: Teléfono: +51 987 654 321, WhatsApp: +51 987 654 321, Email: info@mirestaurante.com, Dirección: Av. Larco 123, Miraflores, Delivery: Rappi, PedidosYa, Instagram: @mirestaurante, Facebook: Mi Restaurante, Horarios: Lu-Vi 12pm-10pm, Sa-Do 11am-11pm..."
+                rows={4}
                 className="mt-2"
               />
             </div>
@@ -4598,7 +4704,7 @@ setReviewForm({
             <div className="flex justify-end">
               <Button 
                 onClick={handleGenerateContent}
-                disabled={isGenerating || !briefing.trim()}
+                disabled={isGenerating || !contentBriefing.trim()}
                 className="min-w-32"
               >
                 {isGenerating ? (
@@ -4607,7 +4713,7 @@ setReviewForm({
                     Generando...
                   </>
                 ) : (
-                  'Generar Contenido'
+                  'Generar Todo el Contenido'
                 )}
               </Button>
             </div>
@@ -4615,9 +4721,9 @@ setReviewForm({
             <div className="text-sm text-muted-foreground">
               <p><strong>¿Qué hace esta herramienta?</strong></p>
               <ul className="mt-2 space-y-1 list-disc list-inside">
-                <li>Analiza tu nicho y audiencia objetivo</li>
-                <li>Genera contenido optimizado para SEO local</li>
-                <li>Crea títulos, descripciones y textos para todo el sitio web</li>
+                <li><strong>Content Briefing:</strong> Genera contenido, títulos, descripciones y textos optimizados para SEO</li>
+                <li><strong>Style Briefing:</strong> Determina colores, fuentes, logos y elementos de branding</li>
+                <li><strong>Contact/Delivery/Social:</strong> Completa información práctica como teléfonos, direcciones, redes sociales</li>
                 <li>Genera imágenes profesionales que coinciden con tu marca</li>
                 <li>Todo el contenido se crea en español y se optimiza para Lima, Perú</li>
               </ul>
