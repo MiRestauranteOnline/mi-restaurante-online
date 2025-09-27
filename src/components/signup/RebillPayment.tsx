@@ -151,8 +151,8 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
   }, [signupData, selectedPlan, onSuccess]);
 
   const planDetails = selectedPlan === 'basic' 
-    ? { name: 'Plan Básico', price: '$29', features: ['Sitio web profesional', 'Dominio personalizado', 'Soporte por email'] }
-    : { name: 'Plan Avanzado', price: '$49', features: ['Sitio web profesional', 'Dominio personalizado', 'Soporte prioritario', 'Analytics avanzados', 'Integraciones premium'] };
+    ? { name: 'Plan Básico', price: '$49', features: ['Sitio web profesional', 'Dominio personalizado', 'Soporte por email', 'Hasta 100 productos en menú'] }
+    : { name: 'Plan Avanzado', price: '$79', features: ['Sitio web profesional', 'Dominio personalizado', 'Soporte prioritario', 'Analytics avanzados', 'Integraciones premium', 'Productos ilimitados', 'SEO optimizado'] };
 
   return (
     <div className="space-y-6">
@@ -204,18 +204,47 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
           <CardContent>
             {isLoading ? (
               <div className="flex items-center justify-center h-64">
-                <div className="text-center space-y-2">
+                <div className="text-center space-y-4">
                   <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div>
                   <p className="text-sm text-muted-foreground">Cargando formulario de pago...</p>
+                  <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Cuenta Rebill en revisión:</strong> Mientras se activa tu cuenta de pagos, 
+                      puedes continuar creando tu sitio web sin pagar.
+                    </p>
+                    <Button 
+                      className="mt-3" 
+                      onClick={() => {
+                        console.log('Bypassing payment for demo');
+                        onSuccess();
+                      }}
+                      variant="outline"
+                    >
+                      Continuar sin Pago (Demo)
+                    </Button>
+                  </div>
                 </div>
               </div>
             ) : error ? (
               <div className="flex items-center justify-center h-64">
-                <div className="text-center space-y-2">
+                <div className="text-center space-y-4">
                   <p className="text-red-500">{error}</p>
-                  <Button onClick={() => window.location.reload()} variant="outline" size="sm">
-                    Reintentar
-                  </Button>
+                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Problema con Rebill:</strong> Tu cuenta de pagos aún está en revisión. 
+                      Puedes continuar creando tu sitio web mientras tanto.
+                    </p>
+                    <Button 
+                      className="mt-3" 
+                      onClick={() => {
+                        console.log('Bypassing payment due to error');
+                        onSuccess();
+                      }}
+                      variant="outline"
+                    >
+                      Continuar sin Pago (Demo)
+                    </Button>
+                  </div>
                 </div>
               </div>
             ) : (
