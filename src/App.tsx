@@ -14,6 +14,7 @@ import BlogPost from "./pages/BlogPost";
 import BlogGenerationAdmin from "./components/BlogGenerationAdmin";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import Signup from "./pages/Signup";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import UnifiedDashboard from "./pages/dashboard/UnifiedDashboard";
 import ClientManagement from "./pages/admin/ClientManagement";
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/guia/:category/:slug" element={<BlogPost />} />
           <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/registro" element={<Signup />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<UnifiedDashboard />} />
           </Route>

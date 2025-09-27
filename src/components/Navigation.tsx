@@ -55,13 +55,12 @@ export const Navigation = () => {
                 {item.label}
               </Link>
             ))}
-            <Link to="/">
+            <Link to="/registro">
               <Button 
                 size="sm" 
                 className="bg-primary hover:bg-primary/90"
-                onClick={() => handleNavClick({ href: "/", section: "application" })}
               >
-                Quiero Mi Sitio Web
+                Crear Mi Sitio
               </Button>
             </Link>
           </div>
@@ -95,13 +94,12 @@ export const Navigation = () => {
                   {item.label}
                 </Link>
               ))}
-              <Link to="/">
+              <Link to="/registro">
                 <Button 
                   size="sm" 
                   className="bg-primary hover:bg-primary/90 mt-4"
-                  onClick={() => handleNavClick({ href: "/", section: "application" })}
                 >
-                  Quiero Mi Sitio Web
+                  Crear Mi Sitio
                 </Button>
               </Link>
             </div>
