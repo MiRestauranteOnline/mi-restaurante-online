@@ -2806,23 +2806,8 @@ setReviewForm({
               </div>
 
               <div className="space-y-4 border-t pt-4">
-                <h4 className="text-lg font-medium">Additional Colors</h4>
+                <h4 className="text-lg font-medium">Other Settings</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="accent_color">Accent Color</Label>
-                    <Input
-                      id="accent_color"
-                      type="color"
-                      value={formData.brand_colors.accent}
-                      onChange={(e) => setFormData({
-                        ...formData, 
-                        brand_colors: {
-                          ...formData.brand_colors,
-                          accent: e.target.value
-                        }
-                      })}
-                    />
-                  </div>
                   <div>
                     <Label htmlFor="currency">Currency</Label>
                     <Input
