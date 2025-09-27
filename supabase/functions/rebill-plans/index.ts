@@ -41,23 +41,25 @@ const handler = async (req: Request): Promise<Response> => {
       console.log('Creating Rebill subscription plans...');
 
       // Plan Básico - S/297/mes
-      const basicPlanResponse = await fetch('https://api.rebill.com/v1/plans', {
+      const basicPlanResponse = await fetch('https://api.rebill.com/v2/plans', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${rebillApiKey}`,
+          'accept': 'application/json',
         },
         body: JSON.stringify({
           name: 'Plan Básico - Mi Restaurante Online',
           description: 'Sitio web profesional para restaurantes - Plan Básico',
-          amount: 29700, // S/297 in centavos
-          currency: 'PEN', // Peruvian Sol
-          interval: 'month',
-          interval_count: 1,
-          trial_period_days: 0,
+          frequency: { type: 'months', quantity: 1 },
+          type: 'fixed',
+          repetitions: null,
+          currencies: [
+            { currency: 'PEN', amount: 297 }
+          ],
           metadata: {
             plan_type: 'basic',
-            features: JSON.stringify([
+            features: [
               'Sitio profesional en 72 horas',
               'Hosting + SSL incluido',
               'SEO básico optimizado',
@@ -66,35 +68,37 @@ const handler = async (req: Request): Promise<Response> => {
               'Cambios auto-gestionables (PIN)',
               'Soporte por WhatsApp',
               'Hasta 3,000 visitas/mes o 6 GB'
-            ])
+            ]
           }
         }),
       });
 
       // Plan Avanzado - S/497/mes  
-      const advancedPlanResponse = await fetch('https://api.rebill.com/v1/plans', {
+      const advancedPlanResponse = await fetch('https://api.rebill.com/v2/plans', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${rebillApiKey}`,
+          'accept': 'application/json',
         },
         body: JSON.stringify({
           name: 'Plan Avanzado - Mi Restaurante Online',
           description: 'Sitio web profesional para restaurantes - Plan Avanzado',
-          amount: 49700, // S/497 in centavos
-          currency: 'PEN', // Peruvian Sol
-          interval: 'month',
-          interval_count: 1,
-          trial_period_days: 0,
+          frequency: { type: 'months', quantity: 1 },
+          type: 'fixed',
+          repetitions: null,
+          currencies: [
+            { currency: 'PEN', amount: 497 }
+          ],
           metadata: {
             plan_type: 'advanced',
-            features: JSON.stringify([
+            features: [
               'Todo lo del Plan Básico',
               '1 hora/mes de cambios extendidos',
               'Cambios de textos e imágenes',
               'Nuevas secciones personalizadas',
               'Soporte prioritario'
-            ])
+            ]
           }
         }),
       });
@@ -113,12 +117,15 @@ const handler = async (req: Request): Promise<Response> => {
         );
       }
 
-      const basicPlan = await basicPlanResponse.json();
-      const advancedPlan = await advancedPlanResponse.json();
+      const basicPlanData = await basicPlanResponse.json();
+      const advancedPlanData = await advancedPlanResponse.json();
+
+      const basicPlanId = basicPlanData?.plan?.id;
+      const advancedPlanId = advancedPlanData?.plan?.id;
 
       console.log('Plans created successfully:', {
-        basic: basicPlan.id,
-        advanced: advancedPlan.id
+        basic: basicPlanId,
+        advanced: advancedPlanId
       });
 
       return new Response(
@@ -126,16 +133,16 @@ const handler = async (req: Request): Promise<Response> => {
           success: true,
           plans: {
             basic: {
-              id: basicPlan.id,
-              name: basicPlan.name,
-              amount: basicPlan.amount,
-              currency: basicPlan.currency
+              id: basicPlanId,
+              name: basicPlanData?.plan?.name,
+              amount: basicPlanData?.currencies?.[0]?.amount,
+              currency: basicPlanData?.currencies?.[0]?.currency
             },
             advanced: {
-              id: advancedPlan.id,
-              name: advancedPlan.name,
-              amount: advancedPlan.amount,
-              currency: advancedPlan.currency
+              id: advancedPlanId,
+              name: advancedPlanData?.plan?.name,
+              amount: advancedPlanData?.currencies?.[0]?.amount,
+              currency: advancedPlanData?.currencies?.[0]?.currency
             }
           }
         }),
@@ -147,9 +154,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     } else if (action === 'get_plans') {
       // Get existing plans
-      const plansResponse = await fetch('https://api.rebill.com/v1/plans', {
+      const plansResponse = await fetch('https://api.rebill.com/v2/plans', {
         headers: {
           'Authorization': `Bearer ${rebillApiKey}`,
+          'accept': 'application/json',
         },
       });
 
