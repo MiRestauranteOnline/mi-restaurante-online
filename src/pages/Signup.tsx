@@ -72,19 +72,25 @@ const Signup = () => {
     setIsProcessingPayment(true);
     
     try {
-      // Create payment with Rebill
-      const { data, error } = await supabase.functions.invoke('create-rebill-payment', {
+      // TODO: Replace with actual Rebill payment when account is configured
+      // For now, simulate payment success and create account directly
+      
+      console.log('Would create payment for:', formData);
+      
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Create account directly using create-client-user function
+      const { data, error } = await supabase.functions.invoke('create-client-user', {
         body: {
-          amount: 4900, // $49.00
-          currency: 'USD',
-          customer: {
-            email: formData.email,
-            name: formData.restaurantName,
-            phone: formData.phone,
-          },
-          signup_data: JSON.stringify(formData),
-          return_url: `${window.location.origin}/registro?step=payment-success`,
-          webhook_url: `https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/rebill-webhook`,
+          email: formData.email,
+          password: formData.password,
+          restaurantName: formData.restaurantName,
+          subdomain: formData.subdomain.toLowerCase(),
+          phone: formData.phone,
+          paymentId: 'temp-payment-id',
+          customDomain: formData.customDomain,
+          referralSource: formData.referralSource,
         },
       });
 
@@ -92,17 +98,17 @@ const Signup = () => {
         throw new Error(error.message);
       }
       
-      if (data?.success && data?.payment_url) {
-        // Redirect to Rebill payment page
-        window.location.href = data.payment_url;
+      if (data?.success) {
+        // Move to step 2 for website requirements
+        setCurrentStep(2);
       } else {
-        throw new Error(data?.error || 'Payment creation failed');
+        throw new Error(data?.error || 'Account creation failed');
       }
     } catch (error) {
-      console.error('Payment error:', error);
+      console.error('Account creation error:', error);
       setIsProcessingPayment(false);
       // Show error to user
-      alert('Error al procesar el pago. Por favor intenta de nuevo.');
+      alert('Error al crear la cuenta. Por favor intenta de nuevo.');
     }
   };
 

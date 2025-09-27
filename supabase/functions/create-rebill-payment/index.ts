@@ -57,28 +57,35 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Create payment with Rebill
-    const rebillResponse = await fetch('https://api.rebill.com/v1/payments', {
+    const rebillResponse = await fetch('https://api.rebill.com/v2/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${rebillApiKey}`,
+        'organization_id': rebillSecretKey, // Rebill uses organization_id in headers
       },
       body: JSON.stringify({
-        amount: amount,
-        currency: currency,
+        items: [{
+          name: `Sitio web para ${customer.name}`,
+          amount: amount,
+          currency: currency,
+          quantity: 1,
+        }],
         customer: {
           email: customer.email,
           name: customer.name,
           phone: customer.phone,
         },
-        metadata: {
-          signup_data: signup_data,
-          source: 'restaurant_signup'
+        installments: {
+          maximum: 1,
+          interestFree: 1,
         },
-        success_url: return_url,
-        failure_url: `${return_url}?error=payment_failed`,
-        webhook_url: webhook_url,
-        description: `Sitio web para ${customer.name}`,
+        paymentMetadata: {
+          signup_data: signup_data,
+          source: 'restaurant_signup',
+          return_url: return_url,
+          webhook_url: webhook_url,
+        },
       }),
     });
 
