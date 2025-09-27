@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Power, PowerOff, Trash } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -342,14 +342,6 @@ function SortableCategoryCard({
                   onClick={() => openCategoryDialog(category)}
                 >
                   <Edit className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDeleteCategory(category.id)}
-                  title="Deactivate category"
-                >
-                  <PowerOff className="h-4 w-4" />
                 </Button>
                 {categoryItems.length === 0 && (
                   <Button
@@ -2351,6 +2343,63 @@ setReviewForm({
           variant: "destructive"
         });
         await fetchMenuItems();
+      }
+    }
+  };
+
+  const handleCrossCategoryDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    // Check if dragging a category
+    const draggedCategory = categories.find(cat => cat.id === active.id);
+    if (draggedCategory) {
+      // Handle category reordering
+      return handleCategoryDragEnd(event);
+    }
+
+    // Check if dragging a menu item
+    const draggedItem = menuItems.find(item => item.id === active.id);
+    const targetCategory = categories.find(cat => cat.id === over.id);
+
+    if (draggedItem && targetCategory) {
+      // Moving item to a different category
+      try {
+        const { data, error } = await supabase
+          .from('menu_items')
+          .update({ 
+            category_id: targetCategory.id,
+            category: targetCategory.name // Update legacy field too
+          })
+          .eq('id', draggedItem.id)
+          .select()
+          .maybeSingle();
+
+        if (error) throw error;
+        if (!data) throw new Error('Update blocked by RLS');
+
+        await fetchMenuItems();
+        toast({ 
+          title: "Success", 
+          description: `Item moved to ${targetCategory.name}` 
+        });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: "Failed to move item: " + error.message,
+          variant: "destructive"
+        });
+      }
+    } else {
+      // Handle item reordering within same category
+      const targetItem = menuItems.find(item => item.id === over.id);
+      if (draggedItem && targetItem && draggedItem.category_id === targetItem.category_id) {
+        // This is just reordering within the same category
+        const categoryId = draggedItem.category_id;
+        if (categoryId) {
+          return handleMenuItemDragEnd(event, categoryId);
+        }
       }
     }
   };
@@ -4467,9 +4516,15 @@ setReviewForm({
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
-                  onDragEnd={handleCategoryDragEnd}
+                  onDragEnd={handleCrossCategoryDragEnd}
                 >
-                  <SortableContext items={categories.map(c => c.id)} strategy={verticalListSortingStrategy}>
+                  <SortableContext 
+                    items={[
+                      ...categories.map(c => c.id),
+                      ...menuItems.map(item => item.id)
+                    ]} 
+                    strategy={verticalListSortingStrategy}
+                  >
                     <div className="space-y-4">
                       {categories.map((category) => {
                         const categoryItems = filteredAndGroupedMenuItems[category.id] || [];
