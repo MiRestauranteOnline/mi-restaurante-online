@@ -249,6 +249,49 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
 
           <FormField
             control={form.control}
+            name="hasCustomDomain"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>
+                    Tengo mi dominio personalizado
+                  </FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+
+          {form.watch("hasCustomDomain") && (
+            <FormField
+              control={form.control}
+              name="customDomain"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dominio Personalizado</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="mirestaurante.com"
+                      {...field}
+                      onChange={(e) => {
+                        const cleaned = cleanDomain(e.target.value);
+                        field.onChange(cleaned);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          <FormField
+            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -300,49 +343,6 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="hasCustomDomain"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>
-                    Tengo mi dominio personalizado
-                  </FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
-
-          {form.watch("hasCustomDomain") && (
-            <FormField
-              control={form.control}
-              name="customDomain"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dominio Personalizado</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="mirestaurante.com"
-                      {...field}
-                      onChange={(e) => {
-                        const cleaned = cleanDomain(e.target.value);
-                        field.onChange(cleaned);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
 
           <Button 
             type="submit" 
