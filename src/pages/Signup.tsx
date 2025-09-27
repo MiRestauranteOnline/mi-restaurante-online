@@ -18,13 +18,25 @@ export interface SignupData {
   referralSource?: string;
 }
 
+export interface SocialMedia {
+  platform: string;
+  url: string;
+}
+
 export interface WebsiteRequirements {
   businessType: string;
   targetAudience: string;
-  mainServices: string[];
-  specialFeatures: string[];
-  colorPreferences: string;
+  socialMedia: SocialMedia[];
+  hasDelivery: boolean;
+  deliveryPlatforms: {
+    rappi?: string;
+    pedidosya?: string;
+    didifood?: string;
+  };
+  deliveryPhoneWhatsapp: string;
+  logoUrl: string;
   additionalInfo: string;
+  websiteStyle: string;
 }
 
 const Signup = () => {
@@ -42,10 +54,13 @@ const Signup = () => {
   const [websiteRequirements, setWebsiteRequirements] = useState<WebsiteRequirements>({
     businessType: "",
     targetAudience: "",
-    mainServices: [],
-    specialFeatures: [],
-    colorPreferences: "",
+    socialMedia: [],
+    hasDelivery: false,
+    deliveryPlatforms: {},
+    deliveryPhoneWhatsapp: "",
+    logoUrl: "",
     additionalInfo: "",
+    websiteStyle: "",
   });
 
   const handleStep1Complete = (data: SignupData) => {

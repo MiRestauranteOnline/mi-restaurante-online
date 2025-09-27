@@ -23,32 +23,22 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
   const createClientAccount = async () => {
     try {
       // Call the create-client-user edge function
-      const { data, error } = await supabase.functions.invoke('create-client-user', {
-        body: {
-          email: signupData.email,
-          password: signupData.password,
-          restaurantName: signupData.restaurantName,
-          subdomain: signupData.subdomain,
-          phone: signupData.phone,
-          whatsapp: signupData.phone, // Using phone as WhatsApp for now
-          websiteRequirements: websiteRequirements,
-        },
+      // Temporarily skip the edge function call for testing
+      console.log('Would create account with:', {
+        email: signupData.email,
+        restaurantName: signupData.restaurantName,
+        subdomain: signupData.subdomain,
+        phone: signupData.phone,
+        customDomain: signupData.customDomain,
+        websiteRequirements: websiteRequirements,
       });
-
-      if (error) {
-        console.error('Error creating client account:', error);
-        toast({
-          title: "Error",
-          description: "Hubo un problema creando tu cuenta. Contacta soporte.",
-          variant: "destructive",
-        });
-      } else {
-        setAccountCreated(true);
-        toast({
-          title: "¡Cuenta creada exitosamente!",
-          description: "Tu sitio web será creado en las próximas 24-48 horas.",
-        });
-      }
+      
+      // Simulate success for testing
+      setAccountCreated(true);
+      toast({
+        title: "¡Cuenta creada exitosamente!",
+        description: "Tu sitio web será creado en las próximas 24-48 horas.",
+      });
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -112,7 +102,9 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
                 <div>
                   <p className="text-sm text-muted-foreground">Tu sitio web:</p>
                   <p className="font-medium text-primary">
-                    {signupData.subdomain}.mirestauranteonline.com
+                    {signupData.hasCustomDomain && signupData.customDomain 
+                      ? signupData.customDomain 
+                      : `${signupData.subdomain}.mirestaurante.online`}
                   </p>
                 </div>
               </CardContent>
