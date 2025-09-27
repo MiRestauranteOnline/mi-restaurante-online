@@ -30,7 +30,9 @@ interface SignupStep1Props {
 }
 
 export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
+  const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
   const { toast } = useToast();
 
   const form = useForm<SignupFormData>({
@@ -81,24 +83,30 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
   };
 
   const initiateRebillPayment = async (data: SignupFormData) => {
-    // Call Supabase function to create Rebill payment
-    const { data: paymentData, error } = await supabase.functions.invoke('create-rebill-payment', {
+    const planAmounts = {
+      basic: 29700, // S/297 in centavos
+      advanced: 49700, // S/497 in centavos
+    };
+
+    // Call Supabase function to create Rebill subscription
+    const { data: paymentData, error } = await supabase.functions.invoke('create-rebill-subscription', {
       body: {
-        amount: 99000, // $99 in cents (adjust for your currency)
-        currency: 'COP', // Colombian Peso
+        plan_type: selectedPlan,
+        amount: planAmounts[selectedPlan],
+        currency: 'PEN', // Peruvian Sol
         customer: {
           email: data.email,
           name: data.restaurantName,
           phone: data.phone,
         },
         signup_data: JSON.stringify(data),
-        return_url: `${window.location.origin}/registro?step=2`,
+        return_url: `${window.location.origin}/registro?step=2&plan=${selectedPlan}`,
         webhook_url: `${window.location.origin}/api/rebill-webhook`,
       },
     });
 
     if (error) {
-      throw new Error('Error creating payment');
+      throw new Error('Error creating subscription');
     }
 
     // Redirect to Rebill payment page
@@ -116,32 +124,64 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
         </p>
       </div>
 
-      {/* Pricing Display */}
-      <Card className="border-primary/20 bg-primary/5">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-primary">Plan Profesional</CardTitle>
-          <CardDescription>
-            <span className="text-3xl font-bold text-foreground">$99</span>
-            <span className="text-muted-foreground">/mes</span>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" />
-              <span>SSL Incluido</span>
+      {/* Plan Selection */}
+      <div className="grid md:grid-cols-2 gap-4 mb-6">
+        <Card className={`cursor-pointer border-2 transition-colors ${
+          selectedPlan === 'basic' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+        }`} onClick={() => setSelectedPlan('basic')}>
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl text-primary">Plan Básico</CardTitle>
+            <CardDescription>
+              <span className="text-2xl font-bold text-foreground">S/297</span>
+              <span className="text-muted-foreground">/mes</span>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap justify-center gap-3 text-sm">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-primary" />
+                <span>SSL + Hosting</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-primary" />
+                <span>Entrega 72h</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-primary" />
+                <span>WhatsApp</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-primary" />
-              <span>Soporte 24/7</span>
+          </CardContent>
+        </Card>
+
+        <Card className={`cursor-pointer border-2 transition-colors ${
+          selectedPlan === 'advanced' ? 'border-accent bg-accent/5' : 'border-border hover:border-accent/50'
+        }`} onClick={() => setSelectedPlan('advanced')}>
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl text-accent">Plan Avanzado</CardTitle>
+            <CardDescription>
+              <span className="text-2xl font-bold text-foreground">S/497</span>
+              <span className="text-muted-foreground">/mes</span>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap justify-center gap-3 text-sm">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-accent" />
+                <span>Todo Básico +</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-accent" />
+                <span>1h/mes cambios</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-accent" />
+                <span>Soporte prioritario</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-primary" />
-              <span>Dominio Personalizado</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -257,7 +297,7 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
             ) : (
               <>
                 <CreditCard className="w-4 h-4 mr-2" />
-                Pagar $99 y Continuar
+                Suscribirse por S/{selectedPlan === 'basic' ? '297' : '497'}/mes
               </>
             )}
           </Button>
