@@ -568,7 +568,7 @@ function SortableReview({ review, onEdit, onDelete }: {
   );
 }
 
-export default function ClientSettings() {
+export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[] } = {}) {
   console.log('ClientSettings component rendered'); // Debug log
   const { clientId } = useParams<{ clientId: string }>();
   const navigate = useNavigate();
@@ -592,6 +592,8 @@ export default function ClientSettings() {
   const [searchTerm, setSearchTerm] = useState('');
   const [userRole, setUserRole] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const showTab = (name: string) => !allowedTabs || allowedTabs.includes(name);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -2059,17 +2061,17 @@ export default function ClientSettings() {
 
       <Tabs defaultValue="basic" className="w-full">
         <TabsList>
-          <TabsTrigger value="basic">Basic Info</TabsTrigger>
-          <TabsTrigger value="domain">Domain</TabsTrigger>
-          <TabsTrigger value="hours">Opening Hours</TabsTrigger>
-          <TabsTrigger value="social">Social Media</TabsTrigger>
-          <TabsTrigger value="delivery">Delivery</TabsTrigger>
-          <TabsTrigger value="branding">Branding</TabsTrigger>
-          {userRole === 'admin' && <TabsTrigger value="content">Change Content</TabsTrigger>}
-          <TabsTrigger value="briefing">Briefing</TabsTrigger>
-          <TabsTrigger value="menu">Menu Items</TabsTrigger>
-          <TabsTrigger value="team">Team Members</TabsTrigger>
-          <TabsTrigger value="reviews">Reviews</TabsTrigger>
+          {showTab('basic') && <TabsTrigger value="basic">Basic Info</TabsTrigger>}
+          {showTab('domain') && <TabsTrigger value="domain">Domain</TabsTrigger>}
+          {showTab('hours') && <TabsTrigger value="hours">Opening Hours</TabsTrigger>}
+          {showTab('social') && <TabsTrigger value="social">Social Media</TabsTrigger>}
+          {showTab('delivery') && <TabsTrigger value="delivery">Delivery</TabsTrigger>}
+          {showTab('branding') && <TabsTrigger value="branding">Branding</TabsTrigger>}
+          {userRole === 'admin' && showTab('content') && <TabsTrigger value="content">Change Content</TabsTrigger>}
+          {showTab('briefing') && <TabsTrigger value="briefing">Briefing</TabsTrigger>}
+          {showTab('menu') && <TabsTrigger value="menu">Menu Items</TabsTrigger>}
+          {showTab('team') && <TabsTrigger value="team">Team Members</TabsTrigger>}
+          {showTab('reviews') && <TabsTrigger value="reviews">Reviews</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="basic">

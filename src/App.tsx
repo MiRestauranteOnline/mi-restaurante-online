@@ -63,8 +63,8 @@ const App = () => (
               <Route path="subscription-management" element={<SubscriptionManagement />} />
             </Route>
             <Route path="/client" element={<ClientDashboardLayout />}>
-              <Route index element={<ClientDashboard />} />
-              <Route path="dashboard" element={<ClientDashboard />} />
+              <Route index element={<ClientSettings allowedTabs={["basic","hours","social","delivery","menu","team","reviews"]} />} />
+              <Route path="dashboard" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","menu","team","reviews"]} />} />
               {/* settings route removed; clients manage only Dashboard and Subscription */}
               <Route path="subscription" element={<ClientSubscription />} />
             </Route>
