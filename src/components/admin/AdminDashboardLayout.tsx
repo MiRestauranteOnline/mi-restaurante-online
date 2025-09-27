@@ -271,7 +271,7 @@ export default function AdminDashboardLayout() {
 
           {/* Content */}
           <main className="flex-1 overflow-auto p-6">
-            <Outlet context={{ selectedClientId, selectedClient }} />
+            <Outlet context={{ selectedClientId, selectedClient, setSelectedClientId }} />
           </main>
         </div>
       </div>

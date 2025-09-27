@@ -604,26 +604,26 @@ function SortableReview({ review, onEdit, onDelete }: {
 
 export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[] } = {}) {
   const { clientId } = useParams<{ clientId: string }>();
-  const outletCtx = useOutletContext<{ selectedClientId?: string }>();
+  const outletCtx = useOutletContext<{ selectedClientId?: string; setSelectedClientId?: (id: string) => void }>();
   const contextClientId = outletCtx?.selectedClientId;
+  const setSelectedClientId = outletCtx?.setSelectedClientId;
   const navigate = useNavigate();
   
-  // Always use contextClientId if available, as it represents the admin's selection
-  const effectiveClientId = contextClientId || clientId;
+  // Prefer route param when present, else fall back to admin context selection
+  const effectiveClientId = clientId || contextClientId;
   
   console.log('ClientSettings Debug:', {
     clientId,
     contextClientId, 
     effectiveClientId,
-    outletCtx
   });
   
   useEffect(() => {
-    if (contextClientId && contextClientId !== clientId) {
-      // Keep URL and data in sync with selected client from admin layout
-      navigate(`/admin/client-settings/${contextClientId}`, { replace: true });
+    // If navigated from Client Management with a clientId, sync admin selection to it
+    if (clientId && clientId !== contextClientId && setSelectedClientId) {
+      setSelectedClientId(clientId);
     }
-  }, [contextClientId, clientId, navigate]);
+  }, [clientId, contextClientId, setSelectedClientId]);
   const [client, setClient] = useState<Client | null>(null);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
   const [adminContent, setAdminContent] = useState<AdminContent | null>(null);

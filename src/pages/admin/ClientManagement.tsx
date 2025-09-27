@@ -178,7 +178,7 @@ export default function ClientManagement() {
                 </Button>
                 <Button 
                   variant="outline"
-                  onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.com`, '_blank')}
+                  onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.online`, '_blank')}
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View Site
