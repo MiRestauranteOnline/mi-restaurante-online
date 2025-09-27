@@ -913,7 +913,8 @@ const [reviewForm, setReviewForm] = useState({
   });
 
   useEffect(() => {
-    if (clientId) {
+    const effectiveClientId = contextClientId || clientId;
+    if (effectiveClientId) {
       fetchClient();
       fetchClientSettings();
       fetchAdminContent();
@@ -923,14 +924,17 @@ const [reviewForm, setReviewForm] = useState({
       fetchReviews();
       fetchUserRole();
     }
-  }, [clientId]);
+  }, [clientId, contextClientId]);
 
   const fetchClient = async () => {
+    const effectiveClientId = contextClientId || clientId;
+    if (!effectiveClientId) return;
+    
     try {
       const { data, error } = await supabase
         .from('clients')
         .select('*')
-        .eq('id', clientId)
+        .eq('id', effectiveClientId)
         .single();
 
       if (error) throw error;
@@ -1013,11 +1017,14 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const fetchClientSettings = async () => {
+    const effectiveClientId = contextClientId || clientId;
+    if (!effectiveClientId) return;
+    
     try {
       const { data, error } = await supabase
         .from('client_settings')
         .select('*')
-        .eq('client_id', clientId)
+        .eq('client_id', effectiveClientId)
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
@@ -1074,12 +1081,15 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const fetchAdminContent = async () => {
+    const effectiveClientId = contextClientId || clientId;
+    if (!effectiveClientId) return;
+    
     try {
       // Use type assertion to bypass TypeScript errors until types are updated
       const { data, error } = await (supabase as any)
         .from('admin_content')
         .select('*')
-        .eq('client_id', clientId)
+        .eq('client_id', effectiveClientId)
         .single();
 
       if (error && error.code !== 'PGRST116') {
