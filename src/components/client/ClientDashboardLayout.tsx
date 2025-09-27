@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, useNavigate, NavLink } from 'react-router-dom';
+import { Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -38,6 +38,7 @@ export default function ClientDashboardLayout() {
   const [selectedClientId, setSelectedClientId] = useState<string>('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -87,6 +88,14 @@ export default function ClientDashboardLayout() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  useEffect(() => {
+    if (selectedClientId) {
+      if (location.pathname === '/client' || location.pathname === '/client/dashboard') {
+        navigate(`/client/dashboard/${selectedClientId}`, { replace: true });
+      }
+    }
+  }, [selectedClientId, location.pathname, navigate]);
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -107,7 +116,7 @@ export default function ClientDashboardLayout() {
   }
 
   const sidebarItems = [
-    { href: '/client/dashboard', icon: LayoutDashboard, label: t('nav.dashboard') },
+    { href: selectedClientId ? `/client/dashboard/${selectedClientId}` : '/client', icon: LayoutDashboard, label: t('nav.dashboard') },
     { href: '/client/subscription', icon: CreditCard, label: t('nav.subscription') },
   ];
 
