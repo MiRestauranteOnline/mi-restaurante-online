@@ -41,6 +41,9 @@ interface Client {
   restaurant_name: string;
   subdomain: string;
   domain?: string;
+  vercel_team?: string;
+  vercel_project?: string;
+  vercel_dashboard_url?: string;
   email?: string;
   phone?: string;
   phone_country_code?: string;
@@ -687,6 +690,9 @@ export default function ClientSettings() {
     restaurant_name: '',
     subdomain: '',
     domain: '',
+    vercel_team: '',
+    vercel_project: '',
+    vercel_dashboard_url: '',
     email: '',
     phone: '',
     phone_country_code: '+51',
@@ -881,6 +887,9 @@ export default function ClientSettings() {
         restaurant_name: data.restaurant_name || '',
         subdomain: data.subdomain || '',
         domain: (data as any).domain || '',
+        vercel_team: (data as any).vercel_team || '',
+        vercel_project: (data as any).vercel_project || '',
+        vercel_dashboard_url: (data as any).vercel_dashboard_url || '',
         email: data.email || '',
         phone: data.phone || '',
         phone_country_code: (data as any).phone_country_code || '+51',
@@ -1234,6 +1243,9 @@ export default function ClientSettings() {
           restaurant_name: formData.restaurant_name,
           subdomain: formData.subdomain,
           domain: formData.domain,
+          vercel_team: formData.vercel_team,
+          vercel_project: formData.vercel_project,
+          vercel_dashboard_url: formData.vercel_dashboard_url,
           email: formData.email,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
@@ -2222,6 +2234,49 @@ export default function ClientSettings() {
                 <p className="text-xs text-muted-foreground mt-1">
                   Client's custom domain. Client must configure DNS to point to our hosting.
                 </p>
+              </div>
+
+              <div className="space-y-4 pt-6 border-t">
+                <h3 className="text-lg font-semibold">Hosting</h3>
+                
+                <div>
+                  <Label htmlFor="vercel_team">Vercel Team</Label>
+                  <Input
+                    id="vercel_team"
+                    value={formData.vercel_team}
+                    onChange={(e) => setFormData({...formData, vercel_team: e.target.value})}
+                    placeholder="team-name"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Vercel team name for hosting this client's website.
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="vercel_project">Vercel Project</Label>
+                  <Input
+                    id="vercel_project"
+                    value={formData.vercel_project}
+                    onChange={(e) => setFormData({...formData, vercel_project: e.target.value})}
+                    placeholder="project-name"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Vercel project name for this client's deployment.
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="vercel_dashboard_url">Vercel Dashboard URL</Label>
+                  <Input
+                    id="vercel_dashboard_url"
+                    value={formData.vercel_dashboard_url}
+                    onChange={(e) => setFormData({...formData, vercel_dashboard_url: e.target.value})}
+                    placeholder="https://vercel.com/team/project"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Direct link to this client's project dashboard on Vercel.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
