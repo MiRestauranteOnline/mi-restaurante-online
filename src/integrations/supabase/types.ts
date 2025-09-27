@@ -753,6 +753,7 @@ export type Database = {
           display_order: number
           id: string
           is_active: boolean
+          review_date: string | null
           review_text: string
           reviewer_name: string
           star_rating: number
@@ -764,6 +765,7 @@ export type Database = {
           display_order?: number
           id?: string
           is_active?: boolean
+          review_date?: string | null
           review_text: string
           reviewer_name: string
           star_rating: number
@@ -775,6 +777,7 @@ export type Database = {
           display_order?: number
           id?: string
           is_active?: boolean
+          review_date?: string | null
           review_text?: string
           reviewer_name?: string
           star_rating?: number
