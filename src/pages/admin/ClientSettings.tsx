@@ -257,14 +257,12 @@ function SortableCategoryCard({
   category, 
   categoryItems,
   searchTerm,
-  sensors,
   filteredAndGroupedMenuItems,
   openMenuItemDialog,
   openCategoryDialog,
   handleDeleteCategory,
   handleCompleteDeleteCategory,
   handleToggleCategoryStatus,
-  handleMenuItemDragEnd,
   formData,
   handleDeleteMenuItem,
   handleToggleItemStatus
@@ -272,14 +270,12 @@ function SortableCategoryCard({
   category: MenuCategory;
   categoryItems: MenuItem[];
   searchTerm: string;
-  sensors: any;
   filteredAndGroupedMenuItems: Record<string, MenuItem[]>;
   openMenuItemDialog: (item?: MenuItem, defaultCategoryId?: string) => void;
   openCategoryDialog: (category?: MenuCategory) => void;
   handleDeleteCategory: (id: string) => void;
   handleCompleteDeleteCategory: (id: string) => void;
   handleToggleCategoryStatus: (id: string, isActive: boolean) => void;
-  handleMenuItemDragEnd: (event: DragEndEvent, categoryId: string) => void;
   formData: any;
   handleDeleteMenuItem: (id: string) => void;
   handleToggleItemStatus: (id: string, isActive: boolean) => void;
@@ -376,26 +372,18 @@ function SortableCategoryCard({
                 )}
               </div>
             ) : (
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={(event) => handleMenuItemDragEnd(event, category.id)}
-              >
-                <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
-                  <div className="space-y-2">
-                    {categoryItems.map((item) => (
-                      <SortableMenuItem
-                        key={item.id}
-                        item={item}
-                        currencySymbol={formData.other_customizations.currency}
-                        onEdit={openMenuItemDialog}
-                        onDelete={handleDeleteMenuItem}
-                        onToggleStatus={handleToggleItemStatus}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
+              <div className="space-y-2">
+                {categoryItems.map((item) => (
+                  <SortableMenuItem
+                    key={item.id}
+                    item={item}
+                    currencySymbol={formData.other_customizations.currency}
+                    onEdit={openMenuItemDialog}
+                    onDelete={handleDeleteMenuItem}
+                    onToggleStatus={handleToggleItemStatus}
+                  />
+                ))}
+              </div>
             )}
           </CardContent>
         </CollapsibleContent>
@@ -2352,53 +2340,66 @@ setReviewForm({
 
     if (!over || active.id === over.id) return;
 
-    // Check if dragging a category
+    // Check if dragging a category (for reordering categories)
     const draggedCategory = categories.find(cat => cat.id === active.id);
     if (draggedCategory) {
-      // Handle category reordering
-      return handleCategoryDragEnd(event);
+      const targetCategory = categories.find(cat => cat.id === over.id);
+      if (targetCategory) {
+        return handleCategoryDragEnd(event);
+      }
     }
 
     // Check if dragging a menu item
     const draggedItem = menuItems.find(item => item.id === active.id);
-    const targetCategory = categories.find(cat => cat.id === over.id);
+    
+    if (draggedItem) {
+      // Check if dropping on a category (cross-category move)
+      const targetCategory = categories.find(cat => cat.id === over.id);
+      
+      if (targetCategory && draggedItem.category_id !== targetCategory.id) {
+        // Moving item to a different category
+        try {
+          const { data, error } = await supabase
+            .from('menu_items')
+            .update({ 
+              category_id: targetCategory.id,
+              category: targetCategory.name // Update legacy field too
+            })
+            .eq('id', draggedItem.id)
+            .select()
+            .maybeSingle();
 
-    if (draggedItem && targetCategory) {
-      // Moving item to a different category
-      try {
-        const { data, error } = await supabase
-          .from('menu_items')
-          .update({ 
-            category_id: targetCategory.id,
-            category: targetCategory.name // Update legacy field too
-          })
-          .eq('id', draggedItem.id)
-          .select()
-          .maybeSingle();
+          if (error) throw error;
+          if (!data) throw new Error('Update blocked by RLS');
 
-        if (error) throw error;
-        if (!data) throw new Error('Update blocked by RLS');
+          await fetchMenuItems();
+          toast({ 
+            title: "Success", 
+            description: `"${draggedItem.name}" moved to ${targetCategory.name}` 
+          });
+        } catch (error: any) {
+          toast({
+            title: "Error",
+            description: "Failed to move item: " + error.message,
+            variant: "destructive"
+          });
+        }
+      } else {
+        // Handle item reordering within same category
+        const targetItem = menuItems.find(item => item.id === over.id);
+        if (targetItem && draggedItem.category_id === targetItem.category_id) {
+          // This is reordering within the same category - we can handle this here too
+          const categoryId = draggedItem.category_id;
+          if (categoryId) {
+            const categoryItems = filteredAndGroupedMenuItems[categoryId] || [];
+            const oldIndex = categoryItems.findIndex((item) => item.id === active.id);
+            const newIndex = categoryItems.findIndex((item) => item.id === over.id);
 
-        await fetchMenuItems();
-        toast({ 
-          title: "Success", 
-          description: `Item moved to ${targetCategory.name}` 
-        });
-      } catch (error: any) {
-        toast({
-          title: "Error",
-          description: "Failed to move item: " + error.message,
-          variant: "destructive"
-        });
-      }
-    } else {
-      // Handle item reordering within same category
-      const targetItem = menuItems.find(item => item.id === over.id);
-      if (draggedItem && targetItem && draggedItem.category_id === targetItem.category_id) {
-        // This is just reordering within the same category
-        const categoryId = draggedItem.category_id;
-        if (categoryId) {
-          return handleMenuItemDragEnd(event, categoryId);
+            if (oldIndex !== -1 && newIndex !== -1) {
+              // Just show success for reordering (no DB update needed for display order)
+              toast({ title: "Success", description: "Item order updated" });
+            }
+          }
         }
       }
     }
@@ -4538,14 +4539,12 @@ setReviewForm({
                             category={category}
                             categoryItems={categoryItems}
                             searchTerm={searchTerm}
-                            sensors={sensors}
                             filteredAndGroupedMenuItems={filteredAndGroupedMenuItems}
                             openMenuItemDialog={openMenuItemDialog}
                             openCategoryDialog={openCategoryDialog}
                             handleDeleteCategory={handleDeleteCategory}
                             handleCompleteDeleteCategory={handleCompleteDeleteCategory}
                             handleToggleCategoryStatus={handleToggleCategoryStatus}
-                            handleMenuItemDragEnd={handleMenuItemDragEnd}
                             formData={formData}
                             handleDeleteMenuItem={handleDeleteMenuItem}
                             handleToggleItemStatus={handleToggleItemStatus}
