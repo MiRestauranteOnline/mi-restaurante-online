@@ -2595,7 +2595,18 @@ setReviewForm({
                 <Label htmlFor="rappi">Rappi</Label>
                 <Input
                   id="rappi"
-                  value={formData.delivery.rappi}
+                  value={(() => {
+                    const delivery = formData.delivery as any;
+                    if (delivery?.rappi) {
+                      if (typeof delivery.rappi === 'object' && delivery.rappi.url) {
+                        return delivery.rappi.url;
+                      }
+                      if (typeof delivery.rappi === 'string') {
+                        return delivery.rappi;
+                      }
+                    }
+                    return '';
+                  })()}
                   onChange={(e) => setFormData({
                     ...formData, 
                     delivery: {
@@ -2609,7 +2620,26 @@ setReviewForm({
                 <Label htmlFor="pedidos_ya">PedidosYa</Label>
                 <Input
                   id="pedidos_ya"
-                  value={formData.delivery.pedidos_ya}
+                  value={(() => {
+                    const delivery = formData.delivery as any;
+                    if (delivery?.pedidos_ya) {
+                      if (typeof delivery.pedidos_ya === 'object' && delivery.pedidos_ya.url) {
+                        return delivery.pedidos_ya.url;
+                      }
+                      if (typeof delivery.pedidos_ya === 'string') {
+                        return delivery.pedidos_ya;
+                      }
+                    }
+                    if (delivery?.pedidosya) {
+                      if (typeof delivery.pedidosya === 'object' && delivery.pedidosya.url) {
+                        return delivery.pedidosya.url;
+                      }
+                      if (typeof delivery.pedidosya === 'string') {
+                        return delivery.pedidosya;
+                      }
+                    }
+                    return '';
+                  })()}
                   onChange={(e) => setFormData({
                     ...formData, 
                     delivery: {
@@ -2623,7 +2653,26 @@ setReviewForm({
                 <Label htmlFor="didi_food">DiDi Food</Label>
                 <Input
                   id="didi_food"
-                  value={formData.delivery.didi_food}
+                  value={(() => {
+                    const delivery = formData.delivery as any;
+                    if (delivery?.didi_food) {
+                      if (typeof delivery.didi_food === 'object' && delivery.didi_food.url) {
+                        return delivery.didi_food.url;
+                      }
+                      if (typeof delivery.didi_food === 'string') {
+                        return delivery.didi_food;
+                      }
+                    }
+                    if (delivery?.didi) {
+                      if (typeof delivery.didi === 'object' && delivery.didi.url) {
+                        return delivery.didi.url;
+                      }
+                      if (typeof delivery.didi === 'string') {
+                        return delivery.didi;
+                      }
+                    }
+                    return '';
+                  })()}
                   onChange={(e) => setFormData({
                     ...formData, 
                     delivery: {

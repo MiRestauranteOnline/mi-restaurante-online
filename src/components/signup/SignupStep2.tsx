@@ -230,23 +230,36 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                                 onChange={(e) => {
                                   let value = e.target.value.trim();
                                   
-                                  // Normalize the URL based on platform
-                                  if (value && platform) {
-                                    if (platform === "Facebook") {
-                                      if (!value.includes('facebook.com') && !value.startsWith('http')) {
-                                        value = `https://facebook.com/${value.replace('@', '')}`;
-                                      }
-                                    } else if (platform === "Instagram") {
-                                      if (!value.includes('instagram.com') && !value.startsWith('http')) {
-                                        value = `https://instagram.com/${value.replace('@', '')}`;
-                                      }
-                                    } else if (platform === "TikTok") {
-                                      if (!value.includes('tiktok.com') && !value.startsWith('http')) {
-                                        value = `https://tiktok.com/@${value.replace('@', '')}`;
-                                      }
-                                    } else if (platform === "X (Twitter)") {
-                                      if (!value.includes('x.com') && !value.includes('twitter.com') && !value.startsWith('http')) {
-                                        value = `https://x.com/${value.replace('@', '')}`;
+                                  // Validate and normalize the URL based on platform
+                                  if (platform && value) {
+                                    // First, check if it's already a valid URL for the platform
+                                    let isValidUrl = false;
+                                    let needsFormatting = true;
+                                    
+                                    if (platform === "Facebook" && (value.includes('facebook.com') || value.includes('fb.com'))) {
+                                      isValidUrl = true;
+                                      needsFormatting = false;
+                                    } else if (platform === "Instagram" && value.includes('instagram.com')) {
+                                      isValidUrl = true;
+                                      needsFormatting = false;
+                                    } else if (platform === "TikTok" && value.includes('tiktok.com')) {
+                                      isValidUrl = true;
+                                      needsFormatting = false;
+                                    } else if (platform === "X (Twitter)" && (value.includes('x.com') || value.includes('twitter.com'))) {
+                                      isValidUrl = true;
+                                      needsFormatting = false;
+                                    }
+                                    
+                                    // Only format if it's not already a valid URL and doesn't start with http
+                                    if (needsFormatting && !value.startsWith('http')) {
+                                      if (platform === "Facebook") {
+                                        value = `https://facebook.com/${value.replace('@', '').replace(/^\/+/, '')}`;
+                                      } else if (platform === "Instagram") {
+                                        value = `https://instagram.com/${value.replace('@', '').replace(/^\/+/, '')}`;
+                                      } else if (platform === "TikTok") {
+                                        value = `https://tiktok.com/@${value.replace('@', '').replace(/^\/+/, '')}`;
+                                      } else if (platform === "X (Twitter)") {
+                                        value = `https://x.com/${value.replace('@', '').replace(/^\/+/, '')}`;
                                       }
                                     }
                                   }

@@ -153,7 +153,7 @@ async function generateBrandingChoices(briefing: string, restaurantName: string,
           { role: 'user', content: prompt }
         ],
         max_tokens: 500,
-        temperature: 0.7,
+        temperature: 0.9,
       }),
     });
 
