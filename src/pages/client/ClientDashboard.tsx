@@ -182,7 +182,11 @@ export default function ClientDashboard() {
         ...settings,
         other_customizations: client?.other_customizations || {},
         delivery_info: settings?.delivery_info || {},
-        whatsapp_messages: settings?.whatsapp_messages || {}
+        whatsapp_messages: settings?.whatsapp_messages || {},
+        opening_hours: client?.opening_hours || {},
+        social_media_links: client?.social_media_links || {},
+        delivery: client?.delivery || {},
+        brand_colors: client?.brand_colors || {}
       });
       setMenuCategories(categories || []);
       setMenuItems(items || []);
@@ -345,7 +349,73 @@ export default function ClientDashboard() {
                   value={formData.address || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                   placeholder="Ingresa la dirección completa de tu restaurante"
+                  rows={3}
                 />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="hide_whatsapp_button_menu">Ocultar Botón WhatsApp del Menú</Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="hide_whatsapp_button_menu"
+                      checked={formData.hide_whatsapp_button_menu || false}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, hide_whatsapp_button_menu: checked }))}
+                    />
+                    <Label htmlFor="hide_whatsapp_button_menu" className="text-sm text-muted-foreground">
+                      {formData.hide_whatsapp_button_menu ? 'Oculto' : 'Visible'}
+                    </Label>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="hide_phone_button_menu">Ocultar Botón Teléfono del Menú</Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="hide_phone_button_menu"
+                      checked={formData.hide_phone_button_menu || false}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, hide_phone_button_menu: checked }))}
+                    />
+                    <Label htmlFor="hide_phone_button_menu" className="text-sm text-muted-foreground">
+                      {formData.hide_phone_button_menu ? 'Oculto' : 'Visible'}
+                    </Label>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="show_whatsapp_popup">Mostrar Popup de WhatsApp</Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="show_whatsapp_popup"
+                      checked={formData.show_whatsapp_popup || false}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, show_whatsapp_popup: checked }))}
+                    />
+                    <Label htmlFor="show_whatsapp_popup" className="text-sm text-muted-foreground">
+                      {formData.show_whatsapp_popup ? 'Habilitado' : 'Deshabilitado'}
+                    </Label>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <Label htmlFor="custom_cta_button_text">Texto del Botón CTA Personalizado</Label>
+                  <Input
+                    id="custom_cta_button_text"
+                    value={formData.custom_cta_button_text || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, custom_cta_button_text: e.target.value }))}
+                    placeholder="Reservar Mesa"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="custom_cta_button_link">Enlace del Botón CTA Personalizado</Label>
+                  <Input
+                    id="custom_cta_button_link"
+                    value={formData.custom_cta_button_link || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, custom_cta_button_link: e.target.value }))}
+                    placeholder="#contact o https://example.com"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -357,8 +427,75 @@ export default function ClientDashboard() {
               <CardTitle>Horarios de Atención</CardTitle>
               <CardDescription>Define los horarios de tu restaurante</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Configuración de horarios próximamente...</p>
+            <CardContent className="space-y-4">
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
+                const hours = formData.opening_hours?.[day] || { closed: true, open: '09:00', close: '17:00' };
+                const dayNames = {
+                  monday: 'Lunes',
+                  tuesday: 'Martes', 
+                  wednesday: 'Miércoles',
+                  thursday: 'Jueves',
+                  friday: 'Viernes',
+                  saturday: 'Sábado',
+                  sunday: 'Domingo'
+                };
+                return (
+                <div key={day} className="flex items-center gap-4 p-4 border rounded-lg">
+                  <div className="w-24">
+                    <Label className="text-sm font-medium">{dayNames[day as keyof typeof dayNames]}</Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={!hours.closed}
+                      onCheckedChange={(checked) => setFormData(prev => ({
+                        ...prev,
+                        opening_hours: {
+                          ...prev.opening_hours,
+                          [day]: { ...hours, closed: !checked }
+                        }
+                      }))}
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      {hours.closed ? 'Cerrado' : 'Abierto'}
+                    </span>
+                  </div>
+                  {!hours.closed && (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm">Abre:</Label>
+                        <Input
+                          type="time"
+                          value={hours.open}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            opening_hours: {
+                              ...prev.opening_hours,
+                              [day]: { ...hours, open: e.target.value }
+                            }
+                          }))}
+                          className="w-32"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm">Cierra:</Label>
+                        <Input
+                          type="time"
+                          value={hours.close}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            opening_hours: {
+                              ...prev.opening_hours,
+                              [day]: { ...hours, close: e.target.value }
+                            }
+                          }))}
+                          className="w-32"
+                        />
+                      </div>
+                    </>
+                  )}
+                 </div>
+                );
+              })}
             </CardContent>
           </Card>
         </TabsContent>
@@ -369,8 +506,69 @@ export default function ClientDashboard() {
               <CardTitle>Redes Sociales</CardTitle>
               <CardDescription>Configura los enlaces a tus redes sociales</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Configuración de redes sociales próximamente...</p>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="facebook">Facebook</Label>
+                  <Input
+                    id="facebook"
+                    value={formData.social_media_links?.facebook || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev, 
+                      social_media_links: {
+                        ...prev.social_media_links,
+                        facebook: e.target.value
+                      }
+                    }))}
+                    placeholder="https://facebook.com/tu-restaurante"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="instagram">Instagram</Label>
+                  <Input
+                    id="instagram"
+                    value={formData.social_media_links?.instagram || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev, 
+                      social_media_links: {
+                        ...prev.social_media_links,
+                        instagram: e.target.value
+                      }
+                    }))}
+                    placeholder="https://instagram.com/tu-restaurante"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="x">X (Twitter)</Label>
+                  <Input
+                    id="x"
+                    value={formData.social_media_links?.x || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev, 
+                      social_media_links: {
+                        ...prev.social_media_links,
+                        x: e.target.value
+                      }
+                    }))}
+                    placeholder="https://x.com/tu-restaurante"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="tiktok">TikTok</Label>
+                  <Input
+                    id="tiktok"
+                    value={formData.social_media_links?.tiktok || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev, 
+                      social_media_links: {
+                        ...prev.social_media_links,
+                        tiktok: e.target.value
+                      }
+                    }))}
+                    placeholder="https://tiktok.com/@tu-restaurante"
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -381,8 +579,52 @@ export default function ClientDashboard() {
               <CardTitle>Configuración de Delivery</CardTitle>
               <CardDescription>Gestiona la información de entrega a domicilio</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Configuración de delivery próximamente...</p>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="rappi">Rappi</Label>
+                <Input
+                  id="rappi"
+                  value={formData.delivery?.rappi || ''}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev, 
+                    delivery: {
+                      ...prev.delivery,
+                      rappi: e.target.value
+                    }
+                  }))}
+                  placeholder="https://rappi.com/tu-restaurante"
+                />
+              </div>
+              <div>
+                <Label htmlFor="pedidos_ya">PedidosYa</Label>
+                <Input
+                  id="pedidos_ya"
+                  value={formData.delivery?.pedidos_ya || ''}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev, 
+                    delivery: {
+                      ...prev.delivery,
+                      pedidos_ya: e.target.value
+                    }
+                  }))}
+                  placeholder="https://pedidosya.com/tu-restaurante"
+                />
+              </div>
+              <div>
+                <Label htmlFor="didi_food">DiDi Food</Label>
+                <Input
+                  id="didi_food"
+                  value={formData.delivery?.didi_food || ''}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev, 
+                    delivery: {
+                      ...prev.delivery,
+                      didi_food: e.target.value
+                    }
+                  }))}
+                  placeholder="https://didifood.com/tu-restaurante"
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -399,13 +641,32 @@ export default function ClientDashboard() {
                 <p className="text-muted-foreground mb-4">
                   Tienes {menuCategories.length} categorías y {menuItems.length} elementos en tu menú
                 </p>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    La gestión completa del menú estará disponible próximamente.
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Por ahora, contacta a soporte para hacer cambios en tu menú.
-                  </p>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-medium mb-2">Categorías Activas</h4>
+                      <p className="text-2xl font-bold text-primary">{menuCategories.filter(c => c.is_active).length}</p>
+                      <p className="text-sm text-muted-foreground">de {menuCategories.length} total</p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-medium mb-2">Elementos del Menú</h4>
+                      <p className="text-2xl font-bold text-primary">{menuItems.filter(i => i.is_active).length}</p>
+                      <p className="text-sm text-muted-foreground">de {menuItems.length} total</p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-medium mb-2">En Página Principal</h4>
+                      <p className="text-2xl font-bold text-primary">{menuItems.filter(i => i.show_on_homepage).length}</p>
+                      <p className="text-sm text-muted-foreground">elementos destacados</p>
+                    </div>
+                  </div>
+                  <div className="text-center pt-4 border-t">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      La gestión completa del menú estará disponible próximamente.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Por ahora, contacta a soporte para hacer cambios en tu menú.
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -424,8 +685,28 @@ export default function ClientDashboard() {
                 <p className="text-muted-foreground mb-4">
                   Tienes {teamMembers.length} miembros en tu equipo
                 </p>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
+                {teamMembers.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                    {teamMembers.filter(m => m.is_active).slice(0, 6).map((member) => (
+                      <div key={member.id} className="p-4 border rounded-lg text-left">
+                        <div className="flex items-center gap-3 mb-2">
+                          {member.image_url && (
+                            <img src={member.image_url} alt={member.name} className="w-8 h-8 rounded-full object-cover" />
+                          )}
+                          <div>
+                            <h4 className="font-medium text-sm">{member.name}</h4>
+                            <p className="text-xs text-muted-foreground">{member.title}</p>
+                          </div>
+                        </div>
+                        {member.bio && (
+                          <p className="text-xs text-muted-foreground truncate">{member.bio}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="text-center pt-4 border-t mt-6">
+                  <p className="text-sm text-muted-foreground mb-4">
                     La gestión del equipo estará disponible próximamente.
                   </p>
                   <p className="text-sm text-muted-foreground">
@@ -449,8 +730,27 @@ export default function ClientDashboard() {
                 <p className="text-muted-foreground mb-4">
                   Tienes {reviews.length} reseñas publicadas
                 </p>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
+                {reviews.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    {reviews.filter(r => r.is_active).slice(0, 4).map((review) => (
+                      <div key={review.id} className="p-4 border rounded-lg text-left">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium text-sm">{review.reviewer_name}</h4>
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i} className={`text-xs ${i < review.star_rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{review.review_text}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="text-center pt-4 border-t mt-6">
+                  <p className="text-sm text-muted-foreground mb-4">
                     La gestión de reseñas estará disponible próximamente.
                   </p>
                   <p className="text-sm text-muted-foreground">
