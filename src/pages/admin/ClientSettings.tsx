@@ -2269,6 +2269,7 @@ setReviewForm({
           {showTab('menu') && <TabsTrigger value="menu">Menu Items</TabsTrigger>}
           {showTab('team') && <TabsTrigger value="team">Team Members</TabsTrigger>}
           {showTab('reviews') && <TabsTrigger value="reviews">Reviews</TabsTrigger>}
+          {userRole === 'admin' && <TabsTrigger value="setup-prompt">Setup Prompt</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="basic">
@@ -4821,6 +4822,99 @@ setReviewForm({
                 <li>Genera imágenes profesionales que coinciden con tu marca</li>
                 <li>Todo el contenido se crea en español y se optimiza para Lima, Perú</li>
               </ul>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Setup Prompt Tab */}
+      <TabsContent value="setup-prompt">
+        <Card>
+          <CardHeader>
+            <CardTitle>Setup Prompt for New Projects</CardTitle>
+            <CardDescription>
+              Instructions for setting up a new Lovable project based on this client
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Instructions */}
+            <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Setup Instructions:</h4>
+              <p className="text-blue-800 dark:text-blue-200 text-sm leading-relaxed">
+                To add a new project, copy the template you want to use for the client by opening the project → in the top left corner go to the lovable icon → settings → scroll down to the button "remix" to remix the project. Do not select the checkbox.
+              </p>
+            </div>
+
+            {/* Prompt Field */}
+            <div className="space-y-2">
+              <Label htmlFor="setup-prompt">Prompt for Developer</Label>
+              <Textarea
+                id="setup-prompt"
+                readOnly
+                value={`IMPORTANT: Only change the hardcoded domain identifier, do not make any other changes to the code.
+
+Change ALL hardcoded domain identifiers from 'demos' to '${formData.subdomain}' in the following locations:
+
+1. In src/hooks/useClientData.ts (2 locations):
+   - Line ~456: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
+   - Line ~649: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
+
+2. In src/utils/fastLoadData.ts:
+   - Line ~47: return 'demos'; → return '${formData.subdomain}';
+
+3. In src/utils/cachedContent.ts:
+   - Line ~13: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
+
+4. In src/utils/triggerFastLoad.ts (3 locations):
+   - Line ~4: (domain: string = 'demos') → (domain: string = '${formData.subdomain}')
+   - Line ~29: 'fast-load/demos.json' → 'fast-load/${formData.subdomain}.json'
+   - Line ~33: triggerFastLoadGeneration('demos') → triggerFastLoadGeneration('${formData.subdomain}')
+
+5. In src/main.tsx, update the clearOldDomainCache function to clear old 'demos' cache:
+const clearOldDomainCache = () => { try { // Clear any 'demos' domain cache localStorage.removeItem('fast_load_data_demos'); localStorage.removeItem('client_styles_demos'); console.log('🧹 Cleared old domain cache entries'); } catch (error) { console.warn('Failed to clear old cache:', error); } };
+
+This changes the default domain from 'demos' to '${formData.subdomain}' across all domain detection functions and clears old cached data to prevent conflicts.`}
+                className="min-h-[400px] font-mono text-sm"
+              />
+            </div>
+
+            {/* Copy Button */}
+            <div className="flex justify-end">
+              <Button
+                onClick={() => {
+                  const promptText = `IMPORTANT: Only change the hardcoded domain identifier, do not make any other changes to the code.
+
+Change ALL hardcoded domain identifiers from 'demos' to '${formData.subdomain}' in the following locations:
+
+1. In src/hooks/useClientData.ts (2 locations):
+   - Line ~456: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
+   - Line ~649: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
+
+2. In src/utils/fastLoadData.ts:
+   - Line ~47: return 'demos'; → return '${formData.subdomain}';
+
+3. In src/utils/cachedContent.ts:
+   - Line ~13: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
+
+4. In src/utils/triggerFastLoad.ts (3 locations):
+   - Line ~4: (domain: string = 'demos') → (domain: string = '${formData.subdomain}')
+   - Line ~29: 'fast-load/demos.json' → 'fast-load/${formData.subdomain}.json'
+   - Line ~33: triggerFastLoadGeneration('demos') → triggerFastLoadGeneration('${formData.subdomain}')
+
+5. In src/main.tsx, update the clearOldDomainCache function to clear old 'demos' cache:
+const clearOldDomainCache = () => { try { // Clear any 'demos' domain cache localStorage.removeItem('fast_load_data_demos'); localStorage.removeItem('client_styles_demos'); console.log('🧹 Cleared old domain cache entries'); } catch (error) { console.warn('Failed to clear old cache:', error); } };
+
+This changes the default domain from 'demos' to '${formData.subdomain}' across all domain detection functions and clears old cached data to prevent conflicts.`;
+                  navigator.clipboard.writeText(promptText);
+                  toast({
+                    title: "Success",
+                    description: "Setup prompt copied to clipboard",
+                  });
+                }}
+                variant="outline"
+              >
+                Copy to Clipboard
+              </Button>
             </div>
           </CardContent>
         </Card>
