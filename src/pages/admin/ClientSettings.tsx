@@ -4840,9 +4840,14 @@ setReviewForm({
             {/* Instructions */}
             <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
               <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Setup Instructions:</h4>
-              <p className="text-blue-800 dark:text-blue-200 text-sm leading-relaxed">
-                To add a new project, copy the template you want to use for the client by opening the project → in the top left corner go to the lovable icon → settings → scroll down to the button "remix" to remix the project. Do not select the checkbox.
-              </p>
+              <div className="text-blue-800 dark:text-blue-200 text-sm leading-relaxed space-y-2">
+                <p>
+                  <strong>1.</strong> To add a new project, copy the template you want to use for the client by opening the project → in the top left corner go to the lovable icon → settings → scroll down to the button "remix" to remix the project. Do not select the checkbox.
+                </p>
+                <p>
+                  <strong>2.</strong> In the top left corner go to the lovable icon → rename project → rename the project to {formData.subdomain}.
+                </p>
+              </div>
             </div>
 
             {/* Prompt Field */}
