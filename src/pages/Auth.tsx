@@ -87,11 +87,26 @@ export default function Auth() {
       return;
     }
 
+    // Helper: redirect based on role
+    const redirectByRole = async (session: any) => {
+      try {
+        const { data, error } = await supabase.rpc('get_user_role', { _user_id: session.user.id });
+        const role = (data as string) || null;
+        if (!error && role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      } catch {
+        navigate('/dashboard');
+      }
+    };
+
     // Check if user is already logged in
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session && !isRecoveryMode) {
-        navigate('/dashboard');
+        redirectByRole(session);
       }
     };
 
@@ -100,7 +115,8 @@ export default function Auth() {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && !isRecoveryMode) {
-        navigate('/dashboard');
+        // Avoid Supabase calls directly in the callback
+        setTimeout(() => redirectByRole(session), 0);
       }
     });
 
