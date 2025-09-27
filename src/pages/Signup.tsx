@@ -13,6 +13,8 @@ export interface SignupData {
   subdomain: string;
   phone: string;
   paymentId?: string;
+  hasCustomDomain?: boolean;
+  customDomain?: string;
 }
 
 export interface WebsiteRequirements {
@@ -32,6 +34,8 @@ const Signup = () => {
     restaurantName: "",
     subdomain: "",
     phone: "",
+    hasCustomDomain: false,
+    customDomain: "",
   });
   const [websiteRequirements, setWebsiteRequirements] = useState<WebsiteRequirements>({
     businessType: "",

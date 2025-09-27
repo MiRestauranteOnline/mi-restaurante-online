@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, CreditCard, Shield, Clock } from "lucide-react";
@@ -20,6 +21,8 @@ const signupSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
   phone: z.string().min(10, "Número de teléfono inválido"),
+  hasCustomDomain: z.boolean().optional(),
+  customDomain: z.string().optional(),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
@@ -43,6 +46,8 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
       email: initialData.email,
       password: initialData.password,
       phone: initialData.phone,
+      hasCustomDomain: initialData.hasCustomDomain || false,
+      customDomain: initialData.customDomain || "",
     }
   });
 
@@ -54,27 +59,40 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
       .substring(0, 20);
   };
 
+  const cleanDomain = (domain: string) => {
+    return domain
+      .toLowerCase()
+      .replace(/^https?:\/\//, '') // Remove protocol
+      .replace(/^www\./, '') // Remove www
+      .replace(/\/$/, '') // Remove trailing slash
+      .trim();
+  };
+
   const onSubmit = async (data: SignupFormData) => {
     setIsProcessingPayment(true);
     
     try {
-      // Initialize Rebill payment (mock implementation - replace with actual Rebill integration)
-      await initiateRebillPayment(data);
+      // For now, skip payment and go directly to next step
+      // TODO: Re-enable when Rebill account is verified
+      // await initiateRebillPayment(data);
       
-      // If payment successful, proceed to next step
-      onComplete({
+      // Clean custom domain if provided
+      const cleanedData = {
         ...data,
-        paymentId: "mock-payment-id", // This would come from Rebill
-      });
+        customDomain: data.hasCustomDomain && data.customDomain ? cleanDomain(data.customDomain) : "",
+        paymentId: "test-payment-id", // Mock payment ID
+      };
+      
+      onComplete(cleanedData);
       
       toast({
-        title: "Pago procesado exitosamente",
+        title: "Cuenta creada exitosamente",
         description: "Ahora completa los requisitos de tu sitio web",
       });
     } catch (error) {
       toast({
-        title: "Error en el pago",
-        description: "Hubo un problema procesando tu pago. Inténtalo de nuevo.",
+        title: "Error en el proceso",
+        description: "Hubo un problema. Inténtalo de nuevo.",
         variant: "destructive",
       });
     } finally {
@@ -220,7 +238,7 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
                       {...field}
                     />
                     <span className="flex items-center px-3 text-sm text-muted-foreground bg-muted border border-l-0 rounded-r-md">
-                      .mirestauranteonline.com
+                      .mirestaurante.online
                     </span>
                   </div>
                 </FormControl>
@@ -283,6 +301,49 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="hasCustomDomain"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>
+                    Tengo mi dominio personalizado
+                  </FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+
+          {form.watch("hasCustomDomain") && (
+            <FormField
+              control={form.control}
+              name="customDomain"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dominio Personalizado</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="mirestaurante.com"
+                      {...field}
+                      onChange={(e) => {
+                        const cleaned = cleanDomain(e.target.value);
+                        field.onChange(cleaned);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
           <Button 
             type="submit" 
             className="w-full" 
@@ -297,7 +358,7 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
             ) : (
               <>
                 <CreditCard className="w-4 h-4 mr-2" />
-                Suscribirse por S/{selectedPlan === 'basic' ? '297' : '497'}/mes
+                Crear Cuenta
               </>
             )}
           </Button>
