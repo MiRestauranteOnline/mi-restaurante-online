@@ -1504,6 +1504,10 @@ const [reviewForm, setReviewForm] = useState({
             // WhatsApp Message Fields
             whatsapp_reservation_message: formData.whatsapp_reservation_message,
             whatsapp_general_message: formData.whatsapp_general_message,
+            // Briefing fields
+            content_briefing: formData.content_briefing,
+            style_briefing: formData.style_briefing,
+            contact_delivery_briefing: formData.contact_delivery_briefing,
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'client_id'

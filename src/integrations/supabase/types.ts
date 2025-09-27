@@ -31,6 +31,7 @@ export type Database = {
           about_team_section_title_second_line: string | null
           about_us_label: string | null
           client_id: string
+          contact_delivery_briefing: string | null
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
           contact_page_hero_title: string | null
@@ -39,6 +40,7 @@ export type Database = {
           contact_reservation_description: string | null
           contact_reservation_title: string | null
           contact_us_label: string | null
+          content_briefing: string | null
           created_at: string
           culinary_masterpieces_label: string | null
           downloadable_menu_url: string | null
@@ -131,6 +133,7 @@ export type Database = {
           stats_item3_icon: string | null
           stats_item3_label: string | null
           stats_item3_number: string | null
+          style_briefing: string | null
           testimonials_label: string | null
           updated_at: string
           whatsapp_general_message: string | null
@@ -152,6 +155,7 @@ export type Database = {
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
           client_id: string
+          contact_delivery_briefing?: string | null
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
@@ -160,6 +164,7 @@ export type Database = {
           contact_reservation_description?: string | null
           contact_reservation_title?: string | null
           contact_us_label?: string | null
+          content_briefing?: string | null
           created_at?: string
           culinary_masterpieces_label?: string | null
           downloadable_menu_url?: string | null
@@ -252,6 +257,7 @@ export type Database = {
           stats_item3_icon?: string | null
           stats_item3_label?: string | null
           stats_item3_number?: string | null
+          style_briefing?: string | null
           testimonials_label?: string | null
           updated_at?: string
           whatsapp_general_message?: string | null
@@ -273,6 +279,7 @@ export type Database = {
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
           client_id?: string
+          contact_delivery_briefing?: string | null
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
@@ -281,6 +288,7 @@ export type Database = {
           contact_reservation_description?: string | null
           contact_reservation_title?: string | null
           contact_us_label?: string | null
+          content_briefing?: string | null
           created_at?: string
           culinary_masterpieces_label?: string | null
           downloadable_menu_url?: string | null
@@ -373,6 +381,7 @@ export type Database = {
           stats_item3_icon?: string | null
           stats_item3_label?: string | null
           stats_item3_number?: string | null
+          style_briefing?: string | null
           testimonials_label?: string | null
           updated_at?: string
           whatsapp_general_message?: string | null
