@@ -603,11 +603,21 @@ function SortableReview({ review, onEdit, onDelete }: {
 }
 
 export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[] } = {}) {
-  console.log('ClientSettings component rendered'); // Debug log
   const { clientId } = useParams<{ clientId: string }>();
   const outletCtx = useOutletContext<{ selectedClientId?: string }>();
   const contextClientId = outletCtx?.selectedClientId;
   const navigate = useNavigate();
+  
+  // Always use contextClientId if available, as it represents the admin's selection
+  const effectiveClientId = contextClientId || clientId;
+  
+  console.log('ClientSettings Debug:', {
+    clientId,
+    contextClientId, 
+    effectiveClientId,
+    outletCtx
+  });
+  
   useEffect(() => {
     if (contextClientId && contextClientId !== clientId) {
       // Keep URL and data in sync with selected client from admin layout
@@ -913,8 +923,8 @@ const [reviewForm, setReviewForm] = useState({
   });
 
   useEffect(() => {
-    const effectiveClientId = contextClientId || clientId;
     if (effectiveClientId) {
+      console.log('Fetching data for client:', effectiveClientId);
       fetchClient();
       fetchClientSettings();
       fetchAdminContent();
@@ -924,10 +934,9 @@ const [reviewForm, setReviewForm] = useState({
       fetchReviews();
       fetchUserRole();
     }
-  }, [clientId, contextClientId]);
+  }, [effectiveClientId]);
 
   const fetchClient = async () => {
-    const effectiveClientId = contextClientId || clientId;
     if (!effectiveClientId) return;
     
     try {
@@ -1017,7 +1026,6 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const fetchClientSettings = async () => {
-    const effectiveClientId = contextClientId || clientId;
     if (!effectiveClientId) return;
     
     try {
@@ -1050,7 +1058,7 @@ const [reviewForm, setReviewForm] = useState({
         const { data: newSettings, error: createError } = await supabase
           .from('client_settings')
           .upsert({
-            client_id: clientId,
+            client_id: effectiveClientId,
             primary_color: '#FFD700',
             header_background_enabled: false,
             header_background_style: 'dark',
@@ -1081,7 +1089,6 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const fetchAdminContent = async () => {
-    const effectiveClientId = contextClientId || clientId;
     if (!effectiveClientId) return;
     
     try {
@@ -1259,11 +1266,13 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const fetchCategories = async () => {
+    if (!effectiveClientId) return;
+    
     try {
       const { data, error } = await supabase
         .from('menu_categories')
         .select('*')
-        .eq('client_id', clientId)
+        .eq('client_id', effectiveClientId)
         .order('display_order');
 
       if (error) throw error;
@@ -1278,11 +1287,13 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const fetchMenuItems = async () => {
+    if (!effectiveClientId) return;
+    
     try {
       const { data, error } = await supabase
         .from('menu_items')
         .select('*')
-        .eq('client_id', clientId)
+        .eq('client_id', effectiveClientId)
         .order('name');
 
       if (error) throw error;
@@ -1297,11 +1308,13 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const fetchTeamMembers = async () => {
+    if (!effectiveClientId) return;
+    
     try {
       const { data, error } = await supabase
         .from('team_members')
         .select('*')
-        .eq('client_id', clientId)
+        .eq('client_id', effectiveClientId)
         .order('display_order');
 
       if (error) throw error;
@@ -1316,11 +1329,13 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const fetchReviews = async () => {
+    if (!effectiveClientId) return;
+    
     try {
       const { data, error } = await supabase
         .from('reviews')
         .select('*')
-        .eq('client_id', clientId)
+        .eq('client_id', effectiveClientId)
         .order('display_order');
 
       if (error) throw error;
@@ -1394,7 +1409,7 @@ const [reviewForm, setReviewForm] = useState({
       const { error: settingsError } = await supabase
         .from('client_settings')
         .upsert({
-          client_id: clientId,
+          client_id: effectiveClientId,
           primary_color: formData.primary_color,
           header_background_enabled: formData.header_background_enabled,
           header_background_style: formData.header_background_style,
@@ -1428,7 +1443,7 @@ const [reviewForm, setReviewForm] = useState({
         const { error: adminContentError } = await (supabase as any)
           .from('admin_content')
           .upsert({
-            client_id: clientId,
+            client_id: effectiveClientId,
             // Two-part titles
             homepage_hero_title_first_line: formData.homepage_hero_title_first_line,
             homepage_hero_title_second_line: formData.homepage_hero_title_second_line,
@@ -1617,7 +1632,7 @@ const [reviewForm, setReviewForm] = useState({
         const { data, error } = await supabase
           .from('menu_categories')
           .insert({
-            client_id: clientId,
+            client_id: effectiveClientId,
             name: categoryForm.name,
             display_order: categoryForm.display_order + 1  // Use 1-based indexing like regular system
           })
@@ -1698,7 +1713,7 @@ const [reviewForm, setReviewForm] = useState({
         const { data, error } = await supabase
           .from('menu_items')
           .insert({
-            client_id: clientId,
+            client_id: effectiveClientId,
             name: menuItemForm.name,
             description: menuItemForm.description,
             price: menuItemForm.price,
@@ -1778,7 +1793,7 @@ const [reviewForm, setReviewForm] = useState({
         const { data, error } = await supabase
           .from('team_members')
           .insert({
-            client_id: clientId,
+            client_id: effectiveClientId,
             name: teamMemberForm.name,
             title: teamMemberForm.title,
             bio: teamMemberForm.bio,
@@ -1855,7 +1870,7 @@ const [reviewForm, setReviewForm] = useState({
         const { data, error } = await supabase
           .from('reviews')
           .insert({
-            client_id: clientId,
+            client_id: effectiveClientId,
             reviewer_name: reviewForm.reviewer_name,
             review_text: reviewForm.review_text,
             star_rating: reviewForm.star_rating,
