@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.optimize-leonardo-image]
 verify_jwt = false
+
+[functions.rebill-plans]
+verify_jwt = false
