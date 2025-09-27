@@ -1,1 +1,4 @@
 project_id = "ptzcetvcccnojdbzzlyt"
+
+[functions.rebill-plans]
+verify_jwt = false
