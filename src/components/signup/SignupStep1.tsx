@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -48,6 +48,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
   const [paymentMethod, setPaymentMethod] = useState<'rebill' | 'demo'>('demo');
   const [isCheckingSubdomain, setIsCheckingSubdomain] = useState(false);
   const [subdomainError, setSubdomainError] = useState<string>("");
+  const [subdomainCheckTimeout, setSubdomainCheckTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const { toast } = useToast();
 
@@ -64,6 +65,14 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       referralSource: initialData.referralSource || "",
     }
   });
+
+  // Check subdomain on initial load if there's already a value
+  useEffect(() => {
+    const currentSubdomain = form.getValues('subdomain');
+    if (currentSubdomain && currentSubdomain.length >= 3) {
+      checkSubdomainAvailability(currentSubdomain);
+    }
+  }, []);
 
   const generateSubdomain = (restaurantName: string) => {
     return restaurantName
@@ -88,15 +97,18 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       return;
     }
 
+    console.log('Checking subdomain availability for:', subdomain);
     setIsCheckingSubdomain(true);
     setSubdomainError("");
 
     try {
       const { data, error } = await supabase
         .from('clients')
-        .select('id')
+        .select('id, subdomain')
         .eq('subdomain', subdomain.toLowerCase())
         .maybeSingle();
+
+      console.log('Subdomain check result:', { data, error });
 
       if (error && error.code !== 'PGRST116') {
         console.error('Error checking subdomain:', error);
@@ -105,8 +117,10 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       }
 
       if (data) {
+        console.log('Subdomain is taken:', data.subdomain);
         setSubdomainError("Este subdominio ya está en uso");
       } else {
+        console.log('Subdomain is available');
         setSubdomainError("");
       }
     } catch (error) {
@@ -229,13 +243,25 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                       placeholder="mi-restaurante"
                       {...field}
                       onChange={(e) => {
+                        const newValue = e.target.value;
                         field.onChange(e);
-                        const subdomain = e.target.value;
-                        if (subdomain && subdomain.length >= 3) {
-                          // Debounce the check
-                          setTimeout(() => checkSubdomainAvailability(subdomain), 500);
+                        
+                        console.log('Subdomain input changed to:', newValue);
+                        
+                        // Clear any existing timeout
+                        if (subdomainCheckTimeout) {
+                          clearTimeout(subdomainCheckTimeout);
+                        }
+                        
+                        if (newValue && newValue.length >= 3) {
+                          // Debounce the check with 1 second delay
+                          const timeoutId = setTimeout(() => {
+                            checkSubdomainAvailability(newValue);
+                          }, 1000);
+                          setSubdomainCheckTimeout(timeoutId);
                         } else {
                           setSubdomainError("");
+                          setIsCheckingSubdomain(false);
                         }
                       }}
                       className={subdomainError ? "border-destructive" : ""}
