@@ -1,10 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SignupStep1 } from "@/components/signup/SignupStep1";
 import { SignupStep2 } from "@/components/signup/SignupStep2";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface SignupData {
   email: string;
@@ -64,10 +65,45 @@ const Signup = () => {
     brandInfo: "",
     websiteStyle: "",
   });
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  const handleStep1Complete = (data: SignupData) => {
-    setSignupData(data);
-    setCurrentStep(2);
+  const handleStep1Complete = async (formData: SignupData) => {
+    setSignupData(formData);
+    setIsProcessingPayment(true);
+    
+    try {
+      // Create payment with Rebill
+      const { data, error } = await supabase.functions.invoke('create-rebill-payment', {
+        body: {
+          amount: 4900, // $49.00
+          currency: 'USD',
+          customer: {
+            email: formData.email,
+            name: formData.restaurantName,
+            phone: formData.phone,
+          },
+          signup_data: JSON.stringify(formData),
+          return_url: `${window.location.origin}/registro?step=payment-success`,
+          webhook_url: `https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/rebill-webhook`,
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      if (data?.success && data?.payment_url) {
+        // Redirect to Rebill payment page
+        window.location.href = data.payment_url;
+      } else {
+        throw new Error(data?.error || 'Payment creation failed');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      setIsProcessingPayment(false);
+      // Show error to user
+      alert('Error al procesar el pago. Por favor intenta de nuevo.');
+    }
   };
 
   const handleStep2Complete = (requirements: WebsiteRequirements) => {
@@ -78,6 +114,16 @@ const Signup = () => {
   const handleBackToStep1 = () => {
     setCurrentStep(1);
   };
+
+  // Check for payment success from URL parameters
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const step = urlParams.get('step');
+    
+    if (step === 'payment-success') {
+      setCurrentStep(2);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -128,6 +174,7 @@ const Signup = () => {
                 <SignupStep1 
                   onComplete={handleStep1Complete}
                   initialData={signupData}
+                  isProcessingPayment={isProcessingPayment}
                 />
               )}
               

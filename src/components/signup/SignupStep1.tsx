@@ -30,13 +30,13 @@ const signupSchema = z.object({
 type SignupFormData = z.infer<typeof signupSchema>;
 
 interface SignupStep1Props {
-  onComplete: (data: SignupData) => void;
+  onComplete: (data: SignupData) => Promise<void>;
   initialData: SignupData;
+  isProcessingPayment?: boolean;
 }
 
-export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
+export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = false }: SignupStep1Props) => {
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const { toast } = useToast();
 
@@ -72,25 +72,18 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
   };
 
   const onSubmit = async (data: SignupFormData) => {
-    setIsProcessingPayment(true);
-    
     try {
-      // For now, skip payment and go directly to next step
-      // TODO: Re-enable when Rebill account is verified
-      // await initiateRebillPayment(data);
-      
       // Clean custom domain if provided
       const cleanedData = {
         ...data,
         customDomain: data.hasCustomDomain && data.customDomain ? cleanDomain(data.customDomain) : "",
-        paymentId: "test-payment-id", // Mock payment ID
       };
       
-      onComplete(cleanedData);
+      await onComplete(cleanedData);
       
       toast({
-        title: "Cuenta creada exitosamente",
-        description: "Ahora completa los requisitos de tu sitio web",
+        title: "Información guardada",
+        description: "Redirigiendo al sistema de pago...",
       });
     } catch (error) {
       toast({
@@ -98,8 +91,6 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
         description: "Hubo un problema. Inténtalo de nuevo.",
         variant: "destructive",
       });
-    } finally {
-      setIsProcessingPayment(false);
     }
   };
 

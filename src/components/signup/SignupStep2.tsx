@@ -69,6 +69,13 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
       ...data,
       socialMedia: data.socialMedia.filter(sm => sm.platform && sm.url)
     };
+    
+    // Store requirements and complete signup
+    console.log('Completing account creation with:', {
+      signupData,
+      websiteRequirements: filteredData
+    });
+    
     onComplete(filteredData);
   };
 
