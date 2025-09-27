@@ -985,6 +985,7 @@ const [reviewForm, setReviewForm] = useState({
         },
         brand_colors: {
           primary: '#8B5CF6',
+          accent: '#F59E0B',
           ...(data.brand_colors as any || {})
         },
         other_customizations: {
@@ -1017,7 +1018,7 @@ const [reviewForm, setReviewForm] = useState({
         setClientSettings(data as any);
         setFormData(prev => ({
           ...prev,
-          primary_color: (data as any).primary_color || '#FFD700',
+          primary_color: (data as any).primary_color || prev.brand_colors?.primary || '#FFD700',
           header_background_enabled: (data as any).header_background_enabled || false,
           header_background_style: (data as any).header_background_style || 'dark',
           title_font: (data as any).title_font || 'Cormorant Garamond',
@@ -1365,6 +1366,12 @@ const [reviewForm, setReviewForm] = useState({
       if (error) throw error;
       if (!data) throw new Error('Update blocked by RLS (no rows updated)');
 
+      // Update brand_colors.primary when primary_color changes
+      const updatedBrandColors = {
+        ...formData.brand_colors,
+        primary: formData.primary_color
+      };
+
       // Update client_settings table
       const { error: settingsError } = await supabase
         .from('client_settings')
@@ -1385,8 +1392,18 @@ const [reviewForm, setReviewForm] = useState({
         }, {
           onConflict: 'client_id'
         });
+        
+      // Also update the brand_colors in clients table
+      const { error: brandColorsError } = await supabase
+        .from('clients')
+        .update({
+          brand_colors: updatedBrandColors,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', clientId);
 
       if (settingsError) throw settingsError;
+      if (brandColorsError) throw brandColorsError;
 
       // Update admin_content table if user is admin
       if (userRole === 'admin') {
@@ -2632,13 +2649,36 @@ setReviewForm({
                   <Input
                     id="primary_color"
                     type="color"
-                    value={formData.primary_color}
+                    value={formData.brand_colors?.primary || formData.primary_color || '#FFD700'}
                     onChange={(e) => setFormData({
                       ...formData, 
-                      primary_color: e.target.value
+                      primary_color: e.target.value,
+                      brand_colors: {
+                        ...formData.brand_colors,
+                        primary: e.target.value
+                      }
                     })}
                   />
                 </div>
+                <div>
+                  <Label htmlFor="accent_color">Accent Color</Label>
+                  <Input
+                    id="accent_color"
+                    type="color"
+                    value={formData.brand_colors?.accent || '#F59E0B'}
+                    onChange={(e) => setFormData({
+                      ...formData, 
+                      brand_colors: {
+                        ...formData.brand_colors,
+                        accent: e.target.value
+                      }
+                    })}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="text-lg font-medium">Theme Settings</h4>
                 <div>
                   <Label htmlFor="theme">Theme</Label>
                   <Select value={formData.theme} onValueChange={(value) => setFormData({...formData, theme: value})}>
@@ -2651,6 +2691,36 @@ setReviewForm({
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="header_background_enabled"
+                    checked={formData.header_background_enabled}
+                    onCheckedChange={(checked) => setFormData({
+                      ...formData,
+                      header_background_enabled: checked
+                    })}
+                  />
+                  <Label htmlFor="header_background_enabled">Enable Header Background</Label>
+                </div>
+                
+                {formData.header_background_enabled && (
+                  <div>
+                    <Label htmlFor="header_background_style">Header Background Style</Label>
+                    <Select 
+                      value={formData.header_background_style} 
+                      onValueChange={(value) => setFormData({...formData, header_background_style: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="bright">Bright</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-4 border-t pt-4">
@@ -2828,6 +2898,9 @@ setReviewForm({
                   </div>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
             </CardContent>
           </Card>
         </TabsContent>

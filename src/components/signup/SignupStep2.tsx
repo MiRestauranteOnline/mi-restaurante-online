@@ -203,18 +203,62 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                         </FormItem>
                       )}
                     />
-                    <FormField
+                     <FormField
                       control={form.control}
                       name={`socialMedia.${index}.url`}
-                      render={({ field }) => (
-                        <FormItem className="flex-1">
-                          {index === 0 && <FormLabel>URL</FormLabel>}
-                          <FormControl>
-                            <Input placeholder="https://..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      render={({ field }) => {
+                        const platform = form.watch(`socialMedia.${index}.platform`);
+                        let placeholder = "https://...";
+                        
+                        if (platform === "Facebook") {
+                          placeholder = "Your Facebook username or full URL";
+                        } else if (platform === "Instagram") {
+                          placeholder = "Your Instagram username or full URL";
+                        } else if (platform === "TikTok") {
+                          placeholder = "Your TikTok username or full URL";
+                        } else if (platform === "X (Twitter)") {
+                          placeholder = "Your Twitter username or full URL";
+                        }
+                        
+                        return (
+                          <FormItem className="flex-1">
+                            {index === 0 && <FormLabel>URL</FormLabel>}
+                            <FormControl>
+                              <Input 
+                                placeholder={placeholder} 
+                                {...field}
+                                onChange={(e) => {
+                                  let value = e.target.value.trim();
+                                  
+                                  // Normalize the URL based on platform
+                                  if (value && platform) {
+                                    if (platform === "Facebook") {
+                                      if (!value.includes('facebook.com') && !value.startsWith('http')) {
+                                        value = `https://facebook.com/${value.replace('@', '')}`;
+                                      }
+                                    } else if (platform === "Instagram") {
+                                      if (!value.includes('instagram.com') && !value.startsWith('http')) {
+                                        value = `https://instagram.com/${value.replace('@', '')}`;
+                                      }
+                                    } else if (platform === "TikTok") {
+                                      if (!value.includes('tiktok.com') && !value.startsWith('http')) {
+                                        value = `https://tiktok.com/@${value.replace('@', '')}`;
+                                      }
+                                    } else if (platform === "X (Twitter)") {
+                                      if (!value.includes('x.com') && !value.includes('twitter.com') && !value.startsWith('http')) {
+                                        value = `https://x.com/${value.replace('@', '')}`;
+                                      }
+                                    }
+                                  }
+                                  
+                                  field.onChange(value);
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
                     />
                     {fields.length > 1 && (
                       <Button
@@ -281,7 +325,15 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                         <FormItem>
                           <FormLabel>Rappi</FormLabel>
                           <FormControl>
-                            <Input placeholder="URL de tu tienda" {...field} />
+                            <Input 
+                              placeholder="URL completa de tu tienda en Rappi" 
+                              {...field}
+                              onChange={(e) => {
+                                const value = e.target.value.trim();
+                                // Don't auto-modify delivery URLs since they can vary
+                                field.onChange(value);
+                              }}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -294,7 +346,14 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                         <FormItem>
                           <FormLabel>PedidosYa</FormLabel>
                           <FormControl>
-                            <Input placeholder="URL de tu tienda" {...field} />
+                            <Input 
+                              placeholder="URL completa de tu tienda en PedidosYa" 
+                              {...field}
+                              onChange={(e) => {
+                                const value = e.target.value.trim();
+                                field.onChange(value);
+                              }}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -307,7 +366,14 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                         <FormItem>
                           <FormLabel>Didi Food</FormLabel>
                           <FormControl>
-                            <Input placeholder="URL de tu tienda" {...field} />
+                            <Input 
+                              placeholder="URL completa de tu tienda en Didi Food" 
+                              {...field}
+                              onChange={(e) => {
+                                const value = e.target.value.trim();
+                                field.onChange(value);
+                              }}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
