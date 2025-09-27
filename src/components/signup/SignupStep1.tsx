@@ -145,64 +145,6 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
         </p>
       </div>
 
-      {/* Plan Selection */}
-      <div className="grid md:grid-cols-2 gap-4 mb-6">
-        <Card className={`cursor-pointer border-2 transition-colors ${
-          selectedPlan === 'basic' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
-        }`} onClick={() => setSelectedPlan('basic')}>
-          <CardHeader className="text-center">
-            <CardTitle className="text-xl text-primary">Plan Básico</CardTitle>
-            <CardDescription>
-              <span className="text-2xl font-bold text-foreground">S/297</span>
-              <span className="text-muted-foreground">/mes</span>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap justify-center gap-3 text-sm">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-primary" />
-                <span>SSL + Hosting</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-primary" />
-                <span>Entrega 72h</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-primary" />
-                <span>WhatsApp</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className={`cursor-pointer border-2 transition-colors ${
-          selectedPlan === 'advanced' ? 'border-accent bg-accent/5' : 'border-border hover:border-accent/50'
-        }`} onClick={() => setSelectedPlan('advanced')}>
-          <CardHeader className="text-center">
-            <CardTitle className="text-xl text-accent">Plan Avanzado</CardTitle>
-            <CardDescription>
-              <span className="text-2xl font-bold text-foreground">S/497</span>
-              <span className="text-muted-foreground">/mes</span>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap justify-center gap-3 text-sm">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-accent" />
-                <span>Todo Básico +</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-accent" />
-                <span>1h/mes cambios</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-accent" />
-                <span>Soporte prioritario</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
