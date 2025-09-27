@@ -18,11 +18,13 @@ declare global {
 }
 
 export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: RebillPaymentProps) => {
-  const rebillRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [checkoutInstance, setCheckoutInstance] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+    
     const loadRebillSDK = () => {
       // Check if Rebill script is already loaded
       if (window.Rebill) {
@@ -36,23 +38,35 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
       script.async = true;
       script.onload = () => {
         console.log('Rebill SDK loaded');
-        initializeCheckout();
+        if (mounted) {
+          // Add a small delay to ensure DOM is ready
+          setTimeout(() => initializeCheckout(), 100);
+        }
       };
       script.onerror = () => {
         console.error('Failed to load Rebill SDK');
-        setIsLoading(false);
+        if (mounted) {
+          setError('Error al cargar el sistema de pago');
+          setIsLoading(false);
+        }
       };
       
       document.head.appendChild(script);
-
-      return () => {
-        document.head.removeChild(script);
-      };
     };
 
     const initializeCheckout = async () => {
       try {
-        // Get the public key and plan IDs from environment or fetch from your backend
+        if (!mounted) return;
+        
+        // Check if the container element exists
+        const container = document.getElementById('rebill-checkout');
+        if (!container) {
+          console.error('Rebill container not found');
+          setTimeout(() => initializeCheckout(), 100);
+          return;
+        }
+
+        // Get the public key and plan IDs
         const publicKey = 'pk_test_55aa330e-134e-4885-9a2f-438ce6899e49';
         const planId = selectedPlan === 'basic' 
           ? '7b84fcc7-e894-42a8-b2df-7fad0c3c5000' 
@@ -61,6 +75,8 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
         if (!window.Rebill) {
           throw new Error('Rebill SDK not loaded');
         }
+
+        console.log('Initializing Rebill with plan:', planId);
 
         // Initialize Rebill
         const rebill = new window.Rebill(publicKey);
@@ -94,11 +110,16 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
           }
         });
 
+        console.log('Mounting checkout to container');
+        
         // Mount the checkout
         await checkout.mount('rebill-checkout');
         
-        setCheckoutInstance(checkout);
-        setIsLoading(false);
+        if (mounted) {
+          setCheckoutInstance(checkout);
+          setIsLoading(false);
+          console.log('Rebill checkout mounted successfully');
+        }
 
         // Listen for successful payment
         checkout.on('success', (data: any) => {
@@ -108,15 +129,25 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
 
         checkout.on('error', (error: any) => {
           console.error('Payment error:', error);
+          if (mounted) {
+            setError('Error en el procesamiento del pago');
+          }
         });
 
       } catch (error) {
         console.error('Error initializing Rebill checkout:', error);
-        setIsLoading(false);
+        if (mounted) {
+          setError('Error al inicializar el sistema de pago');
+          setIsLoading(false);
+        }
       }
     };
 
     loadRebillSDK();
+
+    return () => {
+      mounted = false;
+    };
   }, [signupData, selectedPlan, onSuccess]);
 
   const planDetails = selectedPlan === 'basic' 
@@ -178,8 +209,17 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
                   <p className="text-sm text-muted-foreground">Cargando formulario de pago...</p>
                 </div>
               </div>
+            ) : error ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center space-y-2">
+                  <p className="text-red-500">{error}</p>
+                  <Button onClick={() => window.location.reload()} variant="outline" size="sm">
+                    Reintentar
+                  </Button>
+                </div>
+              </div>
             ) : (
-              <div id="rebill-checkout" ref={rebillRef} className="min-h-[400px]">
+              <div id="rebill-checkout" className="min-h-[400px]">
                 {/* Rebill checkout will be mounted here */}
               </div>
             )}
