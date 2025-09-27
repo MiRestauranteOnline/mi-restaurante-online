@@ -80,6 +80,7 @@ interface ClientSettings {
 interface AdminContent {
   id: string;
   client_id: string;
+  
   // Two-part titles
   homepage_hero_title_first_line?: string;
   homepage_hero_title_second_line?: string;
@@ -87,67 +88,68 @@ interface AdminContent {
   homepage_menu_section_title_second_line?: string;
   homepage_contact_section_title_first_line?: string;
   homepage_contact_section_title_second_line?: string;
-  homepage_services_section_title_first_line?: string;
-  homepage_services_section_title_second_line?: string;
   homepage_about_section_title_first_line?: string;
   homepage_about_section_title_second_line?: string;
+  homepage_services_section_title_first_line?: string;
+  homepage_services_section_title_second_line?: string;
   reviews_section_title_first_line?: string;
   reviews_section_title_second_line?: string;
+  
+  // Page hero titles
   about_page_hero_title_first_line?: string;
   about_page_hero_title_second_line?: string;
-  about_team_section_title_first_line?: string;
-  about_team_section_title_second_line?: string;
   contact_page_hero_title_first_line?: string;
   contact_page_hero_title_second_line?: string;
   menu_page_hero_title_first_line?: string;
   menu_page_hero_title_second_line?: string;
   reviews_page_hero_title_first_line?: string;
   reviews_page_hero_title_second_line?: string;
-  // Other content fields
+  about_team_section_title_first_line?: string;
+  about_team_section_title_second_line?: string;
+  
+  // Single line titles and descriptions
   homepage_hero_description?: string;
   homepage_hero_background_url?: string;
   homepage_hero_right_button_text?: string;
   homepage_hero_right_button_link?: string;
   homepage_about_section_description?: string;
   homepage_about_section_image_url?: string;
-  homepage_services_section_description?: string;
   homepage_menu_section_description?: string;
+  homepage_services_section_description?: string;
   homepage_contact_section_description?: string;
+  homepage_contact_hide_reservation_box?: boolean;
   homepage_delivery_section_title?: string;
   homepage_delivery_section_description?: string;
-  homepage_contact_hide_reservation_box?: boolean;
+  
+  // Page content
   about_page_hero_description?: string;
   about_page_hero_background_url?: string;
   about_page_about_section_image_url?: string;
-  about_team_section_description?: string;
-  menu_page_hero_description?: string;
-  menu_page_hero_background_url?: string;
   contact_page_hero_description?: string;
   contact_page_hero_background_url?: string;
+  menu_page_hero_description?: string;
+  menu_page_hero_background_url?: string;
   reviews_page_hero_description?: string;
   reviews_page_hero_background_url?: string;
-  // About content fields (replacing JSONB)
+  about_team_section_description?: string;
+  
+  // About content
   about_story?: string;
   about_chef_info?: string;
   about_mission?: string;
-  // Stats fields (3 items)
-  stats_item1_icon?: string;
-  stats_item1_number?: string;
-  stats_item1_label?: string;
-  stats_item2_icon?: string;
-  stats_item2_number?: string;
-  stats_item2_label?: string;
-  stats_item3_icon?: string;
-  stats_item3_number?: string;
-  stats_item3_label?: string;
-  // Legacy stats fields
+  
+  // Stats
   stats_experience_number?: string;
   stats_experience_label?: string;
   stats_clients_number?: string;
   stats_clients_label?: string;
   stats_awards_number?: string;
   stats_awards_label?: string;
-  // Services Cards (3 cards)
+  stats_item1_icon?: string;
+  stats_item2_icon?: string;
+  stats_item3_icon?: string;
+  
+  // Services
   services_card1_icon?: string;
   services_card1_title?: string;
   services_card1_description?: string;
@@ -163,20 +165,41 @@ interface AdminContent {
   services_card3_description?: string;
   services_card3_button_text?: string;
   services_card3_button_link?: string;
-  // Services Features (3 features)
   services_feature1_icon?: string;
   services_feature1_text?: string;
   services_feature2_icon?: string;
   services_feature2_text?: string;
   services_feature3_icon?: string;
   services_feature3_text?: string;
-  // Footer description
+  
+  // Footer
   footer_description?: string;
-  // Logo URLs
-  header_logo_url?: string;
-  footer_logo_url?: string;
-  // Downloadable menu
-  downloadable_menu_url?: string;
+  
+  // CTA Section
+  homepage_cta_title?: string;
+  homepage_cta_description?: string;
+  homepage_cta_button1_text?: string;
+  homepage_cta_button1_link?: string;
+  homepage_cta_button2_text?: string;
+  homepage_cta_button2_link?: string;
+  
+  // Contact Reservation Section
+  contact_reservation_title?: string;
+  contact_reservation_description?: string;
+  
+  // WhatsApp Messages
+  whatsapp_reservation_message?: string;
+  whatsapp_general_message?: string;
+  
+  // New Label Fields
+  our_story_label?: string;
+  culinary_masterpieces_label?: string;
+  testimonials_label?: string;
+  our_services_label?: string;
+  contact_us_label?: string;
+  about_us_label?: string;
+  our_menu_label?: string;
+  our_team_label?: string;
 }
 
 interface MenuCategory {
@@ -858,7 +881,16 @@ const [reviewForm, setReviewForm] = useState({
     contact_reservation_description: '',
     // WhatsApp Message Fields
     whatsapp_reservation_message: '',
-    whatsapp_general_message: ''
+    whatsapp_general_message: '',
+    // New Label Fields
+    our_story_label: '',
+    culinary_masterpieces_label: '',
+    testimonials_label: '',
+    our_services_label: '',
+    contact_us_label: '',
+    about_us_label: '',
+    our_menu_label: '',
+    our_team_label: ''
   });
 
   useEffect(() => {
@@ -2751,918 +2783,1169 @@ setReviewForm({
         {userRole === 'admin' && (
           <TabsContent value="content">
             <div className="space-y-6">
-              {/* Homepage Content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Hero Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="homepage_hero_title_first_line">Hero Title (First Line)</Label>
-                      <Input
-                        id="homepage_hero_title_first_line"
-                        value={formData.homepage_hero_title_first_line}
-                        onChange={(e) => setFormData({...formData, homepage_hero_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="homepage_hero_title_second_line">Hero Title (Second Line)</Label>
-                      <Input
-                        id="homepage_hero_title_second_line"
-                        value={formData.homepage_hero_title_second_line}
-                        onChange={(e) => setFormData({...formData, homepage_hero_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <ImageUpload
-                      label="Hero Background Image"
-                      value={formData.homepage_hero_background_url}
-                      onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
-                      clientId={clientId!}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_hero_description">Hero Description</Label>
-                    <Textarea
-                      id="homepage_hero_description"
-                      value={formData.homepage_hero_description}
-                      onChange={(e) => setFormData({...formData, homepage_hero_description: e.target.value})}
-                      rows={3}
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="homepage_hero_right_button_text">Hero Button Text</Label>
-                      <Input
-                        id="homepage_hero_right_button_text"
-                        value={formData.homepage_hero_right_button_text}
-                        onChange={(e) => setFormData({...formData, homepage_hero_right_button_text: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="homepage_hero_right_button_link">Hero Button Link</Label>
-                      <Input
-                        id="homepage_hero_right_button_link"
-                        value={formData.homepage_hero_right_button_link}
-                        onChange={(e) => setFormData({...formData, homepage_hero_right_button_link: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage About Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - About Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="homepage_about_section_title_first_line">About Section Title (First Line)</Label>
-                      <Input
-                        id="homepage_about_section_title_first_line"
-                        value={formData.homepage_about_section_title_first_line}
-                        onChange={(e) => setFormData({...formData, homepage_about_section_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="homepage_about_section_title_second_line">About Section Title (Second Line)</Label>
-                      <Input
-                        id="homepage_about_section_title_second_line"
-                        value={formData.homepage_about_section_title_second_line}
-                        onChange={(e) => setFormData({...formData, homepage_about_section_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                   <div>
-                     <Label htmlFor="homepage_about_section_description">About Section Description</Label>
-                     <Textarea
-                       id="homepage_about_section_description"
-                       value={formData.homepage_about_section_description}
-                       onChange={(e) => setFormData({...formData, homepage_about_section_description: e.target.value})}
-                       rows={3}
-                     />
-                   </div>
-                   <div>
-                     <ImageUpload
-                       label="About Section Image"
-                       value={formData.homepage_about_section_image_url || ''}
-                       onChange={(url) => setFormData({...formData, homepage_about_section_image_url: url})}
-                       clientId={clientId!}
-                     />
-                   </div>
-                 </CardContent>
-               </Card>
-
-              {/* Homepage Services Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Services Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="homepage_services_section_title_first_line">Services Section Title (First Line)</Label>
-                      <Input
-                        id="homepage_services_section_title_first_line"
-                        value={formData.homepage_services_section_title_first_line}
-                        onChange={(e) => setFormData({...formData, homepage_services_section_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="homepage_services_section_title_second_line">Services Section Title (Second Line)</Label>
-                      <Input
-                        id="homepage_services_section_title_second_line"
-                        value={formData.homepage_services_section_title_second_line}
-                        onChange={(e) => setFormData({...formData, homepage_services_section_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_services_section_description">Services Section Description</Label>
-                    <Textarea
-                      id="homepage_services_section_description"
-                      value={formData.homepage_services_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_services_section_description: e.target.value})}
-                      rows={3}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage Menu Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Menu Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="homepage_menu_section_title_first_line">Menu Section Title (First Line)</Label>
-                      <Input
-                        id="homepage_menu_section_title_first_line"
-                        value={formData.homepage_menu_section_title_first_line}
-                        onChange={(e) => setFormData({...formData, homepage_menu_section_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="homepage_menu_section_title_second_line">Menu Section Title (Second Line)</Label>
-                      <Input
-                        id="homepage_menu_section_title_second_line"
-                        value={formData.homepage_menu_section_title_second_line}
-                        onChange={(e) => setFormData({...formData, homepage_menu_section_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_menu_section_description">Menu Section Description</Label>
-                    <Textarea
-                      id="homepage_menu_section_description"
-                      value={formData.homepage_menu_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_menu_section_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage Contact Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Contact Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="homepage_contact_section_title_first_line">Contact Section Title (First Line)</Label>
-                      <Input
-                        id="homepage_contact_section_title_first_line"
-                        value={formData.homepage_contact_section_title_first_line}
-                        onChange={(e) => setFormData({...formData, homepage_contact_section_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="homepage_contact_section_title_second_line">Contact Section Title (Second Line)</Label>
-                      <Input
-                        id="homepage_contact_section_title_second_line"
-                        value={formData.homepage_contact_section_title_second_line}
-                        onChange={(e) => setFormData({...formData, homepage_contact_section_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_contact_section_description">Contact Section Description</Label>
-                    <Textarea
-                      id="homepage_contact_section_description"
-                      value={formData.homepage_contact_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_contact_section_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Hide Reservation Box</Label>
-                      <p className="text-sm text-muted-foreground">Hide the reservation form box in contact section</p>
-                    </div>
-                    <Switch
-                      checked={formData.homepage_contact_hide_reservation_box}
-                      onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: checked})}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage Delivery Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Delivery Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_delivery_section_title">Delivery Section Title</Label>
-                    <Input
-                      id="homepage_delivery_section_title"
-                      value={formData.homepage_delivery_section_title}
-                      onChange={(e) => setFormData({...formData, homepage_delivery_section_title: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_delivery_section_description">Delivery Section Description</Label>
-                    <Textarea
-                      id="homepage_delivery_section_description"
-                      value={formData.homepage_delivery_section_description}
-                      onChange={(e) => setFormData({...formData, homepage_delivery_section_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Menu Page Content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Menu Page</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="menu_page_hero_title_first_line">Hero Title (First Line)</Label>
-                      <Input
-                        id="menu_page_hero_title_first_line"
-                        value={formData.menu_page_hero_title_first_line}
-                        onChange={(e) => setFormData({...formData, menu_page_hero_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="menu_page_hero_title_second_line">Hero Title (Second Line)</Label>
-                      <Input
-                        id="menu_page_hero_title_second_line"
-                        value={formData.menu_page_hero_title_second_line}
-                        onChange={(e) => setFormData({...formData, menu_page_hero_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <ImageUpload
-                      label="Hero Background Image"
-                      value={formData.menu_page_hero_background_url}
-                      onChange={(url) => setFormData({...formData, menu_page_hero_background_url: url})}
-                      clientId={clientId!}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="menu_page_hero_description">Hero Description</Label>
-                    <Textarea
-                      id="menu_page_hero_description"
-                      value={formData.menu_page_hero_description}
-                      onChange={(e) => setFormData({...formData, menu_page_hero_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Contact Page Content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact Page</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="contact_page_hero_title_first_line">Hero Title (First Line)</Label>
-                      <Input
-                        id="contact_page_hero_title_first_line"
-                        value={formData.contact_page_hero_title_first_line}
-                        onChange={(e) => setFormData({...formData, contact_page_hero_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="contact_page_hero_title_second_line">Hero Title (Second Line)</Label>
-                      <Input
-                        id="contact_page_hero_title_second_line"
-                        value={formData.contact_page_hero_title_second_line}
-                        onChange={(e) => setFormData({...formData, contact_page_hero_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <ImageUpload
-                      label="Hero Background Image"
-                      value={formData.contact_page_hero_background_url}
-                      onChange={(url) => setFormData({...formData, contact_page_hero_background_url: url})}
-                      clientId={clientId!}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contact_page_hero_description">Hero Description</Label>
-                    <Textarea
-                      id="contact_page_hero_description"
-                      value={formData.contact_page_hero_description}
-                      onChange={(e) => setFormData({...formData, contact_page_hero_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* About Page Content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>About Page - Hero Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="about_page_hero_title_first_line">Hero Title (First Line)</Label>
-                      <Input
-                        id="about_page_hero_title_first_line"
-                        value={formData.about_page_hero_title_first_line}
-                        onChange={(e) => setFormData({...formData, about_page_hero_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="about_page_hero_title_second_line">Hero Title (Second Line)</Label>
-                      <Input
-                        id="about_page_hero_title_second_line"
-                        value={formData.about_page_hero_title_second_line}
-                        onChange={(e) => setFormData({...formData, about_page_hero_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <ImageUpload
-                      label="Hero Background Image"
-                      value={formData.about_page_hero_background_url}
-                      onChange={(url) => setFormData({...formData, about_page_hero_background_url: url})}
-                      clientId={clientId!}
-                    />
-                  </div>
-                   <div>
-                     <Label htmlFor="about_page_hero_description">Hero Description</Label>
-                     <Textarea
-                       id="about_page_hero_description"
-                       value={formData.about_page_hero_description}
-                       onChange={(e) => setFormData({...formData, about_page_hero_description: e.target.value})}
-                       rows={2}
-                     />
-                   </div>
-                   <div>
-                     <ImageUpload
-                       label="About Section Image"
-                       value={formData.about_page_about_section_image_url || ''}
-                       onChange={(url) => setFormData({...formData, about_page_about_section_image_url: url})}
-                       clientId={clientId!}
-                     />
-                   </div>
-                 </CardContent>
-               </Card>
-
-              {/* About Page - Team Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>About Page - Team Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="about_team_section_title_first_line">Team Section Title (First Line)</Label>
-                      <Input
-                        id="about_team_section_title_first_line"
-                        value={formData.about_team_section_title_first_line}
-                        onChange={(e) => setFormData({...formData, about_team_section_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="about_team_section_title_second_line">Team Section Title (Second Line)</Label>
-                      <Input
-                        id="about_team_section_title_second_line"
-                        value={formData.about_team_section_title_second_line}
-                        onChange={(e) => setFormData({...formData, about_team_section_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="about_team_section_description">Team Section Description</Label>
-                    <Textarea
-                      id="about_team_section_description"
-                      value={formData.about_team_section_description}
-                      onChange={(e) => setFormData({...formData, about_team_section_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Legacy Stats Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Legacy Stats Section</CardTitle>
-                  <p className="text-sm text-muted-foreground">Original stats fields that may still be used in some templates</p>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="stats_experience_number">Experience Number</Label>
-                      <Input
-                        id="stats_experience_number"
-                        value={formData.stats_experience_number}
-                        onChange={(e) => setFormData({...formData, stats_experience_number: e.target.value})}
-                        placeholder="15+"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="stats_experience_label">Experience Label</Label>
-                      <Input
-                        id="stats_experience_label"
-                        value={formData.stats_experience_label}
-                        onChange={(e) => setFormData({...formData, stats_experience_label: e.target.value})}
-                        placeholder="Años de Experiencia"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="stats_clients_number">Clients Number</Label>
-                      <Input
-                        id="stats_clients_number"
-                        value={formData.stats_clients_number}
-                        onChange={(e) => setFormData({...formData, stats_clients_number: e.target.value})}
-                        placeholder="5K+"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="stats_clients_label">Clients Label</Label>
-                      <Input
-                        id="stats_clients_label"
-                        value={formData.stats_clients_label}
-                        onChange={(e) => setFormData({...formData, stats_clients_label: e.target.value})}
-                        placeholder="Clientes Felices"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="stats_awards_number">Awards Number</Label>
-                      <Input
-                        id="stats_awards_number"
-                        value={formData.stats_awards_number}
-                        onChange={(e) => setFormData({...formData, stats_awards_number: e.target.value})}
-                        placeholder="10+"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="stats_awards_label">Awards Label</Label>
-                      <Input
-                        id="stats_awards_label"
-                        value={formData.stats_awards_label}
-                        onChange={(e) => setFormData({...formData, stats_awards_label: e.target.value})}
-                        placeholder="Reconocimientos"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Stats Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Stats Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {[1, 2, 3].map(num => (
-                    <div key={num} className="border p-4 rounded-lg">
-                      <h4 className="font-medium mb-3">Stats Item {num}</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <Label htmlFor={`stats_item${num}_icon`}>Icon</Label>
-                          <Select
-                            value={formData[`stats_item${num}_icon` as keyof typeof formData] as string}
-                            onValueChange={(value) => setFormData({...formData, [`stats_item${num}_icon`]: value})}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-background border border-border shadow-md z-50">
-                              {iconOptions.map(option => (
-                                <SelectItem key={option.value} value={option.value}>
-                                  {option.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label htmlFor={`stats_item${num}_number`}>Number</Label>
-                          <Input
-                            id={`stats_item${num}_number`}
-                            value={formData[`stats_item${num}_number` as keyof typeof formData] as string}
-                            onChange={(e) => setFormData({...formData, [`stats_item${num}_number`]: e.target.value})}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor={`stats_item${num}_label`}>Label</Label>
-                          <Input
-                            id={`stats_item${num}_label`}
-                            value={formData[`stats_item${num}_label` as keyof typeof formData] as string}
-                            onChange={(e) => setFormData({...formData, [`stats_item${num}_label`]: e.target.value})}
-                          />
-                        </div>
+              
+              {/* HOMEPAGE SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">Homepage</h3>
+                
+                {/* Hero Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hero Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="homepage_hero_title_first_line">First Line Hero Title</Label>
+                        <Input
+                          id="homepage_hero_title_first_line"
+                          value={formData.homepage_hero_title_first_line}
+                          onChange={(e) => setFormData({...formData, homepage_hero_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="homepage_hero_title_second_line">Second Line Hero Title</Label>
+                        <Input
+                          id="homepage_hero_title_second_line"
+                          value={formData.homepage_hero_title_second_line}
+                          onChange={(e) => setFormData({...formData, homepage_hero_title_second_line: e.target.value})}
+                        />
                       </div>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-
-              {/* Services Cards Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Services Cards Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {[1, 2, 3].map(num => (
-                    <div key={num} className="border p-4 rounded-lg">
-                      <h4 className="font-medium mb-3">Service Card {num}</h4>
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor={`services_card${num}_icon`}>Icon</Label>
-                            <Select
-                              value={formData[`services_card${num}_icon` as keyof typeof formData] as string}
-                              onValueChange={(value) => setFormData({...formData, [`services_card${num}_icon`]: value})}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent className="bg-background border border-border shadow-md z-50">
-                                {iconOptions.map(option => (
-                                  <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div>
-                            <Label htmlFor={`services_card${num}_title`}>Title</Label>
-                            <Input
-                              id={`services_card${num}_title`}
-                              value={formData[`services_card${num}_title` as keyof typeof formData] as string}
-                              onChange={(e) => setFormData({...formData, [`services_card${num}_title`]: e.target.value})}
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <Label htmlFor={`services_card${num}_description`}>Description</Label>
-                          <Textarea
-                            id={`services_card${num}_description`}
-                            value={formData[`services_card${num}_description` as keyof typeof formData] as string}
-                            onChange={(e) => setFormData({...formData, [`services_card${num}_description`]: e.target.value})}
-                            rows={2}
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor={`services_card${num}_button_text`}>Button Text</Label>
-                            <Input
-                              id={`services_card${num}_button_text`}
-                              value={formData[`services_card${num}_button_text` as keyof typeof formData] as string}
-                              onChange={(e) => setFormData({...formData, [`services_card${num}_button_text`]: e.target.value})}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor={`services_card${num}_button_link`}>Button Link</Label>
-                            <Input
-                              id={`services_card${num}_button_link`}
-                              value={formData[`services_card${num}_button_link` as keyof typeof formData] as string}
-                              onChange={(e) => setFormData({...formData, [`services_card${num}_button_link`]: e.target.value})}
-                            />
-                          </div>
-                        </div>
+                    <div>
+                      <Label htmlFor="homepage_hero_description">Hero Subtitle Text</Label>
+                      <Textarea
+                        id="homepage_hero_description"
+                        value={formData.homepage_hero_description}
+                        onChange={(e) => setFormData({...formData, homepage_hero_description: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <ImageUpload
+                        label="Hero Background Image"
+                        value={formData.homepage_hero_background_url}
+                        onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
+                        clientId={clientId!}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="homepage_hero_right_button_text">Right Hero Button Text</Label>
+                        <Input
+                          id="homepage_hero_right_button_text"
+                          value={formData.homepage_hero_right_button_text}
+                          onChange={(e) => setFormData({...formData, homepage_hero_right_button_text: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="homepage_hero_right_button_link">Right Hero Button Link</Label>
+                        <Input
+                          id="homepage_hero_right_button_link"
+                          value={formData.homepage_hero_right_button_link}
+                          onChange={(e) => setFormData({...formData, homepage_hero_right_button_link: e.target.value})}
+                        />
                       </div>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              {/* Services Features Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Services Features Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {[1, 2, 3].map(num => (
-                    <div key={num} className="border p-4 rounded-lg">
-                      <h4 className="font-medium mb-3">Service Feature {num}</h4>
+                {/* About Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>About Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="our_story_label">"Nuestra Historia" Label</Label>
+                      <Input
+                        id="our_story_label"
+                        value={formData.our_story_label}
+                        onChange={(e) => setFormData({...formData, our_story_label: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="homepage_about_section_title_first_line">First Line About Title</Label>
+                        <Input
+                          id="homepage_about_section_title_first_line"
+                          value={formData.homepage_about_section_title_first_line}
+                          onChange={(e) => setFormData({...formData, homepage_about_section_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="homepage_about_section_title_second_line">Second Line About Title</Label>
+                        <Input
+                          id="homepage_about_section_title_second_line"
+                          value={formData.homepage_about_section_title_second_line}
+                          onChange={(e) => setFormData({...formData, homepage_about_section_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_about_section_description">About Section Description</Label>
+                      <Textarea
+                        id="homepage_about_section_description"
+                        value={formData.homepage_about_section_description}
+                        onChange={(e) => setFormData({...formData, homepage_about_section_description: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <ImageUpload
+                        label="About Section Image"
+                        value={formData.homepage_about_section_image_url || ''}
+                        onChange={(url) => setFormData({...formData, homepage_about_section_image_url: url})}
+                        clientId={clientId!}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Menu Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Menu Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="culinary_masterpieces_label">"Obras Maestras Culinarias" Label</Label>
+                      <Input
+                        id="culinary_masterpieces_label"
+                        value={formData.culinary_masterpieces_label}
+                        onChange={(e) => setFormData({...formData, culinary_masterpieces_label: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="homepage_menu_section_title_first_line">First Line Menu Title</Label>
+                        <Input
+                          id="homepage_menu_section_title_first_line"
+                          value={formData.homepage_menu_section_title_first_line}
+                          onChange={(e) => setFormData({...formData, homepage_menu_section_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="homepage_menu_section_title_second_line">Second Line Menu Title</Label>
+                        <Input
+                          id="homepage_menu_section_title_second_line"
+                          value={formData.homepage_menu_section_title_second_line}
+                          onChange={(e) => setFormData({...formData, homepage_menu_section_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_menu_section_description">Menu Section Description</Label>
+                      <Textarea
+                        id="homepage_menu_section_description"
+                        value={formData.homepage_menu_section_description}
+                        onChange={(e) => setFormData({...formData, homepage_menu_section_description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Services Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Services Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="our_services_label">"Nuestros Servicios" Label</Label>
+                      <Input
+                        id="our_services_label"
+                        value={formData.our_services_label}
+                        onChange={(e) => setFormData({...formData, our_services_label: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="homepage_services_section_title_first_line">First Line Services Title</Label>
+                        <Input
+                          id="homepage_services_section_title_first_line"
+                          value={formData.homepage_services_section_title_first_line}
+                          onChange={(e) => setFormData({...formData, homepage_services_section_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="homepage_services_section_title_second_line">Second Line Services Title</Label>
+                        <Input
+                          id="homepage_services_section_title_second_line"
+                          value={formData.homepage_services_section_title_second_line}
+                          onChange={(e) => setFormData({...formData, homepage_services_section_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_services_section_description">Services Section Description</Label>
+                      <Textarea
+                        id="homepage_services_section_description"
+                        value={formData.homepage_services_section_description}
+                        onChange={(e) => setFormData({...formData, homepage_services_section_description: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Reviews Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Reviews Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="testimonials_label">"Testimonios" Label</Label>
+                      <Input
+                        id="testimonials_label"
+                        value={formData.testimonials_label}
+                        onChange={(e) => setFormData({...formData, testimonials_label: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="reviews_section_title_first_line">First Line Reviews Title</Label>
+                        <Input
+                          id="reviews_section_title_first_line"
+                          value={formData.reviews_section_title_first_line}
+                          onChange={(e) => setFormData({...formData, reviews_section_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="reviews_section_title_second_line">Second Line Reviews Title</Label>
+                        <Input
+                          id="reviews_section_title_second_line"
+                          value={formData.reviews_section_title_second_line}
+                          onChange={(e) => setFormData({...formData, reviews_section_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Delivery Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Delivery Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="homepage_delivery_section_title">Delivery Section Title</Label>
+                      <Input
+                        id="homepage_delivery_section_title"
+                        value={formData.homepage_delivery_section_title}
+                        onChange={(e) => setFormData({...formData, homepage_delivery_section_title: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_delivery_section_description">Delivery Section Description</Label>
+                      <Textarea
+                        id="homepage_delivery_section_description"
+                        value={formData.homepage_delivery_section_description}
+                        onChange={(e) => setFormData({...formData, homepage_delivery_section_description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Contact Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="contact_us_label">"Contáctanos" Label</Label>
+                      <Input
+                        id="contact_us_label"
+                        value={formData.contact_us_label}
+                        onChange={(e) => setFormData({...formData, contact_us_label: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="homepage_contact_section_title_first_line">First Line Contact Title</Label>
+                        <Input
+                          id="homepage_contact_section_title_first_line"
+                          value={formData.homepage_contact_section_title_first_line}
+                          onChange={(e) => setFormData({...formData, homepage_contact_section_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="homepage_contact_section_title_second_line">Second Line Contact Title</Label>
+                        <Input
+                          id="homepage_contact_section_title_second_line"
+                          value={formData.homepage_contact_section_title_second_line}
+                          onChange={(e) => setFormData({...formData, homepage_contact_section_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_contact_section_description">Contact Section Description</Label>
+                      <Textarea
+                        id="homepage_contact_section_description"
+                        value={formData.homepage_contact_section_description}
+                        onChange={(e) => setFormData({...formData, homepage_contact_section_description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Hide Reservation Box Toggle</Label>
+                        <p className="text-sm text-muted-foreground">Hide the reservation form box in contact section</p>
+                      </div>
+                      <Switch
+                        checked={formData.homepage_contact_hide_reservation_box}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: checked})}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* CTA Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>CTA Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="homepage_cta_title">CTA Section Title</Label>
+                      <Input
+                        id="homepage_cta_title"
+                        value={formData.homepage_cta_title}
+                        onChange={(e) => setFormData({...formData, homepage_cta_title: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_cta_description">CTA Section Description</Label>
+                      <Textarea
+                        id="homepage_cta_description"
+                        value={formData.homepage_cta_description}
+                        onChange={(e) => setFormData({...formData, homepage_cta_description: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="homepage_cta_button1_text">First CTA Button Text</Label>
+                        <Input
+                          id="homepage_cta_button1_text"
+                          value={formData.homepage_cta_button1_text}
+                          onChange={(e) => setFormData({...formData, homepage_cta_button1_text: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="homepage_cta_button1_link">First CTA Button Link</Label>
+                        <Input
+                          id="homepage_cta_button1_link"
+                          value={formData.homepage_cta_button1_link}
+                          onChange={(e) => setFormData({...formData, homepage_cta_button1_link: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="homepage_cta_button2_text">Second CTA Button Text</Label>
+                        <Input
+                          id="homepage_cta_button2_text"
+                          value={formData.homepage_cta_button2_text}
+                          onChange={(e) => setFormData({...formData, homepage_cta_button2_text: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="homepage_cta_button2_link">Second CTA Button Link</Label>
+                        <Input
+                          id="homepage_cta_button2_link"
+                          value={formData.homepage_cta_button2_link}
+                          onChange={(e) => setFormData({...formData, homepage_cta_button2_link: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* ABOUT PAGE SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">About Page</h3>
+                
+                {/* Hero Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hero Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="about_page_hero_title_first_line">First Line Hero Title</Label>
+                        <Input
+                          id="about_page_hero_title_first_line"
+                          value={formData.about_page_hero_title_first_line}
+                          onChange={(e) => setFormData({...formData, about_page_hero_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="about_page_hero_title_second_line">Second Line Hero Title</Label>
+                        <Input
+                          id="about_page_hero_title_second_line"
+                          value={formData.about_page_hero_title_second_line}
+                          onChange={(e) => setFormData({...formData, about_page_hero_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="about_page_hero_description">Hero Description</Label>
+                      <Textarea
+                        id="about_page_hero_description"
+                        value={formData.about_page_hero_description}
+                        onChange={(e) => setFormData({...formData, about_page_hero_description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <ImageUpload
+                        label="Hero Background Image"
+                        value={formData.about_page_hero_background_url}
+                        onChange={(url) => setFormData({...formData, about_page_hero_background_url: url})}
+                        clientId={clientId!}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* About Content */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>About Content</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="about_us_label">"Acerca de Nosotros" Label</Label>
+                      <Input
+                        id="about_us_label"
+                        value={formData.about_us_label}
+                        onChange={(e) => setFormData({...formData, about_us_label: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <ImageUpload
+                        label="About Section Image"
+                        value={formData.about_page_about_section_image_url || ''}
+                        onChange={(url) => setFormData({...formData, about_page_about_section_image_url: url})}
+                        clientId={clientId!}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="about_story">Restaurant Story Text</Label>
+                      <Textarea
+                        id="about_story"
+                        value={formData.about_story}
+                        onChange={(e) => setFormData({...formData, about_story: e.target.value})}
+                        rows={4}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="about_chef_info">Chef Information Text</Label>
+                      <Textarea
+                        id="about_chef_info"
+                        value={formData.about_chef_info}
+                        onChange={(e) => setFormData({...formData, about_chef_info: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="about_mission">Mission Statement Text</Label>
+                      <Textarea
+                        id="about_mission"
+                        value={formData.about_mission}
+                        onChange={(e) => setFormData({...formData, about_mission: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Team Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Team Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="our_team_label">"Nuestro Equipo" Label</Label>
+                      <Input
+                        id="our_team_label"
+                        value={formData.our_team_label}
+                        onChange={(e) => setFormData({...formData, our_team_label: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="about_team_section_title_first_line">First Line Team Title</Label>
+                        <Input
+                          id="about_team_section_title_first_line"
+                          value={formData.about_team_section_title_first_line}
+                          onChange={(e) => setFormData({...formData, about_team_section_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="about_team_section_title_second_line">Second Line Team Title</Label>
+                        <Input
+                          id="about_team_section_title_second_line"
+                          value={formData.about_team_section_title_second_line}
+                          onChange={(e) => setFormData({...formData, about_team_section_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="about_team_section_description">Team Section Description</Label>
+                      <Textarea
+                        id="about_team_section_description"
+                        value={formData.about_team_section_description}
+                        onChange={(e) => setFormData({...formData, about_team_section_description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* MENU PAGE SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">Menu Page</h3>
+                
+                {/* Hero Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hero Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="our_menu_label">"Nuestro Menú" Label</Label>
+                      <Input
+                        id="our_menu_label"
+                        value={formData.our_menu_label}
+                        onChange={(e) => setFormData({...formData, our_menu_label: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="menu_page_hero_title_first_line">First Line Hero Title</Label>
+                        <Input
+                          id="menu_page_hero_title_first_line"
+                          value={formData.menu_page_hero_title_first_line}
+                          onChange={(e) => setFormData({...formData, menu_page_hero_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="menu_page_hero_title_second_line">Second Line Hero Title</Label>
+                        <Input
+                          id="menu_page_hero_title_second_line"
+                          value={formData.menu_page_hero_title_second_line}
+                          onChange={(e) => setFormData({...formData, menu_page_hero_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="menu_page_hero_description">Hero Description</Label>
+                      <Textarea
+                        id="menu_page_hero_description"
+                        value={formData.menu_page_hero_description}
+                        onChange={(e) => setFormData({...formData, menu_page_hero_description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <ImageUpload
+                        label="Hero Background Image"
+                        value={formData.menu_page_hero_background_url}
+                        onChange={(url) => setFormData({...formData, menu_page_hero_background_url: url})}
+                        clientId={clientId!}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* CONTACT PAGE SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">Contact Page</h3>
+                
+                {/* Hero Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hero Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="contact_page_hero_title_first_line">First Line Hero Title</Label>
+                        <Input
+                          id="contact_page_hero_title_first_line"
+                          value={formData.contact_page_hero_title_first_line}
+                          onChange={(e) => setFormData({...formData, contact_page_hero_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="contact_page_hero_title_second_line">Second Line Hero Title</Label>
+                        <Input
+                          id="contact_page_hero_title_second_line"
+                          value={formData.contact_page_hero_title_second_line}
+                          onChange={(e) => setFormData({...formData, contact_page_hero_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="contact_page_hero_description">Hero Description</Label>
+                      <Textarea
+                        id="contact_page_hero_description"
+                        value={formData.contact_page_hero_description}
+                        onChange={(e) => setFormData({...formData, contact_page_hero_description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <ImageUpload
+                        label="Hero Background Image"
+                        value={formData.contact_page_hero_background_url}
+                        onChange={(url) => setFormData({...formData, contact_page_hero_background_url: url})}
+                        clientId={clientId!}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Contact Content */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Content</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="contact_reservation_title">Reservation Box Title</Label>
+                      <Input
+                        id="contact_reservation_title"
+                        value={formData.contact_reservation_title}
+                        onChange={(e) => setFormData({...formData, contact_reservation_title: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="contact_reservation_description">Reservation Box Description</Label>
+                      <Textarea
+                        id="contact_reservation_description"
+                        value={formData.contact_reservation_description}
+                        onChange={(e) => setFormData({...formData, contact_reservation_description: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* REVIEWS PAGE SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">Reviews Page</h3>
+                
+                {/* Hero Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hero Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="reviews_page_hero_title_first_line">First Line Hero Title</Label>
+                        <Input
+                          id="reviews_page_hero_title_first_line"
+                          value={formData.reviews_page_hero_title_first_line}
+                          onChange={(e) => setFormData({...formData, reviews_page_hero_title_first_line: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="reviews_page_hero_title_second_line">Second Line Hero Title</Label>
+                        <Input
+                          id="reviews_page_hero_title_second_line"
+                          value={formData.reviews_page_hero_title_second_line}
+                          onChange={(e) => setFormData({...formData, reviews_page_hero_title_second_line: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="reviews_page_hero_description">Hero Description</Label>
+                      <Textarea
+                        id="reviews_page_hero_description"
+                        value={formData.reviews_page_hero_description}
+                        onChange={(e) => setFormData({...formData, reviews_page_hero_description: e.target.value})}
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <ImageUpload
+                        label="Hero Background Image"
+                        value={formData.reviews_page_hero_background_url}
+                        onChange={(url) => setFormData({...formData, reviews_page_hero_background_url: url})}
+                        clientId={clientId!}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* SERVICES CONTENT SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">Services Content</h3>
+                
+                {/* Service Cards */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Service Cards</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Service Card 1 */}
+                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
+                      <h4 className="font-medium text-primary">First Service Card</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor={`services_feature${num}_icon`}>Icon</Label>
-                          <Select
-                            value={formData[`services_feature${num}_icon` as keyof typeof formData] as string}
-                            onValueChange={(value) => setFormData({...formData, [`services_feature${num}_icon`]: value})}
-                          >
+                          <Label htmlFor="services_card1_icon">First Service Card Icon</Label>
+                          <Select value={formData.services_card1_icon} onValueChange={(value) => setFormData({...formData, services_card1_icon: value})}>
                             <SelectTrigger>
-                              <SelectValue />
+                              <SelectValue placeholder="Select icon" />
                             </SelectTrigger>
-                            <SelectContent className="bg-background border border-border shadow-md z-50">
-                              {iconOptions.map(option => (
-                                <SelectItem key={option.value} value={option.value}>
-                                  {option.label}
+                            <SelectContent>
+                              {iconOptions.map((icon) => (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  {icon.label}
                                 </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor={`services_feature${num}_text`}>Text</Label>
+                          <Label htmlFor="services_card1_title">First Service Card Title</Label>
                           <Input
-                            id={`services_feature${num}_text`}
-                            value={formData[`services_feature${num}_text` as keyof typeof formData] as string}
-                            onChange={(e) => setFormData({...formData, [`services_feature${num}_text`]: e.target.value})}
+                            id="services_card1_title"
+                            value={formData.services_card1_title}
+                            onChange={(e) => setFormData({...formData, services_card1_title: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label htmlFor="services_card1_description">First Service Card Description</Label>
+                        <Textarea
+                          id="services_card1_description"
+                          value={formData.services_card1_description}
+                          onChange={(e) => setFormData({...formData, services_card1_description: e.target.value})}
+                          rows={2}
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="services_card1_button_text">First Service Card Button</Label>
+                          <Input
+                            id="services_card1_button_text"
+                            value={formData.services_card1_button_text}
+                            onChange={(e) => setFormData({...formData, services_card1_button_text: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="services_card1_button_link">First Service Card Link</Label>
+                          <Input
+                            id="services_card1_button_link"
+                            value={formData.services_card1_button_link}
+                            onChange={(e) => setFormData({...formData, services_card1_button_link: e.target.value})}
                           />
                         </div>
                       </div>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
 
+                    {/* Service Card 2 */}
+                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
+                      <h4 className="font-medium text-primary">Second Service Card</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="services_card2_icon">Second Service Card Icon</Label>
+                          <Select value={formData.services_card2_icon} onValueChange={(value) => setFormData({...formData, services_card2_icon: value})}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select icon" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {iconOptions.map((icon) => (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  {icon.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="services_card2_title">Second Service Card Title</Label>
+                          <Input
+                            id="services_card2_title"
+                            value={formData.services_card2_title}
+                            onChange={(e) => setFormData({...formData, services_card2_title: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label htmlFor="services_card2_description">Second Service Card Description</Label>
+                        <Textarea
+                          id="services_card2_description"
+                          value={formData.services_card2_description}
+                          onChange={(e) => setFormData({...formData, services_card2_description: e.target.value})}
+                          rows={2}
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="services_card2_button_text">Second Service Card Button</Label>
+                          <Input
+                            id="services_card2_button_text"
+                            value={formData.services_card2_button_text}
+                            onChange={(e) => setFormData({...formData, services_card2_button_text: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="services_card2_button_link">Second Service Card Link</Label>
+                          <Input
+                            id="services_card2_button_link"
+                            value={formData.services_card2_button_link}
+                            onChange={(e) => setFormData({...formData, services_card2_button_link: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                    </div>
 
-              {/* Reviews Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - Reviews Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Service Card 3 */}
+                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
+                      <h4 className="font-medium text-primary">Third Service Card</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="services_card3_icon">Third Service Card Icon</Label>
+                          <Select value={formData.services_card3_icon} onValueChange={(value) => setFormData({...formData, services_card3_icon: value})}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select icon" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {iconOptions.map((icon) => (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  {icon.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="services_card3_title">Third Service Card Title</Label>
+                          <Input
+                            id="services_card3_title"
+                            value={formData.services_card3_title}
+                            onChange={(e) => setFormData({...formData, services_card3_title: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label htmlFor="services_card3_description">Third Service Card Description</Label>
+                        <Textarea
+                          id="services_card3_description"
+                          value={formData.services_card3_description}
+                          onChange={(e) => setFormData({...formData, services_card3_description: e.target.value})}
+                          rows={2}
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="services_card3_button_text">Third Service Card Button</Label>
+                          <Input
+                            id="services_card3_button_text"
+                            value={formData.services_card3_button_text}
+                            onChange={(e) => setFormData({...formData, services_card3_button_text: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="services_card3_button_link">Third Service Card Link</Label>
+                          <Input
+                            id="services_card3_button_link"
+                            value={formData.services_card3_button_link}
+                            onChange={(e) => setFormData({...formData, services_card3_button_link: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Service Features */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Service Features</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Feature 1 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="services_feature1_icon">First Feature Icon</Label>
+                        <Select value={formData.services_feature1_icon} onValueChange={(value) => setFormData({...formData, services_feature1_icon: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select icon" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {iconOptions.map((icon) => (
+                              <SelectItem key={icon.value} value={icon.value}>
+                                {icon.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="services_feature1_text">First Feature Text</Label>
+                        <Input
+                          id="services_feature1_text"
+                          value={formData.services_feature1_text}
+                          onChange={(e) => setFormData({...formData, services_feature1_text: e.target.value})}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Feature 2 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="services_feature2_icon">Second Feature Icon</Label>
+                        <Select value={formData.services_feature2_icon} onValueChange={(value) => setFormData({...formData, services_feature2_icon: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select icon" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {iconOptions.map((icon) => (
+                              <SelectItem key={icon.value} value={icon.value}>
+                                {icon.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="services_feature2_text">Second Feature Text</Label>
+                        <Input
+                          id="services_feature2_text"
+                          value={formData.services_feature2_text}
+                          onChange={(e) => setFormData({...formData, services_feature2_text: e.target.value})}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Feature 3 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="services_feature3_icon">Third Feature Icon</Label>
+                        <Select value={formData.services_feature3_icon} onValueChange={(value) => setFormData({...formData, services_feature3_icon: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select icon" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {iconOptions.map((icon) => (
+                              <SelectItem key={icon.value} value={icon.value}>
+                                {icon.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="services_feature3_text">Third Feature Text</Label>
+                        <Input
+                          id="services_feature3_text"
+                          value={formData.services_feature3_text}
+                          onChange={(e) => setFormData({...formData, services_feature3_text: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* STATS CONTENT SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">Stats Content</h3>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Statistics</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Stat 1 */}
+                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
+                      <h4 className="font-medium text-primary">First Stat</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor="stats_item1_icon">First Stat Icon</Label>
+                          <Select value={formData.stats_item1_icon} onValueChange={(value) => setFormData({...formData, stats_item1_icon: value})}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select icon" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {iconOptions.map((icon) => (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  {icon.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="stats_item1_number">First Stat Number</Label>
+                          <Input
+                            id="stats_item1_number"
+                            value={formData.stats_item1_number}
+                            onChange={(e) => setFormData({...formData, stats_item1_number: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="stats_item1_label">First Stat Label</Label>
+                          <Input
+                            id="stats_item1_label"
+                            value={formData.stats_item1_label}
+                            onChange={(e) => setFormData({...formData, stats_item1_label: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stat 2 */}
+                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
+                      <h4 className="font-medium text-primary">Second Stat</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor="stats_item2_icon">Second Stat Icon</Label>
+                          <Select value={formData.stats_item2_icon} onValueChange={(value) => setFormData({...formData, stats_item2_icon: value})}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select icon" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {iconOptions.map((icon) => (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  {icon.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="stats_item2_number">Second Stat Number</Label>
+                          <Input
+                            id="stats_item2_number"
+                            value={formData.stats_item2_number}
+                            onChange={(e) => setFormData({...formData, stats_item2_number: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="stats_item2_label">Second Stat Label</Label>
+                          <Input
+                            id="stats_item2_label"
+                            value={formData.stats_item2_label}
+                            onChange={(e) => setFormData({...formData, stats_item2_label: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stat 3 */}
+                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
+                      <h4 className="font-medium text-primary">Third Stat</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor="stats_item3_icon">Third Stat Icon</Label>
+                          <Select value={formData.stats_item3_icon} onValueChange={(value) => setFormData({...formData, stats_item3_icon: value})}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select icon" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {iconOptions.map((icon) => (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  {icon.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="stats_item3_number">Third Stat Number</Label>
+                          <Input
+                            id="stats_item3_number"
+                            value={formData.stats_item3_number}
+                            onChange={(e) => setFormData({...formData, stats_item3_number: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="stats_item3_label">Third Stat Label</Label>
+                          <Input
+                            id="stats_item3_label"
+                            value={formData.stats_item3_label}
+                            onChange={(e) => setFormData({...formData, stats_item3_label: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* FOOTER SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">Footer</h3>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Footer Content</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="reviews_section_title_first_line">Reviews Section Title (First Line)</Label>
-                      <Input
-                        id="reviews_section_title_first_line"
-                        value={formData.reviews_section_title_first_line}
-                        onChange={(e) => setFormData({...formData, reviews_section_title_first_line: e.target.value})}
+                      <Label htmlFor="footer_description">Footer Description Text</Label>
+                      <Textarea
+                        id="footer_description"
+                        value={formData.footer_description}
+                        onChange={(e) => setFormData({...formData, footer_description: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* WHATSAPP MESSAGES SECTION */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">WhatsApp Messages</h3>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>WhatsApp Messages</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="whatsapp_reservation_message">Reservation Message Template</Label>
+                      <Textarea
+                        id="whatsapp_reservation_message"
+                        value={formData.whatsapp_reservation_message}
+                        onChange={(e) => setFormData({...formData, whatsapp_reservation_message: e.target.value})}
+                        rows={2}
+                        placeholder="Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas."
                       />
                     </div>
                     <div>
-                      <Label htmlFor="reviews_section_title_second_line">Reviews Section Title (Second Line)</Label>
+                      <Label htmlFor="whatsapp_general_message">General Contact Message</Label>
                       <Input
-                        id="reviews_section_title_second_line"
-                        value={formData.reviews_section_title_second_line}
-                        onChange={(e) => setFormData({...formData, reviews_section_title_second_line: e.target.value})}
+                        id="whatsapp_general_message"
+                        value={formData.whatsapp_general_message}
+                        onChange={(e) => setFormData({...formData, whatsapp_general_message: e.target.value})}
+                        placeholder="Hola, me gustaría hacer una reserva"
                       />
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* About Content Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>About Page - Content</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="about_story">About Story</Label>
-                    <Textarea
-                      id="about_story"
-                      value={formData.about_story}
-                      onChange={(e) => setFormData({...formData, about_story: e.target.value})}
-                      rows={4}
-                      placeholder="Our restaurant's story and history..."
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="about_chef_info">Chef Information</Label>
-                    <Textarea
-                      id="about_chef_info"
-                      value={formData.about_chef_info}
-                      onChange={(e) => setFormData({...formData, about_chef_info: e.target.value})}
-                      rows={3}
-                      placeholder="Information about the chef and team..."
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="about_mission">Mission Statement</Label>
-                    <Textarea
-                      id="about_mission"
-                      value={formData.about_mission}
-                      onChange={(e) => setFormData({...formData, about_mission: e.target.value})}
-                      rows={3}
-                      placeholder="Restaurant mission and values..."
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Reviews Page Content */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Reviews Page</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="reviews_page_hero_title_first_line">Hero Title (First Line)</Label>
-                      <Input
-                        id="reviews_page_hero_title_first_line"
-                        value={formData.reviews_page_hero_title_first_line}
-                        onChange={(e) => setFormData({...formData, reviews_page_hero_title_first_line: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="reviews_page_hero_title_second_line">Hero Title (Second Line)</Label>
-                      <Input
-                        id="reviews_page_hero_title_second_line"
-                        value={formData.reviews_page_hero_title_second_line}
-                        onChange={(e) => setFormData({...formData, reviews_page_hero_title_second_line: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <ImageUpload
-                      label="Hero Background Image"
-                      value={formData.reviews_page_hero_background_url}
-                      onChange={(url) => setFormData({...formData, reviews_page_hero_background_url: url})}
-                      clientId={clientId!}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="reviews_page_hero_description">Hero Description</Label>
-                    <Textarea
-                      id="reviews_page_hero_description"
-                      value={formData.reviews_page_hero_description}
-                      onChange={(e) => setFormData({...formData, reviews_page_hero_description: e.target.value})}
-                      rows={2}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Footer Description Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Footer Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="footer_description">Footer Description</Label>
-                    <Textarea
-                      id="footer_description"
-                      value={formData.footer_description}
-                      onChange={(e) => setFormData({...formData, footer_description: e.target.value})}
-                      rows={3}
-                      placeholder="Brief description for the footer section..."
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Homepage CTA Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Homepage - CTA Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="homepage_cta_title">CTA Title</Label>
-                    <Input
-                      id="homepage_cta_title"
-                      value={formData.homepage_cta_title}
-                      onChange={(e) => setFormData({...formData, homepage_cta_title: e.target.value})}
-                      placeholder="¿Listo para una experiencia culinaria única?"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="homepage_cta_description">CTA Description</Label>
-                    <Textarea
-                      id="homepage_cta_description"
-                      value={formData.homepage_cta_description}
-                      onChange={(e) => setFormData({...formData, homepage_cta_description: e.target.value})}
-                      rows={2}
-                      placeholder="Contáctanos ahora para hacer tu reserva o conocer más sobre nuestro menú."
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="homepage_cta_button1_text">First Button Text</Label>
-                      <Input
-                        id="homepage_cta_button1_text"
-                        value={formData.homepage_cta_button1_text}
-                        onChange={(e) => setFormData({...formData, homepage_cta_button1_text: e.target.value})}
-                        placeholder="WhatsApp"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="homepage_cta_button1_link">First Button Link</Label>
-                      <Input
-                        id="homepage_cta_button1_link"
-                        value={formData.homepage_cta_button1_link}
-                        onChange={(e) => setFormData({...formData, homepage_cta_button1_link: e.target.value})}
-                        placeholder="Leave empty to use WhatsApp"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="homepage_cta_button2_text">Second Button Text</Label>
-                      <Input
-                        id="homepage_cta_button2_text"
-                        value={formData.homepage_cta_button2_text}
-                        onChange={(e) => setFormData({...formData, homepage_cta_button2_text: e.target.value})}
-                        placeholder="Llamar"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="homepage_cta_button2_link">Second Button Link</Label>
-                      <Input
-                        id="homepage_cta_button2_link"
-                        value={formData.homepage_cta_button2_link}
-                        onChange={(e) => setFormData({...formData, homepage_cta_button2_link: e.target.value})}
-                        placeholder="Leave empty to use phone"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Contact Reservation Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact - Reservation Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="contact_reservation_title">Reservation Box Title</Label>
-                    <Input
-                      id="contact_reservation_title"
-                      value={formData.contact_reservation_title}
-                      onChange={(e) => setFormData({...formData, contact_reservation_title: e.target.value})}
-                      placeholder="Reserva Tu Mesa"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contact_reservation_description">Reservation Box Description</Label>
-                    <Textarea
-                      id="contact_reservation_description"
-                      value={formData.contact_reservation_description}
-                      onChange={(e) => setFormData({...formData, contact_reservation_description: e.target.value})}
-                      rows={3}
-                      placeholder="¿Listo para disfrutar de una experiencia culinaria excepcional? Contáctanos directamente para hacer tu reserva o resolver cualquier consulta."
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* WhatsApp Messages Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>WhatsApp Messages</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="whatsapp_reservation_message">Reservation Message</Label>
-                    <Textarea
-                      id="whatsapp_reservation_message"
-                      value={formData.whatsapp_reservation_message}
-                      onChange={(e) => setFormData({...formData, whatsapp_reservation_message: e.target.value})}
-                      rows={2}
-                      placeholder="Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas."
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="whatsapp_general_message">General Message</Label>
-                    <Input
-                      id="whatsapp_general_message"
-                      value={formData.whatsapp_general_message}
-                      onChange={(e) => setFormData({...formData, whatsapp_general_message: e.target.value})}
-                      placeholder="Hola, me gustaría hacer una reserva"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
         )}
