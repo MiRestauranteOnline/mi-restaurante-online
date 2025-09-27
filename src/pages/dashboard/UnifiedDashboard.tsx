@@ -115,7 +115,6 @@ const settingsSchema = z.object({
   pedidos_ya: z.string().optional(),
   didi_food: z.string().optional(),
   primary_color: z.string().optional(),
-  accent_color: z.string().optional(),
   currency: z.string().optional(),
   // Opening hours
   monday_open: z.string().optional(),
@@ -367,7 +366,6 @@ export default function UnifiedDashboard() {
       pedidos_ya: '',
       didi_food: '',
       primary_color: '#22c55e',
-      accent_color: '#eab308',
       currency: 'S/',
       monday_closed: false,
       tuesday_closed: false,
@@ -465,7 +463,6 @@ export default function UnifiedDashboard() {
           pedidos_ya: delivery.pedidos_ya || '',
           didi_food: delivery.didi_food || '',
           primary_color: brandColors.primary || '#22c55e',
-          accent_color: brandColors.accent || '#eab308',
           currency: customizations.currency || 'S/',
           // Opening hours
           monday_open: openingHours.monday?.open || '09:00',
@@ -598,7 +595,6 @@ export default function UnifiedDashboard() {
 
       const brandColors = {
         primary: data.primary_color || '#22c55e',
-        accent: data.accent_color || '#eab308',
       };
 
       const openingHours = {
@@ -1308,22 +1304,6 @@ export default function UnifiedDashboard() {
                       )}
                     />
 
-                    <FormField
-                      control={settingsForm.control}
-                      name="accent_color"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Color de Acento</FormLabel>
-                          <FormControl>
-                            <div className="flex gap-2">
-                              <Input type="color" {...field} className="w-16" />
-                              <Input {...field} placeholder="#eab308" className="flex-1" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
                     <FormField
                       control={settingsForm.control}
