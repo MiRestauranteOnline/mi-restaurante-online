@@ -175,40 +175,66 @@ export function SubscriptionManagement({ clientId }: { clientId: string }) {
 
       {/* Cancellation Warning */}
       {subscription.status === 'active' && (
-        <Card className="border-yellow-200">
-          <CardContent className="pt-6">
-            <Alert>
+        <Card className="border-destructive/50 bg-destructive/5">
+          <CardHeader>
+            <CardTitle className="text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              ⚠️ Zona de Cancelación
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="border-destructive/50">
               <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                {t('subscription.cancelWarning')}
+              <AlertDescription className="font-medium">
+                <strong>ADVERTENCIA IMPORTANTE:</strong> Si cancelas tu suscripción, tu sitio web será <strong>DESACTIVADO PERMANENTEMENTE</strong> al final de tu período de facturación actual ({new Date(subscription.nextBilling).toLocaleDateString('es-ES')}).
               </AlertDescription>
             </Alert>
             
-            <div className="mt-4">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive">
-                    {t('subscription.cancel')}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Cancelar Suscripción</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {t('subscription.confirmCancel')}
-                      <br /><br />
-                      Su sitio web permanecerá activo hasta: {new Date(subscription.nextBilling).toLocaleDateString('es-ES')}
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleCancel}>
-                      Confirmar Cancelación
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+            <div className="bg-card p-4 rounded-lg border">
+              <h4 className="font-semibold mb-2 text-destructive">Consecuencias de la cancelación:</h4>
+              <ul className="text-sm space-y-1 text-muted-foreground">
+                <li>• Tu sitio web será completamente inaccesible para tus clientes</li>
+                <li>• Perderás toda la funcionalidad y características de tu plan</li>
+                <li>• El hosting y dominio .mirestaurante.com serán desactivados</li>
+                <li>• Si tienes un dominio personalizado, podrás usarlo libremente en otro servicio</li>
+              </ul>
             </div>
+            
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full">
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  Cancelar Suscripción
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-destructive flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5" />
+                    ⚠️ ¿Estás completamente seguro?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-3">
+                    <p className="font-semibold text-foreground">Esta acción cancelará tu suscripción permanentemente.</p>
+                    <div className="bg-destructive/10 p-3 rounded-md">
+                      <p className="font-medium text-destructive mb-2">Tu sitio web será DESACTIVADO el:</p>
+                      <p className="text-lg font-bold">{new Date(subscription.nextBilling).toLocaleDateString('es-ES')}</p>
+                    </div>
+                    <ul className="space-y-1 text-sm">
+                      <li>• Tus clientes NO podrán acceder a tu página web</li>
+                      <li>• Perderás todas las reservas y funcionalidades online</li>
+                      <li>• El dominio .mirestaurante.com será liberado</li>
+                      <li>• Si tienes dominio propio, podrás usarlo en otro servicio</li>
+                    </ul>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>No, mantener mi suscripción</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleCancel} className="bg-destructive hover:bg-destructive/90">
+                    Sí, cancelar definitivamente
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </CardContent>
         </Card>
       )}

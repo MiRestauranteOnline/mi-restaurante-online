@@ -108,11 +108,6 @@ export default function ClientDashboardLayout() {
 
   const sidebarItems = [
     { href: '/client/dashboard', icon: LayoutDashboard, label: t('nav.dashboard') },
-    { href: '/client/menu-categories', icon: UtensilsCrossed, label: t('nav.categories') },
-    { href: '/client/menu-items', icon: MenuIcon, label: t('nav.items') },
-    { href: '/client/reviews', icon: Star, label: t('nav.reviews') },
-    { href: '/client/team-members', icon: Users, label: t('nav.team') },
-    { href: '/client/settings', icon: Settings, label: t('nav.settings') },
     { href: '/client/subscription', icon: CreditCard, label: t('nav.subscription') },
   ];
 
