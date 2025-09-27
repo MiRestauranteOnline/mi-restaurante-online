@@ -2643,38 +2643,21 @@ setReviewForm({
               <CardTitle>Branding & Customization</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="primary_color">Primary Color</Label>
-                  <Input
-                    id="primary_color"
-                    type="color"
-                    value={formData.brand_colors?.primary || formData.primary_color || '#FFD700'}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      primary_color: e.target.value,
-                      brand_colors: {
-                        ...formData.brand_colors,
-                        primary: e.target.value
-                      }
-                    })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="accent_color">Accent Color</Label>
-                  <Input
-                    id="accent_color"
-                    type="color"
-                    value={formData.brand_colors?.accent || '#F59E0B'}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      brand_colors: {
-                        ...formData.brand_colors,
-                        accent: e.target.value
-                      }
-                    })}
-                  />
-                </div>
+              <div>
+                <Label htmlFor="primary_color">Primary Color</Label>
+                <Input
+                  id="primary_color"
+                  type="color"
+                  value={formData.brand_colors?.primary || formData.primary_color || '#FFD700'}
+                  onChange={(e) => setFormData({
+                    ...formData, 
+                    primary_color: e.target.value,
+                    brand_colors: {
+                      ...formData.brand_colors,
+                      primary: e.target.value
+                    }
+                  })}
+                />
               </div>
 
               <div className="space-y-4 border-t pt-4">
