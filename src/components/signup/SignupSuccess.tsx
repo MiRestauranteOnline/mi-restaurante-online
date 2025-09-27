@@ -81,27 +81,27 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
 
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardHeader className="text-left">
+                <CardTitle className="flex items-center gap-2 text-left">
                   <Mail className="w-5 h-5 text-primary" />
                   Datos de Acceso
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-left">
                   Guarda esta información para acceder a tu panel
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-2 text-left">
                 <div>
-                  <p className="text-sm text-muted-foreground">Email:</p>
-                  <p className="font-medium">{signupData.email}</p>
+                  <p className="text-sm text-muted-foreground text-left">Email:</p>
+                  <p className="font-medium text-left">{signupData.email}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Contraseña:</p>
-                  <p className="font-medium">••••••••</p>
+                  <p className="text-sm text-muted-foreground text-left">Contraseña:</p>
+                  <p className="font-medium text-left">••••••••</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Tu sitio web:</p>
-                  <p className="font-medium text-primary">
+                  <p className="text-sm text-muted-foreground text-left">Tu sitio web:</p>
+                  <p className="font-medium text-primary text-left">
                     {signupData.hasCustomDomain && signupData.customDomain 
                       ? signupData.customDomain 
                       : `${signupData.subdomain}.mirestaurante.online`}
@@ -111,23 +111,23 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardHeader className="text-left">
+                <CardTitle className="flex items-center gap-2 text-left">
                   <Clock className="w-5 h-5 text-primary" />
                   Próximos Pasos
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-left">
                   Qué esperar después de tu registro
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 text-left">
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-medium mt-0.5">
                     1
                   </div>
-                  <div>
-                    <p className="font-medium">Confirmación por email</p>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="text-left">
+                    <p className="font-medium text-left">Confirmación por email</p>
+                    <p className="text-sm text-muted-foreground text-left">
                       En los próximos minutos
                     </p>
                   </div>
@@ -136,9 +136,9 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
                   <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-medium mt-0.5">
                     2
                   </div>
-                  <div>
-                    <p className="font-medium">Creación del sitio web</p>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="text-left">
+                    <p className="font-medium text-left">Creación del sitio web</p>
+                    <p className="text-sm text-muted-foreground text-left">
                       24-48 horas
                     </p>
                   </div>
@@ -147,9 +147,9 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
                   <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-medium mt-0.5">
                     3
                   </div>
-                  <div>
-                    <p className="font-medium">Acceso al panel</p>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="text-left">
+                    <p className="font-medium text-left">Acceso al panel</p>
+                    <p className="text-sm text-muted-foreground text-left">
                       Te enviaremos el enlace
                     </p>
                   </div>
