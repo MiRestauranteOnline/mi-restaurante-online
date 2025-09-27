@@ -102,10 +102,13 @@ const Signup = () => {
       } else {
         throw new Error(data?.error || 'Account creation failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Account creation error after payment:', error);
       setIsProcessingPayment(false);
-      alert('Error al crear la cuenta después del pago. Por favor contacta soporte.');
+      
+      // Show the specific error message from the backend
+      const errorMessage = error.message || 'Error al crear la cuenta después del pago. Por favor contacta soporte.';
+      alert(errorMessage);
     }
   };
 

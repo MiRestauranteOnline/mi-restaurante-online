@@ -46,6 +46,8 @@ declare global {
 export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = false }: SignupStep1Props) => {
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
   const [paymentMethod, setPaymentMethod] = useState<'rebill' | 'demo'>('demo');
+  const [isCheckingSubdomain, setIsCheckingSubdomain] = useState(false);
+  const [subdomainError, setSubdomainError] = useState<string>("");
 
   const { toast } = useToast();
 
@@ -78,6 +80,41 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       .replace(/^www\./, '') // Remove www
       .replace(/\/$/, '') // Remove trailing slash
       .trim();
+  };
+
+  const checkSubdomainAvailability = async (subdomain: string) => {
+    if (!subdomain || subdomain.length < 3) {
+      setSubdomainError("");
+      return;
+    }
+
+    setIsCheckingSubdomain(true);
+    setSubdomainError("");
+
+    try {
+      const { data, error } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('subdomain', subdomain.toLowerCase())
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error checking subdomain:', error);
+        setSubdomainError("Error al verificar disponibilidad");
+        return;
+      }
+
+      if (data) {
+        setSubdomainError("Este subdominio ya está en uso");
+      } else {
+        setSubdomainError("");
+      }
+    } catch (error) {
+      console.error('Error checking subdomain:', error);
+      setSubdomainError("Error al verificar disponibilidad");
+    } finally {
+      setIsCheckingSubdomain(false);
+    }
   };
 
   const onSubmit = async (data: SignupFormData) => {
@@ -181,12 +218,29 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                     <Input 
                       placeholder="mi-restaurante"
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        const subdomain = e.target.value;
+                        if (subdomain && subdomain.length >= 3) {
+                          // Debounce the check
+                          setTimeout(() => checkSubdomainAvailability(subdomain), 500);
+                        } else {
+                          setSubdomainError("");
+                        }
+                      }}
+                      className={subdomainError ? "border-destructive" : ""}
                     />
                     <span className="flex items-center px-3 text-sm text-muted-foreground bg-muted border border-l-0 rounded-r-md">
                       .mirestaurante.online
                     </span>
                   </div>
                 </FormControl>
+                {isCheckingSubdomain && (
+                  <p className="text-sm text-muted-foreground">Verificando disponibilidad...</p>
+                )}
+                {subdomainError && (
+                  <p className="text-sm text-destructive">{subdomainError}</p>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -455,7 +509,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             type="submit" 
             className="w-full" 
             size="lg"
-            disabled={isProcessingPayment}
+            disabled={isProcessingPayment || !!subdomainError || isCheckingSubdomain}
           >
             {isProcessingPayment ? (
               <>
