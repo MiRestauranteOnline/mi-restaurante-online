@@ -209,16 +209,43 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                       render={({ field }) => {
                         const platform = form.watch(`socialMedia.${index}.platform`);
                         let placeholder = "https://...";
+                        let example = "";
                         
                         if (platform === "Facebook") {
-                          placeholder = "Your Facebook username or full URL";
+                          placeholder = "https://facebook.com/yourpage";
+                          example = "https://facebook.com/yourpage";
                         } else if (platform === "Instagram") {
-                          placeholder = "Your Instagram username or full URL";
+                          placeholder = "https://instagram.com/yourusername";
+                          example = "https://instagram.com/yourusername";
                         } else if (platform === "TikTok") {
-                          placeholder = "Your TikTok username or full URL";
+                          placeholder = "https://tiktok.com/@yourusername";
+                          example = "https://tiktok.com/@yourusername";
                         } else if (platform === "X (Twitter)") {
-                          placeholder = "Your Twitter username or full URL";
+                          placeholder = "https://x.com/yourusername";
+                          example = "https://x.com/yourusername";
                         }
+
+                        // Validate URL for the selected platform
+                        const validatePlatformUrl = (url: string, platformType: string) => {
+                          if (!url || !platformType) return true;
+                          
+                          const cleanUrl = url.toLowerCase().trim();
+                          
+                          switch (platformType) {
+                            case "Facebook":
+                              return cleanUrl.includes('facebook.com') || cleanUrl.includes('fb.com');
+                            case "Instagram":
+                              return cleanUrl.includes('instagram.com');
+                            case "TikTok":
+                              return cleanUrl.includes('tiktok.com');
+                            case "X (Twitter)":
+                              return cleanUrl.includes('x.com') || cleanUrl.includes('twitter.com');
+                            default:
+                              return true;
+                          }
+                        };
+
+                        const isValidUrl = validatePlatformUrl(field.value, platform);
                         
                         return (
                           <FormItem className="flex-1">
@@ -227,40 +254,20 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                               <Input 
                                 placeholder={placeholder} 
                                 {...field}
+                                className={!isValidUrl && field.value ? "border-destructive" : ""}
                                 onChange={(e) => {
                                   let value = e.target.value.trim();
                                   
-                                  // Validate and normalize the URL based on platform
-                                  if (platform && value) {
-                                    // First, check if it's already a valid URL for the platform
-                                    let isValidUrl = false;
-                                    let needsFormatting = true;
-                                    
-                                    if (platform === "Facebook" && (value.includes('facebook.com') || value.includes('fb.com'))) {
-                                      isValidUrl = true;
-                                      needsFormatting = false;
-                                    } else if (platform === "Instagram" && value.includes('instagram.com')) {
-                                      isValidUrl = true;
-                                      needsFormatting = false;
-                                    } else if (platform === "TikTok" && value.includes('tiktok.com')) {
-                                      isValidUrl = true;
-                                      needsFormatting = false;
-                                    } else if (platform === "X (Twitter)" && (value.includes('x.com') || value.includes('twitter.com'))) {
-                                      isValidUrl = true;
-                                      needsFormatting = false;
-                                    }
-                                    
-                                    // Only format if it's not already a valid URL and doesn't start with http
-                                    if (needsFormatting && !value.startsWith('http')) {
-                                      if (platform === "Facebook") {
-                                        value = `https://facebook.com/${value.replace('@', '').replace(/^\/+/, '')}`;
-                                      } else if (platform === "Instagram") {
-                                        value = `https://instagram.com/${value.replace('@', '').replace(/^\/+/, '')}`;
-                                      } else if (platform === "TikTok") {
-                                        value = `https://tiktok.com/@${value.replace('@', '').replace(/^\/+/, '')}`;
-                                      } else if (platform === "X (Twitter)") {
-                                        value = `https://x.com/${value.replace('@', '').replace(/^\/+/, '')}`;
-                                      }
+                                  // Auto-format username to full URL if it doesn't start with http
+                                  if (platform && value && !value.startsWith('http')) {
+                                    if (platform === "Facebook") {
+                                      value = `https://facebook.com/${value.replace('@', '').replace(/^\/+/, '')}`;
+                                    } else if (platform === "Instagram") {
+                                      value = `https://instagram.com/${value.replace('@', '').replace(/^\/+/, '')}`;
+                                    } else if (platform === "TikTok") {
+                                      value = `https://tiktok.com/@${value.replace('@', '').replace(/^\/+/, '')}`;
+                                    } else if (platform === "X (Twitter)") {
+                                      value = `https://x.com/${value.replace('@', '').replace(/^\/+/, '')}`;
                                     }
                                   }
                                   
@@ -268,11 +275,16 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                                 }}
                               />
                             </FormControl>
+                            {!isValidUrl && field.value && (
+                              <p className="text-sm text-destructive mt-1">
+                                Please enter a valid {platform} URL. Example: {example}
+                              </p>
+                            )}
                             <FormMessage />
                           </FormItem>
                         );
                       }}
-                    />
+                     />
                     {fields.length > 1 && (
                       <Button
                         type="button"

@@ -92,16 +92,13 @@ serve(async (req) => {
       if (websiteRequirements.deliveryPlatforms) {
         Object.entries(websiteRequirements.deliveryPlatforms).forEach(([platform, url]) => {
           if (url && typeof url === 'string' && url.trim()) {
-            // Map platform names to match database structure
+            // Map platform names to match what the dashboard expects
             let platformKey = platform;
-            if (platform === 'didifood') platformKey = 'didi';
-            else if (platform === 'pedidosya') platformKey = 'pedidosya';
+            if (platform === 'didifood') platformKey = 'didi_food';
+            else if (platform === 'pedidosya') platformKey = 'pedidos_ya';
             else if (platform === 'rappi') platformKey = 'rappi';
             
-            deliveryData[platformKey] = {
-              url: url.trim(),
-              show_in_nav: true
-            };
+            deliveryData[platformKey] = url.trim();
           }
         });
       }
