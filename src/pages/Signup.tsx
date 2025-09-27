@@ -91,7 +91,14 @@ const Signup = () => {
       });
 
       if (error) {
-        throw new Error(error.message);
+        // Handle specific backend errors
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Error en el servidor');
+      }
+      
+      // Check if the response has an error property
+      if (data?.error) {
+        throw new Error(data.error);
       }
       
       if (data?.success) {
@@ -108,7 +115,13 @@ const Signup = () => {
       
       // Show the specific error message from the backend
       const errorMessage = error.message || 'Error al crear la cuenta después del pago. Por favor contacta soporte.';
-      alert(errorMessage);
+      
+      // If it's a specific backend error, show it to the user
+      if (errorMessage.includes('subdominio') || errorMessage.includes('email')) {
+        alert(errorMessage);
+      } else {
+        alert('Error al crear la cuenta. Por favor contacta soporte si el problema persiste.');
+      }
     }
   };
 

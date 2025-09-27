@@ -119,6 +119,16 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
 
   const onSubmit = async (data: SignupFormData) => {
     try {
+      // Check subdomain availability one final time before submission
+      if (subdomainError) {
+        toast({
+          title: "Error de validación",
+          description: subdomainError,
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Clean custom domain if provided
       const cleanedData = {
         ...data,
@@ -131,10 +141,10 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
         title: "Información guardada",
         description: paymentMethod === 'demo' ? "Continuando sin pago..." : "Procesando pago...",
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error en el proceso",
-        description: "Hubo un problema. Inténtalo de nuevo.",
+        description: error.message || "Hubo un problema. Inténtalo de nuevo.",
         variant: "destructive",
       });
     }
