@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -35,6 +35,11 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface Client {
   id: string;
@@ -216,6 +221,7 @@ interface Review {
   display_order: number;
   is_active: boolean;
   client_id: string;
+  review_date?: string;
 }
 
 // Sortable Category Card Component for Menu Tab
@@ -612,9 +618,9 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
     name: '', title: '', bio: '', image_url: '', display_order: 0
   });
 
-  const [reviewForm, setReviewForm] = useState({
-    reviewer_name: '', review_text: '', star_rating: 5, display_order: 0
-  });
+const [reviewForm, setReviewForm] = useState({
+  reviewer_name: '', review_text: '', star_rating: 5, display_order: 0, review_date: null as Date | null,
+});
 
   // Briefing state
   const [briefing, setBriefing] = useState('');
@@ -1693,13 +1699,14 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
             reviewer_name: reviewForm.reviewer_name,
             review_text: reviewForm.review_text,
             star_rating: reviewForm.star_rating,
-            display_order: reviewForm.display_order
+            display_order: reviewForm.display_order,
+            review_date: reviewForm.review_date ? format(reviewForm.review_date, 'yyyy-MM-dd') : null,
           })
           .eq('id', editingReview.id);
 
         if (error) throw error;
         
-        setReviews(reviews.map(r => r.id === editingReview.id ? { ...r, ...reviewForm } : r) as Review[]);
+        setReviews(reviews.map(r => r.id === editingReview.id ? { ...r, ...reviewForm, review_date: reviewForm.review_date ? format(reviewForm.review_date, 'yyyy-MM-dd') : null } : r) as Review[]);
         setEditingReview(null);
       } else {
         const maxOrder = reviews.reduce((max, r) => Math.max(max, r.display_order), 0);
@@ -1712,7 +1719,8 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
             review_text: reviewForm.review_text,
             star_rating: reviewForm.star_rating,
             display_order: maxOrder + 1,
-            is_active: true
+            is_active: true,
+            review_date: reviewForm.review_date ? format(reviewForm.review_date, 'yyyy-MM-dd') : null,
           })
           .select();
 
@@ -1723,7 +1731,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
         }
       }
       
-      setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_order: 0 });
+setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_order: 0, review_date: null });
       setShowReviewDialog(false);
       
       toast({
@@ -1925,15 +1933,16 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const openReviewDialog = (review?: Review) => {
     if (review) {
       setEditingReview(review);
-      setReviewForm({
+setReviewForm({
         reviewer_name: review.reviewer_name,
         review_text: review.review_text,
         star_rating: review.star_rating,
         display_order: review.display_order,
+        review_date: review.review_date ? new Date(review.review_date) : null,
       });
     } else {
       setEditingReview(null);
-      setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_order: 0 });
+      setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_order: 0, review_date: null });
     }
     setShowReviewDialog(true);
   };
@@ -4058,6 +4067,57 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
                 placeholder="Customer review"
                 rows={4}
               />
+            </div>
+            
+            <div>
+              <Label>Review Date</Label>
+              <div className="space-y-3 mt-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="use-current-date-admin"
+                    checked={!!reviewForm.review_date && format(reviewForm.review_date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')}
+                    onCheckedChange={(checked) => {
+                      if (checked === true) {
+                        setReviewForm({ ...reviewForm, review_date: new Date() });
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor="use-current-date-admin"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Use current date ({format(new Date(), 'dd/MM/yyyy')})
+                  </label>
+                </div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !reviewForm.review_date && "text-muted-foreground"
+                      )}
+                    >
+                      {reviewForm.review_date ? (
+                        format(reviewForm.review_date, "dd/MM/yyyy")
+                      ) : (
+                        <span>Select a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={reviewForm.review_date ?? undefined}
+                      onSelect={(d) => setReviewForm({ ...reviewForm, review_date: d ?? null })}
+                      disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
             
             <div className="flex justify-end gap-2">
