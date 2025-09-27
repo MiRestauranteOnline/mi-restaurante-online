@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
@@ -21,7 +22,12 @@ import UnifiedDashboard from "./pages/dashboard/UnifiedDashboard";
 import ClientManagement from "./pages/admin/ClientManagement";
 import ClientSettings from "./pages/admin/ClientSettings";
 import ProjectConfiguration from "./pages/admin/ProjectConfiguration";
+import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
+import ClientDashboard from "./pages/client/ClientDashboard";
+import ClientSettingsPage from "./pages/client/ClientSettings";
+import ClientSubscription from "./pages/client/ClientSubscription";
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 
 const queryClient = new QueryClient();
@@ -29,36 +35,44 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
+      <LanguageProvider>
+        <Toaster />
+        <Sonner />
         <BrowserRouter>
           <RecoveryRedirect />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/contacto" element={<Contact />} />
-          <Route path="/acerca-de" element={<About />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/guia" element={<Blog />} />
-          <Route path="/guia/:category/:slug" element={<BlogPost />} />
-          <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/registro" element={<Signup />} />
-          <Route path="/admin/rebill" element={<RebillAdmin />} />
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<UnifiedDashboard />} />
-          </Route>
-          <Route path="/admin" element={<DashboardLayout />}>
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="client-management" element={<ClientManagement />} />
-            <Route path="client-settings/:clientId" element={<ClientSettings />} />
-            <Route path="project-config" element={<ProjectConfiguration />} />
-          </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <WhatsAppButton />
-      </BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/contacto" element={<Contact />} />
+            <Route path="/acerca-de" element={<About />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/guia" element={<Blog />} />
+            <Route path="/guia/:category/:slug" element={<BlogPost />} />
+            <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/registro" element={<Signup />} />
+            <Route path="/admin/rebill" element={<RebillAdmin />} />
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<UnifiedDashboard />} />
+            </Route>
+            <Route path="/admin" element={<DashboardLayout />}>
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="client-management" element={<ClientManagement />} />
+              <Route path="client-settings/:clientId" element={<ClientSettings />} />
+              <Route path="project-config" element={<ProjectConfiguration />} />
+              <Route path="subscription-management" element={<SubscriptionManagement />} />
+            </Route>
+            <Route path="/client" element={<ClientDashboardLayout />}>
+              <Route index element={<ClientDashboard />} />
+              <Route path="dashboard" element={<ClientDashboard />} />
+              <Route path="settings" element={<ClientSettingsPage />} />
+              <Route path="subscription" element={<ClientSubscription />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <WhatsAppButton />
+        </BrowserRouter>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

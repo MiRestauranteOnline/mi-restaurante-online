@@ -14,10 +14,14 @@ import {
   ChevronLeft,
   LayoutDashboard,
   UtensilsCrossed,
-  Shield
+  Shield,
+  CreditCard,
+  Star
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Client {
   id: string;
@@ -37,6 +41,7 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -107,33 +112,25 @@ export default function DashboardLayout() {
 
   const selectedClient = clients.find(c => c.client_id === selectedClientId)?.clients;
 
-  const sidebarItems = [
-    ...(isAdmin ? [{
-      title: 'Admin Dashboard',
-      href: '/admin/dashboard',
-      icon: Shield,
-    }, {
-      title: 'Client Management',
-      href: '/admin/client-management',
-      icon: Users,
-    }, {
-      title: 'Project Config',
-      href: '/admin/project-config',
-      icon: Settings,
-    }] : []),
-    {
-      title: 'Panel de Control',
-      href: '/dashboard',
-      icon: LayoutDashboard,
-    },
+  const mainSidebarItems = [
+    { href: '/dashboard', icon: LayoutDashboard, title: t('nav.dashboard') },
+    { href: '/dashboard/menu-categories', icon: UtensilsCrossed, title: t('nav.categories') },
+    { href: '/dashboard/menu-items', icon: MenuIcon, title: t('nav.items') },
+    { href: '/dashboard/reviews', icon: Star, title: t('nav.reviews') },
+    { href: '/dashboard/team-members', icon: Users, title: t('nav.team') },
+    { href: '/dashboard/restaurant-settings', icon: Settings, title: t('nav.settings') },
+  ];
+
+  const adminSidebarItems = [
+    { href: '/admin/client-management', icon: Shield, title: t('admin.clientManagement') },
+    { href: '/admin/subscription-management', icon: CreditCard, title: t('admin.subscriptionManagement') },
   ];
 
   if (!user || (!isAdmin && clients.length === 0)) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">Cargando panel de control...</p>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">{t('common.loading')}</h1>
         </div>
       </div>
     );
@@ -184,17 +181,37 @@ export default function DashboardLayout() {
         {/* Admin Notice */}
         {sidebarOpen && isAdmin && clients.length === 0 && (
           <div className="p-4 border-b border-border">
-            <p className="text-sm text-muted-foreground">Admin Dashboard</p>
+            <p className="text-sm text-muted-foreground">{t('admin.panel')}</p>
           </div>
         )}
 
         {/* Sidebar Navigation */}
         <nav className="flex-1 p-4 space-y-2">
-          {sidebarItems.map((item) => (
+          {/* Regular dashboard items (only if user has clients or is admin with selected client) */}
+          {(clients.length > 0 || (isAdmin && selectedClientId)) && mainSidebarItems.map((item) => (
             <NavLink
               key={item.href}
               to={item.href}
               end={item.href === '/dashboard'}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                )
+              }
+            >
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              {sidebarOpen && <span>{item.title}</span>}
+            </NavLink>
+          ))}
+
+          {/* Admin items */}
+          {isAdmin && adminSidebarItems.map((item) => (
+            <NavLink
+              key={item.href}
+              to={item.href}
               className={({ isActive }) =>
                 cn(
                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
@@ -229,7 +246,7 @@ export default function DashboardLayout() {
               ) : isAdmin ? (
                 <div>
                   <h1 className="text-xl font-semibold text-foreground">
-                    Admin Panel
+                    {t('admin.panel')}
                   </h1>
                   <p className="text-sm text-muted-foreground">
                     Sistema de administración
@@ -239,6 +256,9 @@ export default function DashboardLayout() {
             </div>
 
             <div className="flex items-center gap-4">
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+
               {selectedClient && (
                 <Button
                   variant="outline"
@@ -268,8 +288,8 @@ export default function DashboardLayout() {
                     </div>
                   </div>
                   <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Cerrar Sesión
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>{t('nav.logout')}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -278,7 +298,7 @@ export default function DashboardLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 overflow-auto p-6">
           <Outlet context={{ selectedClientId, selectedClient }} />
         </main>
       </div>
