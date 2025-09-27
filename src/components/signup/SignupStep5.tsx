@@ -56,6 +56,10 @@ export const SignupStep5 = ({ onComplete, onBack, initialData }: SignupStep5Prop
     onComplete(data);
   };
 
+  const handleSkip = () => {
+    onComplete({ teamMembers: [] });
+  };
+
   const addTeamMember = () => {
     appendTeamMember({ name: "", title: "", bio: "", imageUrl: "" });
   };
@@ -178,6 +182,31 @@ export const SignupStep5 = ({ onComplete, onBack, initialData }: SignupStep5Prop
                 <Plus className="h-4 w-4 mr-2" />
                 Agregar Miembro del Equipo
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Skip Option */}
+          <Card className="border-yellow-200 bg-yellow-50">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="text-yellow-600 text-sm">⚠️</div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-yellow-800">¿Omitir miembros del equipo?</p>
+                  <p className="text-xs text-yellow-700 mt-1">
+                    Si omites este paso, tu sitio se publicará sin información del equipo. 
+                    No te preocupes, puedes agregarla fácilmente después a través de tu panel de control.
+                  </p>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleSkip}
+                    className="mt-2 text-yellow-700 border-yellow-300 hover:bg-yellow-100"
+                  >
+                    Omitir por ahora
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
 

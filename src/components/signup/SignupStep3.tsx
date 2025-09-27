@@ -40,7 +40,7 @@ const menuItemSchema = z.object({
 
 const menuSchema = z.object({
   categories: z.array(menuCategorySchema).min(1, "Agrega al menos una categoría"),
-  items: z.array(menuItemSchema).min(1, "Agrega al menos un plato"),
+  items: z.array(menuItemSchema).min(4, "Necesitas agregar al menos 4 elementos de menú"),
 });
 
 type MenuFormData = z.infer<typeof menuSchema>;
@@ -74,6 +74,10 @@ export const SignupStep3 = ({ onComplete, onBack, initialData }: SignupStep3Prop
 
   const onSubmit = (data: MenuFormData) => {
     onComplete(data);
+  };
+
+  const handleSkip = () => {
+    onComplete({ categories: [], items: [] });
   };
 
   const addCategory = () => {
@@ -283,6 +287,31 @@ export const SignupStep3 = ({ onComplete, onBack, initialData }: SignupStep3Prop
                 <Plus className="h-4 w-4 mr-2" />
                 Agregar Plato
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Skip Option */}
+          <Card className="border-yellow-200 bg-yellow-50">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="text-yellow-600 text-sm">⚠️</div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-yellow-800">¿Omitir elementos del menú?</p>
+                  <p className="text-xs text-yellow-700 mt-1">
+                    Si omites este paso, tu sitio se publicará sin elementos del menú. 
+                    No te preocupes, puedes agregarlos fácilmente después a través de tu panel de control.
+                  </p>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleSkip}
+                    className="mt-2 text-yellow-700 border-yellow-300 hover:bg-yellow-100"
+                  >
+                    Omitir por ahora
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
