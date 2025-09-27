@@ -128,6 +128,12 @@ serve(async (req) => {
         "homepage_contact_section_description": "Descripción de contacto",
         "homepage_delivery_section_title": "Título de delivery",
         "homepage_delivery_section_description": "Descripción de delivery",
+        "homepage_cta_title": "Título llamativo para CTA",
+        "homepage_cta_description": "Descripción persuasiva para CTA",
+        "homepage_cta_button1_text": "WhatsApp",
+        "homepage_cta_button1_link": "",
+        "homepage_cta_button2_text": "Llamar",
+        "homepage_cta_button2_link": "",
         "reviews_section_title_first_line": "Primera parte reviews",
         "reviews_section_title_second_line": "Segunda parte reviews",
         "about_page_hero_title_first_line": "Primera parte about hero",
@@ -148,6 +154,18 @@ serve(async (req) => {
         "about_story": "Historia del restaurante (2-3 párrafos)",
         "about_chef_info": "Información del chef/equipo",
         "about_mission": "Misión del restaurante",
+        "contact_reservation_title": "Título para caja de reservas",
+        "contact_reservation_description": "Descripción para caja de reservas",
+        "whatsapp_reservation_message": "Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas.",
+        "whatsapp_general_message": "Hola, me gustaría hacer una reserva",
+        "our_story_label": "Nuestra Historia",
+        "culinary_masterpieces_label": "Obras Maestras Culinarias",
+        "testimonials_label": "Testimonios",
+        "our_services_label": "Nuestros Servicios",
+        "contact_us_label": "Contáctanos",
+        "about_us_label": "Acerca de Nosotros",
+        "our_menu_label": "Nuestro Menú",
+        "our_team_label": "Nuestro Equipo",
         "stats_item1_number": "15+",
         "stats_item1_label": "Años de Experiencia",
         "stats_item1_icon": "Clock",
@@ -208,6 +226,11 @@ serve(async (req) => {
     - Los servicios deben reflejar lo que realmente ofrece el restaurante según el briefing
     - Los botones de servicios deben usar enlaces de WhatsApp apropiados
     - Crea contenido coherente que refleje la personalidad del restaurante
+    - LABELS: Las etiquetas (our_story_label, etc.) deben ser cortas y descriptivas
+    - CTA: Crea un título y descripción persuasivos que motiven a la acción
+    - WHATSAPP: Los mensajes deben ser naturales y apropiados para el contexto del restaurante
+    - RESERVAS: El título y descripción de reservas deben ser claros y motivadores
+    - CONSISTENCIA: Todo el contenido debe mantener el mismo tono y personalidad de marca
     `;
 
     console.log('Calling OpenAI API...');
