@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -605,7 +605,15 @@ function SortableReview({ review, onEdit, onDelete }: {
 export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[] } = {}) {
   console.log('ClientSettings component rendered'); // Debug log
   const { clientId } = useParams<{ clientId: string }>();
+  const outletCtx = useOutletContext<{ selectedClientId?: string }>();
+  const contextClientId = outletCtx?.selectedClientId;
   const navigate = useNavigate();
+  useEffect(() => {
+    if (contextClientId && contextClientId !== clientId) {
+      // Keep URL and data in sync with selected client from admin layout
+      navigate(`/admin/client-settings/${contextClientId}`, { replace: true });
+    }
+  }, [contextClientId, clientId, navigate]);
   const [client, setClient] = useState<Client | null>(null);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
   const [adminContent, setAdminContent] = useState<AdminContent | null>(null);
