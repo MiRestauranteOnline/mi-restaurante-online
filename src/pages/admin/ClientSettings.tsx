@@ -845,7 +845,20 @@ const [reviewForm, setReviewForm] = useState({
     header_logo_url: '',
     footer_logo_url: '',
     // Downloadable menu
-    downloadable_menu_url: ''
+    downloadable_menu_url: '',
+    // Homepage CTA Section Fields
+    homepage_cta_title: '',
+    homepage_cta_description: '',
+    homepage_cta_button1_text: '',
+    homepage_cta_button1_link: '',
+    homepage_cta_button2_text: '',
+    homepage_cta_button2_link: '',
+    // Contact Reservation Section Fields
+    contact_reservation_title: '',
+    contact_reservation_description: '',
+    // WhatsApp Message Fields
+    whatsapp_reservation_message: '',
+    whatsapp_general_message: ''
   });
 
   useEffect(() => {
@@ -1124,7 +1137,20 @@ const [reviewForm, setReviewForm] = useState({
           header_logo_url: data.header_logo_url || '',
           footer_logo_url: data.footer_logo_url || '',
           // Downloadable menu
-          downloadable_menu_url: data.downloadable_menu_url || ''
+          downloadable_menu_url: data.downloadable_menu_url || '',
+          // Homepage CTA Section Fields
+          homepage_cta_title: data.homepage_cta_title || '',
+          homepage_cta_description: data.homepage_cta_description || '',
+          homepage_cta_button1_text: data.homepage_cta_button1_text || '',
+          homepage_cta_button1_link: data.homepage_cta_button1_link || '',
+          homepage_cta_button2_text: data.homepage_cta_button2_text || '',
+          homepage_cta_button2_link: data.homepage_cta_button2_link || '',
+          // Contact Reservation Section Fields
+          contact_reservation_title: data.contact_reservation_title || '',
+          contact_reservation_description: data.contact_reservation_description || '',
+          // WhatsApp Message Fields
+          whatsapp_reservation_message: data.whatsapp_reservation_message || '',
+          whatsapp_general_message: data.whatsapp_general_message || ''
         }));
       }
     } catch (error: any) {
@@ -1402,6 +1428,19 @@ const [reviewForm, setReviewForm] = useState({
             footer_logo_url: formData.footer_logo_url,
             // Downloadable menu
             downloadable_menu_url: formData.downloadable_menu_url,
+            // Homepage CTA Section Fields
+            homepage_cta_title: formData.homepage_cta_title,
+            homepage_cta_description: formData.homepage_cta_description,
+            homepage_cta_button1_text: formData.homepage_cta_button1_text,
+            homepage_cta_button1_link: formData.homepage_cta_button1_link,
+            homepage_cta_button2_text: formData.homepage_cta_button2_text,
+            homepage_cta_button2_link: formData.homepage_cta_button2_link,
+            // Contact Reservation Section Fields
+            contact_reservation_title: formData.contact_reservation_title,
+            contact_reservation_description: formData.contact_reservation_description,
+            // WhatsApp Message Fields
+            whatsapp_reservation_message: formData.whatsapp_reservation_message,
+            whatsapp_general_message: formData.whatsapp_general_message,
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'client_id'
@@ -3496,6 +3535,130 @@ setReviewForm({
                       onChange={(e) => setFormData({...formData, footer_description: e.target.value})}
                       rows={3}
                       placeholder="Brief description for the footer section..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Homepage CTA Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Homepage - CTA Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="homepage_cta_title">CTA Title</Label>
+                    <Input
+                      id="homepage_cta_title"
+                      value={formData.homepage_cta_title}
+                      onChange={(e) => setFormData({...formData, homepage_cta_title: e.target.value})}
+                      placeholder="¿Listo para una experiencia culinaria única?"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="homepage_cta_description">CTA Description</Label>
+                    <Textarea
+                      id="homepage_cta_description"
+                      value={formData.homepage_cta_description}
+                      onChange={(e) => setFormData({...formData, homepage_cta_description: e.target.value})}
+                      rows={2}
+                      placeholder="Contáctanos ahora para hacer tu reserva o conocer más sobre nuestro menú."
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="homepage_cta_button1_text">First Button Text</Label>
+                      <Input
+                        id="homepage_cta_button1_text"
+                        value={formData.homepage_cta_button1_text}
+                        onChange={(e) => setFormData({...formData, homepage_cta_button1_text: e.target.value})}
+                        placeholder="WhatsApp"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_cta_button1_link">First Button Link</Label>
+                      <Input
+                        id="homepage_cta_button1_link"
+                        value={formData.homepage_cta_button1_link}
+                        onChange={(e) => setFormData({...formData, homepage_cta_button1_link: e.target.value})}
+                        placeholder="Leave empty to use WhatsApp"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="homepage_cta_button2_text">Second Button Text</Label>
+                      <Input
+                        id="homepage_cta_button2_text"
+                        value={formData.homepage_cta_button2_text}
+                        onChange={(e) => setFormData({...formData, homepage_cta_button2_text: e.target.value})}
+                        placeholder="Llamar"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="homepage_cta_button2_link">Second Button Link</Label>
+                      <Input
+                        id="homepage_cta_button2_link"
+                        value={formData.homepage_cta_button2_link}
+                        onChange={(e) => setFormData({...formData, homepage_cta_button2_link: e.target.value})}
+                        placeholder="Leave empty to use phone"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Contact Reservation Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Contact - Reservation Section</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="contact_reservation_title">Reservation Box Title</Label>
+                    <Input
+                      id="contact_reservation_title"
+                      value={formData.contact_reservation_title}
+                      onChange={(e) => setFormData({...formData, contact_reservation_title: e.target.value})}
+                      placeholder="Reserva Tu Mesa"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact_reservation_description">Reservation Box Description</Label>
+                    <Textarea
+                      id="contact_reservation_description"
+                      value={formData.contact_reservation_description}
+                      onChange={(e) => setFormData({...formData, contact_reservation_description: e.target.value})}
+                      rows={3}
+                      placeholder="¿Listo para disfrutar de una experiencia culinaria excepcional? Contáctanos directamente para hacer tu reserva o resolver cualquier consulta."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* WhatsApp Messages Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>WhatsApp Messages</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="whatsapp_reservation_message">Reservation Message</Label>
+                    <Textarea
+                      id="whatsapp_reservation_message"
+                      value={formData.whatsapp_reservation_message}
+                      onChange={(e) => setFormData({...formData, whatsapp_reservation_message: e.target.value})}
+                      rows={2}
+                      placeholder="Hola, me gustaría hacer una reserva para [fecha] a las [hora] para [número de personas] personas."
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="whatsapp_general_message">General Message</Label>
+                    <Input
+                      id="whatsapp_general_message"
+                      value={formData.whatsapp_general_message}
+                      onChange={(e) => setFormData({...formData, whatsapp_general_message: e.target.value})}
+                      placeholder="Hola, me gustaría hacer una reserva"
                     />
                   </div>
                 </CardContent>

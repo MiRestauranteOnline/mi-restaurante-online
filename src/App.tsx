@@ -56,6 +56,7 @@ const App = () => (
               <Route index element={<UnifiedDashboard />} />
             </Route>
             <Route path="/admin" element={<DashboardLayout />}>
+              <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="client-management" element={<ClientManagement />} />
               <Route path="client-settings/:clientId" element={<ClientSettings />} />
