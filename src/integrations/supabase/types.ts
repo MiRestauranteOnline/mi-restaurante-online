@@ -29,13 +29,18 @@ export type Database = {
           about_team_section_description: string | null
           about_team_section_title_first_line: string | null
           about_team_section_title_second_line: string | null
+          about_us_label: string | null
           client_id: string
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
           contact_page_hero_title: string | null
           contact_page_hero_title_first_line: string | null
           contact_page_hero_title_second_line: string | null
+          contact_reservation_description: string | null
+          contact_reservation_title: string | null
+          contact_us_label: string | null
           created_at: string
+          culinary_masterpieces_label: string | null
           downloadable_menu_url: string | null
           footer_description: string | null
           footer_logo_url: string | null
@@ -50,6 +55,12 @@ export type Database = {
           homepage_contact_section_title: string | null
           homepage_contact_section_title_first_line: string | null
           homepage_contact_section_title_second_line: string | null
+          homepage_cta_button1_link: string | null
+          homepage_cta_button1_text: string | null
+          homepage_cta_button2_link: string | null
+          homepage_cta_button2_text: string | null
+          homepage_cta_description: string | null
+          homepage_cta_title: string | null
           homepage_delivery_section_description: string | null
           homepage_delivery_section_title: string | null
           homepage_hero_background_url: string | null
@@ -73,6 +84,10 @@ export type Database = {
           menu_page_hero_title: string | null
           menu_page_hero_title_first_line: string | null
           menu_page_hero_title_second_line: string | null
+          our_menu_label: string | null
+          our_services_label: string | null
+          our_story_label: string | null
+          our_team_label: string | null
           reviews_page_hero_background_url: string | null
           reviews_page_hero_description: string | null
           reviews_page_hero_title: string | null
@@ -116,7 +131,10 @@ export type Database = {
           stats_item3_icon: string | null
           stats_item3_label: string | null
           stats_item3_number: string | null
+          testimonials_label: string | null
           updated_at: string
+          whatsapp_general_message: string | null
+          whatsapp_reservation_message: string | null
         }
         Insert: {
           about_chef_info?: string | null
@@ -132,13 +150,18 @@ export type Database = {
           about_team_section_description?: string | null
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
+          about_us_label?: string | null
           client_id: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
+          contact_reservation_description?: string | null
+          contact_reservation_title?: string | null
+          contact_us_label?: string | null
           created_at?: string
+          culinary_masterpieces_label?: string | null
           downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
@@ -153,6 +176,12 @@ export type Database = {
           homepage_contact_section_title?: string | null
           homepage_contact_section_title_first_line?: string | null
           homepage_contact_section_title_second_line?: string | null
+          homepage_cta_button1_link?: string | null
+          homepage_cta_button1_text?: string | null
+          homepage_cta_button2_link?: string | null
+          homepage_cta_button2_text?: string | null
+          homepage_cta_description?: string | null
+          homepage_cta_title?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
           homepage_hero_background_url?: string | null
@@ -176,6 +205,10 @@ export type Database = {
           menu_page_hero_title?: string | null
           menu_page_hero_title_first_line?: string | null
           menu_page_hero_title_second_line?: string | null
+          our_menu_label?: string | null
+          our_services_label?: string | null
+          our_story_label?: string | null
+          our_team_label?: string | null
           reviews_page_hero_background_url?: string | null
           reviews_page_hero_description?: string | null
           reviews_page_hero_title?: string | null
@@ -219,7 +252,10 @@ export type Database = {
           stats_item3_icon?: string | null
           stats_item3_label?: string | null
           stats_item3_number?: string | null
+          testimonials_label?: string | null
           updated_at?: string
+          whatsapp_general_message?: string | null
+          whatsapp_reservation_message?: string | null
         }
         Update: {
           about_chef_info?: string | null
@@ -235,13 +271,18 @@ export type Database = {
           about_team_section_description?: string | null
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
+          about_us_label?: string | null
           client_id?: string
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
+          contact_reservation_description?: string | null
+          contact_reservation_title?: string | null
+          contact_us_label?: string | null
           created_at?: string
+          culinary_masterpieces_label?: string | null
           downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
@@ -256,6 +297,12 @@ export type Database = {
           homepage_contact_section_title?: string | null
           homepage_contact_section_title_first_line?: string | null
           homepage_contact_section_title_second_line?: string | null
+          homepage_cta_button1_link?: string | null
+          homepage_cta_button1_text?: string | null
+          homepage_cta_button2_link?: string | null
+          homepage_cta_button2_text?: string | null
+          homepage_cta_description?: string | null
+          homepage_cta_title?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
           homepage_hero_background_url?: string | null
@@ -279,6 +326,10 @@ export type Database = {
           menu_page_hero_title?: string | null
           menu_page_hero_title_first_line?: string | null
           menu_page_hero_title_second_line?: string | null
+          our_menu_label?: string | null
+          our_services_label?: string | null
+          our_story_label?: string | null
+          our_team_label?: string | null
           reviews_page_hero_background_url?: string | null
           reviews_page_hero_description?: string | null
           reviews_page_hero_title?: string | null
@@ -322,7 +373,10 @@ export type Database = {
           stats_item3_icon?: string | null
           stats_item3_label?: string | null
           stats_item3_number?: string | null
+          testimonials_label?: string | null
           updated_at?: string
+          whatsapp_general_message?: string | null
+          whatsapp_reservation_message?: string | null
         }
         Relationships: [
           {
