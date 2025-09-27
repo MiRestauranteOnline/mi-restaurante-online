@@ -187,8 +187,8 @@ export default function DashboardLayout() {
 
         {/* Sidebar Navigation */}
         <nav className="flex-1 p-4 space-y-2">
-          {/* Regular dashboard items (only if user has clients or is admin with selected client) */}
-          {(clients.length > 0 || (isAdmin && selectedClientId)) && mainSidebarItems.map((item) => (
+          {/* Regular dashboard items (only if user has clients and is NOT admin) */}
+          {!isAdmin && clients.length > 0 && mainSidebarItems.map((item) => (
             <NavLink
               key={item.href}
               to={item.href}
