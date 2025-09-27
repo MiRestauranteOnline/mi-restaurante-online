@@ -100,6 +100,13 @@ export default function DashboardLayout() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  // Redirect non-admin users to the client portal
+  useEffect(() => {
+    if (user && !isAdmin) {
+      navigate('/client/dashboard', { replace: true });
+    }
+  }, [user, isAdmin, navigate]);
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -187,25 +194,7 @@ export default function DashboardLayout() {
 
         {/* Sidebar Navigation */}
         <nav className="flex-1 p-4 space-y-2">
-          {/* Regular dashboard items (only if user has clients and is NOT admin) */}
-          {!isAdmin && clients.length > 0 && mainSidebarItems.map((item) => (
-            <NavLink
-              key={item.href}
-              to={item.href}
-              end={item.href === '/dashboard'}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                )
-              }
-            >
-              <item.icon className="h-4 w-4 flex-shrink-0" />
-              {sidebarOpen && <span>{item.title}</span>}
-            </NavLink>
-          ))}
+          {/* Client items are managed in the Client Portal now */}
 
           {/* Admin items */}
           {isAdmin && adminSidebarItems.map((item) => (

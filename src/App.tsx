@@ -26,7 +26,7 @@ import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
 import ClientDashboard from "./pages/client/ClientDashboard";
-import ClientSettingsPage from "./pages/client/ClientSettings";
+// import ClientSettingsPage from "./pages/client/ClientSettings";
 import ClientSubscription from "./pages/client/ClientSubscription";
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 
@@ -65,7 +65,7 @@ const App = () => (
             <Route path="/client" element={<ClientDashboardLayout />}>
               <Route index element={<ClientDashboard />} />
               <Route path="dashboard" element={<ClientDashboard />} />
-              <Route path="settings" element={<ClientSettingsPage />} />
+              {/* settings route removed; clients manage only Dashboard and Subscription */}
               <Route path="subscription" element={<ClientSubscription />} />
             </Route>
             <Route path="*" element={<NotFound />} />
