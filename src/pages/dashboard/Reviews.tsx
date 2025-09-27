@@ -19,8 +19,18 @@ import {
   Trash2, 
   GripVertical,
   Star,
-  MessageSquare
+  MessageSquare,
+  CalendarIcon
 } from 'lucide-react';
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   DndContext,
   closestCenter,
@@ -57,6 +67,7 @@ interface Review {
   star_rating: number;
   display_order: number;
   is_active: boolean;
+  review_date?: string;
   created_at: string;
   updated_at: string;
 }
@@ -66,6 +77,7 @@ const reviewSchema = z.object({
   review_text: z.string().min(1, 'El texto de la reseña es requerido'),
   star_rating: z.number().min(0.5).max(5),
   is_active: z.boolean().default(true),
+  review_date: z.date().optional(),
 });
 
 type ReviewFormData = z.infer<typeof reviewSchema>;
@@ -288,6 +300,7 @@ export default function Reviews() {
             review_text: data.review_text,
             star_rating: data.star_rating,
             is_active: data.is_active,
+            review_date: data.review_date ? format(data.review_date, 'yyyy-MM-dd') : null,
           })
           .eq('id', editing.id);
 
@@ -307,6 +320,7 @@ export default function Reviews() {
             star_rating: data.star_rating,
             display_order: maxOrder + 1,
             is_active: data.is_active,
+            review_date: data.review_date ? format(data.review_date, 'yyyy-MM-dd') : null,
           });
 
         if (error) throw error;
@@ -332,6 +346,7 @@ export default function Reviews() {
       review_text: review.review_text,
       star_rating: review.star_rating,
       is_active: review.is_active,
+      review_date: review.review_date ? new Date(review.review_date) : undefined,
     });
     setShowDialog(true);
   };
@@ -518,6 +533,68 @@ export default function Reviews() {
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="review_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fecha de la Reseña</FormLabel>
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="use-current-date"
+                            checked={field.value && format(field.value, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.onChange(new Date());
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor="use-current-date"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            Usar fecha actual ({format(new Date(), 'dd/MM/yyyy')})
+                          </label>
+                        </div>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "dd/MM/yyyy")
+                                ) : (
+                                  <span>Selecciona una fecha</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                              className={cn("p-3 pointer-events-auto")}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
