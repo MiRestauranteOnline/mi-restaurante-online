@@ -79,7 +79,9 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
   const generateSubdomain = (restaurantName: string) => {
     return restaurantName
       .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, '')
+      .normalize('NFD') // Normalize to decomposed form
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics (accents)
+      .replace(/[^a-z0-9\s]/g, '') // Remove remaining special characters
       .replace(/\s+/g, '-')
       .substring(0, 20);
   };
