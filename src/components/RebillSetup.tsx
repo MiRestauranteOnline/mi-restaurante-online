@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -67,10 +67,10 @@ export const RebillSetup = () => {
     }
   };
 
-  // Check for existing plans on component mount
-  useState(() => {
+// Check for existing plans on component mount
+  useEffect(() => {
     checkExistingPlans();
-  });
+  }, []);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
