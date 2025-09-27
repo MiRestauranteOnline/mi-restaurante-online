@@ -15,6 +15,7 @@ export interface SignupData {
   paymentId?: string;
   hasCustomDomain?: boolean;
   customDomain?: string;
+  referralSource?: string;
 }
 
 export interface WebsiteRequirements {
@@ -36,6 +37,7 @@ const Signup = () => {
     phone: "",
     hasCustomDomain: false,
     customDomain: "",
+    referralSource: "",
   });
   const [websiteRequirements, setWebsiteRequirements] = useState<WebsiteRequirements>({
     businessType: "",

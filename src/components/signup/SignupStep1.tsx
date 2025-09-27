@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, CreditCard, Shield, Clock } from "lucide-react";
@@ -23,6 +24,7 @@ const signupSchema = z.object({
   phone: z.string().min(10, "Número de teléfono inválido"),
   hasCustomDomain: z.boolean().optional(),
   customDomain: z.string().optional(),
+  referralSource: z.string().optional(),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
@@ -48,6 +50,7 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
       phone: initialData.phone,
       hasCustomDomain: initialData.hasCustomDomain || false,
       customDomain: initialData.customDomain || "",
+      referralSource: initialData.referralSource || "",
     }
   });
 
@@ -339,6 +342,36 @@ export const SignupStep1 = ({ onComplete, initialData }: SignupStep1Props) => {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="referralSource"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>¿Cómo nos encontraste?</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="bg-background">
+                      <SelectValue placeholder="Selecciona una opción" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-background border border-border z-50">
+                    <SelectItem value="google">Google</SelectItem>
+                    <SelectItem value="tiktok">TikTok</SelectItem>
+                    <SelectItem value="facebook">Facebook</SelectItem>
+                    <SelectItem value="instagram">Instagram</SelectItem>
+                    <SelectItem value="advertisement">Publicidad Online</SelectItem>
+                    <SelectItem value="flyers">Volantes</SelectItem>
+                    <SelectItem value="recommendations">Recomendación de amigos</SelectItem>
+                    <SelectItem value="youtube">YouTube</SelectItem>
+                    <SelectItem value="radio">Radio</SelectItem>
+                    <SelectItem value="other">Otro</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
