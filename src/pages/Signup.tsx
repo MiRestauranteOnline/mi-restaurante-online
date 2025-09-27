@@ -3,6 +3,9 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SignupStep1 } from "@/components/signup/SignupStep1";
 import { SignupStep2 } from "@/components/signup/SignupStep2";
+import { SignupStep3, type MenuData } from "@/components/signup/SignupStep3";
+import { SignupStep4, type ReviewsData } from "@/components/signup/SignupStep4";
+import { SignupStep5, type TeamData } from "@/components/signup/SignupStep5";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -68,6 +71,16 @@ const Signup = () => {
     brandInfo: "",
     websiteStyle: "",
   });
+  const [menuData, setMenuData] = useState<MenuData>({
+    categories: [],
+    items: [],
+  });
+  const [reviewsData, setReviewsData] = useState<ReviewsData>({
+    reviews: [],
+  });
+  const [teamData, setTeamData] = useState<TeamData>({
+    teamMembers: [],
+  });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
@@ -110,7 +123,7 @@ const Signup = () => {
       if (data?.success) {
         console.log('Account created successfully after payment:', data);
         setIsProcessingPayment(false);
-        // Move to step 2 for website requirements (was step 3)
+        // Move to step 2 for website requirements
         setCurrentStep(2);
       } else {
         throw new Error(data?.error || 'Account creation failed');
@@ -133,16 +146,31 @@ const Signup = () => {
 
   const handleStep2Complete = async (requirements: WebsiteRequirements) => {
     setWebsiteRequirements(requirements);
+    setCurrentStep(3); // Move to menu step
+  };
+
+  const handleStep3Complete = async (menu: MenuData) => {
+    setMenuData(menu);
+    setCurrentStep(4); // Move to reviews step
+  };
+
+  const handleStep4Complete = async (reviews: ReviewsData) => {
+    setReviewsData(reviews);
+    setCurrentStep(5); // Move to team step
+  };
+
+  const handleStep5Complete = async (team: TeamData) => {
+    setTeamData(team);
     
     try {
       // Create briefing summaries from accumulated data
-      const contentBriefing = `${requirements.additionalInfo}\n\nTipo de restaurante: ${requirements.businessType}\nPúblico objetivo: ${requirements.targetAudience}\nEstilo del sitio web: ${requirements.websiteStyle}`;
+      const contentBriefing = `${websiteRequirements.additionalInfo}\n\nTipo de restaurante: ${websiteRequirements.businessType}\nPúblico objetivo: ${websiteRequirements.targetAudience}\nEstilo del sitio web: ${websiteRequirements.websiteStyle}`;
       
-      const styleBriefing = `Estilo del sitio web: ${requirements.websiteStyle}\nInformación de marca: ${requirements.brandInfo || 'No especificado'}\nLogo: ${requirements.logoUrl ? 'Proporcionado' : 'No proporcionado'}`;
+      const styleBriefing = `Estilo del sitio web: ${websiteRequirements.websiteStyle}\nInformación de marca: ${websiteRequirements.brandInfo || 'No especificado'}\nLogo: ${websiteRequirements.logoUrl ? 'Proporcionado' : 'No proporcionado'}`;
       
-      const contactDeliveryBriefing = `Nombre del restaurante: ${signupData.restaurantName}\nTeléfono: ${signupData.phone}\nEmail: ${signupData.email}\nDirección: ${signupData.address}\nTiene delivery: ${requirements.hasDelivery ? 'Sí' : 'No'}\nPlatformas de delivery: ${Object.entries(requirements.deliveryPlatforms).filter(([_, url]) => url).map(([platform, _]) => platform).join(', ')}\nDelivery por WhatsApp/Teléfono: ${requirements.deliveryPhoneWhatsapp}\nRedes sociales: ${requirements.socialMedia.map(sm => `${sm.platform}: ${sm.url}`).join(', ')}`;
+      const contactDeliveryBriefing = `Nombre del restaurante: ${signupData.restaurantName}\nTeléfono: ${signupData.phone}\nEmail: ${signupData.email}\nDirección: ${signupData.address}\nTiene delivery: ${websiteRequirements.hasDelivery ? 'Sí' : 'No'}\nPlatformas de delivery: ${Object.entries(websiteRequirements.deliveryPlatforms).filter(([_, url]) => url).map(([platform, _]) => platform).join(', ')}\nDelivery por WhatsApp/Teléfono: ${websiteRequirements.deliveryPhoneWhatsapp}\nRedes sociales: ${websiteRequirements.socialMedia.map(sm => `${sm.platform}: ${sm.url}`).join(', ')}`;
 
-      // Store the briefings in the database
+      // Store the briefings and initial data in the database
       const { error } = await supabase.functions.invoke('store-briefings', {
         body: {
           clientId: signupData.subdomain, // We'll use subdomain to identify the client
@@ -150,7 +178,10 @@ const Signup = () => {
           styleBriefing,
           contactDeliveryBriefing,
           signupData,
-          websiteRequirements: requirements
+          websiteRequirements,
+          menuData,
+          reviewsData,
+          teamData
         }
       });
 
@@ -180,11 +211,23 @@ const Signup = () => {
       console.error('Error processing briefings:', error);
     }
     
-    setCurrentStep(3); // Move to success (was step 4)
+    setCurrentStep(6); // Move to success step
   };
 
   const handleBackToStep1 = () => {
     setCurrentStep(1);
+  };
+
+  const handleBackToStep2 = () => {
+    setCurrentStep(2);
+  };
+
+  const handleBackToStep3 = () => {
+    setCurrentStep(3);
+  };
+
+  const handleBackToStep4 = () => {
+    setCurrentStep(4);
   };
 
   return (
@@ -195,17 +238,17 @@ const Signup = () => {
         <div className="container mx-auto px-4 max-w-4xl">
           {/* Progress Indicator */}
           <div className="mb-8">
-            <div className="flex items-center justify-center space-x-4">
+            <div className="flex items-center justify-center space-x-2 overflow-x-auto">
               <div className={`flex items-center ${currentStep >= 1 ? 'text-primary' : 'text-muted-foreground'}`}>
                 <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
                   currentStep >= 1 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
                 }`}>
                   1
                 </div>
-                <span className="ml-2 font-medium">Información y Pago</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Información</span>
               </div>
               
-              <div className={`w-16 h-0.5 ${currentStep > 1 ? 'bg-primary' : 'bg-muted'}`} />
+              <div className={`w-8 h-0.5 ${currentStep > 1 ? 'bg-primary' : 'bg-muted'}`} />
               
               <div className={`flex items-center ${currentStep >= 2 ? 'text-primary' : 'text-muted-foreground'}`}>
                 <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
@@ -213,18 +256,51 @@ const Signup = () => {
                 }`}>
                   2
                 </div>
-                <span className="ml-2 font-medium">Requisitos del Sitio</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Requisitos</span>
               </div>
               
-              <div className={`w-16 h-0.5 ${currentStep > 2 ? 'bg-primary' : 'bg-muted'}`} />
+              <div className={`w-8 h-0.5 ${currentStep > 2 ? 'bg-primary' : 'bg-muted'}`} />
               
               <div className={`flex items-center ${currentStep >= 3 ? 'text-primary' : 'text-muted-foreground'}`}>
                 <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
                   currentStep >= 3 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
                 }`}>
+                  3
+                </div>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Menú</span>
+              </div>
+
+              <div className={`w-8 h-0.5 ${currentStep > 3 ? 'bg-primary' : 'bg-muted'}`} />
+              
+              <div className={`flex items-center ${currentStep >= 4 ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
+                  currentStep >= 4 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
+                }`}>
+                  4
+                </div>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Reseñas</span>
+              </div>
+
+              <div className={`w-8 h-0.5 ${currentStep > 4 ? 'bg-primary' : 'bg-muted'}`} />
+              
+              <div className={`flex items-center ${currentStep >= 5 ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
+                  currentStep >= 5 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
+                }`}>
+                  5
+                </div>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Equipo</span>
+              </div>
+
+              <div className={`w-8 h-0.5 ${currentStep > 5 ? 'bg-primary' : 'bg-muted'}`} />
+              
+              <div className={`flex items-center ${currentStep >= 6 ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
+                  currentStep >= 6 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
+                }`}>
                   ✓
                 </div>
-                <span className="ml-2 font-medium">Confirmación</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Listo</span>
               </div>
             </div>
           </div>
@@ -248,8 +324,32 @@ const Signup = () => {
                   initialData={websiteRequirements}
                 />
               )}
-              
+
               {currentStep === 3 && (
+                <SignupStep3 
+                  onComplete={handleStep3Complete}
+                  onBack={handleBackToStep2}
+                  initialData={menuData}
+                />
+              )}
+
+              {currentStep === 4 && (
+                <SignupStep4 
+                  onComplete={handleStep4Complete}
+                  onBack={handleBackToStep3}
+                  initialData={reviewsData}
+                />
+              )}
+
+              {currentStep === 5 && (
+                <SignupStep5 
+                  onComplete={handleStep5Complete}
+                  onBack={handleBackToStep4}
+                  initialData={teamData}
+                />
+              )}
+              
+              {currentStep === 6 && (
                 <SignupSuccess 
                   signupData={signupData}
                   websiteRequirements={websiteRequirements}
