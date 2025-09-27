@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2, Upload, Eye, Home, Save, Loader2, Image as ImageIcon, GripVertical, ChevronDown, ChevronRight, FolderPlus } from 'lucide-react';
+import { Plus, Edit, Trash2, Upload, Eye, Home, Save, Loader2, Image as ImageIcon, GripVertical, ChevronDown, ChevronRight, FolderPlus, Trash, Power, PowerOff } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DndContext,
@@ -24,6 +24,8 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  DragOverEvent,
+  rectIntersection,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -92,13 +94,139 @@ const categorySchema = z.object({
 type MenuItemFormData = z.infer<typeof menuItemSchema>;
 type CategoryFormData = z.infer<typeof categorySchema>;
 
+// Sortable Item Component
+function SortableItem({ 
+  item, 
+  onEdit, 
+  onDelete,
+  onToggleStatus 
+}: {
+  item: MenuItem;
+  onEdit: (item: MenuItem) => void;
+  onDelete: (id: string) => void;
+  onToggleStatus: (id: string, isActive: boolean) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style} className="overflow-hidden">
+      <div className="aspect-video bg-muted flex items-center justify-center relative">
+        {item.image_url ? (
+          <img
+            src={item.image_url}
+            alt={item.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <ImageIcon className="h-12 w-12 text-muted-foreground" />
+        )}
+        <div className="absolute top-2 left-2">
+          <div
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing p-1 bg-background/80 rounded"
+          >
+            <GripVertical className="h-3 w-3 text-muted-foreground" />
+          </div>
+        </div>
+        <div className="absolute top-2 right-2 flex gap-1">
+          {item.show_on_homepage && (
+            <Badge variant="secondary" className="text-xs">
+              <Home className="h-3 w-3 mr-1" />
+              Inicio
+            </Badge>
+          )}
+        </div>
+      </div>
+      
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex-1">
+            <h3 className="font-medium text-sm leading-tight mb-1">
+              {item.name}
+            </h3>
+            <p className="text-lg font-bold text-primary">
+              S/ {item.price.toFixed(2)}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 ml-2">
+            <Switch
+              checked={item.is_active}
+              onCheckedChange={(checked) => onToggleStatus(item.id, checked)}
+            />
+            <Badge variant={item.is_active ? "default" : "secondary"}>
+              {item.is_active ? 'Activo' : 'Inactivo'}
+            </Badge>
+          </div>
+        </div>
+
+        {item.description && (
+          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+            {item.description}
+          </p>
+        )}
+
+        <div className="flex items-center justify-between">
+          <div className="flex gap-1">
+            {item.show_image_home && (
+              <Badge variant="outline" className="text-xs">
+                <Eye className="h-3 w-3 mr-1" />
+                IMG-Inicio
+              </Badge>
+            )}
+            {item.show_image_menu && (
+              <Badge variant="outline" className="text-xs">
+                <Eye className="h-3 w-3 mr-1" />
+                IMG-Menú
+              </Badge>
+            )}
+          </div>
+          
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(item)}
+            >
+              <Edit className="h-3 w-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(item.id)}
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // Sortable Category Component
 function SortableCategory({ 
   category, 
   onEditCategory, 
-  onDeleteCategory, 
+  onDeleteCategory,
+  onCompleteDeleteCategory,
+  onToggleCategoryStatus,
   onEditItem, 
-  onDeleteItem, 
+  onDeleteItem,
+  onToggleItemStatus, 
   onNewItem,
   isOpen,
   onToggleOpen 
@@ -106,8 +234,11 @@ function SortableCategory({
   category: CategoryWithItems;
   onEditCategory: (category: MenuCategory) => void;
   onDeleteCategory: (id: string) => void;
+  onCompleteDeleteCategory: (id: string) => void;
+  onToggleCategoryStatus: (id: string, isActive: boolean) => void;
   onEditItem: (item: MenuItem) => void;
   onDeleteItem: (id: string) => void;
+  onToggleItemStatus: (id: string, isActive: boolean) => void;
   onNewItem: (categoryName: string) => void;
   isOpen: boolean;
   onToggleOpen: (categoryId: string) => void;
@@ -152,6 +283,10 @@ function SortableCategory({
                 </div>
               </div>
               <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Switch
+                  checked={category.is_active}
+                  onCheckedChange={(checked) => onToggleCategoryStatus(category.id, checked)}
+                />
                 <Button
                   variant="ghost"
                   size="sm"
@@ -171,9 +306,21 @@ function SortableCategory({
                   variant="ghost"
                   size="sm"
                   onClick={() => onDeleteCategory(category.id)}
+                  title="Desactivar categoría"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <PowerOff className="h-4 w-4" />
                 </Button>
+                {category.items.length === 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onCompleteDeleteCategory(category.id)}
+                    className="hover:bg-destructive hover:text-destructive-foreground"
+                    title="Eliminar categoría completamente"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </div>
           </CardHeader>
@@ -196,83 +343,13 @@ function SortableCategory({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {category.items.map((item) => (
-                  <Card key={item.id} className="overflow-hidden">
-                    <div className="aspect-video bg-muted flex items-center justify-center relative">
-                      {item.image_url ? (
-                        <img
-                          src={item.image_url}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <ImageIcon className="h-12 w-12 text-muted-foreground" />
-                      )}
-                      <div className="absolute top-2 right-2 flex gap-1">
-                        {item.show_on_homepage && (
-                          <Badge variant="secondary" className="text-xs">
-                            <Home className="h-3 w-3 mr-1" />
-                            Inicio
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1">
-                          <h3 className="font-medium text-sm leading-tight mb-1">
-                            {item.name}
-                          </h3>
-                          <p className="text-lg font-bold text-primary">
-                            S/ {item.price.toFixed(2)}
-                          </p>
-                        </div>
-                        <Badge variant={item.is_active ? "default" : "secondary"} className="ml-2">
-                          {item.is_active ? 'Activo' : 'Inactivo'}
-                        </Badge>
-                      </div>
-
-                      {item.description && (
-                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                          {item.description}
-                        </p>
-                      )}
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-1">
-                          {item.show_image_home && (
-                            <Badge variant="outline" className="text-xs">
-                              <Eye className="h-3 w-3 mr-1" />
-                              IMG-Inicio
-                            </Badge>
-                          )}
-                          {item.show_image_menu && (
-                            <Badge variant="outline" className="text-xs">
-                              <Eye className="h-3 w-3 mr-1" />
-                              IMG-Menú
-                            </Badge>
-                          )}
-                        </div>
-                        
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => onEditItem(item)}
-                          >
-                            <Edit className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => onDeleteItem(item.id)}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <SortableItem 
+                    key={item.id} 
+                    item={item} 
+                    onEdit={onEditItem} 
+                    onDelete={onDeleteItem}
+                    onToggleStatus={onToggleItemStatus}
+                  />
                 ))}
               </div>
             )}
@@ -295,9 +372,14 @@ export default function MenuItems() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [openCategories, setOpenCategories] = useState<Set<string>>(new Set());
+  const [activeItemId, setActiveItemId] = useState<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -595,6 +677,33 @@ export default function MenuItems() {
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
+    if (!confirm('¿Estás seguro de que quieres desactivar esta categoría?')) return;
+
+    try {
+      const { error } = await (supabase as any)
+        .from('menu_categories')
+        .update({ is_active: false })
+        .eq('id', categoryId);
+
+      if (error) throw error;
+
+      // Also deactivate all items in this category
+      const { error: itemsError } = await (supabase as any)
+        .from('menu_items')
+        .update({ is_active: false })
+        .eq('client_id', selectedClientId)
+        .eq('category', categoriesWithItems.find(c => c.id === categoryId)?.name);
+
+      if (itemsError) throw itemsError;
+
+      toast.success('Categoría y sus platos desactivados exitosamente');
+      fetchData();
+    } catch (error) {
+      toast.error('Error al desactivar categoría');
+    }
+  };
+
+  const handleCompleteDeleteCategory = async (categoryId: string) => {
     const category = categoriesWithItems.find(c => c.id === categoryId);
     if (!category) return;
 
@@ -603,7 +712,7 @@ export default function MenuItems() {
       return;
     }
 
-    if (!confirm('¿Estás seguro de que quieres eliminar esta categoría?')) return;
+    if (!confirm('¿Estás seguro de que quieres eliminar esta categoría permanentemente?')) return;
 
     try {
       const { error } = await (supabase as any)
@@ -612,10 +721,53 @@ export default function MenuItems() {
         .eq('id', categoryId);
 
       if (error) throw error;
-      toast.success('Categoría eliminada exitosamente');
+      toast.success('Categoría eliminada permanentemente');
       fetchData();
     } catch (error) {
       toast.error('Error al eliminar categoría');
+    }
+  };
+
+  const handleToggleCategoryStatus = async (categoryId: string, isActive: boolean) => {
+    try {
+      const { error } = await (supabase as any)
+        .from('menu_categories')
+        .update({ is_active: isActive })
+        .eq('id', categoryId);
+
+      if (error) throw error;
+
+      // Update all items in this category
+      const categoryName = categoriesWithItems.find(c => c.id === categoryId)?.name;
+      if (categoryName) {
+        const { error: itemsError } = await (supabase as any)
+          .from('menu_items')
+          .update({ is_active: isActive })
+          .eq('client_id', selectedClientId)
+          .eq('category', categoryName);
+
+        if (itemsError) throw itemsError;
+      }
+
+      toast.success(isActive ? 'Categoría y sus platos activados' : 'Categoría y sus platos desactivados');
+      fetchData();
+    } catch (error) {
+      toast.error('Error al actualizar estado');
+    }
+  };
+
+  const handleToggleItemStatus = async (itemId: string, isActive: boolean) => {
+    try {
+      const { error } = await (supabase as any)
+        .from('menu_items')
+        .update({ is_active: isActive })
+        .eq('id', itemId);
+
+      if (error) throw error;
+      toast.success(isActive ? 'Plato activado' : 'Plato desactivado');
+      fetchData();
+    } catch (error) {
+      toast.error('Error al actualizar estado del plato');
     }
   };
 
@@ -630,36 +782,68 @@ export default function MenuItems() {
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
+    setActiveItemId(null);
 
     if (!over || active.id === over.id) return;
 
-    const oldIndex = categoriesWithItems.findIndex(cat => cat.id === active.id);
-    const newIndex = categoriesWithItems.findIndex(cat => cat.id === over.id);
+    // Check if dragging a category
+    const draggedCategory = categoriesWithItems.find(cat => cat.id === active.id);
+    if (draggedCategory) {
+      const oldIndex = categoriesWithItems.findIndex(cat => cat.id === active.id);
+      const newIndex = categoriesWithItems.findIndex(cat => cat.id === over.id);
 
-    if (oldIndex === -1 || newIndex === -1) return;
+      if (oldIndex === -1 || newIndex === -1) return;
 
-    const newCategories = arrayMove(categoriesWithItems, oldIndex, newIndex);
-    setCategoriesWithItems(newCategories);
+      const newCategories = arrayMove(categoriesWithItems, oldIndex, newIndex);
+      setCategoriesWithItems(newCategories);
 
-    // Update display_order in database
-    try {
-      const updates = newCategories.map((category, index) => ({
-        id: category.id,
-        display_order: index,
-      }));
+      // Update display_order in database
+      try {
+        const updates = newCategories.map((category, index) => ({
+          id: category.id,
+          display_order: index,
+        }));
 
-      for (const update of updates) {
-        await (supabase as any)
-          .from('menu_categories')
-          .update({ display_order: update.display_order })
-          .eq('id', update.id);
+        for (const update of updates) {
+          await (supabase as any)
+            .from('menu_categories')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden de categorías actualizado');
+      } catch (error) {
+        toast.error('Error al actualizar orden');
+        fetchData();
       }
-
-      toast.success('Orden actualizado exitosamente');
-    } catch (error) {
-      toast.error('Error al actualizar orden');
-      fetchData(); // Refresh data on error
+      return;
     }
+
+    // Check if dragging an item to a category
+    const draggedItem = categoriesWithItems
+      .flatMap(cat => cat.items)
+      .find(item => item.id === active.id);
+
+    const targetCategory = categoriesWithItems.find(cat => cat.id === over.id);
+
+    if (draggedItem && targetCategory) {
+      try {
+        const { error } = await (supabase as any)
+          .from('menu_items')
+          .update({ category: targetCategory.name })
+          .eq('id', draggedItem.id);
+
+        if (error) throw error;
+        toast.success(`Plato movido a ${targetCategory.name}`);
+        fetchData();
+      } catch (error) {
+        toast.error('Error al mover plato');
+      }
+    }
+  };
+
+  const handleDragStart = (event: any) => {
+    setActiveItemId(event.active.id);
   };
 
   const toggleCategoryOpen = (categoryId: string) => {
@@ -735,18 +919,28 @@ export default function MenuItems() {
       ) : (
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCenter}
+          collisionDetection={rectIntersection}
+          onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext items={categoriesWithItems.map(c => c.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext 
+            items={[
+              ...categoriesWithItems.map(c => c.id),
+              ...categoriesWithItems.flatMap(c => c.items.map(item => item.id))
+            ]} 
+            strategy={verticalListSortingStrategy}
+          >
             {categoriesWithItems.map((category) => (
               <SortableCategory
                 key={category.id}
                 category={category}
                 onEditCategory={handleEditCategory}
                 onDeleteCategory={handleDeleteCategory}
+                onCompleteDeleteCategory={handleCompleteDeleteCategory}
+                onToggleCategoryStatus={handleToggleCategoryStatus}
                 onEditItem={handleEditItem}
                 onDeleteItem={handleDeleteItem}
+                onToggleItemStatus={handleToggleItemStatus}
                 onNewItem={handleNewItem}
                 isOpen={openCategories.has(category.id)}
                 onToggleOpen={toggleCategoryOpen}
