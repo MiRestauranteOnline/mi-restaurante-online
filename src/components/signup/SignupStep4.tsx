@@ -6,12 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Plus, X, Star } from "lucide-react";
+import { ArrowLeft, Plus, X, Star, CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export interface Review {
   reviewerName: string;
   reviewText: string;
   starRating: number;
+  reviewDate?: Date;
 }
 
 export interface ReviewsData {
@@ -22,6 +28,7 @@ const reviewSchema = z.object({
   reviewerName: z.string().min(1, "El nombre del cliente es requerido"),
   reviewText: z.string().min(10, "La reseña debe tener al menos 10 caracteres"),
   starRating: z.number().min(1).max(5),
+  reviewDate: z.date().optional(),
 });
 
 const reviewsSchema = z.object({
@@ -40,7 +47,7 @@ export const SignupStep4 = ({ onComplete, onBack, initialData }: SignupStep4Prop
   const form = useForm<ReviewsFormData>({
     resolver: zodResolver(reviewsSchema),
     defaultValues: {
-      reviews: initialData?.reviews?.length ? initialData.reviews : [{ reviewerName: "", reviewText: "", starRating: 5 }],
+      reviews: initialData?.reviews?.length ? initialData.reviews : [{ reviewerName: "", reviewText: "", starRating: 5, reviewDate: new Date() }],
     },
   });
 
@@ -58,7 +65,7 @@ export const SignupStep4 = ({ onComplete, onBack, initialData }: SignupStep4Prop
   };
 
   const addReview = () => {
-    appendReview({ reviewerName: "", reviewText: "", starRating: 5 });
+    appendReview({ reviewerName: "", reviewText: "", starRating: 5, reviewDate: new Date() });
   };
 
   const StarRating = ({ value, onChange }: { value: number; onChange: (rating: number) => void }) => {
@@ -159,6 +166,67 @@ export const SignupStep4 = ({ onComplete, onBack, initialData }: SignupStep4Prop
                       )}
                     />
                   </div>
+
+                  <FormField
+                    control={form.control}
+                    name={`reviews.${index}.reviewDate`}
+                    render={({ field }) => (
+                      <FormItem className="mt-4">
+                        <FormLabel>Fecha de la Reseña</FormLabel>
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`use-current-date-${index}`}
+                              checked={field.value ? format(field.value, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') : false}
+                              onCheckedChange={(checked) => {
+                                if (checked === true) {
+                                  field.onChange(new Date());
+                                }
+                              }}
+                            />
+                            <label
+                              htmlFor={`use-current-date-${index}`}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              Usar fecha actual ({format(new Date(), 'dd/MM/yyyy')})
+                            </label>
+                          </div>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "dd/MM/yyyy")
+                                  ) : (
+                                    <span>Seleccionar fecha</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date > new Date() || date < new Date("1900-01-01")
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}

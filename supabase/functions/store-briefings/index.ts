@@ -19,7 +19,10 @@ serve(async (req) => {
       styleBriefing, 
       contactDeliveryBriefing,
       signupData,
-      websiteRequirements 
+      websiteRequirements,
+      menuData,
+      reviewsData,
+      teamData
     } = await req.json();
 
     if (!clientId || !contentBriefing) {
@@ -197,6 +200,117 @@ serve(async (req) => {
       } catch (brandingError) {
         console.error('Error calling generate-branding function:', brandingError);
         // Don't throw here, briefings were already stored successfully
+      }
+    }
+
+    // Store menu categories and items if provided
+    if (menuData?.categories?.length > 0) {
+      console.log('Processing menu data for client:', actualClientId);
+      
+      for (const category of menuData.categories) {
+        if (category.name?.trim()) {
+          const { data: categoryData, error: categoryError } = await supabase
+            .from('menu_categories')
+            .insert({
+              client_id: actualClientId,
+              name: category.name.trim(),
+              is_active: true,
+              display_order: 0
+            })
+            .select()
+            .single();
+
+          if (categoryError) {
+            console.error('Error inserting category:', categoryError);
+            continue;
+          }
+
+          console.log('Successfully created category:', categoryData.name);
+        }
+      }
+
+      // Store menu items
+      if (menuData.items?.length > 0) {
+        for (const item of menuData.items) {
+          if (item.name?.trim() && item.category?.trim()) {
+            const { error: itemError } = await supabase
+              .from('menu_items')
+              .insert({
+                client_id: actualClientId,
+                name: item.name.trim(),
+                description: item.description || '',
+                price: parseFloat(item.price) || 0,
+                category: item.category.trim(),
+                image_url: item.imageUrl || null,
+                is_active: true,
+                show_on_homepage: false,
+                show_image_menu: true,
+                show_image_home: false
+              });
+
+            if (itemError) {
+              console.error('Error inserting menu item:', itemError);
+            } else {
+              console.log('Successfully created menu item:', item.name);
+            }
+          }
+        }
+      }
+    }
+
+    // Store reviews if provided
+    if (reviewsData?.reviews?.length > 0) {
+      console.log('Processing reviews data for client:', actualClientId);
+      
+      for (let i = 0; i < reviewsData.reviews.length; i++) {
+        const review = reviewsData.reviews[i];
+        if (review.reviewerName?.trim() && review.reviewText?.trim()) {
+          const { error: reviewError } = await supabase
+            .from('reviews')
+            .insert({
+              client_id: actualClientId,
+              reviewer_name: review.reviewerName.trim(),
+              review_text: review.reviewText.trim(),
+              star_rating: review.starRating || 5,
+              review_date: review.reviewDate ? new Date(review.reviewDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+              display_order: i,
+              is_active: true
+            });
+
+          if (reviewError) {
+            console.error('Error inserting review:', reviewError);
+          } else {
+            console.log('Successfully created review by:', review.reviewerName);
+          }
+        }
+      }
+    }
+
+    // Store team members if provided
+    if (teamData?.teamMembers?.length > 0) {
+      console.log('Processing team data for client:', actualClientId);
+      
+      for (let i = 0; i < teamData.teamMembers.length; i++) {
+        const member = teamData.teamMembers[i];
+        if (member.name?.trim() && member.title?.trim()) {
+          const { error: memberError } = await supabase
+            .from('team_members')
+            .insert({
+              client_id: actualClientId,
+              name: member.name.trim(),
+              title: member.title.trim(),
+              bio: member.bio || '',
+              image_url: member.imageUrl || null,
+              display_order: i,
+              is_active: true
+            });
+
+          if (memberError) {
+            console.error('Error inserting team member:', memberError);
+          } else {
+            console.log('Successfully created team member:', member.name);
+          }
+        }
       }
     }
 
