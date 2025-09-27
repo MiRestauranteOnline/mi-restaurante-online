@@ -2692,36 +2692,6 @@ setReviewForm({
                   </Select>
                 </div>
               </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="header_background_enabled"
-                    checked={formData.header_background_enabled}
-                    onCheckedChange={(checked) => setFormData({
-                      ...formData,
-                      header_background_enabled: checked
-                    })}
-                  />
-                  <Label htmlFor="header_background_enabled">Enable Header Background</Label>
-                </div>
-                
-                {formData.header_background_enabled && (
-                  <div>
-                    <Label htmlFor="header_background_style">Header Background Style</Label>
-                    <Select 
-                      value={formData.header_background_style} 
-                      onValueChange={(value) => setFormData({...formData, header_background_style: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="bright">Bright</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </div>
 
               <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">Header Settings</h4>
@@ -2898,9 +2868,6 @@ setReviewForm({
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
             </CardContent>
           </Card>
         </TabsContent>
