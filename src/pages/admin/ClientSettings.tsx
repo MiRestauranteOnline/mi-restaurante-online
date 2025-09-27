@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Power, PowerOff, Trash } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -262,9 +262,12 @@ function SortableCategoryCard({
   openMenuItemDialog,
   openCategoryDialog,
   handleDeleteCategory,
+  handleCompleteDeleteCategory,
+  handleToggleCategoryStatus,
   handleMenuItemDragEnd,
   formData,
-  handleDeleteMenuItem
+  handleDeleteMenuItem,
+  handleToggleItemStatus
 }: {
   category: MenuCategory;
   categoryItems: MenuItem[];
@@ -274,9 +277,12 @@ function SortableCategoryCard({
   openMenuItemDialog: (item?: MenuItem, defaultCategoryId?: string) => void;
   openCategoryDialog: (category?: MenuCategory) => void;
   handleDeleteCategory: (id: string) => void;
+  handleCompleteDeleteCategory: (id: string) => void;
+  handleToggleCategoryStatus: (id: string, isActive: boolean) => void;
   handleMenuItemDragEnd: (event: DragEndEvent, categoryId: string) => void;
   formData: any;
   handleDeleteMenuItem: (id: string) => void;
+  handleToggleItemStatus: (id: string, isActive: boolean) => void;
 }) {
   const {
     attributes,
@@ -318,6 +324,10 @@ function SortableCategoryCard({
                 </div>
               </div>
               <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Switch
+                  checked={category.is_active}
+                  onCheckedChange={(checked) => handleToggleCategoryStatus(category.id, checked)}
+                />
                 <Button
                   variant="ghost"
                   size="sm"
@@ -337,9 +347,21 @@ function SortableCategoryCard({
                   variant="ghost"
                   size="sm"
                   onClick={() => handleDeleteCategory(category.id)}
+                  title="Deactivate category"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <PowerOff className="h-4 w-4" />
                 </Button>
+                {categoryItems.length === 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleCompleteDeleteCategory(category.id)}
+                    className="hover:bg-destructive hover:text-destructive-foreground"
+                    title="Delete category permanently"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </div>
           </CardHeader>
@@ -376,6 +398,7 @@ function SortableCategoryCard({
                         currencySymbol={formData.other_customizations.currency}
                         onEdit={openMenuItemDialog}
                         onDelete={handleDeleteMenuItem}
+                        onToggleStatus={handleToggleItemStatus}
                       />
                     ))}
                   </div>
@@ -434,11 +457,12 @@ function SortableCategoryItem({ category, onEdit, onDelete }: {
 }
 
 // Sortable Menu Item Component
-function SortableMenuItem({ item, currencySymbol, onEdit, onDelete }: { 
+function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStatus }: { 
   item: MenuItem, 
   currencySymbol: string,
   onEdit: (item: MenuItem) => void,
-  onDelete: (id: string) => void 
+  onDelete: (id: string) => void,
+  onToggleStatus: (id: string, isActive: boolean) => void
 }) {
   const {
     attributes,
@@ -464,8 +488,13 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete }: {
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
         <div>
-          <span className="font-medium">{item.name}</span>
-          <span className="text-sm text-muted-foreground ml-2">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">{item.name}</span>
+            <Badge variant={item.is_active ? "default" : "secondary"}>
+              {item.is_active ? 'Active' : 'Inactive'}
+            </Badge>
+          </div>
+          <span className="text-sm text-muted-foreground">
             {currencySymbol}{item.price}
           </span>
           {item.description && (
@@ -473,7 +502,11 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete }: {
           )}
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
+        <Switch
+          checked={item.is_active}
+          onCheckedChange={(checked) => onToggleStatus(item.id, checked)}
+        />
         <Button variant="outline" size="sm" onClick={() => onEdit(item)}>
           <Edit className="h-4 w-4" />
         </Button>
@@ -1658,12 +1691,12 @@ const [reviewForm, setReviewForm] = useState({
   };
 
   const handleDeleteCategory = async (id: string) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
+    if (!confirm('¿Estás seguro de que quieres desactivar esta categoría?')) {
       return;
     }
 
     try {
-      // Soft delete like regular user system - set is_active to false
+      // Soft delete - set is_active to false
       const { data, error } = await supabase
         .from('menu_categories')
         .update({ is_active: false })
@@ -1673,12 +1706,125 @@ const [reviewForm, setReviewForm] = useState({
       
       if (error) throw error;
       if (!data) throw new Error('Delete blocked by RLS');
+
+      // Also deactivate all items in this category
+      const category = categories.find(c => c.id === id);
+      if (category) {
+        const { error: itemsError } = await supabase
+          .from('menu_items')
+          .update({ is_active: false })
+          .eq('client_id', clientId)
+          .eq('category_id', id);
+
+        if (itemsError) throw itemsError;
+      }
+
       await fetchCategories();
-      toast({ title: "Success", description: "Category deleted successfully" });
+      await fetchMenuItems();
+      toast({ title: "Success", description: "Category and its items deactivated successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error", 
+        description: "Failed to deactivate category: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleCompleteDeleteCategory = async (id: string) => {
+    const category = categories.find(c => c.id === id);
+    const categoryItems = filteredAndGroupedMenuItems[id] || [];
+    
+    if (categoryItems.length > 0) {
+      toast({
+        title: "Error",
+        description: "Cannot delete category with items. Delete or move items first.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!confirm('¿Estás seguro de que quieres eliminar esta categoría permanentemente?')) {
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('menu_categories')
+        .delete()
+        .eq('id', id)
+        .select()
+        .maybeSingle();
+      
+      if (error) throw error;
+      await fetchCategories();
+      toast({ title: "Success", description: "Category deleted permanently" });
     } catch (error: any) {
       toast({
         title: "Error", 
         description: "Failed to delete category: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleToggleCategoryStatus = async (id: string, isActive: boolean) => {
+    try {
+      const { data, error } = await supabase
+        .from('menu_categories')
+        .update({ is_active: isActive })
+        .eq('id', id)
+        .select()
+        .maybeSingle();
+      
+      if (error) throw error;
+      if (!data) throw new Error('Update blocked by RLS');
+
+      // Update all items in this category
+      const { error: itemsError } = await supabase
+        .from('menu_items')
+        .update({ is_active: isActive })
+        .eq('client_id', clientId)
+        .eq('category_id', id);
+
+      if (itemsError) throw itemsError;
+
+      await fetchCategories();
+      await fetchMenuItems();
+      toast({ 
+        title: "Success", 
+        description: isActive ? "Category and items activated" : "Category and items deactivated"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error", 
+        description: "Failed to update category status: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleToggleItemStatus = async (id: string, isActive: boolean) => {
+    try {
+      const { data, error } = await supabase
+        .from('menu_items')
+        .update({ is_active: isActive })
+        .eq('id', id)
+        .select()
+        .maybeSingle();
+      
+      if (error) throw error;
+      if (!data) throw new Error('Update blocked by RLS');
+
+      await fetchMenuItems();
+      toast({ 
+        title: "Success", 
+        description: isActive ? "Item activated" : "Item deactivated"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error", 
+        description: "Failed to update item status: " + error.message,
         variant: "destructive"
       });
     }
@@ -4342,9 +4488,12 @@ setReviewForm({
                             openMenuItemDialog={openMenuItemDialog}
                             openCategoryDialog={openCategoryDialog}
                             handleDeleteCategory={handleDeleteCategory}
+                            handleCompleteDeleteCategory={handleCompleteDeleteCategory}
+                            handleToggleCategoryStatus={handleToggleCategoryStatus}
                             handleMenuItemDragEnd={handleMenuItemDragEnd}
                             formData={formData}
                             handleDeleteMenuItem={handleDeleteMenuItem}
+                            handleToggleItemStatus={handleToggleItemStatus}
                           />
                         );
                       })}
