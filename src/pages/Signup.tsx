@@ -36,6 +36,7 @@ export interface WebsiteRequirements {
   deliveryPhoneWhatsapp: string;
   logoUrl: string;
   additionalInfo: string;
+  brandInfo?: string;
   websiteStyle: string;
 }
 
@@ -60,6 +61,7 @@ const Signup = () => {
     deliveryPhoneWhatsapp: "",
     logoUrl: "",
     additionalInfo: "",
+    brandInfo: "",
     websiteStyle: "",
   });
 

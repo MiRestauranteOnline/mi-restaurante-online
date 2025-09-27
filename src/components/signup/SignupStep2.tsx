@@ -28,6 +28,7 @@ const requirementsSchema = z.object({
   deliveryPhoneWhatsapp: z.string(),
   logoUrl: z.string(),
   additionalInfo: z.string().min(10, "Cuéntanos más sobre tu restaurante (mínimo 10 caracteres)"),
+  brandInfo: z.string().optional(),
   websiteStyle: z.string().min(1, "Selecciona un estilo para tu sitio web"),
 });
 
@@ -52,6 +53,7 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
       deliveryPhoneWhatsapp: initialData.deliveryPhoneWhatsapp,
       logoUrl: initialData.logoUrl,
       additionalInfo: initialData.additionalInfo,
+      brandInfo: initialData.brandInfo || "",
       websiteStyle: initialData.websiteStyle,
     }
   });
@@ -398,12 +400,34 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                   <FormItem>
                     <FormLabel>Cuéntanos un poco más sobre tu restaurante</FormLabel>
                     <p className="text-sm text-muted-foreground">
-                      (Mientras más información nos des, mejor podremos crear el contenido para tu sitio. Si tienes códigos de colores exactos y fuentes que usa tu marca, añádelos aquí, de lo contrario solo lista los colores que te gustan)
+                      (Mientras más información nos des, mejor podremos crear el contenido para tu sitio)
                     </p>
                     <FormControl>
                       <Textarea 
-                        placeholder="Describe tu restaurante, tipo de comida, ambiente, historia, colores preferidos, fuentes específicas, etc..."
+                        placeholder="Describe tu restaurante, tipo de comida, ambiente, historia, etc..."
                         className="min-h-[120px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Brand Colors and Fonts */}
+              <FormField
+                control={form.control}
+                name="brandInfo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>¿Ya tienes colores de marca y fuentes definidos?</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      (Si tienes códigos de colores exactos y fuentes que usa tu marca, añádelos aquí, de lo contrario solo lista los colores que te gustan)
+                    </p>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Ej: Colores: #FF5733, #FFF. Fuentes: Montserrat, Open Sans. O simplemente: me gustan los colores azul y blanco..."
+                        className="min-h-[100px]"
                         {...field}
                       />
                     </FormControl>
