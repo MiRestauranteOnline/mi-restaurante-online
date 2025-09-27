@@ -1,4 +1,13 @@
 project_id = "ptzcetvcccnojdbzzlyt"
 
+[functions.signup-client]
+verify_jwt = false
+
+[functions.create-rebill-payment]
+verify_jwt = false
+
+[functions.rebill-webhook]
+verify_jwt = false
+
 [functions.rebill-plans]
 verify_jwt = false

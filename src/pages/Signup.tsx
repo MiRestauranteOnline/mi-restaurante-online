@@ -72,16 +72,10 @@ const Signup = () => {
     setIsProcessingPayment(true);
     
     try {
-      // TODO: Replace with actual Rebill payment when account is configured
-      // For now, simulate payment success and create account directly
+      console.log('Creating account for:', formData);
       
-      console.log('Would create payment for:', formData);
-      
-      // Simulate payment processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Create account directly using create-client-user function
-      const { data, error } = await supabase.functions.invoke('create-client-user', {
+      // Create account using public signup function
+      const { data, error } = await supabase.functions.invoke('signup-client', {
         body: {
           email: formData.email,
           password: formData.password,
@@ -99,6 +93,8 @@ const Signup = () => {
       }
       
       if (data?.success) {
+        console.log('Account created successfully:', data);
+        setIsProcessingPayment(false);
         // Move to step 2 for website requirements
         setCurrentStep(2);
       } else {
