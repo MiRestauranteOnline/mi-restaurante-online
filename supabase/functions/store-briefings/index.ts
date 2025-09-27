@@ -119,12 +119,19 @@ serve(async (req) => {
         });
       }
 
-      // Update client with social media and delivery data
+      // Get existing client data to preserve current social media and delivery info
+      const { data: existingClient } = await supabase
+        .from('clients')
+        .select('social_media_links, delivery')
+        .eq('id', actualClientId)
+        .single();
+
+      // Update client with social media and delivery data only if not already set
       const clientUpdateData: any = {};
-      if (Object.keys(socialMediaLinks).length > 0) {
+      if (Object.keys(socialMediaLinks).length > 0 && (!existingClient?.social_media_links || Object.keys(existingClient.social_media_links).length === 0)) {
         clientUpdateData.social_media_links = socialMediaLinks;
       }
-      if (Object.keys(deliveryData).length > 0) {
+      if (Object.keys(deliveryData).length > 0 && (!existingClient?.delivery || Object.keys(existingClient.delivery).length === 0)) {
         clientUpdateData.delivery = deliveryData;
       }
       

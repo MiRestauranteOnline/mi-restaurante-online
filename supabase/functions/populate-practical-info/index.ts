@@ -29,21 +29,40 @@ serve(async (req) => {
     // Parse the briefing to extract practical information
     const practicalInfo = await extractPracticalInfo(briefing);
 
-    // Update the clients table with practical information
-    const { error: clientError } = await supabase
+    // Get existing client data to preserve current values
+    const { data: existingClient } = await supabase
       .from('clients')
-      .update({
-        phone: practicalInfo.phone || undefined,
-        whatsapp: practicalInfo.whatsapp || undefined,
-        whatsapp_country_code: practicalInfo.whatsapp_country_code || undefined,
-        phone_country_code: practicalInfo.phone_country_code || undefined,
-        email: practicalInfo.email || undefined,
-        address: practicalInfo.address || undefined,
-        social_media_links: practicalInfo.social_media_links || undefined,
-        delivery: practicalInfo.delivery || undefined,
-        opening_hours: practicalInfo.opening_hours || undefined,
-      })
-      .eq('id', clientId);
+      .select('phone, whatsapp, email, address, social_media_links, delivery, opening_hours')
+      .eq('id', clientId)
+      .single();
+
+    // Only update fields that are currently empty/null to preserve existing data
+    const updateData: any = {};
+    if (practicalInfo.phone && !existingClient?.phone) updateData.phone = practicalInfo.phone;
+    if (practicalInfo.whatsapp && !existingClient?.whatsapp) updateData.whatsapp = practicalInfo.whatsapp;
+    if (practicalInfo.whatsapp_country_code && !existingClient?.whatsapp_country_code) updateData.whatsapp_country_code = practicalInfo.whatsapp_country_code;
+    if (practicalInfo.phone_country_code && !existingClient?.phone_country_code) updateData.phone_country_code = practicalInfo.phone_country_code;
+    if (practicalInfo.email && !existingClient?.email) updateData.email = practicalInfo.email;
+    if (practicalInfo.address && !existingClient?.address) updateData.address = practicalInfo.address;
+    if (practicalInfo.social_media_links && (!existingClient?.social_media_links || Object.keys(existingClient.social_media_links).length === 0)) {
+      updateData.social_media_links = practicalInfo.social_media_links;
+    }
+    if (practicalInfo.delivery && (!existingClient?.delivery || Object.keys(existingClient.delivery).length === 0)) {
+      updateData.delivery = practicalInfo.delivery;
+    }
+    if (practicalInfo.opening_hours && (!existingClient?.opening_hours || Object.keys(existingClient.opening_hours).length === 0)) {
+      updateData.opening_hours = practicalInfo.opening_hours;
+    }
+
+    // Only update if there are fields to update
+    let clientError = null;
+    if (Object.keys(updateData).length > 0) {
+      const { error } = await supabase
+        .from('clients')
+        .update(updateData)
+        .eq('id', clientId);
+      clientError = error;
+    }
 
     if (clientError) {
       console.error('Error updating client:', clientError);
