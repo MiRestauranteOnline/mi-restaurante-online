@@ -4845,7 +4845,24 @@ setReviewForm({
                   <strong>1.</strong> To add a new project, copy the template you want to use for the client by opening the project → in the top left corner go to the lovable icon → settings → scroll down to the button "remix" to remix the project. Do not select the checkbox.
                 </p>
                 <p>
-                  <strong>2.</strong> In the top left corner go to the lovable icon → rename project → rename the project to {formData.subdomain}.
+                  <strong>2.</strong> In the top left corner go to the lovable icon → rename project → rename the project to{' '}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="inline-flex items-center gap-1 px-2 py-1 h-auto text-xs font-mono bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 border-blue-300 dark:border-blue-700"
+                    onClick={() => {
+                      navigator.clipboard.writeText(formData.subdomain);
+                      toast({
+                        title: "Copied!",
+                        description: `"${formData.subdomain}" copied to clipboard`,
+                      });
+                    }}
+                  >
+                    {formData.subdomain}
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </Button>
                 </p>
               </div>
             </div>
