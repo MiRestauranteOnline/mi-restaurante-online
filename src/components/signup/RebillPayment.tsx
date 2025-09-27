@@ -151,8 +151,35 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
   }, [signupData, selectedPlan, onSuccess]);
 
   const planDetails = selectedPlan === 'basic' 
-    ? { name: 'Plan Básico', price: '$49', features: ['Sitio web profesional', 'Dominio personalizado', 'Soporte por email', 'Hasta 100 productos en menú'] }
-    : { name: 'Plan Avanzado', price: '$79', features: ['Sitio web profesional', 'Dominio personalizado', 'Soporte prioritario', 'Analytics avanzados', 'Integraciones premium', 'Productos ilimitados', 'SEO optimizado'] };
+    ? { 
+        name: 'Plan Básico', 
+        price: 'S/297', 
+        originalPrice: 'S/500',
+        discount: '-41%',
+        features: [
+          'Sitio profesional en 72 horas',
+          'Hosting + SSL incluido',
+          'SEO básico optimizado',
+          'Botón WhatsApp integrado',
+          'Menú descargable en PDF',
+          'Cambios auto-gestionables (PIN)',
+          'Soporte por WhatsApp',
+          'Hasta 3,000 visitas/mes o 6 GB'
+        ] 
+      }
+    : { 
+        name: 'Plan Avanzado', 
+        price: 'S/497', 
+        originalPrice: 'S/1000',
+        discount: '-50%',
+        features: [
+          'Todo lo del Plan Básico',
+          '1 hora/mes de cambios extendidos',
+          'Cambios de textos e imágenes',
+          'Nuevas secciones personalizadas',
+          'Soporte prioritario'
+        ] 
+      };
 
   return (
     <div className="space-y-6">
@@ -181,7 +208,15 @@ export const RebillPayment = ({ signupData, selectedPlan, onSuccess, onBack }: R
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="text-3xl font-bold text-primary">{planDetails.price}/mes</div>
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-primary">{planDetails.price}</div>
+              <div className="text-lg text-muted-foreground">/mes</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg line-through text-muted-foreground">{planDetails.originalPrice}</span>
+              <span className="text-sm bg-red-100 text-red-700 px-2 py-1 rounded">{planDetails.discount}</span>
+            </div>
+            <p className="text-sm text-muted-foreground font-medium">Precio fijo de por vida</p>
             <div className="space-y-2">
               <h4 className="font-semibold">Incluye:</h4>
               <ul className="space-y-1 text-sm text-muted-foreground">
