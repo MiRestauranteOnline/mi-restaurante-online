@@ -24,6 +24,7 @@ import ClientSettings from "./pages/admin/ClientSettings";
 import ProjectConfiguration from "./pages/admin/ProjectConfiguration";
 import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminDashboardLayout from "./components/admin/AdminDashboardLayout";
 import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
 import ClientDashboard from "./pages/client/ClientDashboard";
 // import ClientSettingsPage from "./pages/client/ClientSettings";
@@ -55,7 +56,7 @@ const App = () => (
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<UnifiedDashboard />} />
             </Route>
-            <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="/admin" element={<AdminDashboardLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="client-management" element={<ClientManagement />} />
