@@ -154,6 +154,29 @@ serve(async (req) => {
       }
     }
 
+    // Generate branding based on the style briefing
+    if (styleBriefing) {
+      console.log('Generating branding for client:', actualClientId);
+      try {
+        const brandingResponse = await supabase.functions.invoke('generate-branding', {
+          body: {
+            briefing: styleBriefing,
+            clientId: actualClientId,
+            restaurantName: signupData?.restaurantName || ''
+          }
+        });
+
+        if (brandingResponse.error) {
+          console.error('Error generating branding:', brandingResponse.error);
+        } else {
+          console.log('Successfully generated branding for client:', actualClientId);
+        }
+      } catch (brandingError) {
+        console.error('Error calling generate-branding function:', brandingError);
+        // Don't throw here, briefings were already stored successfully
+      }
+    }
+
     console.log('Successfully stored briefings for client:', actualClientId);
 
     return new Response(JSON.stringify({ 
