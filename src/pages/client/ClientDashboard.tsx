@@ -13,7 +13,7 @@ import { Loader2, Save, Plus, Trash2, Edit, Search, GripVertical, FolderPlus } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { ImageUpload } from "@/components/ImageUpload";
 import { CustomImagesManager } from "@/components/client/CustomImagesManager";
 
@@ -116,7 +116,7 @@ export default function ClientDashboard() {
   const [adminContent, setAdminContent] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t } = useDashboardLanguage();
 
   useEffect(() => {
     if (selectedClientId) {
@@ -403,31 +403,31 @@ export default function ClientDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Configuración del Restaurante</h1>
+        <h1 className="text-2xl font-bold">{t('general.title')}</h1>
         <Button onClick={handleSave} disabled={saving}>
           {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-          Guardar Cambios
+          {t('common.save')}
         </Button>
       </div>
 
       <Tabs defaultValue="basic" className="w-full">
         <TabsList>
-          <TabsTrigger value="basic">Información Básica</TabsTrigger>
-          <TabsTrigger value="hours">Horarios</TabsTrigger>
-          <TabsTrigger value="social">Redes Sociales</TabsTrigger>
-          <TabsTrigger value="delivery">Delivery</TabsTrigger>
-          <TabsTrigger value="menu">Menú</TabsTrigger>
-          <TabsTrigger value="team">Equipo</TabsTrigger>
-          <TabsTrigger value="reviews">Reseñas</TabsTrigger>
-          <TabsTrigger value="carousel">Carousel</TabsTrigger>
-          <TabsTrigger value="custom-images">Mis Imágenes</TabsTrigger>
+          <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>
+          <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>
+          <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>
+          <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>
+          <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>
+          <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>
+          <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>
+          <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>
+          <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
           <Card>
             <CardHeader>
-              <CardTitle>Información Básica</CardTitle>
-              <CardDescription>Configura la información principal de tu restaurante</CardDescription>
+              <CardTitle>{t('general.title')}</CardTitle>
+              <CardDescription>{t('general.description')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -453,7 +453,7 @@ export default function ClientDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="phone">Teléfono</Label>
+                  <Label htmlFor="phone">{t('general.phone')}</Label>
                   <Input
                     id="phone"
                     value={formData.phone || ''}
@@ -474,7 +474,7 @@ export default function ClientDashboard() {
               </div>
 
               <div>
-                <Label htmlFor="address">Dirección</Label>
+                <Label htmlFor="address">{t('general.address')}</Label>
                 <Textarea
                   id="address"
                   value={formData.address || ''}
@@ -906,7 +906,7 @@ export default function ClientDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="carousel-enabled">Mostrar Carousel</Label>
+                      <Label htmlFor="carousel-enabled">{t('carousel.showCarousel')}</Label>
                       <p className="text-sm text-muted-foreground">
                         Activa o desactiva el carousel en la página principal
                       </p>
@@ -923,7 +923,7 @@ export default function ClientDashboard() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="carousel-order">Posición del Carousel</Label>
+                    <Label htmlFor="carousel-order">{t('carousel.position')}</Label>
                     <Select
                       value={adminContent?.carousel_display_order ? adminContent.carousel_display_order.toString() : undefined}
                       onValueChange={async (value) => {
@@ -933,16 +933,16 @@ export default function ClientDashboard() {
                       }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Posición 1 (Después del Hero)" />
+                        <SelectValue placeholder={t('carousel.position1')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="3">Posición 1 (Después del Hero)</SelectItem>
-                        <SelectItem value="4">Posición 2 (Después de Servicios)</SelectItem>
-                        <SelectItem value="5">Posición 3 (Después de Menú)</SelectItem>
-                        <SelectItem value="6">Posición 4 (Después de Historia)</SelectItem>
-                        <SelectItem value="7">Posición 5 (Después de Testimonios)</SelectItem>
-                        <SelectItem value="8">Posición 6 (Después de Equipo)</SelectItem>
-                        <SelectItem value="9">Posición 7 (Antes de Contacto)</SelectItem>
+                        <SelectItem value="3">{t('carousel.position1')}</SelectItem>
+                        <SelectItem value="4">{t('carousel.position2')}</SelectItem>
+                        <SelectItem value="5">{t('carousel.position3')}</SelectItem>
+                        <SelectItem value="6">{t('carousel.position4')}</SelectItem>
+                        <SelectItem value="7">{t('carousel.position5')}</SelectItem>
+                        <SelectItem value="8">{t('carousel.position6')}</SelectItem>
+                        <SelectItem value="9">{t('carousel.position7')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

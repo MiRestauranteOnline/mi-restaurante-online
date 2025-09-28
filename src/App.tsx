@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { DashboardLanguageProvider } from "@/contexts/DashboardLanguageContext";
 import Index from "./pages/Index";
 import Contact from "./pages/Contact";
 import Soporte from "./pages/Soporte";
@@ -57,10 +58,10 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/registro" element={<Signup />} />
             <Route path="/admin/rebill" element={<RebillAdmin />} />
-            <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<DashboardLanguageProvider><DashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<UnifiedDashboard />} />
             </Route>
-            <Route path="/admin" element={<AdminDashboardLayout />}>
+            <Route path="/admin" element={<DashboardLanguageProvider><AdminDashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="client-management" element={<ClientManagement />} />
@@ -70,7 +71,7 @@ const App = () => (
               <Route path="project-config" element={<ProjectConfiguration />} />
               <Route path="subscription-management" element={<SubscriptionManagement />} />
             </Route>
-            <Route path="/client" element={<ClientDashboardLayout />}>
+            <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<ClientDashboard />} />
               <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","carousel","custom-images"]} />} />
               <Route path="subscription" element={<ClientSubscription />} />

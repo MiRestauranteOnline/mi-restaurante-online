@@ -1,0 +1,282 @@
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+
+type Language = 'es' | 'en';
+
+interface DashboardLanguageContextType {
+  language: Language;
+  setLanguage: (language: Language) => void;
+  t: (key: string) => string;
+}
+
+const DashboardLanguageContext = createContext<DashboardLanguageContextType | undefined>(undefined);
+
+const translations = {
+  es: {
+    // Navigation
+    'nav.dashboard': 'Panel Principal',
+    'nav.general': 'General',
+    'nav.appearance': 'Apariencia',
+    'nav.contact': 'Contacto',
+    'nav.menu': 'Menú',
+    'nav.carousel': 'Carousel',
+    'nav.team': 'Equipo',
+    'nav.reviews': 'Reseñas',
+    'nav.settings': 'Configuración',
+    'nav.images': 'Imágenes',
+    
+    // Admin Navigation
+    'admin.clientManagement': 'Gestión de Clientes',
+    'admin.subscriptionManagement': 'Gestión de Suscripciones',
+    'admin.marketingAnalytics': 'Analíticas de Marketing',
+    'admin.projectConfiguration': 'Configuración del Proyecto',
+    'admin.clientImages': 'Imágenes de Clientes',
+    
+    // Common
+    'common.loading': 'Cargando...',
+    'common.save': 'Guardar',
+    'common.saving': 'Guardando...',
+    'common.saved': 'Guardado',
+    'common.cancel': 'Cancelar',
+    'common.delete': 'Eliminar',
+    'common.edit': 'Editar',
+    'common.add': 'Agregar',
+    'common.search': 'Buscar',
+    'common.actions': 'Acciones',
+    'common.name': 'Nombre',
+    'common.description': 'Descripción',
+    'common.image': 'Imagen',
+    'common.status': 'Estado',
+    'common.enabled': 'Habilitado',
+    'common.disabled': 'Deshabilitado',
+    
+    // Buttons
+    'button.viewWebsite': 'Ver Sitio Web',
+    'button.logout': 'Cerrar Sesión',
+    'button.backToAdmin': 'Volver al Administrador',
+    
+    // Headers
+    'header.clientPortal': 'Portal del Cliente',
+    'header.adminDashboard': 'Panel de Administración',
+    
+    // General tab
+    'general.title': 'Información General',
+    'general.description': 'Configuración básica del restaurante',
+    'general.restaurantName': 'Nombre del Restaurante',
+    'general.email': 'Correo Electrónico',
+    'general.phone': 'Teléfono',
+    'general.address': 'Dirección',
+    'general.whatsapp': 'WhatsApp',
+    'general.coordinates': 'Coordenadas',
+    'general.openingHours': 'Horarios de Apertura',
+    'general.socialMedia': 'Redes Sociales',
+    'general.deliveryInfo': 'Información de Delivery',
+    
+    // Appearance tab
+    'appearance.title': 'Configuración de Apariencia',
+    'appearance.description': 'Personaliza la apariencia de tu sitio web',
+    'appearance.primaryColor': 'Color Primario',
+    'appearance.headerBackground': 'Fondo del Header',
+    'appearance.headerBackgroundEnabled': 'Habilitar Fondo del Header',
+    'appearance.hideWhatsAppButton': 'Ocultar Botón de WhatsApp en Menú',
+    
+    // Contact tab
+    'contact.title': 'Configuración de Contacto',
+    'contact.description': 'Gestiona la información de contacto',
+    
+    // Menu tab
+    'menu.title': 'Gestión del Menú',
+    'menu.description': 'Administra las categorías y productos del menú',
+    'menu.categories': 'Categorías',
+    'menu.items': 'Productos',
+    'menu.addCategory': 'Agregar Categoría',
+    'menu.addItem': 'Agregar Producto',
+    'menu.categoryName': 'Nombre de la Categoría',
+    'menu.categoryDescription': 'Descripción de la Categoría',
+    'menu.itemName': 'Nombre del Producto',
+    'menu.itemDescription': 'Descripción del Producto',
+    'menu.price': 'Precio',
+    'menu.category': 'Categoría',
+    
+    // Carousel tab
+    'carousel.title': 'Configuración del Carousel',
+    'carousel.description': 'Administra las imágenes del carousel',
+    'carousel.showCarousel': 'Mostrar Carousel',
+    'carousel.position': 'Posición del Carousel',
+    'carousel.images': 'Imágenes del Carousel',
+    'carousel.addImage': 'Agregar Imagen al Carousel',
+    'carousel.position1': 'Posición 1 (Después del Hero)',
+    'carousel.position2': 'Posición 2 (Después de Servicios)',
+    'carousel.position3': 'Posición 3 (Después de Menú)',
+    'carousel.position4': 'Posición 4 (Después de Historia)',
+    'carousel.position5': 'Posición 5 (Después de Testimonios)',
+    'carousel.position6': 'Posición 6 (Después de Equipo)',
+    'carousel.position7': 'Posición 7 (Antes de Contacto)',
+    
+    // Team tab
+    'team.title': 'Gestión del Equipo',
+    'team.description': 'Administra los miembros del equipo',
+    'team.addMember': 'Agregar Miembro',
+    'team.memberName': 'Nombre del Miembro',
+    'team.position': 'Cargo',
+    'team.bio': 'Biografía',
+    
+    // Reviews tab
+    'reviews.title': 'Gestión de Reseñas',
+    'reviews.description': 'Administra las reseñas de clientes',
+    'reviews.addReview': 'Agregar Reseña',
+    'reviews.customerName': 'Nombre del Cliente',
+    'reviews.rating': 'Calificación',
+    'reviews.comment': 'Comentario',
+    
+    // Images tab
+    'images.title': 'Gestión de Imágenes',
+    'images.description': 'Administra todas las imágenes del sitio web',
+    'images.uploadNew': 'Subir Nueva Imagen',
+    'images.customImages': 'Imágenes Personalizadas',
+  },
+  en: {
+    // Navigation
+    'nav.dashboard': 'Dashboard',
+    'nav.general': 'General',
+    'nav.appearance': 'Appearance',
+    'nav.contact': 'Contact',
+    'nav.menu': 'Menu',
+    'nav.carousel': 'Carousel',
+    'nav.team': 'Team',
+    'nav.reviews': 'Reviews',
+    'nav.settings': 'Settings',
+    'nav.images': 'Images',
+    
+    // Admin Navigation
+    'admin.clientManagement': 'Client Management',
+    'admin.subscriptionManagement': 'Subscription Management',
+    'admin.marketingAnalytics': 'Marketing Analytics',
+    'admin.projectConfiguration': 'Project Configuration',
+    'admin.clientImages': 'Client Images',
+    
+    // Common
+    'common.loading': 'Loading...',
+    'common.save': 'Save',
+    'common.saving': 'Saving...',
+    'common.saved': 'Saved',
+    'common.cancel': 'Cancel',
+    'common.delete': 'Delete',
+    'common.edit': 'Edit',
+    'common.add': 'Add',
+    'common.search': 'Search',
+    'common.actions': 'Actions',
+    'common.name': 'Name',
+    'common.description': 'Description',
+    'common.image': 'Image',
+    'common.status': 'Status',
+    'common.enabled': 'Enabled',
+    'common.disabled': 'Disabled',
+    
+    // Buttons
+    'button.viewWebsite': 'View Website',
+    'button.logout': 'Logout',
+    'button.backToAdmin': 'Back to Admin',
+    
+    // Headers
+    'header.clientPortal': 'Client Portal',
+    'header.adminDashboard': 'Admin Dashboard',
+    
+    // General tab
+    'general.title': 'General Information',
+    'general.description': 'Basic restaurant configuration',
+    'general.restaurantName': 'Restaurant Name',
+    'general.email': 'Email',
+    'general.phone': 'Phone',
+    'general.address': 'Address',
+    'general.whatsapp': 'WhatsApp',
+    'general.coordinates': 'Coordinates',
+    'general.openingHours': 'Opening Hours',
+    'general.socialMedia': 'Social Media',
+    'general.deliveryInfo': 'Delivery Information',
+    
+    // Appearance tab
+    'appearance.title': 'Appearance Settings',
+    'appearance.description': 'Customize your website appearance',
+    'appearance.primaryColor': 'Primary Color',
+    'appearance.headerBackground': 'Header Background',
+    'appearance.headerBackgroundEnabled': 'Enable Header Background',
+    'appearance.hideWhatsAppButton': 'Hide WhatsApp Button in Menu',
+    
+    // Contact tab
+    'contact.title': 'Contact Settings',
+    'contact.description': 'Manage contact information',
+    
+    // Menu tab
+    'menu.title': 'Menu Management',
+    'menu.description': 'Manage menu categories and items',
+    'menu.categories': 'Categories',
+    'menu.items': 'Items',
+    'menu.addCategory': 'Add Category',
+    'menu.addItem': 'Add Item',
+    'menu.categoryName': 'Category Name',
+    'menu.categoryDescription': 'Category Description',
+    'menu.itemName': 'Item Name',
+    'menu.itemDescription': 'Item Description',
+    'menu.price': 'Price',
+    'menu.category': 'Category',
+    
+    // Carousel tab
+    'carousel.title': 'Carousel Settings',
+    'carousel.description': 'Manage carousel images',
+    'carousel.showCarousel': 'Show Carousel',
+    'carousel.position': 'Carousel Position',
+    'carousel.images': 'Carousel Images',
+    'carousel.addImage': 'Add Carousel Image',
+    'carousel.position1': 'Position 1 (After Hero)',
+    'carousel.position2': 'Position 2 (After Services)',
+    'carousel.position3': 'Position 3 (After Menu)',
+    'carousel.position4': 'Position 4 (After Story)',
+    'carousel.position5': 'Position 5 (After Testimonials)',
+    'carousel.position6': 'Position 6 (After Team)',
+    'carousel.position7': 'Position 7 (Before Contact)',
+    
+    // Team tab
+    'team.title': 'Team Management',
+    'team.description': 'Manage team members',
+    'team.addMember': 'Add Member',
+    'team.memberName': 'Member Name',
+    'team.position': 'Position',
+    'team.bio': 'Biography',
+    
+    // Reviews tab
+    'reviews.title': 'Reviews Management',
+    'reviews.description': 'Manage customer reviews',
+    'reviews.addReview': 'Add Review',
+    'reviews.customerName': 'Customer Name',
+    'reviews.rating': 'Rating',
+    'reviews.comment': 'Comment',
+    
+    // Images tab
+    'images.title': 'Image Management',
+    'images.description': 'Manage all website images',
+    'images.uploadNew': 'Upload New Image',
+    'images.customImages': 'Custom Images',
+  }
+};
+
+export const DashboardLanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [language, setLanguage] = useState<Language>('es');
+
+  const t = (key: string): string => {
+    return translations[language][key] || key;
+  };
+
+  return (
+    <DashboardLanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </DashboardLanguageContext.Provider>
+  );
+};
+
+export const useDashboardLanguage = (): DashboardLanguageContextType => {
+  const context = useContext(DashboardLanguageContext);
+  if (!context) {
+    throw new Error('useDashboardLanguage must be used within a DashboardLanguageProvider');
+  }
+  return context;
+};

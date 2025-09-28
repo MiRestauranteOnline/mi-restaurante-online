@@ -20,8 +20,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { DashboardLanguageSwitcher } from '@/components/DashboardLanguageSwitcher';
+import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 
 interface Client {
   id: string;
@@ -41,7 +41,7 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t } = useDashboardLanguage();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -246,7 +246,7 @@ export default function DashboardLayout() {
 
             <div className="flex items-center gap-4">
               {/* Language Switcher */}
-              <LanguageSwitcher />
+              <DashboardLanguageSwitcher />
 
               {selectedClient && (
                 <Button
@@ -256,7 +256,7 @@ export default function DashboardLayout() {
                   className="hidden sm:flex"
                 >
                   <Store className="h-4 w-4 mr-2" />
-                  Ver Sitio Web
+                  {t('button.viewWebsite')}
                 </Button>
               )}
 

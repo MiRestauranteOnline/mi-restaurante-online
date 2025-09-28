@@ -43,6 +43,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 
 interface Client {
   id: string;
@@ -644,6 +645,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const contextClientId = outletCtx?.selectedClientId;
   const setSelectedClientId = outletCtx?.setSelectedClientId;
   const navigate = useNavigate();
+  const { t } = useDashboardLanguage();
   
   // Prefer route param when present, else fall back to admin context selection
   const effectiveClientId = clientId || contextClientId;
@@ -2570,7 +2572,7 @@ setReviewForm({
           ) : (
             <>
               <Save className="mr-2 h-4 w-4" />
-              Save Changes
+              {t('common.save')}
             </>
           )}
         </Button>
@@ -2578,26 +2580,26 @@ setReviewForm({
 
       <Tabs defaultValue="basic" className="w-full" onValueChange={handleTabChange}>
         <TabsList>
-          {showTab('basic') && <TabsTrigger value="basic">Basic Info</TabsTrigger>}
-          {showTab('domain') && <TabsTrigger value="domain">Domain</TabsTrigger>}
-          {showTab('hours') && <TabsTrigger value="hours">Opening Hours</TabsTrigger>}
-          {showTab('social') && <TabsTrigger value="social">Social Media</TabsTrigger>}
-          {showTab('delivery') && <TabsTrigger value="delivery">Delivery</TabsTrigger>}
-          {showTab('branding') && <TabsTrigger value="branding">Branding</TabsTrigger>}
-          {showTab('content') && <TabsTrigger value="content">Change Content</TabsTrigger>}
+          {showTab('basic') && <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>}
+          {showTab('domain') && <TabsTrigger value="domain">Dominio</TabsTrigger>}
+          {showTab('hours') && <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>}
+          {showTab('social') && <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>}
+          {showTab('delivery') && <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>}
+          {showTab('branding') && <TabsTrigger value="branding">Marca</TabsTrigger>}
+          {showTab('content') && <TabsTrigger value="content">Contenido</TabsTrigger>}
           {showTab('briefing') && <TabsTrigger value="briefing">Briefing</TabsTrigger>}
-          {showTab('menu') && <TabsTrigger value="menu">Menu Items</TabsTrigger>}
-          {showTab('team') && <TabsTrigger value="team">Team Members</TabsTrigger>}
-          {showTab('reviews') && <TabsTrigger value="reviews">Reviews</TabsTrigger>}
-          {showTab('carousel') && <TabsTrigger value="carousel">Carousel</TabsTrigger>}
-          {showTab('custom-images') && <TabsTrigger value="custom-images">Client Images</TabsTrigger>}
+          {showTab('menu') && <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>}
+          {showTab('team') && <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>}
+          {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
+          {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
+          {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="setup-prompt">Setup Prompt</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="basic">
           <Card>
             <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
+              <CardTitle>{t('general.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4815,7 +4817,7 @@ setReviewForm({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="carousel-order">Posición del Carousel</Label>
+                  <Label htmlFor="carousel-order">{t('carousel.position')}</Label>
                 <Select
                   value={adminContent?.carousel_display_order ? adminContent.carousel_display_order.toString() : undefined}
                   onValueChange={async (value) => {
@@ -4826,16 +4828,16 @@ setReviewForm({
                   }}
                 >
                     <SelectTrigger>
-                      <SelectValue placeholder="Posición 1 (Después del Hero)" />
+                      <SelectValue placeholder={t('carousel.position1')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="3">Posición 1 (Después del Hero)</SelectItem>
-                      <SelectItem value="4">Posición 2 (Después de Servicios)</SelectItem>
-                      <SelectItem value="5">Posición 3 (Después de Menú)</SelectItem>
-                      <SelectItem value="6">Posición 4 (Después de Historia)</SelectItem>
-                      <SelectItem value="7">Posición 5 (Después de Testimonios)</SelectItem>
-                      <SelectItem value="8">Posición 6 (Después de Equipo)</SelectItem>
-                      <SelectItem value="9">Posición 7 (Antes de Contacto)</SelectItem>
+                      <SelectItem value="3">{t('carousel.position1')}</SelectItem>
+                      <SelectItem value="4">{t('carousel.position2')}</SelectItem>
+                      <SelectItem value="5">{t('carousel.position3')}</SelectItem>
+                      <SelectItem value="6">{t('carousel.position4')}</SelectItem>
+                      <SelectItem value="7">{t('carousel.position5')}</SelectItem>
+                      <SelectItem value="8">{t('carousel.position6')}</SelectItem>
+                      <SelectItem value="9">{t('carousel.position7')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
