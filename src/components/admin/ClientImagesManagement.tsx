@@ -50,6 +50,19 @@ export function ClientImagesManagement() {
     try {
       setLoading(true);
       
+      // Check authentication first
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to view client images",
+          variant: "destructive"
+        });
+        setImages([]);
+        return;
+      }
+      
       // Fetch all client images
       const { data: imagesData, error } = await supabase
         .from('client_images')
@@ -60,27 +73,33 @@ export function ClientImagesManagement() {
 
       // Fetch client information separately
       const clientIds = [...new Set(imagesData?.map(img => img.client_id) || [])];
-      const { data: clientsData, error: clientsError } = await supabase
-        .from('clients')
-        .select('id, restaurant_name, subdomain')
-        .in('id', clientIds);
+      
+      if (clientIds.length > 0) {
+        const { data: clientsData, error: clientsError } = await supabase
+          .from('clients')
+          .select('id, restaurant_name, subdomain')
+          .in('id', clientIds);
 
-      if (clientsError) throw clientsError;
+        if (clientsError) throw clientsError;
 
-      // Combine the data
-      const imagesWithClients = imagesData?.map(image => ({
-        ...image,
-        client: clientsData?.find(client => client.id === image.client_id)
-      })) || [];
+        // Combine the data
+        const imagesWithClients = imagesData?.map(image => ({
+          ...image,
+          client: clientsData?.find(client => client.id === image.client_id)
+        })) || [];
 
-      setImages(imagesWithClients);
+        setImages(imagesWithClients);
+      } else {
+        setImages([]);
+      }
     } catch (error: any) {
       console.error('Error fetching client images:', error);
       toast({
         title: "Error",
-        description: "Failed to load client images",
+        description: "Failed to load client images - " + (error.message || "Authentication may be required"),
         variant: "destructive"
       });
+      setImages([]);
     } finally {
       setLoading(false);
     }
