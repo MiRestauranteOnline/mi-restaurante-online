@@ -293,8 +293,9 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
                                   value={field.value || ""}
                                   onChange={field.onChange}
                                   clientId="signup"
-                                  context="restaurant content"
+                                  context="custom_upload"
                                   description="custom restaurant image for website personalization"
+                                  storeInDatabase={true}
                                 />
                               </FormControl>
                               <FormMessage />

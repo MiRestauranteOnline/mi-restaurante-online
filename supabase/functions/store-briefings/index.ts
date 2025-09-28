@@ -376,8 +376,36 @@ serve(async (req) => {
           console.error('Error storing carousel images:', carouselImagesError);
         } else {
           console.log('Successfully stored carousel images');
+      }
+
+      // Store custom images if provided
+      if (imagesData.custom_images_enabled && imagesData.custom_images?.length > 0) {
+        console.log('Processing custom images for client:', actualClientId);
+        
+        const customImagesToInsert = imagesData.custom_images
+          .filter((image: any) => image.imageUrl) // Only store images with URLs
+          .map((image: any, index: number) => ({
+            client_id: actualClientId,
+            image_url: image.imageUrl,
+            alt_text: image.altText || `Custom image ${index + 1}`,
+            upload_context: 'signup_custom_upload',
+            original_filename: `custom-image-${index + 1}`,
+            file_size_kb: null // Will be filled by optimization service
+          }));
+
+        if (customImagesToInsert.length > 0) {
+          const { error: customImagesError } = await supabase
+            .from('client_images')
+            .insert(customImagesToInsert);
+
+          if (customImagesError) {
+            console.error('Error storing custom images:', customImagesError);
+          } else {
+            console.log('Successfully stored', customImagesToInsert.length, 'custom images');
+          }
         }
       }
+    }
     }
 
     console.log('Successfully stored briefings for client:', actualClientId);

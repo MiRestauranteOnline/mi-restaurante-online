@@ -20,7 +20,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageUrl, description, clientId, context = 'restaurant content' } = await req.json();
+    const { imageUrl, description, clientId, context = 'restaurant content', storeInDatabase = false, originalFilename } = await req.json();
     
     if (!imageUrl) {
       throw new Error('Image URL is required');
@@ -155,10 +155,30 @@ serve(async (req) => {
 
     console.log('Optimized image uploaded successfully:', publicUrl);
 
-    // Step 6: If there was an original temp upload, we could delete it here
+    // Step 6: Store in client_images table if requested (for signup custom uploads)
+    if (storeInDatabase && clientId && clientId !== 'temp' && clientId !== 'signup') {
+      try {
+        await supabase
+          .from('client_images')
+          .insert({
+            client_id: clientId,
+            image_url: publicUrl,
+            alt_text: altText,
+            original_filename: originalFilename || filename,
+            upload_context: context,
+            file_size_kb: Math.round(optimizedSize / 1024)
+          });
+        console.log('Image stored in client_images table');
+      } catch (dbError) {
+        console.warn('Failed to store in client_images table:', dbError);
+        // Don't fail the entire process for database storage issues
+      }
+    }
+
+    // Step 7: If there was an original temp upload, we could delete it here
     // This would be the case if we're doing background optimization
 
-    // Step 7: Log the optimization
+    // Step 8: Log the optimization
     try {
       await supabase
         .from('generation_logs')

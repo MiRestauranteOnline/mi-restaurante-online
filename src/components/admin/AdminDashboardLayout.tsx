@@ -16,7 +16,8 @@ import {
   UtensilsCrossed,
   Shield,
   CreditCard,
-  Star
+  Star,
+  Images
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -131,6 +132,7 @@ export default function AdminDashboardLayout() {
   const adminSidebarItems = [
     { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
     { href: '/admin/client-management', label: t('clientManagement'), icon: Users },
+    { href: '/admin/client-images', label: 'Client Images', icon: Images },
     { href: '/admin/project-config', label: t('projectConfig'), icon: Settings },
     { href: '/admin/subscription-management', label: t('subscriptions'), icon: CreditCard },
   ];

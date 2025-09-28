@@ -30,6 +30,8 @@ export type Database = {
           about_team_section_title_first_line: string | null
           about_team_section_title_second_line: string | null
           about_us_label: string | null
+          carousel_display_order: number | null
+          carousel_enabled: boolean | null
           client_id: string
           contact_delivery_briefing: string | null
           contact_page_hero_background_url: string | null
@@ -154,6 +156,8 @@ export type Database = {
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
+          carousel_display_order?: number | null
+          carousel_enabled?: boolean | null
           client_id: string
           contact_delivery_briefing?: string | null
           contact_page_hero_background_url?: string | null
@@ -278,6 +282,8 @@ export type Database = {
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
+          carousel_display_order?: number | null
+          carousel_enabled?: boolean | null
           client_id?: string
           contact_delivery_briefing?: string | null
           contact_page_hero_background_url?: string | null
@@ -396,6 +402,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      carousel_images: {
+        Row: {
+          alt_text: string | null
+          client_id: string
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          client_id: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          client_id?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      client_images: {
+        Row: {
+          alt_text: string | null
+          client_id: string
+          created_at: string
+          file_size_kb: number | null
+          id: string
+          image_url: string
+          original_filename: string | null
+          updated_at: string
+          upload_context: string | null
+          uploaded_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          client_id: string
+          created_at?: string
+          file_size_kb?: number | null
+          id?: string
+          image_url: string
+          original_filename?: string | null
+          updated_at?: string
+          upload_context?: string | null
+          uploaded_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          client_id?: string
+          created_at?: string
+          file_size_kb?: number | null
+          id?: string
+          image_url?: string
+          original_filename?: string | null
+          updated_at?: string
+          upload_context?: string | null
+          uploaded_at?: string
+        }
+        Relationships: []
       }
       client_settings: {
         Row: {

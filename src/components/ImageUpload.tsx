@@ -14,9 +14,10 @@ interface ImageUploadProps {
   clientId: string;
   context?: string; // e.g., 'carousel', 'menu-item', 'team-member', 'hero-background', etc.
   description?: string; // Optional custom description for better SEO
+  storeInDatabase?: boolean; // Whether to store in client_images table
 }
 
-export function ImageUpload({ label, value, onChange, clientId, context = 'restaurant content', description }: ImageUploadProps) {
+export function ImageUpload({ label, value, onChange, clientId, context = 'restaurant content', description, storeInDatabase = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
@@ -65,7 +66,9 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
           imageUrl: data.publicUrl,
           description: imageDescription,
           clientId: clientId,
-          context: context
+          context: context,
+          storeInDatabase: storeInDatabase,
+          originalFilename: file.name
         }
       });
 
