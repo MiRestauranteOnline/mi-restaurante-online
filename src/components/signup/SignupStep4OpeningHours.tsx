@@ -10,20 +10,20 @@ import { ArrowLeft, Clock } from "lucide-react";
 
 export interface OpeningHoursData {
   opening_hours: {
-    monday?: { open?: string; close?: string; closed: boolean };
-    tuesday?: { open?: string; close?: string; closed: boolean };
-    wednesday?: { open?: string; close?: string; closed: boolean };
-    thursday?: { open?: string; close?: string; closed: boolean };
-    friday?: { open?: string; close?: string; closed: boolean };
-    saturday?: { open?: string; close?: string; closed: boolean };
-    sunday?: { open?: string; close?: string; closed: boolean };
+    monday?: { open?: string; close?: string; closed?: boolean };
+    tuesday?: { open?: string; close?: string; closed?: boolean };
+    wednesday?: { open?: string; close?: string; closed?: boolean };
+    thursday?: { open?: string; close?: string; closed?: boolean };
+    friday?: { open?: string; close?: string; closed?: boolean };
+    saturday?: { open?: string; close?: string; closed?: boolean };
+    sunday?: { open?: string; close?: string; closed?: boolean };
   };
 }
 
 const daySchema = z.object({
   open: z.string().optional(),
   close: z.string().optional(),
-  closed: z.boolean(),
+  closed: z.boolean().optional(),
 });
 
 const openingHoursSchema = z.object({
@@ -184,9 +184,6 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
               Volver
             </Button>
             <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={handleSkip}>
-                Omitir por ahora
-              </Button>
               <Button type="submit">
                 Continuar
               </Button>

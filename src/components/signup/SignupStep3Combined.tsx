@@ -124,10 +124,16 @@ export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupS
   const reviews = form.watch("reviews");
   const teamMembers = form.watch("teamMembers");
 
-  // Calculate counts of filled items
-  const filledItemsCount = items?.filter(item => item.name?.trim() && item.description?.trim() && item.price?.trim()).length || 0;
-  const filledReviewsCount = reviews?.filter(review => review.reviewerName?.trim() && review.reviewText?.trim()).length || 0;
-  const filledTeamMembersCount = teamMembers?.filter(member => member.name?.trim() && member.title?.trim() && member.bio?.trim()).length || 0;
+  // Calculate counts of filled items (more lenient filtering)
+  const filledItemsCount = items?.filter(item => 
+    item.name?.trim() && (item.description?.trim() || item.price?.trim())
+  ).length || 0;
+  const filledReviewsCount = reviews?.filter(review => 
+    review.reviewerName?.trim() && review.reviewText?.trim()
+  ).length || 0;
+  const filledTeamMembersCount = teamMembers?.filter(member => 
+    member.name?.trim() && (member.title?.trim() || member.bio?.trim())
+  ).length || 0;
 
   // Target counts
   const targetItems = 4;

@@ -86,7 +86,6 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
     { value: "modern", label: "Moderno" },
     { value: "rustic", label: "Rústico" },
     { value: "minimalist", label: "Minimalista" },
-    { value: "colorful", label: "Colorido" },
     { value: "traditional", label: "Tradicional" },
   ];
 
