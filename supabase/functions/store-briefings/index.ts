@@ -141,9 +141,12 @@ serve(async (req) => {
         clientUpdateData.delivery = deliveryData;
       }
       
-      // Also update address if provided
+      // Also update address and referral source if provided
       if (signupData.address) {
         clientUpdateData.address = signupData.address;
+      }
+      if (signupData.referralSource) {
+        clientUpdateData.referral_source = signupData.referralSource;
       }
 
       if (Object.keys(clientUpdateData).length > 0) {

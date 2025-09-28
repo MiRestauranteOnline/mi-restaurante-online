@@ -17,7 +17,8 @@ import {
   Shield,
   CreditCard,
   Star,
-  Images
+  Images,
+  TrendingUp
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -132,6 +133,7 @@ export default function AdminDashboardLayout() {
   const adminSidebarItems = [
     { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
     { href: '/admin/client-management', label: t('clientManagement'), icon: Users },
+    { href: '/admin/marketing-analytics', label: 'Marketing Analytics', icon: TrendingUp },
     { href: '/admin/project-config', label: t('projectConfig'), icon: Settings },
     { href: '/admin/subscription-management', label: t('subscriptions'), icon: CreditCard },
   ];

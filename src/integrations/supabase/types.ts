@@ -567,6 +567,7 @@ export type Database = {
           other_customizations: Json | null
           phone: string | null
           phone_country_code: string | null
+          referral_source: string | null
           restaurant_name: string
           social_media_links: Json | null
           subdomain: string
@@ -592,6 +593,7 @@ export type Database = {
           other_customizations?: Json | null
           phone?: string | null
           phone_country_code?: string | null
+          referral_source?: string | null
           restaurant_name: string
           social_media_links?: Json | null
           subdomain: string
@@ -617,6 +619,7 @@ export type Database = {
           other_customizations?: Json | null
           phone?: string | null
           phone_country_code?: string | null
+          referral_source?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
           subdomain?: string

@@ -27,6 +27,7 @@ import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDashboardLayout from "./components/admin/AdminDashboardLayout";
 import ClientImages from "./pages/admin/ClientImages";
+import MarketingAnalytics from "./pages/admin/MarketingAnalytics";
 import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
 import ClientDashboard from "./pages/client/ClientDashboard";
 // import ClientSettingsPage from "./pages/client/ClientSettings";
@@ -64,6 +65,7 @@ const App = () => (
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="client-management" element={<ClientManagement />} />
               <Route path="client-images" element={<ClientImages />} />
+              <Route path="marketing-analytics" element={<MarketingAnalytics />} />
               <Route path="client-settings/:clientId" element={<ClientSettings />} />
               <Route path="project-config" element={<ProjectConfiguration />} />
               <Route path="subscription-management" element={<SubscriptionManagement />} />

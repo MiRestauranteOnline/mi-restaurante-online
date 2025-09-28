@@ -24,10 +24,10 @@ const signupSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
   phone: z.string().min(10, "Número de teléfono inválido"),
-  address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"), // New address validation
+  address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"),
   hasCustomDomain: z.boolean().optional(),
   customDomain: z.string().optional(),
-  referralSource: z.string().optional(),
+  referralSource: z.string().min(1, "Por favor selecciona cómo nos encontraste"),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
