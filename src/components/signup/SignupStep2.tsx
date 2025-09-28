@@ -15,6 +15,7 @@ import type { SignupData, WebsiteRequirements, SocialMedia } from "@/pages/Signu
 const requirementsSchema = z.object({
   businessType: z.string().min(1, "Selecciona el tipo de negocio"),
   targetAudience: z.string().min(5, "Describe tu público objetivo"),
+  downloadableMenuUrl: z.string().optional(),
   socialMedia: z.array(z.object({
     platform: z.string(),
     url: z.string()
@@ -47,6 +48,7 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
     defaultValues: {
       businessType: initialData.businessType,
       targetAudience: initialData.targetAudience,
+      downloadableMenuUrl: initialData.downloadableMenuUrl || "",
       socialMedia: initialData.socialMedia.length > 0 ? initialData.socialMedia : [{ platform: "", url: "" }],
       hasDelivery: initialData.hasDelivery,
       deliveryPlatforms: initialData.deliveryPlatforms,
@@ -165,6 +167,26 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                       <Textarea 
                         placeholder="Ej: Familias con niños, jóvenes profesionales, turistas, parejas románticas..."
                         className="min-h-[80px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="downloadableMenuUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Menú Descargable (Opcional)</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      Proporciona un enlace a tu menú en PDF u otro formato descargable
+                    </p>
+                    <FormControl>
+                      <Input 
+                        placeholder="https://example.com/menu.pdf o URL de Google Drive/Dropbox"
                         {...field}
                       />
                     </FormControl>

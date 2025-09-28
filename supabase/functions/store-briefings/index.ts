@@ -163,26 +163,33 @@ serve(async (req) => {
         }
       }
 
-      // Store logo URL in admin_content if provided
-      if (websiteRequirements.logoUrl) {
-        const { error: logoUpdateError } = await supabase
-          .from('admin_content')
-          .upsert({
-            client_id: actualClientId,
-            header_logo_url: websiteRequirements.logoUrl,
-            footer_logo_url: websiteRequirements.logoUrl,
-            content_briefing: contentBriefing,
-            style_briefing: styleBriefing || '',
-            contact_delivery_briefing: contactDeliveryBriefing || ''
-          }, {
-            onConflict: 'client_id'
-          });
+      // Store logo URL and downloadable menu URL in admin_content if provided
+      const adminContentData: any = {
+        client_id: actualClientId,
+        content_briefing: contentBriefing,
+        style_briefing: styleBriefing || '',
+        contact_delivery_briefing: contactDeliveryBriefing || ''
+      };
 
-        if (logoUpdateError) {
-          console.error('Error updating admin_content with logo:', logoUpdateError);
-        } else {
-          console.log('Successfully updated admin_content with logo URL');
-        }
+      if (websiteRequirements.logoUrl) {
+        adminContentData.header_logo_url = websiteRequirements.logoUrl;
+        adminContentData.footer_logo_url = websiteRequirements.logoUrl;
+      }
+
+      if (websiteRequirements.downloadableMenuUrl) {
+        adminContentData.downloadable_menu_url = websiteRequirements.downloadableMenuUrl;
+      }
+
+      const { error: logoUpdateError } = await supabase
+        .from('admin_content')
+        .upsert(adminContentData, {
+          onConflict: 'client_id'
+        });
+
+      if (logoUpdateError) {
+        console.error('Error updating admin_content:', logoUpdateError);
+      } else {
+        console.log('Successfully updated admin_content with logo URL');
       }
     }
 

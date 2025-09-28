@@ -31,6 +31,7 @@ export interface SocialMedia {
 export interface WebsiteRequirements {
   businessType: string;
   targetAudience: string;
+  downloadableMenuUrl?: string;
   socialMedia: SocialMedia[];
   hasDelivery: boolean;
   deliveryPlatforms: {
