@@ -376,6 +376,7 @@ serve(async (req) => {
           console.error('Error storing carousel images:', carouselImagesError);
         } else {
           console.log('Successfully stored carousel images');
+        }
       }
 
       // Store custom images if provided
@@ -405,7 +406,6 @@ serve(async (req) => {
           }
         }
       }
-    }
     }
 
     console.log('Successfully stored briefings for client:', actualClientId);
