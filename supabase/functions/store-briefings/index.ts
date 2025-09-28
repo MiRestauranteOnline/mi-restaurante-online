@@ -395,15 +395,43 @@ serve(async (req) => {
           }));
 
         if (customImagesToInsert.length > 0) {
-          const { error: customImagesError } = await supabase
-            .from('client_images')
-            .insert(customImagesToInsert);
+          // First, try to update any existing images that were uploaded with temp clientId
+          for (const imageData of customImagesToInsert) {
+            try {
+              // Check if this image URL exists with temp clientId
+              const { data: existingImage } = await supabase
+                .from('client_images')
+                .select('id')
+                .eq('image_url', imageData.image_url)
+                .eq('client_id', 'temp-signup-client')
+                .single();
 
-          if (customImagesError) {
-            console.error('Error storing custom images:', customImagesError);
-          } else {
-            console.log('Successfully stored', customImagesToInsert.length, 'custom images');
+              if (existingImage) {
+                // Update the existing image to link to actual client
+                await supabase
+                  .from('client_images')
+                  .update({
+                    client_id: actualClientId,
+                    alt_text: imageData.alt_text,
+                    upload_context: imageData.upload_context,
+                    original_filename: imageData.original_filename
+                  })
+                  .eq('id', existingImage.id);
+                console.log('Updated existing temp image to link to client:', actualClientId);
+              } else {
+                // Insert new image record if not exists
+                await supabase
+                  .from('client_images')
+                  .insert(imageData);
+                console.log('Inserted new custom image for client:', actualClientId);
+              }
+            } catch (error) {
+              console.error('Error processing custom image:', error);
+              // Continue with next image
+            }
           }
+
+          console.log('Successfully processed', customImagesToInsert.length, 'custom images');
         }
       }
     }
