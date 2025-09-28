@@ -706,7 +706,13 @@ const [reviewForm, setReviewForm] = useState({
     });
 
     const grouped = categories.reduce((acc, category) => {
-      acc[category.id] = filtered.filter(item => item.category_id === category.id);
+      acc[category.id] = filtered.filter(item => {
+        const byId = item.category_id === category.id;
+        const byLegacyName = (item as any).category 
+          ? (item as any).category.toLowerCase().trim() === category.name.toLowerCase().trim()
+          : false;
+        return byId || byLegacyName;
+      });
       return acc;
     }, {} as Record<string, MenuItem[]>);
 
@@ -1320,6 +1326,7 @@ const [reviewForm, setReviewForm] = useState({
         .order('name');
 
       if (error) throw error;
+      console.log('Menu items fetched:', Array.isArray(data) ? data.length : 0);
       setMenuItems(data || []);
     } catch (error: any) {
       toast({
@@ -1341,6 +1348,7 @@ const [reviewForm, setReviewForm] = useState({
         .order('display_order');
 
       if (error) throw error;
+      console.log('Team members fetched:', Array.isArray(data) ? data.length : 0);
       setTeamMembers(data || []);
     } catch (error: any) {
       toast({
