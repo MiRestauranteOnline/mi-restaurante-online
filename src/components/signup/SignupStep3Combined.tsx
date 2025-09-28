@@ -120,6 +120,26 @@ export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupS
   });
 
   const categories = form.watch("categories");
+  const items = form.watch("items");
+  const reviews = form.watch("reviews");
+  const teamMembers = form.watch("teamMembers");
+
+  // Calculate counts of filled items
+  const filledItemsCount = items?.filter(item => item.name?.trim() && item.description?.trim() && item.price?.trim()).length || 0;
+  const filledReviewsCount = reviews?.filter(review => review.reviewerName?.trim() && review.reviewText?.trim()).length || 0;
+  const filledTeamMembersCount = teamMembers?.filter(member => member.name?.trim() && member.title?.trim() && member.bio?.trim()).length || 0;
+
+  // Target counts
+  const targetItems = 4;
+  const targetReviews = 3;
+  const targetTeamMembers = 2;
+
+  // Calculate remaining counts
+  const remainingItems = Math.max(0, targetItems - filledItemsCount);
+  const remainingReviews = Math.max(0, targetReviews - filledReviewsCount);
+  const remainingTeamMembers = Math.max(0, targetTeamMembers - filledTeamMembersCount);
+
+  const shouldShowRecommendation = remainingItems > 0 || remainingReviews > 0 || remainingTeamMembers > 0;
 
   const onSubmit = (data: CombinedFormData) => {
     onComplete({
@@ -127,15 +147,6 @@ export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupS
       items: data.items || [],
       reviews: data.reviews || [],
       teamMembers: data.teamMembers || []
-    });
-  };
-
-  const handleSkip = () => {
-    onComplete({
-      categories: [],
-      items: [],
-      reviews: [],
-      teamMembers: []
     });
   };
 
@@ -583,30 +594,28 @@ export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupS
             </CardContent>
           </Card>
 
-          {/* Skip Option */}
-          <Card className="border-yellow-200 bg-yellow-50">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="text-yellow-600 text-sm">⚠️</div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-yellow-800">¿Omitir contenido del restaurante?</p>
-                  <p className="text-xs text-yellow-700 mt-1">
-                    Si omites este paso, tu sitio se publicará sin menú, reseñas o información del equipo. 
-                    No te preocupes, puedes agregarlos fácilmente después a través de tu panel de control.
-                  </p>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleSkip}
-                    className="mt-2 text-yellow-700 border-yellow-300 hover:bg-yellow-100"
-                  >
-                    Omitir por ahora
-                  </Button>
+          {/* Recommendation Message */}
+          {shouldShowRecommendation && (
+            <Card className="border-blue-200 bg-blue-50">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="text-blue-600 text-sm">💡</div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-800">Recomendación</p>
+                    <p className="text-xs text-blue-700 mt-1">
+                      Te recomendamos agregar 
+                      {remainingItems > 0 && ` ${remainingItems} ${remainingItems === 1 ? 'plato más' : 'platos más'} al menú`}
+                      {remainingItems > 0 && (remainingReviews > 0 || remainingTeamMembers > 0) && ','}
+                      {remainingReviews > 0 && ` ${remainingReviews} ${remainingReviews === 1 ? 'reseña más' : 'reseñas más'}`}
+                      {remainingReviews > 0 && remainingTeamMembers > 0 && ' y'}
+                      {remainingTeamMembers > 0 && ` ${remainingTeamMembers} ${remainingTeamMembers === 1 ? 'miembro más del equipo' : 'miembros más del equipo'}`}
+                      {' '}antes de continuar para tener un sitio web más completo y atractivo.
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Navigation */}
           <div className="flex justify-between pt-6">
