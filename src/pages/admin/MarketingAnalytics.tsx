@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { TrendingUp, Users, Target, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -10,19 +9,6 @@ interface ReferralData {
   count: number;
   percentage: number;
 }
-
-const COLORS = [
-  '#FFD700', // Primary gold
-  '#FF6B6B', // Red
-  '#4ECDC4', // Teal
-  '#45B7D1', // Blue
-  '#96CEB4', // Green
-  '#FFEAA7', // Yellow
-  '#DDA0DD', // Plum
-  '#98D8C8', // Mint
-  '#F7DC6F', // Light yellow
-  '#BB8FCE'  // Light purple
-];
 
 const SOURCE_LABELS: Record<string, string> = {
   'google': 'Google',
@@ -36,6 +22,19 @@ const SOURCE_LABELS: Record<string, string> = {
   'radio': 'Radio',
   'other': 'Otro'
 };
+
+const COLORS = [
+  '#FFD700', // Primary gold
+  '#FF6B6B', // Red
+  '#4ECDC4', // Teal
+  '#45B7D1', // Blue
+  '#96CEB4', // Green
+  '#FFEAA7', // Yellow
+  '#DDA0DD', // Plum
+  '#98D8C8', // Mint
+  '#F7DC6F', // Light yellow
+  '#BB8FCE'  // Light purple
+];
 
 const MarketingAnalytics = () => {
   const [referralData, setReferralData] = useState<ReferralData[]>([]);
@@ -98,25 +97,6 @@ const MarketingAnalytics = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const renderCustomizedLabel = (entry: any) => {
-    return `${entry.percentage}%`;
-  };
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-background border rounded-lg p-3 shadow-lg">
-          <p className="font-medium">{data.source}</p>
-          <p className="text-sm text-muted-foreground">
-            {data.count} clientes ({data.percentage}%)
-          </p>
-        </div>
-      );
-    }
-    return null;
   };
 
   if (loading) {
@@ -231,7 +211,7 @@ const MarketingAnalytics = () => {
         </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Pie Chart */}
+          {/* Visual Chart Replacement */}
           <Card>
             <CardHeader>
               <CardTitle>Distribución por Fuente</CardTitle>
@@ -240,32 +220,40 @@ const MarketingAnalytics = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={referralData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={renderCustomizedLabel}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="count"
-                    >
-                      {referralData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
+              <div className="space-y-4">
+                {referralData.map((item, index) => (
+                  <div key={item.source} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <div 
+                        className="w-4 h-4 rounded-full flex-shrink-0" 
+                        style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                      />
+                      <span className="text-sm font-medium truncate">{item.source}</span>
+                    </div>
+                    <div className="flex items-center gap-4 flex-shrink-0">
+                      <div className="w-32">
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div 
+                            className="h-2 rounded-full transition-all"
+                            style={{ 
+                              width: `${item.percentage}%`,
+                              backgroundColor: COLORS[index % COLORS.length]
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="text-right min-w-[80px]">
+                        <div className="text-sm font-bold">{item.count}</div>
+                        <div className="text-xs text-muted-foreground">{item.percentage}%</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
 
-          {/* Bar Chart */}
+          {/* Bar Chart Replacement */}
           <Card>
             <CardHeader>
               <CardTitle>Clientes por Fuente</CardTitle>
@@ -274,22 +262,24 @@ const MarketingAnalytics = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={referralData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="source" 
-                      tick={{ fontSize: 12 }}
-                      angle={-45}
-                      textAnchor="end"
-                      height={80}
-                    />
-                    <YAxis />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Bar dataKey="count" fill="#FFD700" />
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="space-y-3">
+                {referralData.map((item, index) => (
+                  <div key={item.source} className="space-y-1">
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium">{item.source}</span>
+                      <span className="text-muted-foreground">{item.count} clientes</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-3">
+                      <div 
+                        className="h-3 rounded-full transition-all"
+                        style={{ 
+                          width: `${(item.count / Math.max(...referralData.map(d => d.count))) * 100}%`,
+                          backgroundColor: COLORS[index % COLORS.length]
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
