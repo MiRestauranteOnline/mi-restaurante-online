@@ -4816,15 +4816,15 @@ setReviewForm({
 
                 <div className="space-y-2">
                   <Label htmlFor="carousel-order">Posición del Carousel</Label>
-                  <Select
-                    value={adminContent?.carousel_display_order?.toString() ?? "3"}
-                    onValueChange={async (value) => {
-                      const val = parseInt(value);
-                      const next = { ...adminContent, carousel_display_order: val } as any;
-                      setAdminContent(next);
-                      await saveCarouselSetting({ carousel_display_order: val });
-                    }}
-                  >
+                <Select
+                  value={adminContent?.carousel_display_order ? adminContent.carousel_display_order.toString() : undefined}
+                  onValueChange={async (value) => {
+                    const val = parseInt(value);
+                    const next = { ...adminContent, carousel_display_order: val } as any;
+                    setAdminContent(next);
+                    await saveCarouselSetting({ carousel_display_order: val });
+                  }}
+                >
                     <SelectTrigger>
                       <SelectValue placeholder="Posición 1 (Después del Hero)" />
                     </SelectTrigger>

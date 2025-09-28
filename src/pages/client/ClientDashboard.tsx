@@ -925,7 +925,7 @@ export default function ClientDashboard() {
                   <div className="space-y-2">
                     <Label htmlFor="carousel-order">Posición del Carousel</Label>
                     <Select
-                      value={adminContent?.carousel_display_order?.toString() ?? "3"}
+                      value={adminContent?.carousel_display_order ? adminContent.carousel_display_order.toString() : undefined}
                       onValueChange={async (value) => {
                         const updatedContent = { ...adminContent, carousel_display_order: parseInt(value) };
                         setAdminContent(updatedContent);
