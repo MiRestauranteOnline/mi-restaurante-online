@@ -166,7 +166,7 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
               Volver al Inicio
             </Button>
             <Button 
-              onClick={() => window.location.href = '/contacto'}
+              onClick={() => window.location.href = '/soporte'}
               className="flex items-center gap-2"
             >
               <ExternalLink className="w-4 h-4" />
@@ -179,10 +179,13 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
               <p className="text-sm text-center text-muted-foreground">
                 <strong>¿Necesitas ayuda?</strong> Nuestro equipo está disponible para asistirte.
                 Escríbenos a{" "}
-                <a href="mailto:soporte@mirestauranteonline.com" className="text-primary hover:underline">
-                  soporte@mirestauranteonline.com
+                <a href="mailto:soporte@mirestaurante.online" className="text-primary hover:underline">
+                  soporte@mirestaurante.online
                 </a>{" "}
-                o contacta por WhatsApp.
+                o{" "}
+                <a href="/soporte" className="text-primary hover:underline">
+                  completa nuestro formulario de soporte
+                </a>.
               </p>
             </CardContent>
           </Card>
