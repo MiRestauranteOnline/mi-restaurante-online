@@ -45,18 +45,18 @@ serve(async (req) => {
             messages: [
               {
                 role: 'system',
-                content: `You are an SEO expert who creates optimized filenames and alt texts for restaurant website images. Generate SEO-friendly, descriptive content that includes relevant keywords for ${context}.`
+                content: `Eres un experto en SEO que crea nombres de archivos optimizados y textos alternativos para imágenes de sitios web de restaurantes. Genera contenido descriptivo y amigable para SEO que incluya palabras clave relevantes para ${context}.`
               },
               {
                 role: 'user',
-                content: `Create an SEO-optimized filename (without extension) and alt text for an image with this description: "${description}". 
+                content: `Crea un nombre de archivo optimizado para SEO (sin extensión) y texto alternativo para una imagen con esta descripción: "${description}". 
                 
-                Requirements:
-                - Filename: lowercase, hyphen-separated, descriptive, 3-6 words, include relevant keywords
-                - Alt text: descriptive, natural language, 8-15 words, good for accessibility
-                - Focus on restaurant/food industry keywords when relevant
+                Requisitos:
+                - Nombre de archivo: en minúsculas, separado por guiones, descriptivo, 3-6 palabras, incluir palabras clave relevantes, EN ESPAÑOL
+                - Texto alternativo: descriptivo, lenguaje natural, 8-15 palabras, bueno para accesibilidad, EN ESPAÑOL
+                - Enfócate en palabras clave de la industria de restaurantes/comida cuando sea relevante
                 
-                Return ONLY a JSON object with "filename" and "altText" properties.`
+                Devuelve SOLO un objeto JSON con las propiedades "filename" y "altText" EN ESPAÑOL.`
               }
             ],
             max_tokens: 150,

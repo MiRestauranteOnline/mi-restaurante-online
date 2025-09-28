@@ -440,6 +440,24 @@ export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupS
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name={`reviews.${index}.reviewDate`}
+                    render={({ field }) => (
+                      <FormItem className="mt-4">
+                        <FormLabel>Fecha de la Reseña</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                            onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </Card>
               ))}
               

@@ -24,6 +24,13 @@ const daySchema = z.object({
   open: z.string().optional(),
   close: z.string().optional(),
   closed: z.boolean(),
+}).refine((data) => {
+  if (!data.closed) {
+    return data.open && data.close;
+  }
+  return true;
+}, {
+  message: "Debe especificar horarios de apertura y cierre cuando el día está marcado como abierto",
 });
 
 const openingHoursSchema = z.object({
