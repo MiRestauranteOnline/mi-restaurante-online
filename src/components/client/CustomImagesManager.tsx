@@ -160,7 +160,7 @@ export function CustomImagesManager({ selectedClientId }: CustomImagesManagerPro
             <div className="relative">
               <AspectRatio ratio={16 / 9}>
                 <img
-                  src={image.image_url}
+                  src={`${image.image_url}?v=${new Date(image.created_at).getTime()}`}
                   alt={image.alt_text || 'Imagen personalizada'}
                   className="object-cover w-full h-full cursor-pointer hover:opacity-90 transition-opacity"
                   onClick={() => copyToClipboard(image.image_url)}

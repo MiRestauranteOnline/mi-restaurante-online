@@ -218,7 +218,7 @@ export function ClientImagesManagement() {
               <div className="p-0">
                 <AspectRatio ratio={16 / 9} className="bg-muted">
                   <img
-                    src={image.image_url}
+                    src={`${image.image_url}?v=${new Date(image.created_at).getTime()}`}
                     alt={image.alt_text || 'Client uploaded image'}
                     className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
                     onClick={() => copyToClipboard(image.image_url)}

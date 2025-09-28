@@ -83,6 +83,12 @@ serve(async (req) => {
         const parsed = JSON.parse(contentText);
         filename = parsed.filename;
         altText = parsed.altText;
+        // Normalize filename to a slug
+        filename = (filename || '').toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-');
       } catch (e) {
         console.warn('Failed to parse OpenAI SEO JSON. Falling back to slugified values.', e);
       }
@@ -130,7 +136,11 @@ serve(async (req) => {
       // For now, we'll just log this and proceed
     }
 
-    const optimizedFilename = `${filename}.webp`;
+    // Create a unique, cache-busting filename using a short content hash
+    const hashBuf = await crypto.subtle.digest('SHA-1', imageBuffer);
+    const hashArr = Array.from(new Uint8Array(hashBuf));
+    const hash8 = hashArr.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
+    const optimizedFilename = `${filename}-${hash8}.webp`;
     
     // Step 4: Upload optimized image to Supabase Storage
     const uploadPath = clientId 
@@ -141,7 +151,8 @@ serve(async (req) => {
       .from('client-assets')
       .upload(uploadPath, optimizedBuffer, {
         contentType: 'image/webp',
-        upsert: true
+        cacheControl: '31536000',
+        upsert: false
       });
 
     if (uploadError) {
