@@ -157,7 +157,7 @@ serve(async (req) => {
         .upload(originalUploadPath, imageBuffer, {
           contentType: originalContentType,
           cacheControl: '31536000',
-          upsert: false,
+          upsert: true,
         });
       if (originalUploadError && originalUploadError.message?.includes('already exists') === false) {
         console.warn('Failed to upload original image copy:', originalUploadError.message);
@@ -181,7 +181,7 @@ serve(async (req) => {
       .upload(uploadPath, optimizedBuffer, {
         contentType: 'image/webp',
         cacheControl: '31536000',
-        upsert: false
+        upsert: true
       });
 
     if (uploadError) {
