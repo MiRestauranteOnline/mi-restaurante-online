@@ -468,7 +468,7 @@ serve(async (req) => {
         const { data: tempImages } = await supabase
           .from('generation_logs')
           .select('*')
-          .eq('type', 'temp_signup_image')
+          .eq('type', 'image_optimization')
           .eq('status', 'pending_client_assignment');
         
         // Process temp images from generation_logs

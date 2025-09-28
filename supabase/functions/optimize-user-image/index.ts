@@ -204,7 +204,7 @@ serve(async (req) => {
           await supabase
             .from('generation_logs')
             .insert({
-              type: 'temp_signup_image',
+              type: 'image_optimization',
               status: 'pending_client_assignment',
               details: {
                 image_url: publicUrl,
@@ -245,7 +245,7 @@ serve(async (req) => {
       await supabase
         .from('generation_logs')
         .insert({
-          type: 'user_image_optimization',
+          type: 'image_optimization',
           status: 'completed',
           details: {
             original_url: imageUrl,
@@ -284,7 +284,7 @@ serve(async (req) => {
       await supabase
         .from('generation_logs')
         .insert({
-          type: 'user_image_optimization',
+          type: 'image_optimization',
           status: 'failed',
           error_message: error instanceof Error ? error.message : 'Unknown error',
           details: { error_context: 'User image optimization failed' }
