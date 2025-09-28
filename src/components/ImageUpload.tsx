@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, X, Link } from "lucide-react";
@@ -72,7 +73,7 @@ export function ImageUpload({ label, value, onChange, clientId }: ImageUploadPro
       
       {/* Current image preview */}
       {value && (
-        <div className="relative w-full h-32 rounded border overflow-hidden bg-muted">
+        <AspectRatio ratio={16 / 9} className="bg-muted rounded border overflow-hidden">
           <img 
             src={value} 
             alt="Preview" 
@@ -84,12 +85,12 @@ export function ImageUpload({ label, value, onChange, clientId }: ImageUploadPro
           <Button
             variant="destructive"
             size="sm"
-            className="absolute top-2 right-2"
+            className="absolute top-2 right-2 z-10"
             onClick={() => onChange('')}
           >
             <X className="h-3 w-3" />
           </Button>
-        </div>
+        </AspectRatio>
       )}
 
       {/* Upload buttons */}
