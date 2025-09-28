@@ -106,9 +106,11 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
             </CardHeader>
             <CardContent className="space-y-4">
               {days.map(({ key, label }) => (
-                <Card key={key} className="p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="font-medium">{label}</h4>
+                <div key={key} className="flex items-center gap-4 p-4 border rounded-lg">
+                  <div className="w-24">
+                    <FormLabel className="text-sm font-medium">{label}</FormLabel>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <FormField
                       control={form.control}
                       name={`opening_hours.${key}.closed`}
@@ -120,80 +122,60 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
                               onCheckedChange={(checked) => field.onChange(!checked)}
                             />
                           </FormControl>
-                          <FormLabel className="text-sm">
+                          <FormLabel className="text-sm text-muted-foreground">
                             {field.value ? 'Cerrado' : 'Abierto'}
                           </FormLabel>
                         </FormItem>
                       )}
                     />
                   </div>
-
                   {!form.watch(`opening_hours.${key}.closed`) && (
-                    <div className="grid grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name={`opening_hours.${key}.open`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Hora de Apertura</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="time"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name={`opening_hours.${key}.close`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Hora de Cierre</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="time"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <>
+                      <div className="flex items-center gap-2">
+                        <FormLabel className="text-sm">Abre:</FormLabel>
+                        <FormField
+                          control={form.control}
+                          name={`opening_hours.${key}.open`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="time"
+                                  className="w-32"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <FormLabel className="text-sm">Cierra:</FormLabel>
+                        <FormField
+                          control={form.control}
+                          name={`opening_hours.${key}.close`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="time"
+                                  className="w-32"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </>
                   )}
-                </Card>
+                </div>
               ))}
             </CardContent>
           </Card>
 
-          {/* Skip Option */}
-          <Card className="border-yellow-200 bg-yellow-50">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="text-yellow-600 text-sm">⚠️</div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-yellow-800">¿Omitir horarios de atención?</p>
-                  <p className="text-xs text-yellow-700 mt-1">
-                    Si omites este paso, tu sitio se publicará sin horarios de atención. 
-                    No te preocupes, puedes agregarlos fácilmente después a través de tu panel de control.
-                  </p>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleSkip}
-                    className="mt-2 text-yellow-700 border-yellow-300 hover:bg-yellow-100"
-                  >
-                    Omitir por ahora
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Navigation */}
           <div className="flex justify-between pt-6">
@@ -201,9 +183,14 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver
             </Button>
-            <Button type="submit">
-              Continuar
-            </Button>
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={handleSkip}>
+                Omitir por ahora
+              </Button>
+              <Button type="submit">
+                Continuar
+              </Button>
+            </div>
           </div>
         </form>
       </Form>
