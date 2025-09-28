@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ImageUpload } from "@/components/ImageUpload";
 import { PhoneInput } from "@/components/ui/phone-input";
+import { UserWarningOverlay } from "@/components/UserWarningOverlay";
 import {
   DndContext,
   closestCenter,
@@ -657,6 +658,9 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [showWarningOverlay, setShowWarningOverlay] = useState(false);
+  const [warningTabName, setWarningTabName] = useState('');
+  const [userConfirmedWarning, setUserConfirmedWarning] = useState(false);
   const { toast } = useToast();
 
   const showTab = (name: string) => !allowedTabs || allowedTabs.includes(name);
@@ -2406,6 +2410,20 @@ setReviewForm({
     }
   };
 
+  const handleTabChange = (value: string) => {
+    // Show warning for non-admin users accessing sensitive tabs
+    if (userRole !== 'admin' && (value === 'branding' || value === 'content') && !userConfirmedWarning) {
+      setWarningTabName(value === 'branding' ? 'configuración de marca' : 'cambio de contenido');
+      setShowWarningOverlay(true);
+      return;
+    }
+  };
+
+  const handleWarningConfirm = () => {
+    setUserConfirmedWarning(true);
+    setShowWarningOverlay(false);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -2453,7 +2471,7 @@ setReviewForm({
         </Button>
       </div>
 
-      <Tabs defaultValue="basic" className="w-full">
+      <Tabs defaultValue="basic" className="w-full" onValueChange={handleTabChange}>
         <TabsList>
           {showTab('basic') && <TabsTrigger value="basic">Basic Info</TabsTrigger>}
           {showTab('domain') && <TabsTrigger value="domain">Domain</TabsTrigger>}
@@ -2461,7 +2479,7 @@ setReviewForm({
           {showTab('social') && <TabsTrigger value="social">Social Media</TabsTrigger>}
           {showTab('delivery') && <TabsTrigger value="delivery">Delivery</TabsTrigger>}
           {showTab('branding') && <TabsTrigger value="branding">Branding</TabsTrigger>}
-          {userRole === 'admin' && showTab('content') && <TabsTrigger value="content">Change Content</TabsTrigger>}
+          {(userRole === 'admin' || userConfirmedWarning) && showTab('content') && <TabsTrigger value="content">Change Content</TabsTrigger>}
           {showTab('briefing') && <TabsTrigger value="briefing">Briefing</TabsTrigger>}
           {showTab('menu') && <TabsTrigger value="menu">Menu Items</TabsTrigger>}
           {showTab('team') && <TabsTrigger value="team">Team Members</TabsTrigger>}
@@ -5151,6 +5169,12 @@ This changes the default domain from 'demos' to '${formData.subdomain}' across a
         </Card>
       </TabsContent>
     </Tabs>
+
+    <UserWarningOverlay
+      isOpen={showWarningOverlay}
+      onConfirm={handleWarningConfirm}
+      tabName={warningTabName}
+    />
   </div>
 );
 }
