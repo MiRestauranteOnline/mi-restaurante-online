@@ -1483,6 +1483,28 @@ const [reviewForm, setReviewForm] = useState({
     }
   };
 
+  // Persist only the carousel fields immediately
+  const saveCarouselSetting = async (partial: { carousel_enabled?: boolean; carousel_display_order?: number }) => {
+    if (!effectiveClientId) return;
+    try {
+      const { error } = await (supabase as any)
+        .from('admin_content')
+        .upsert(
+          {
+            client_id: effectiveClientId,
+            ...partial,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'client_id' }
+        );
+      if (error) throw error;
+      await fetchAdminContent();
+      toast({ title: 'Guardado', description: 'Preferencias del carousel actualizadas' });
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message || 'No se pudo guardar', variant: 'destructive' });
+    }
+  };
+
   const handleSave = async () => {
     if (!clientId) return;
     
@@ -1624,6 +1646,9 @@ const [reviewForm, setReviewForm] = useState({
             contact_page_hero_background_url: formData.contact_page_hero_background_url,
             reviews_page_hero_description: formData.reviews_page_hero_description,
             reviews_page_hero_background_url: formData.reviews_page_hero_background_url,
+            // Carousel settings
+            carousel_enabled: (adminContent as any)?.carousel_enabled ?? true,
+            carousel_display_order: (adminContent as any)?.carousel_display_order ?? 2,
             // About content fields (replacing JSONB)
             about_story: formData.about_story,
             about_chef_info: formData.about_chef_info,
@@ -4772,9 +4797,11 @@ setReviewForm({
                 <Switch
                   id="carousel-enabled"
                   checked={adminContent?.carousel_enabled ?? true}
-                  onCheckedChange={(checked) =>
-                    setAdminContent({ ...adminContent, carousel_enabled: checked })
-                  }
+                  onCheckedChange={async (checked) => {
+                    const next = { ...adminContent, carousel_enabled: checked } as any;
+                    setAdminContent(next);
+                    await saveCarouselSetting({ carousel_enabled: checked });
+                  }}
                 />
               </div>
 
@@ -4782,9 +4809,12 @@ setReviewForm({
                 <Label htmlFor="carousel-order">Posición del Carousel</Label>
                 <Select
                   value={adminContent?.carousel_display_order?.toString() ?? "2"}
-                  onValueChange={(value) =>
-                    setAdminContent({ ...adminContent, carousel_display_order: parseInt(value) })
-                  }
+                  onValueChange={async (value) => {
+                    const val = parseInt(value);
+                    const next = { ...adminContent, carousel_display_order: val } as any;
+                    setAdminContent(next);
+                    await saveCarouselSetting({ carousel_display_order: val });
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona la posición" />
