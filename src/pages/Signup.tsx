@@ -197,7 +197,7 @@ const Signup = () => {
           reviewsData: { reviews: combinedData.reviews },
           teamData: { teamMembers: combinedData.teamMembers },
           openingHoursData,
-          imagesData
+          images
         }
       });
 
