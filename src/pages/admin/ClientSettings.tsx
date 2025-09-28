@@ -4863,11 +4863,13 @@ setReviewForm({
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {carouselImages.map((image) => (
                       <div key={image.id} className="relative group">
-                        <img
-                          src={image.image_url}
-                          alt={image.alt_text || "Imagen del carousel"}
-                          className="w-full h-24 object-cover rounded-lg border"
-                        />
+                        <AspectRatio ratio={16 / 9}>
+                          <img
+                            src={image.image_url}
+                            alt={image.alt_text || "Imagen del carousel"}
+                            className="w-full h-full object-cover rounded-lg border"
+                          />
+                        </AspectRatio>
                         <button
                           onClick={() => handleCarouselImageDelete(image.id)}
                           className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
