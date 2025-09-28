@@ -167,21 +167,43 @@ serve(async (req) => {
     console.log('Optimized image uploaded successfully:', publicUrl);
 
     // Step 6: Store in client_images table if requested (for signup custom uploads)
-    if (storeInDatabase && clientId && clientId !== 'temp' && clientId !== 'signup') {
+    if (storeInDatabase && clientId) {
       try {
-        await supabase
-          .from('client_images')
-          .insert({
-            client_id: clientId,
-            image_url: publicUrl,
-            alt_text: altText,
-            original_filename: originalFilename || filename,
-            upload_context: context,
-            file_size_kb: Math.round(optimizedSize / 1024)
-          });
-        console.log('Image stored in client_images table');
+        // Handle temporary client IDs during signup differently
+        if (clientId === 'temp-signup-client' || clientId === 'temp' || clientId === 'signup') {
+          // For temporary uploads during signup, store metadata in generation_logs for later processing
+          await supabase
+            .from('generation_logs')
+            .insert({
+              type: 'temp_signup_image',
+              status: 'pending_client_assignment',
+              details: {
+                image_url: publicUrl,
+                alt_text: altText,
+                original_filename: originalFilename || filename,
+                upload_context: context,
+                file_size_kb: Math.round(optimizedSize / 1024),
+                temp_client_id: clientId,
+                created_at: new Date().toISOString()
+              }
+            });
+          console.log('Temp signup image metadata stored in generation_logs');
+        } else {
+          // For images with actual client UUIDs, store directly in client_images
+          await supabase
+            .from('client_images')
+            .insert({
+              client_id: clientId,
+              image_url: publicUrl,
+              alt_text: altText,
+              original_filename: originalFilename || filename,
+              upload_context: context,
+              file_size_kb: Math.round(optimizedSize / 1024)
+            });
+          console.log('Image stored in client_images table');
+        }
       } catch (dbError) {
-        console.warn('Failed to store in client_images table:', dbError);
+        console.warn('Failed to store image metadata:', dbError);
         // Don't fail the entire process for database storage issues
       }
     }

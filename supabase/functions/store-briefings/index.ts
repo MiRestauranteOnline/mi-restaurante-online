@@ -451,6 +451,54 @@ serve(async (req) => {
       if (imagesData.custom_images_enabled && imagesData.custom_images?.length > 0) {
         console.log('Processing custom images for client:', actualClientId);
         
+        // First, check for temp images stored in generation_logs
+        const { data: tempImages } = await supabase
+          .from('generation_logs')
+          .select('*')
+          .eq('type', 'temp_signup_image')
+          .eq('status', 'pending_client_assignment');
+        
+        // Process temp images from generation_logs
+        if (tempImages && tempImages.length > 0) {
+          console.log('Found', tempImages.length, 'temp images to process');
+          
+          for (const tempImage of tempImages) {
+            const details = tempImage.details;
+            if (!details?.image_url) continue;
+            
+            try {
+              // Check if this image URL matches any of the custom images being processed
+              const matchingCustomImage = imagesData.custom_images.find((img: any) => 
+                img.imageUrl === details.image_url
+              );
+              
+              if (matchingCustomImage) {
+                // Insert into client_images table with the actual client ID
+                await supabase
+                  .from('client_images')
+                  .insert({
+                    client_id: actualClientId,
+                    image_url: details.image_url,
+                    alt_text: details.alt_text,
+                    original_filename: details.original_filename,
+                    upload_context: 'signup_custom_upload',
+                    file_size_kb: details.file_size_kb
+                  });
+                
+                // Mark the temp image as processed
+                await supabase
+                  .from('generation_logs')
+                  .update({ status: 'completed' })
+                  .eq('id', tempImage.id);
+                
+                console.log('Successfully processed temp image:', details.image_url);
+              }
+            } catch (error) {
+              console.error('Error processing temp image:', error);
+            }
+          }
+        }
+        
         // Deduplicate incoming images by URL
         const uniqueByUrlMap = new Map<string, any>();
         for (const img of imagesData.custom_images) {
@@ -481,27 +529,14 @@ serve(async (req) => {
               continue;
             }
 
-            // If exists for temp-signup-client, re-link it
-            const { data: existingTemp } = await supabase
+            // Insert new image record if not already processed above
+            const { data: alreadyExists } = await supabase
               .from('client_images')
               .select('id')
               .eq('image_url', image.imageUrl)
-              .eq('client_id', 'temp-signup-client')
               .maybeSingle();
 
-            if (existingTemp) {
-              await supabase
-                .from('client_images')
-                .update({
-                  client_id: actualClientId,
-                  alt_text: altText,
-                  upload_context: 'signup_custom_upload',
-                  original_filename: originalFilename
-                })
-                .eq('id', existingTemp.id);
-              console.log('Updated existing temp image to link to client:', actualClientId);
-            } else {
-              // Insert new image record if not exists anywhere
+            if (!alreadyExists) {
               await supabase
                 .from('client_images')
                 .insert({
