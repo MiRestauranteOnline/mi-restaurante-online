@@ -37,6 +37,7 @@ serve(async (req) => {
     );
 
     console.log('Storing briefings for client:', clientId);
+    console.log('Images data received:', JSON.stringify(imagesData, null, 2));
 
     // Resolve client by UUID or subdomain
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(clientId);
