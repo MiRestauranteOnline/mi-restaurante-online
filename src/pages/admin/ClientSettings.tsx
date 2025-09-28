@@ -207,6 +207,10 @@ interface AdminContent {
   about_us_label?: string;
   our_menu_label?: string;
   our_team_label?: string;
+  
+  // Carousel
+  carousel_enabled?: boolean;
+  carousel_display_order?: number;
 }
 
 interface MenuCategory {
@@ -662,6 +666,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [carouselImages, setCarouselImages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showCategoryDialog, setShowCategoryDialog] = useState(false);
@@ -972,6 +977,7 @@ const [reviewForm, setReviewForm] = useState({
       fetchMenuItems();
       fetchTeamMembers();
       fetchReviews();
+      fetchCarouselImages();
       fetchUserRole();
     } else {
       console.log('No effectiveClientId found');
@@ -1398,6 +1404,81 @@ const [reviewForm, setReviewForm] = useState({
         title: "Error",
         description: "Failed to load reviews: " + error.message,
         variant: "destructive"
+      });
+    }
+  };
+
+  const fetchCarouselImages = async () => {
+    if (!effectiveClientId) return;
+    
+    try {
+      const { data, error } = await (supabase as any)
+        .from('carousel_images')
+        .select('*')
+        .eq('client_id', effectiveClientId)
+        .order('display_order');
+
+      if (error) throw error;
+      setCarouselImages(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar las imágenes del carousel",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCarouselImageUpload = async (imageUrl: string) => {
+    if (!effectiveClientId || !imageUrl) return;
+
+    try {
+      const maxOrder = Math.max(...carouselImages.map(img => img.display_order), -1);
+      
+      const { error } = await (supabase as any)
+        .from('carousel_images')
+        .insert({
+          client_id: effectiveClientId,
+          image_url: imageUrl,
+          display_order: maxOrder + 1,
+          is_active: true
+        });
+
+      if (error) throw error;
+      
+      await fetchCarouselImages();
+      toast({
+        title: "Éxito",
+        description: "Imagen agregada al carousel",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "No se pudo agregar la imagen al carousel",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCarouselImageDelete = async (imageId: string) => {
+    try {
+      const { error } = await (supabase as any)
+        .from('carousel_images')
+        .delete()
+        .eq('id', imageId);
+
+      if (error) throw error;
+      
+      await fetchCarouselImages();
+      toast({
+        title: "Éxito",
+        description: "Imagen eliminada del carousel",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar la imagen del carousel",
+        variant: "destructive",
       });
     }
   };
@@ -2482,6 +2563,7 @@ setReviewForm({
           {showTab('menu') && <TabsTrigger value="menu">Menu Items</TabsTrigger>}
           {showTab('team') && <TabsTrigger value="team">Team Members</TabsTrigger>}
           {showTab('reviews') && <TabsTrigger value="reviews">Reviews</TabsTrigger>}
+          {showTab('carousel') && <TabsTrigger value="carousel">Carousel</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="setup-prompt">Setup Prompt</TabsTrigger>}
         </TabsList>
 
@@ -4667,6 +4749,99 @@ setReviewForm({
             </div>
           </CardContent>
         </Card>
+      </TabsContent>
+
+      {/* Carousel Tab */}
+      <TabsContent value="carousel">
+        <div className="grid gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Configuración del Carousel</CardTitle>
+              <CardDescription>
+                Configura las opciones de visualización del carousel de imágenes
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="carousel-enabled">Mostrar Carousel</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Activa o desactiva el carousel en la página principal
+                  </p>
+                </div>
+                <Switch
+                  id="carousel-enabled"
+                  checked={adminContent?.carousel_enabled ?? true}
+                  onCheckedChange={(checked) =>
+                    setAdminContent({ ...adminContent, carousel_enabled: checked })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="carousel-order">Posición del Carousel</Label>
+                <Select
+                  value={adminContent?.carousel_display_order?.toString() ?? "2"}
+                  onValueChange={(value) =>
+                    setAdminContent({ ...adminContent, carousel_display_order: parseInt(value) })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona la posición" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3">Posición 1 (Después del Hero)</SelectItem>
+                    <SelectItem value="4">Posición 2 (Después de Servicios)</SelectItem>
+                    <SelectItem value="5">Posición 3 (Después de Menú)</SelectItem>
+                    <SelectItem value="6">Posición 4 (Después de Historia)</SelectItem>
+                    <SelectItem value="7">Posición 5 (Después de Testimonios)</SelectItem>
+                    <SelectItem value="8">Posición 6 (Después de Equipo)</SelectItem>
+                    <SelectItem value="9">Posición 7 (Antes de Contacto)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Imágenes del Carousel</CardTitle>
+              <CardDescription>
+                Sube y gestiona las imágenes que aparecerán en el carousel
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <ImageUpload
+                  label="Agregar Imagen al Carousel"
+                  value=""
+                  onChange={(imageUrl) => handleCarouselImageUpload(imageUrl)}
+                  clientId={effectiveClientId}
+                />
+                
+                {carouselImages.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {carouselImages.map((image) => (
+                      <div key={image.id} className="relative group">
+                        <img
+                          src={image.image_url}
+                          alt={image.alt_text || "Imagen del carousel"}
+                          className="w-full h-24 object-cover rounded-lg border"
+                        />
+                        <button
+                          onClick={() => handleCarouselImageDelete(image.id)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </TabsContent>
 
       {/* Category Dialog */}
