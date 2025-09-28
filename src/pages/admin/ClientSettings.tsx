@@ -373,19 +373,19 @@ function SortableCategoryCard({
                   </Button>
                 )}
               </div>
-            ) : (
-              <div className="space-y-2">
-                {categoryItems.map((item) => (
-                  <SortableMenuItem
-                    key={item.id}
-                    item={item}
-                    currencySymbol={formData.other_customizations.currency}
-                    onEdit={openMenuItemDialog}
-                    onDelete={handleDeleteMenuItem}
-                    onToggleStatus={handleToggleItemStatus}
-                  />
-                ))}
-              </div>
+              ) : (
+                <div className="space-y-2">
+                  {categoryItems.map((item) => (
+                    <SortableMenuItem
+                      key={item.id}
+                      item={item}
+                      currencySymbol={formData.other_customizations.currency}
+                      onEdit={openMenuItemDialog}
+                      onDelete={handleDeleteMenuItem}
+                      onToggleStatus={handleToggleItemStatus}
+                    />
+                  ))}
+                </div>
             )}
           </CardContent>
         </CollapsibleContent>
@@ -2353,75 +2353,6 @@ setReviewForm({
     }
   };
 
-  const handleCrossCategoryDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (!over || active.id === over.id) return;
-
-    // Check if dragging a category (for reordering categories)
-    const draggedCategory = categories.find(cat => cat.id === active.id);
-    if (draggedCategory) {
-      const targetCategory = categories.find(cat => cat.id === over.id);
-      if (targetCategory) {
-        return handleCategoryDragEnd(event);
-      }
-    }
-
-    // Check if dragging a menu item
-    const draggedItem = menuItems.find(item => item.id === active.id);
-    
-    if (draggedItem) {
-      // Check if dropping on a category (cross-category move)
-      const targetCategory = categories.find(cat => cat.id === over.id);
-      
-      if (targetCategory && draggedItem.category_id !== targetCategory.id) {
-        // Moving item to a different category
-        try {
-          const { data, error } = await supabase
-            .from('menu_items')
-            .update({ 
-              category_id: targetCategory.id,
-              category: targetCategory.name // Update legacy field too
-            })
-            .eq('id', draggedItem.id)
-            .select()
-            .maybeSingle();
-
-          if (error) throw error;
-          if (!data) throw new Error('Update blocked by RLS');
-
-          await fetchMenuItems();
-          toast({ 
-            title: "Success", 
-            description: `"${draggedItem.name}" moved to ${targetCategory.name}` 
-          });
-        } catch (error: any) {
-          toast({
-            title: "Error",
-            description: "Failed to move item: " + error.message,
-            variant: "destructive"
-          });
-        }
-      } else {
-        // Handle item reordering within same category
-        const targetItem = menuItems.find(item => item.id === over.id);
-        if (targetItem && draggedItem.category_id === targetItem.category_id) {
-          // This is reordering within the same category - we can handle this here too
-          const categoryId = draggedItem.category_id;
-          if (categoryId) {
-            const categoryItems = filteredAndGroupedMenuItems[categoryId] || [];
-            const oldIndex = categoryItems.findIndex((item) => item.id === active.id);
-            const newIndex = categoryItems.findIndex((item) => item.id === over.id);
-
-            if (oldIndex !== -1 && newIndex !== -1) {
-              // Just show success for reordering (no DB update needed for display order)
-              toast({ title: "Success", description: "Item order updated" });
-            }
-          }
-        }
-      }
-    }
-  };
 
   const handleTabChange = (value: string) => {
     // Show warning for non-admin users accessing sensitive tabs
@@ -4570,13 +4501,10 @@ setReviewForm({
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
-                  onDragEnd={handleCrossCategoryDragEnd}
+                  onDragEnd={handleCategoryDragEnd}
                 >
                   <SortableContext 
-                    items={[
-                      ...categories.map(c => c.id),
-                      ...menuItems.map(item => item.id)
-                    ]} 
+                    items={categories.map(c => c.id)} 
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="space-y-4">
