@@ -153,13 +153,20 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
   const shouldShowRecommendation = remainingItems > 0 || remainingReviews > 0 || remainingTeamMembers > 0;
 
   const onSubmit = (data: CombinedFormData) => {
-    const currentMenuItems = data.items?.length || 0;
-    const currentReviews = data.reviews?.length || 0;
-    const currentTeamMembers = data.teamMembers?.length || 0;
+    // Use the same filled count logic as the rest of the component
+    const filledItemsCount = data.items?.filter(item => 
+      item.name?.trim() && (item.description?.trim() || item.price?.trim())
+    ).length || 0;
+    const filledReviewsCount = data.reviews?.filter(review => 
+      review.reviewerName?.trim() && review.reviewText?.trim()
+    ).length || 0;
+    const filledTeamMembersCount = data.teamMembers?.filter(member => 
+      member.name?.trim() && (member.title?.trim() || member.bio?.trim())
+    ).length || 0;
     
-    const remainingItems = Math.max(0, 4 - currentMenuItems);
-    const remainingReviews = Math.max(0, 3 - currentReviews);
-    const remainingTeamMembers = Math.max(0, 2 - currentTeamMembers);
+    const remainingItems = Math.max(0, 4 - filledItemsCount);
+    const remainingReviews = Math.max(0, 3 - filledReviewsCount);
+    const remainingTeamMembers = Math.max(0, 2 - filledTeamMembersCount);
     
     const hasRecommendations = remainingItems > 0 || remainingReviews > 0 || remainingTeamMembers > 0;
     
