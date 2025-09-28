@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ImageUpload } from "@/components/ImageUpload";
 
 interface ClientContext {
   selectedClientId: string;
@@ -110,6 +111,8 @@ export default function ClientDashboard() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [carouselImages, setCarouselImages] = useState<any[]>([]);
+  const [adminContent, setAdminContent] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -177,6 +180,26 @@ export default function ClientDashboard() {
 
       if (reviewsError) throw reviewsError;
 
+      // Fetch admin content
+      const { data: adminData, error: adminError } = await supabase
+        .from('admin_content')
+        .select('*')
+        .eq('client_id', selectedClientId)
+        .single();
+
+      if (adminError && adminError.code !== 'PGRST116') {
+        throw adminError;
+      }
+
+      // Fetch carousel images
+      const { data: carouselData, error: carouselError } = await (supabase as any)
+        .from('carousel_images')
+        .select('*')
+        .eq('client_id', selectedClientId)
+        .order('display_order');
+
+      if (carouselError) throw carouselError;
+
       setFormData({
         ...client,
         ...settings,
@@ -192,6 +215,8 @@ export default function ClientDashboard() {
       setMenuItems(items || []);
       setTeamMembers(team || []);
       setReviews(reviewsData || []);
+      setAdminContent(adminData || {});
+      setCarouselImages(carouselData || []);
 
     } catch (error: any) {
       toast({
@@ -263,6 +288,84 @@ export default function ClientDashboard() {
     }
   };
 
+  const handleCarouselImageUpload = async (imageUrl: string) => {
+    if (!selectedClientId || !imageUrl) return;
+
+    try {
+      const maxOrder = Math.max(...carouselImages.map(img => img.display_order), -1);
+      
+      const { error } = await (supabase as any)
+        .from('carousel_images')
+        .insert({
+          client_id: selectedClientId,
+          image_url: imageUrl,
+          display_order: maxOrder + 1,
+          is_active: true
+        });
+
+      if (error) throw error;
+      
+      await fetchData();
+      toast({
+        title: "Éxito",
+        description: "Imagen agregada al carousel",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "No se pudo agregar la imagen al carousel",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCarouselImageDelete = async (imageId: string) => {
+    try {
+      const { error } = await (supabase as any)
+        .from('carousel_images')
+        .delete()
+        .eq('id', imageId);
+
+      if (error) throw error;
+      
+      await fetchData();
+      toast({
+        title: "Éxito",
+        description: "Imagen eliminada del carousel",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar la imagen del carousel",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAdminContentSave = async () => {
+    try {
+      const { error } = await supabase
+        .from('admin_content')
+        .upsert({
+          client_id: selectedClientId,
+          ...adminContent
+        });
+
+      if (error) throw error;
+      
+      toast({
+        title: "Guardado",
+        description: "Configuración del carousel guardada",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "No se pudo guardar la configuración del carousel",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -290,6 +393,7 @@ export default function ClientDashboard() {
           <TabsTrigger value="menu">Menú</TabsTrigger>
           <TabsTrigger value="team">Equipo</TabsTrigger>
           <TabsTrigger value="reviews">Reseñas</TabsTrigger>
+          <TabsTrigger value="carousel">Carousel</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
@@ -760,6 +864,126 @@ export default function ClientDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="carousel">
+          <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configuración del Carousel</CardTitle>
+                <CardDescription>
+                  Configura las opciones de visualización del carousel de imágenes
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="carousel-enabled">Mostrar Carousel</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Activa o desactiva el carousel en la página principal
+                    </p>
+                  </div>
+                  <Switch
+                    id="carousel-enabled"
+                    checked={adminContent?.carousel_enabled ?? true}
+                    onCheckedChange={(checked) => {
+                      setAdminContent({ ...adminContent, carousel_enabled: checked });
+                      handleAdminContentSave();
+                    }}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="carousel-order">Posición del Carousel</Label>
+                  <Select
+                    value={adminContent?.carousel_display_order?.toString() ?? "2"}
+                    onValueChange={(value) => {
+                      setAdminContent({ ...adminContent, carousel_display_order: parseInt(value) });
+                      handleAdminContentSave();
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona la posición" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="3">Posición 1 (Después del Hero)</SelectItem>
+                      <SelectItem value="4">Posición 2 (Después de Servicios)</SelectItem>
+                      <SelectItem value="5">Posición 3 (Después de Menú)</SelectItem>
+                      <SelectItem value="6">Posición 4 (Después de Historia)</SelectItem>
+                      <SelectItem value="7">Posición 5 (Después de Testimonios)</SelectItem>
+                      <SelectItem value="8">Posición 6 (Después de Equipo)</SelectItem>
+                      <SelectItem value="9">Posición 7 (Antes de Contacto)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Imágenes del Carousel</CardTitle>
+                <CardDescription>
+                  Sube y gestiona las imágenes que aparecerán en el carousel
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="text-center py-4 border-2 border-dashed rounded-lg">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          // This would need actual file upload logic
+                          toast({
+                            title: "Próximamente",
+                            description: "La funcionalidad de carga de imágenes estará disponible próximamente",
+                          });
+                        }
+                      }}
+                      className="hidden"
+                      id="carousel-upload"
+                    />
+                    <label htmlFor="carousel-upload" className="cursor-pointer">
+                      <div className="flex flex-col items-center gap-2">
+                        <Plus className="h-8 w-8 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          Haz clic para agregar una imagen al carousel
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                  
+                  {carouselImages.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {carouselImages.map((image) => (
+                        <div key={image.id} className="relative group">
+                          <img
+                            src={image.image_url}
+                            alt={image.alt_text || "Imagen del carousel"}
+                            className="w-full h-24 object-cover rounded-lg border"
+                          />
+                          <button
+                            onClick={() => handleCarouselImageDelete(image.id)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <div className="text-center pt-4 border-t">
+                    <p className="text-sm text-muted-foreground">
+                      Tienes {carouselImages.length} imágenes en el carousel
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
