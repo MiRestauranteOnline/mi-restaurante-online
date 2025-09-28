@@ -1,4 +1,5 @@
 import { useForm, useFieldArray } from "react-hook-form";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ContentRecommendationDialog } from "@/components/ContentRecommendationDialog";
 
 export interface MenuCategory {
   name: string;
@@ -90,6 +92,8 @@ interface SignupStep3CombinedProps {
 }
 
 export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }: SignupStep3CombinedProps) => {
+  const [showRecommendationDialog, setShowRecommendationDialog] = useState(false);
+  
   const form = useForm<CombinedFormData>({
     resolver: zodResolver(combinedSchema),
     defaultValues: {
@@ -149,12 +153,42 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
   const shouldShowRecommendation = remainingItems > 0 || remainingReviews > 0 || remainingTeamMembers > 0;
 
   const onSubmit = (data: CombinedFormData) => {
+    const currentMenuItems = data.items?.length || 0;
+    const currentReviews = data.reviews?.length || 0;
+    const currentTeamMembers = data.teamMembers?.length || 0;
+    
+    const remainingItems = Math.max(0, 4 - currentMenuItems);
+    const remainingReviews = Math.max(0, 3 - currentReviews);
+    const remainingTeamMembers = Math.max(0, 2 - currentTeamMembers);
+    
+    const hasRecommendations = remainingItems > 0 || remainingReviews > 0 || remainingTeamMembers > 0;
+    
+    if (hasRecommendations) {
+      setShowRecommendationDialog(true);
+      return;
+    }
+    
     onComplete({
       categories: data.categories || [],
       items: data.items || [],
       reviews: data.reviews || [],
       teamMembers: data.teamMembers || []
     });
+  };
+
+  const handleContinueWithoutAdding = () => {
+    setShowRecommendationDialog(false);
+    const data = form.getValues();
+    onComplete({
+      categories: data.categories || [],
+      items: data.items || [],
+      reviews: data.reviews || [],
+      teamMembers: data.teamMembers || []
+    });
+  };
+
+  const handleKeepAdding = () => {
+    setShowRecommendationDialog(false);
   };
 
   const StarRating = ({ value, onChange }: { value: number; onChange: (rating: number) => void }) => {
@@ -641,6 +675,15 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
           </div>
         </form>
       </Form>
+      
+      <ContentRecommendationDialog
+        isOpen={showRecommendationDialog}
+        onContinue={handleContinueWithoutAdding}
+        onKeepAdding={handleKeepAdding}
+        remainingItems={Math.max(0, 4 - (items?.length || 0))}
+        remainingReviews={Math.max(0, 3 - (reviews?.length || 0))}
+        remainingTeamMembers={Math.max(0, 2 - (teamMembers?.length || 0))}
+      />
     </div>
   );
 };

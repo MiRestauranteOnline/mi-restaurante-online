@@ -51,13 +51,13 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
     resolver: zodResolver(openingHoursSchema),
     defaultValues: {
       opening_hours: initialData?.opening_hours || {
-        monday: { open: "11:00", close: "22:00", closed: false },
-        tuesday: { open: "11:00", close: "22:00", closed: false },
-        wednesday: { open: "11:00", close: "22:00", closed: false },
-        thursday: { open: "11:00", close: "22:00", closed: false },
+        monday: { open: "11:00", close: "23:00", closed: false },
+        tuesday: { open: "11:00", close: "23:00", closed: false },
+        wednesday: { open: "11:00", close: "23:00", closed: false },
+        thursday: { open: "11:00", close: "23:00", closed: false },
         friday: { open: "11:00", close: "23:00", closed: false },
         saturday: { open: "11:00", close: "23:00", closed: false },
-        sunday: { open: "12:00", close: "21:00", closed: false },
+        sunday: { open: "11:00", close: "23:00", closed: false },
       },
     },
   });

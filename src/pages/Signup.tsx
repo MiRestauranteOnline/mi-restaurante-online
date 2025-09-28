@@ -163,16 +163,19 @@ const Signup = () => {
   const handleStep2Complete = async (requirements: WebsiteRequirements) => {
     setWebsiteRequirements(requirements);
     setCurrentStep(3); // Move to menu step
+    window.scrollTo(0, 0);
   };
 
   const handleStep3Complete = async (combined: CombinedData) => {
     setCombinedData(combined);
     setCurrentStep(4); // Move to opening hours step
+    window.scrollTo(0, 0);
   };
 
   const handleStep4Complete = async (openingHours: OpeningHoursData) => {
     setOpeningHoursData(openingHours);
     setCurrentStep(5); // Move to images step
+    window.scrollTo(0, 0);
   };
 
   const handleStep5Complete = async (images: ImagesData) => {
@@ -237,18 +240,22 @@ const Signup = () => {
 
   const handleBackToStep1 = () => {
     setCurrentStep(1);
+    window.scrollTo(0, 0);
   };
 
   const handleBackToStep2 = () => {
     setCurrentStep(2);
+    window.scrollTo(0, 0);
   };
 
   const handleBackToStep3 = () => {
     setCurrentStep(3);
+    window.scrollTo(0, 0);
   };
 
   const handleBackToStep4 = () => {
     setCurrentStep(4);
+    window.scrollTo(0, 0);
   };
 
   return (
