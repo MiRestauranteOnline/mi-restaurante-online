@@ -52,7 +52,7 @@ export const PhoneInput = React.forwardRef<HTMLDivElement, PhoneInputProps>(
           </SelectTrigger>
           <SelectContent className="bg-background border border-border shadow-lg z-50">
             {countryCodes.map((country) => (
-              <SelectItem key={country.code} value={country.code}>
+              <SelectItem key={`${country.code}-${country.name}`} value={country.code}>
                 <span className="flex items-center gap-2">
                   {country.flag} {country.code} {country.name}
                 </span>
