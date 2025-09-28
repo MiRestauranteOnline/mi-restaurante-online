@@ -13,8 +13,8 @@ export function UserWarningOverlay({ isOpen, onConfirm, tabName }: UserWarningOv
 
   return (
     <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex justify-center pt-4">
-      <div className="bg-white border border-border rounded-lg shadow-lg p-6 max-w-md mx-4 h-fit">
-        <div className="text-center space-y-4">
+      <div className="bg-white border border-border rounded-lg shadow-lg p-4 max-w-md mx-4 h-fit">
+        <div className="text-center space-y-3">
           <div className="flex items-center justify-center gap-2">
             <AlertTriangle className="h-6 w-6 text-amber-500" />
             <h3 className="text-lg font-semibold">Advertencia Importante</h3>
@@ -24,7 +24,7 @@ export function UserWarningOverlay({ isOpen, onConfirm, tabName }: UserWarningOv
             Al continuar con la pestaña de <strong>{tabName}</strong>, debes tener en cuenta que:
           </p>
           
-          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 space-y-2">
+          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 space-y-1">
             <p className="text-sm text-amber-800 dark:text-amber-200">
               • Cualquier error que cometas se mostrará inmediatamente en tu sitio web
             </p>
