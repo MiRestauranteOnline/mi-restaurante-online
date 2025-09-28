@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { ContentRecommendationDialog } from "@/components/ContentRecommendationDialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export interface MenuCategory {
   name: string;
@@ -92,7 +92,7 @@ interface SignupStep3CombinedProps {
 }
 
 export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }: SignupStep3CombinedProps) => {
-  const [showRecommendationDialog, setShowRecommendationDialog] = useState(false);
+  // Recommendation dialog removed; using inline alert
   
   const form = useForm<CombinedFormData>({
     resolver: zodResolver(combinedSchema),
@@ -153,28 +153,6 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
   const shouldShowRecommendation = remainingItems > 0 || remainingReviews > 0 || remainingTeamMembers > 0;
 
   const onSubmit = (data: CombinedFormData) => {
-    // Use the same filled count logic as the rest of the component
-    const filledItemsCount = data.items?.filter(item => 
-      item.name?.trim() && (item.description?.trim() || item.price?.trim())
-    ).length || 0;
-    const filledReviewsCount = data.reviews?.filter(review => 
-      review.reviewerName?.trim() && review.reviewText?.trim()
-    ).length || 0;
-    const filledTeamMembersCount = data.teamMembers?.filter(member => 
-      member.name?.trim() && (member.title?.trim() || member.bio?.trim())
-    ).length || 0;
-    
-    const remainingItems = Math.max(0, 4 - filledItemsCount);
-    const remainingReviews = Math.max(0, 3 - filledReviewsCount);
-    const remainingTeamMembers = Math.max(0, 2 - filledTeamMembersCount);
-    
-    const hasRecommendations = remainingItems > 0 || remainingReviews > 0 || remainingTeamMembers > 0;
-    
-    if (hasRecommendations) {
-      setShowRecommendationDialog(true);
-      return;
-    }
-    
     onComplete({
       categories: data.categories || [],
       items: data.items || [],
@@ -183,20 +161,6 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
     });
   };
 
-  const handleContinueWithoutAdding = () => {
-    setShowRecommendationDialog(false);
-    const data = form.getValues();
-    onComplete({
-      categories: data.categories || [],
-      items: data.items || [],
-      reviews: data.reviews || [],
-      teamMembers: data.teamMembers || []
-    });
-  };
-
-  const handleKeepAdding = () => {
-    setShowRecommendationDialog(false);
-  };
 
   const StarRating = ({ value, onChange }: { value: number; onChange: (rating: number) => void }) => {
     return (
@@ -644,25 +608,18 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
 
           {/* Recommendation Message */}
           {shouldShowRecommendation && (
-            <Card className="border-blue-200 bg-blue-50">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="text-blue-600 text-sm">💡</div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-blue-800">Recomendación</p>
-                    <p className="text-xs text-blue-700 mt-1">
-                      Te recomendamos agregar 
-                      {remainingItems > 0 && ` ${remainingItems} ${remainingItems === 1 ? 'plato más' : 'platos más'} al menú`}
-                      {remainingItems > 0 && (remainingReviews > 0 || remainingTeamMembers > 0) && ','}
-                      {remainingReviews > 0 && ` ${remainingReviews} ${remainingReviews === 1 ? 'reseña más' : 'reseñas más'}`}
-                      {remainingReviews > 0 && remainingTeamMembers > 0 && ' y'}
-                      {remainingTeamMembers > 0 && ` ${remainingTeamMembers} ${remainingTeamMembers === 1 ? 'miembro más del equipo' : 'miembros más del equipo'}`}
-                      {' '}antes de continuar para tener un sitio web más completo y atractivo.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <Alert variant="destructive" className="border-destructive/50">
+              <AlertTitle className="text-base md:text-lg">💡 Recomendación</AlertTitle>
+              <AlertDescription className="text-sm md:text-base">
+                Te recomendamos agregar
+                {remainingItems > 0 && ` ${remainingItems} ${remainingItems === 1 ? 'plato más' : 'platos más'} al menú`}
+                {remainingItems > 0 && (remainingReviews > 0 || remainingTeamMembers > 0) && ','}
+                {remainingReviews > 0 && ` ${remainingReviews} ${remainingReviews === 1 ? 'reseña más' : 'reseñas más'}`}
+                {remainingReviews > 0 && remainingTeamMembers > 0 && ' y'}
+                {remainingTeamMembers > 0 && ` ${remainingTeamMembers} ${remainingTeamMembers === 1 ? 'miembro más del equipo' : 'miembros más del equipo'}`}
+                {' '}antes de continuar para tener un sitio web más completo y atractivo.
+              </AlertDescription>
+            </Alert>
           )}
 
           {/* Navigation */}
@@ -683,14 +640,6 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
         </form>
       </Form>
       
-      <ContentRecommendationDialog
-        isOpen={showRecommendationDialog}
-        onContinue={handleContinueWithoutAdding}
-        onKeepAdding={handleKeepAdding}
-        remainingItems={Math.max(0, 4 - (items?.length || 0))}
-        remainingReviews={Math.max(0, 3 - (reviews?.length || 0))}
-        remainingTeamMembers={Math.max(0, 2 - (teamMembers?.length || 0))}
-      />
     </div>
   );
 };
