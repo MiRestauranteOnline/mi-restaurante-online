@@ -345,6 +345,7 @@ const Signup = () => {
                 <SignupStep3Combined 
                   onComplete={handleStep3Complete}
                   onBack={handleBackToStep2}
+                  onSkip={() => setCurrentStep(4)}
                   initialData={combinedData}
                 />
               )}

@@ -85,10 +85,11 @@ type CombinedFormData = z.infer<typeof combinedSchema>;
 interface SignupStep3CombinedProps {
   onComplete: (data: CombinedData) => void;
   onBack: () => void;
+  onSkip: () => void;
   initialData?: CombinedData;
 }
 
-export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupStep3CombinedProps) => {
+export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }: SignupStep3CombinedProps) => {
   const form = useForm<CombinedFormData>({
     resolver: zodResolver(combinedSchema),
     defaultValues: {
@@ -629,9 +630,14 @@ export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupS
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver
             </Button>
-            <Button type="submit">
-              Continuar
-            </Button>
+            <div className="flex gap-3">
+              <Button type="button" variant="outline" onClick={onSkip} className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                Omitir por ahora
+              </Button>
+              <Button type="submit">
+                Continuar
+              </Button>
+            </div>
           </div>
         </form>
       </Form>
