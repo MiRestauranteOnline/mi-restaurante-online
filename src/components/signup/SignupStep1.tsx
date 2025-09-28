@@ -73,12 +73,16 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
     }
   });
 
-  // Initialize phone number from initial data
+  // Initialize phone number and country code from initial data
   useEffect(() => {
     if (initialData.phone) {
       setPhoneNumber(initialData.phone);
     }
-  }, [initialData.phone]);
+    if (initialData.phone_country_code) {
+      setCountryCode(initialData.phone_country_code);
+      form.setValue('phoneCountryCode', initialData.phone_country_code);
+    }
+  }, [initialData.phone, initialData.phone_country_code, form]);
 
   // Check subdomain on initial load if there's already a value
   useEffect(() => {
@@ -395,11 +399,15 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                       field.onChange(code);
                     }}
                     onPhoneNumberChange={(number) => {
-                      // Auto-remove country code if entered
+                      // Auto-remove any country code that matches the selected one
                       let cleanNumber = number;
-                      if (number.startsWith(countryCode.replace('+', ''))) {
-                        cleanNumber = number.slice(countryCode.length - 1);
+                      const codeWithoutPlus = countryCode.replace('+', '');
+                      
+                      // Remove country code if it appears at the start
+                      if (number.startsWith(codeWithoutPlus)) {
+                        cleanNumber = number.slice(codeWithoutPlus.length);
                       }
+                      
                       setPhoneNumber(cleanNumber);
                       form.setValue('phone', cleanNumber);
                     }}

@@ -16,6 +16,8 @@ export interface SignupData {
   restaurantName: string;
   subdomain: string;
   phone: string;
+  phone_country_code?: string;
+  whatsapp_country_code?: string;
   address: string; // New address field
   paymentId?: string;
   hasCustomDomain?: boolean;
