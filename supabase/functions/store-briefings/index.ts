@@ -212,6 +212,19 @@ serve(async (req) => {
       
       for (const category of menuData.categories) {
         if (category.name?.trim()) {
+          // Check if category already exists
+          const { data: existingCategory } = await supabase
+            .from('menu_categories')
+            .select('id')
+            .eq('client_id', actualClientId)
+            .eq('name', category.name.trim())
+            .single();
+
+          if (existingCategory) {
+            console.log('Category already exists:', category.name);
+            continue;
+          }
+
           const { data: categoryData, error: categoryError } = await supabase
             .from('menu_categories')
             .insert({
@@ -236,6 +249,19 @@ serve(async (req) => {
       if (menuData.items?.length > 0) {
         for (const item of menuData.items) {
           if (item.name?.trim() && item.category?.trim()) {
+            // Check if menu item already exists
+            const { data: existingItem } = await supabase
+              .from('menu_items')
+              .select('id')
+              .eq('client_id', actualClientId)
+              .eq('name', item.name.trim())
+              .single();
+
+            if (existingItem) {
+              console.log('Menu item already exists:', item.name);
+              continue;
+            }
+
             const { error: itemError } = await supabase
               .from('menu_items')
               .insert({
@@ -268,6 +294,20 @@ serve(async (req) => {
       for (let i = 0; i < reviewsData.reviews.length; i++) {
         const review = reviewsData.reviews[i];
         if (review.reviewerName?.trim() && review.reviewText?.trim()) {
+          // Check if review already exists
+          const { data: existingReview } = await supabase
+            .from('reviews')
+            .select('id')
+            .eq('client_id', actualClientId)
+            .eq('reviewer_name', review.reviewerName.trim())
+            .eq('review_text', review.reviewText.trim())
+            .single();
+
+          if (existingReview) {
+            console.log('Review already exists by:', review.reviewerName);
+            continue;
+          }
+
           const { error: reviewError } = await supabase
             .from('reviews')
             .insert({
@@ -296,6 +336,19 @@ serve(async (req) => {
       for (let i = 0; i < teamData.teamMembers.length; i++) {
         const member = teamData.teamMembers[i];
         if (member.name?.trim() && member.title?.trim()) {
+          // Check if team member already exists
+          const { data: existingMember } = await supabase
+            .from('team_members')
+            .select('id')
+            .eq('client_id', actualClientId)
+            .eq('name', member.name.trim())
+            .single();
+
+          if (existingMember) {
+            console.log('Team member already exists:', member.name);
+            continue;
+          }
+
           const { error: memberError } = await supabase
             .from('team_members')
             .insert({
@@ -361,22 +414,36 @@ serve(async (req) => {
 
       // Store carousel images if provided
       if (imagesData.carousel_enabled && imagesData.carousel_images?.length > 0) {
-        const carouselImagesToInsert = imagesData.carousel_images.map((image: any, index: number) => ({
-          client_id: actualClientId,
-          image_url: image.imageUrl,
-          alt_text: image.altText || '',
-          display_order: index,
-          is_active: true
-        }));
-
-        const { error: carouselImagesError } = await supabase
+        // Check for existing carousel images first
+        const { data: existingCarouselImages } = await supabase
           .from('carousel_images')
-          .insert(carouselImagesToInsert);
+          .select('image_url')
+          .eq('client_id', actualClientId);
 
-        if (carouselImagesError) {
-          console.error('Error storing carousel images:', carouselImagesError);
+        const existingUrls = new Set(existingCarouselImages?.map(img => img.image_url) || []);
+        
+        const carouselImagesToInsert = imagesData.carousel_images
+          .filter((image: any) => !existingUrls.has(image.imageUrl))
+          .map((image: any, index: number) => ({
+            client_id: actualClientId,
+            image_url: image.imageUrl,
+            alt_text: image.altText || '',
+            display_order: index,
+            is_active: true
+          }));
+
+        if (carouselImagesToInsert.length > 0) {
+          const { error: carouselImagesError } = await supabase
+            .from('carousel_images')
+            .insert(carouselImagesToInsert);
+
+          if (carouselImagesError) {
+            console.error('Error storing carousel images:', carouselImagesError);
+          } else {
+            console.log('Successfully stored carousel images');
+          }
         } else {
-          console.log('Successfully stored carousel images');
+          console.log('All carousel images already exist, skipping insert');
         }
       }
 
