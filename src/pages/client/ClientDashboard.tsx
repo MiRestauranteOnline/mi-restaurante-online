@@ -342,13 +342,13 @@ export default function ClientDashboard() {
     }
   };
 
-  const handleAdminContentSave = async () => {
+  const handleAdminContentSave = async (updatedContent = adminContent) => {
     try {
       const { error } = await supabase
         .from('admin_content')
         .upsert({
           client_id: selectedClientId,
-          ...adminContent
+          ...updatedContent
         });
 
       if (error) throw error;
@@ -886,9 +886,10 @@ export default function ClientDashboard() {
                   <Switch
                     id="carousel-enabled"
                     checked={adminContent?.carousel_enabled ?? true}
-                    onCheckedChange={(checked) => {
-                      setAdminContent({ ...adminContent, carousel_enabled: checked });
-                      handleAdminContentSave();
+                    onCheckedChange={async (checked) => {
+                      const updatedContent = { ...adminContent, carousel_enabled: checked };
+                      setAdminContent(updatedContent);
+                      await handleAdminContentSave(updatedContent);
                     }}
                   />
                 </div>
@@ -897,9 +898,10 @@ export default function ClientDashboard() {
                   <Label htmlFor="carousel-order">Posición del Carousel</Label>
                   <Select
                     value={adminContent?.carousel_display_order?.toString() ?? "2"}
-                    onValueChange={(value) => {
-                      setAdminContent({ ...adminContent, carousel_display_order: parseInt(value) });
-                      handleAdminContentSave();
+                    onValueChange={async (value) => {
+                      const updatedContent = { ...adminContent, carousel_display_order: parseInt(value) };
+                      setAdminContent(updatedContent);
+                      await handleAdminContentSave(updatedContent);
                     }}
                   >
                     <SelectTrigger>
