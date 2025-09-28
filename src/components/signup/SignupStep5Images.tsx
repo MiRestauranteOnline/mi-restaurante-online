@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Plus, X, Images, Camera, Info } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
+import { useState } from "react";
 
 export interface CarouselImage {
   imageUrl: string;
@@ -64,6 +65,11 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
   const carouselEnabled = form.watch("carousel_enabled");
   const customImagesEnabled = form.watch("custom_images_enabled");
 
+  const [processingCount, setProcessingCount] = useState(0);
+  const handleProcessingChange = (processing: boolean) => {
+    setProcessingCount((c) => (processing ? c + 1 : Math.max(0, c - 1)));
+  };
+  const isProcessingImages = processingCount > 0;
   const onSubmit = (data: ImagesFormData) => {
     onComplete({
       carousel_enabled: data.carousel_enabled,
@@ -172,6 +178,7 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
                                   clientId="signup"
                                   context="carousel"
                                   description="carousel showcase image for restaurant"
+                                  onProcessingChange={handleProcessingChange}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -296,6 +303,7 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
                                   context="custom_upload"
                                   description="custom restaurant image for website personalization"
                                   storeInDatabase={true}
+                                  onProcessingChange={handleProcessingChange}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -362,8 +370,8 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver
             </Button>
-            <Button type="submit">
-              Finalizar Registro
+            <Button type="submit" disabled={isProcessingImages}>
+              {isProcessingImages ? 'Procesando imágenes...' : 'Finalizar Registro'}
             </Button>
           </div>
         </form>

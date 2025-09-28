@@ -15,9 +15,10 @@ interface ImageUploadProps {
   context?: string; // e.g., 'carousel', 'menu-item', 'team-member', 'hero-background', etc.
   description?: string; // Optional custom description for better SEO
   storeInDatabase?: boolean; // Whether to store in client_images table
+  onProcessingChange?: (processing: boolean) => void; // Notify parent about processing state
 }
 
-export function ImageUpload({ label, value, onChange, clientId, context = 'restaurant content', description, storeInDatabase = false }: ImageUploadProps) {
+export function ImageUpload({ label, value, onChange, clientId, context = 'restaurant content', description, storeInDatabase = false, onProcessingChange }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
@@ -26,6 +27,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
 
   const handleFileUpload = async (file: File) => {
     setUploading(true);
+    onProcessingChange?.(true);
     try {
       // Step 1: Upload original file temporarily
       const fileExt = file.name.split('.').pop();
@@ -78,10 +80,9 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
 
       const { optimizedUrl, altText, originalSizeKB, optimizedSizeKB, compressionRatio } = optimizeResponse.data;
       
-      // Step 3: Delete the temporary file
-      await supabase.storage
-        .from('client-assets')
-        .remove([tempFileName]);
+      // Step 3: Keep the original temporary file as requested (do not delete)
+      // Previously we deleted the temp file to save space.
+      // await supabase.storage.from('client-assets').remove([tempFileName]);
 
       // Step 4: Update the component with optimized image
       onChange(optimizedUrl);
@@ -100,6 +101,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
     } finally {
       setUploading(false);
       setOptimizing(false);
+      onProcessingChange?.(false);
     }
   };
 

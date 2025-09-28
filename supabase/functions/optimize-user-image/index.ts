@@ -141,6 +141,35 @@ serve(async (req) => {
     const hashArr = Array.from(new Uint8Array(hashBuf));
     const hash8 = hashArr.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
     const optimizedFilename = `${filename}-${hash8}.webp`;
+
+    // Additionally, keep the ORIGINAL upload stored under the client folder
+    let originalPublicUrl = '';
+    try {
+      const originalExt = (imageUrl.split('?')[0].split('.').pop() || 'jpg').toLowerCase();
+      const originalContentType = originalExt === 'png' ? 'image/png' : originalExt === 'webp' ? 'image/webp' : 'image/jpeg';
+      const originalFilename = `${filename}-${hash8}.${originalExt}`;
+      const originalUploadPath = clientId
+        ? `clients/${clientId}/original-images/${originalFilename}`
+        : `original-images/${originalFilename}`;
+
+      const { error: originalUploadError } = await supabase.storage
+        .from('client-assets')
+        .upload(originalUploadPath, imageBuffer, {
+          contentType: originalContentType,
+          cacheControl: '31536000',
+          upsert: false,
+        });
+      if (originalUploadError && originalUploadError.message?.includes('already exists') === false) {
+        console.warn('Failed to upload original image copy:', originalUploadError.message);
+      }
+
+      const { data: originalUrlData } = supabase.storage
+        .from('client-assets')
+        .getPublicUrl(originalUploadPath);
+      originalPublicUrl = originalUrlData.publicUrl;
+    } catch (e) {
+      console.warn('Could not persist original image copy:', e);
+    }
     
     // Step 4: Upload optimized image to Supabase Storage
     const uploadPath = clientId 
