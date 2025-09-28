@@ -2449,15 +2449,19 @@ setReviewForm({
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => navigate('/admin/client-management')}
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
+          {userRole === 'admin' && (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => navigate('/admin/client-management')}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
           <div>
-            <h1 className="text-3xl font-bold">Edit Client Settings</h1>
+            <h1 className="text-3xl font-bold">
+              {userRole === 'admin' ? 'Edit Client Settings' : 'Dashboard'}
+            </h1>
             <p className="text-muted-foreground">{client.restaurant_name}</p>
           </div>
         </div>
@@ -2940,7 +2944,14 @@ setReviewForm({
           </Card>
         </TabsContent>
 
-        <TabsContent value="branding">
+        <TabsContent value="branding" className="relative">
+          {userRole !== 'admin' && showWarningOverlay && warningTabName === 'configuración de marca' && (
+            <UserWarningOverlay
+              isOpen={true}
+              onConfirm={handleWarningConfirm}
+              tabName={warningTabName}
+            />
+          )}
           <Card>
             <CardHeader>
               <CardTitle>Branding & Customization</CardTitle>
@@ -3163,8 +3174,15 @@ setReviewForm({
           </Card>
         </TabsContent>
 
-        <TabsContent value="content">
-            <div className="space-y-6">
+        <TabsContent value="content" className="relative">
+          {userRole !== 'admin' && showWarningOverlay && warningTabName === 'cambio de contenido' && (
+            <UserWarningOverlay
+              isOpen={true}
+              onConfirm={handleWarningConfirm}
+              tabName={warningTabName}
+            />
+          )}
+          <div className="space-y-6">
               
               {/* HOMEPAGE SECTION */}
               <div className="space-y-4">
@@ -5172,12 +5190,6 @@ This changes the default domain from 'demos' to '${formData.subdomain}' across a
         </Card>
       </TabsContent>
     </Tabs>
-
-    <UserWarningOverlay
-      isOpen={showWarningOverlay}
-      onConfirm={handleWarningConfirm}
-      tabName={warningTabName}
-    />
   </div>
 );
 }
