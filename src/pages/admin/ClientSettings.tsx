@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ImageUpload } from "@/components/ImageUpload";
+import { CustomImagesManager } from "@/components/client/CustomImagesManager";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { UserWarningOverlay } from "@/components/UserWarningOverlay";
 import {
@@ -2589,6 +2590,7 @@ setReviewForm({
           {showTab('team') && <TabsTrigger value="team">Team Members</TabsTrigger>}
           {showTab('reviews') && <TabsTrigger value="reviews">Reviews</TabsTrigger>}
           {showTab('carousel') && <TabsTrigger value="carousel">Carousel</TabsTrigger>}
+          {showTab('custom-images') && <TabsTrigger value="custom-images">Client Images</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="setup-prompt">Setup Prompt</TabsTrigger>}
         </TabsList>
 
@@ -5388,8 +5390,25 @@ This changes the default domain from 'demos' to '${formData.subdomain}' across a
             </div>
           </CardContent>
         </Card>
-      </TabsContent>
-    </Tabs>
+        </TabsContent>
+
+        {/* Client Images Tab */}
+        <TabsContent value="custom-images">
+          <Card>
+            <CardHeader>
+              <CardTitle>Client Images</CardTitle>
+              <CardDescription>Click any image to copy its URL. Manage images uploaded by this client.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {effectiveClientId ? (
+                <CustomImagesManager selectedClientId={effectiveClientId} />
+              ) : (
+                <p className="text-sm text-muted-foreground">Select a client to view images.</p>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
   </div>
 );
 }
