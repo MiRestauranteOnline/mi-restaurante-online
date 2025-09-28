@@ -267,7 +267,8 @@ function SortableCategoryCard({
   handleToggleCategoryStatus,
   formData,
   handleDeleteMenuItem,
-  handleToggleItemStatus
+  handleToggleItemStatus,
+  onItemDragEnd
 }: {
   category: MenuCategory;
   categoryItems: MenuItem[];
@@ -281,6 +282,7 @@ function SortableCategoryCard({
   formData: any;
   handleDeleteMenuItem: (id: string) => void;
   handleToggleItemStatus: (id: string, isActive: boolean) => void;
+  onItemDragEnd: (event: DragEndEvent, categoryId: string) => void;
 }) {
   const {
     attributes,
@@ -294,6 +296,12 @@ function SortableCategoryCard({
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
+  // Local sensors for item-level DnD within this category only
+  const itemSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   return (
     <Card ref={setNodeRef} style={style} className="overflow-hidden">
@@ -2325,23 +2333,27 @@ setReviewForm({
       const oldIndex = categoryItems.findIndex((item) => item.id === active.id);
       const newIndex = categoryItems.findIndex((item) => item.id === over?.id);
 
-      const reorderedItems = arrayMove(categoryItems, oldIndex, newIndex);
-      
-      // Update the menuItems state
-      const updatedMenuItems = menuItems.map(item => {
-        if (item.category_id === categoryId) {
-          const exists = reorderedItems.find(reorderedItem => reorderedItem.id === item.id);
-          return exists ? { ...item } : item;
-        }
-        return item;
-      });
+      // Only allow reordering within this category
+      if (oldIndex === -1 || newIndex === -1) return;
 
-      setMenuItems(updatedMenuItems);
+      const reorderedItems = arrayMove(categoryItems, oldIndex, newIndex);
+
+      // Rebuild menuItems with the reordered items for this category
+      const newMenuItems: MenuItem[] = [];
+      let idx = 0;
+      for (const it of menuItems) {
+        if (it.category_id === categoryId) {
+          newMenuItems.push(reorderedItems[idx++]);
+        } else {
+          newMenuItems.push(it);
+        }
+      }
+
+      setMenuItems(newMenuItems);
 
       try {
-        // For now, we'll just show success. In a more complex system, 
-        // you might want to add a display_order field to menu_items table
-        toast({ title: "Success", description: "Menu item order updated" });
+        // Not persisting order in DB yet; visual order updated only
+        toast({ title: "Success", description: "Item order updated" });
       } catch (error: any) {
         toast({
           title: "Error", 
@@ -4529,6 +4541,7 @@ setReviewForm({
                             formData={formData}
                             handleDeleteMenuItem={handleDeleteMenuItem}
                             handleToggleItemStatus={handleToggleItemStatus}
+                            onItemDragEnd={handleMenuItemDragEnd}
                           />
                         );
                       })}
