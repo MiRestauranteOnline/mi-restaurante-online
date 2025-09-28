@@ -108,6 +108,8 @@ const Signup = () => {
           restaurantName: formData.restaurantName,
           subdomain: formData.subdomain.toLowerCase(),
           phone: formData.phone,
+          phone_country_code: formData.phone_country_code,
+          whatsapp_country_code: formData.whatsapp_country_code,
           address: formData.address, // Include address field
           paymentId: 'demo-payment-success',
           customDomain: formData.customDomain,

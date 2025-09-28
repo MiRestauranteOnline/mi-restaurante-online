@@ -12,9 +12,12 @@ interface SignupRequest {
   restaurantName: string;
   subdomain: string;
   phone: string;
+  phone_country_code?: string;
+  whatsapp_country_code?: string;
   paymentId?: string;
   customDomain?: string;
   referralSource?: string;
+  address?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -40,6 +43,8 @@ const handler = async (req: Request): Promise<Response> => {
       restaurantName,
       subdomain,
       phone,
+      phone_country_code,
+      whatsapp_country_code,
       paymentId,
       customDomain,
       referralSource,
@@ -113,8 +118,11 @@ const handler = async (req: Request): Promise<Response> => {
         subdomain: subdomain.toLowerCase(),
         phone: phone,
         whatsapp: phone,
+        phone_country_code: phone_country_code || '+51',
+        whatsapp_country_code: whatsapp_country_code || '+51',
         email: email,
         domain: customDomain || null,
+        address: address || null,
         other_customizations: {
           paymentId: paymentId || 'temp-payment-id',
           referralSource: referralSource || null,
