@@ -47,18 +47,58 @@ interface SignupStep4OpeningHoursProps {
 }
 
 export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: SignupStep4OpeningHoursProps) => {
+  const defaultOpeningHours = {
+    monday: { open: "11:00", close: "23:00", closed: false },
+    tuesday: { open: "11:00", close: "23:00", closed: false },
+    wednesday: { open: "11:00", close: "23:00", closed: false },
+    thursday: { open: "11:00", close: "23:00", closed: false },
+    friday: { open: "11:00", close: "23:00", closed: false },
+    saturday: { open: "11:00", close: "23:00", closed: false },
+    sunday: { open: "11:00", close: "23:00", closed: false },
+  } as const;
+
+  const mergedOpeningHours = {
+    monday: {
+      open: initialData?.opening_hours?.monday?.open ?? defaultOpeningHours.monday.open,
+      close: initialData?.opening_hours?.monday?.close ?? defaultOpeningHours.monday.close,
+      closed: initialData?.opening_hours?.monday?.closed ?? defaultOpeningHours.monday.closed,
+    },
+    tuesday: {
+      open: initialData?.opening_hours?.tuesday?.open ?? defaultOpeningHours.tuesday.open,
+      close: initialData?.opening_hours?.tuesday?.close ?? defaultOpeningHours.tuesday.close,
+      closed: initialData?.opening_hours?.tuesday?.closed ?? defaultOpeningHours.tuesday.closed,
+    },
+    wednesday: {
+      open: initialData?.opening_hours?.wednesday?.open ?? defaultOpeningHours.wednesday.open,
+      close: initialData?.opening_hours?.wednesday?.close ?? defaultOpeningHours.wednesday.close,
+      closed: initialData?.opening_hours?.wednesday?.closed ?? defaultOpeningHours.wednesday.closed,
+    },
+    thursday: {
+      open: initialData?.opening_hours?.thursday?.open ?? defaultOpeningHours.thursday.open,
+      close: initialData?.opening_hours?.thursday?.close ?? defaultOpeningHours.thursday.close,
+      closed: initialData?.opening_hours?.thursday?.closed ?? defaultOpeningHours.thursday.closed,
+    },
+    friday: {
+      open: initialData?.opening_hours?.friday?.open ?? defaultOpeningHours.friday.open,
+      close: initialData?.opening_hours?.friday?.close ?? defaultOpeningHours.friday.close,
+      closed: initialData?.opening_hours?.friday?.closed ?? defaultOpeningHours.friday.closed,
+    },
+    saturday: {
+      open: initialData?.opening_hours?.saturday?.open ?? defaultOpeningHours.saturday.open,
+      close: initialData?.opening_hours?.saturday?.close ?? defaultOpeningHours.saturday.close,
+      closed: initialData?.opening_hours?.saturday?.closed ?? defaultOpeningHours.saturday.closed,
+    },
+    sunday: {
+      open: initialData?.opening_hours?.sunday?.open ?? defaultOpeningHours.sunday.open,
+      close: initialData?.opening_hours?.sunday?.close ?? defaultOpeningHours.sunday.close,
+      closed: initialData?.opening_hours?.sunday?.closed ?? defaultOpeningHours.sunday.closed,
+    },
+  } as OpeningHoursFormData["opening_hours"];
+
   const form = useForm<OpeningHoursFormData>({
     resolver: zodResolver(openingHoursSchema),
     defaultValues: {
-      opening_hours: initialData?.opening_hours || {
-        monday: { open: "11:00", close: "23:00", closed: false },
-        tuesday: { open: "11:00", close: "23:00", closed: false },
-        wednesday: { open: "11:00", close: "23:00", closed: false },
-        thursday: { open: "11:00", close: "23:00", closed: false },
-        friday: { open: "11:00", close: "23:00", closed: false },
-        saturday: { open: "11:00", close: "23:00", closed: false },
-        sunday: { open: "11:00", close: "23:00", closed: false },
-      },
+      opening_hours: mergedOpeningHours,
     },
   });
 
