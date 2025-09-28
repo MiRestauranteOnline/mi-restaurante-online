@@ -451,56 +451,75 @@ serve(async (req) => {
       if (imagesData.custom_images_enabled && imagesData.custom_images?.length > 0) {
         console.log('Processing custom images for client:', actualClientId);
         
-        const customImagesToInsert = imagesData.custom_images
-          .filter((image: any) => image.imageUrl) // Only store images with URLs
-          .map((image: any, index: number) => ({
-            client_id: actualClientId,
-            image_url: image.imageUrl,
-            alt_text: image.altText || `Custom image ${index + 1}`,
-            upload_context: 'signup_custom_upload',
-            original_filename: `custom-image-${index + 1}`,
-            file_size_kb: null // Will be filled by optimization service
-          }));
-
-        if (customImagesToInsert.length > 0) {
-          // First, try to update any existing images that were uploaded with temp clientId
-          for (const imageData of customImagesToInsert) {
-            try {
-              // Check if this image URL exists with temp clientId
-              const { data: existingImage } = await supabase
-                .from('client_images')
-                .select('id')
-                .eq('image_url', imageData.image_url)
-                .eq('client_id', 'temp-signup-client')
-                .single();
-
-              if (existingImage) {
-                // Update the existing image to link to actual client
-                await supabase
-                  .from('client_images')
-                  .update({
-                    client_id: actualClientId,
-                    alt_text: imageData.alt_text,
-                    upload_context: imageData.upload_context,
-                    original_filename: imageData.original_filename
-                  })
-                  .eq('id', existingImage.id);
-                console.log('Updated existing temp image to link to client:', actualClientId);
-              } else {
-                // Insert new image record if not exists
-                await supabase
-                  .from('client_images')
-                  .insert(imageData);
-                console.log('Inserted new custom image for client:', actualClientId);
-              }
-            } catch (error) {
-              console.error('Error processing custom image:', error);
-              // Continue with next image
-            }
+        // Deduplicate incoming images by URL
+        const uniqueByUrlMap = new Map<string, any>();
+        for (const img of imagesData.custom_images) {
+          if (img?.imageUrl && !uniqueByUrlMap.has(img.imageUrl)) {
+            uniqueByUrlMap.set(img.imageUrl, img);
           }
-
-          console.log('Successfully processed', customImagesToInsert.length, 'custom images');
         }
+        const uniqueCustomImages = Array.from(uniqueByUrlMap.values());
+        
+        for (let index = 0; index < uniqueCustomImages.length; index++) {
+          const image = uniqueCustomImages[index];
+          if (!image?.imageUrl) continue;
+
+          const altText = image.altText || `Custom image ${index + 1}`;
+          const originalFilename = image.originalFilename || `custom-image-${index + 1}`;
+
+          try {
+            // If already exists for this client, skip
+            const { data: existingForClient } = await supabase
+              .from('client_images')
+              .select('id')
+              .eq('client_id', actualClientId)
+              .eq('image_url', image.imageUrl)
+              .maybeSingle();
+
+            if (existingForClient) {
+              console.log('Custom image already exists for client, skipping insert:', image.imageUrl);
+              continue;
+            }
+
+            // If exists for temp-signup-client, re-link it
+            const { data: existingTemp } = await supabase
+              .from('client_images')
+              .select('id')
+              .eq('image_url', image.imageUrl)
+              .eq('client_id', 'temp-signup-client')
+              .maybeSingle();
+
+            if (existingTemp) {
+              await supabase
+                .from('client_images')
+                .update({
+                  client_id: actualClientId,
+                  alt_text: altText,
+                  upload_context: 'signup_custom_upload',
+                  original_filename: originalFilename
+                })
+                .eq('id', existingTemp.id);
+              console.log('Updated existing temp image to link to client:', actualClientId);
+            } else {
+              // Insert new image record if not exists anywhere
+              await supabase
+                .from('client_images')
+                .insert({
+                  client_id: actualClientId,
+                  image_url: image.imageUrl,
+                  alt_text: altText,
+                  upload_context: 'signup_custom_upload',
+                  original_filename: originalFilename,
+                  file_size_kb: null
+                });
+              console.log('Inserted new custom image for client:', actualClientId);
+            }
+          } catch (error) {
+            console.error('Error processing custom image:', error);
+          }
+        }
+
+        console.log('Successfully processed', uniqueCustomImages.length, 'custom images (deduplicated)');
       }
     }
 
