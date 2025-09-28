@@ -382,26 +382,20 @@ function SortableCategoryCard({
                 )}
               </div>
               ) : (
-                <DndContext
-                  sensors={itemSensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={(event) => onItemDragEnd(event, category.id)}
-                >
-                  <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
-                    <div className="space-y-2">
-                      {categoryItems.map((item) => (
-                        <SortableMenuItem
-                          key={item.id}
-                          item={item}
-                          currencySymbol={formData.other_customizations.currency}
-                          onEdit={openMenuItemDialog}
-                          onDelete={handleDeleteMenuItem}
-                          onToggleStatus={handleToggleItemStatus}
-                        />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
+                <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+                  <div className="space-y-2">
+                    {categoryItems.map((item) => (
+                      <SortableMenuItem
+                        key={item.id}
+                        item={item}
+                        currencySymbol={formData.other_customizations.currency}
+                        onEdit={openMenuItemDialog}
+                        onDelete={handleDeleteMenuItem}
+                        onToggleStatus={handleToggleItemStatus}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
             )}
           </CardContent>
         </CollapsibleContent>
@@ -2373,6 +2367,23 @@ setReviewForm({
     }
   };
 
+  // Global drag end to route between category vs item reordering
+  const handleGlobalDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const isCategoryDrag = categories.some(c => c.id === String(active.id));
+    if (isCategoryDrag) {
+      return handleCategoryDragEnd(event);
+    }
+
+    const activeItem = menuItems.find(mi => mi.id === String(active.id));
+    const overItem = menuItems.find(mi => mi.id === String(over.id));
+
+    if (activeItem && overItem && activeItem.category_id && overItem.category_id && activeItem.category_id === overItem.category_id) {
+      return handleMenuItemDragEnd(event, activeItem.category_id);
+    }
+  };
 
   const handleTabChange = (value: string) => {
     // Show warning for non-admin users accessing sensitive tabs
@@ -4521,7 +4532,7 @@ setReviewForm({
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
-                  onDragEnd={handleCategoryDragEnd}
+                  onDragEnd={handleGlobalDragEnd}
                 >
                   <SortableContext 
                     items={categories.map(c => c.id)} 
