@@ -38,6 +38,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -2922,21 +2923,41 @@ setReviewForm({
               <CardTitle>Branding & Customization</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div>
-                <Label htmlFor="primary_color">Primary Color</Label>
-                <Input
-                  id="primary_color"
-                  type="color"
-                  value={formData.brand_colors?.primary || formData.primary_color || '#FFD700'}
-                  onChange={(e) => setFormData({
-                    ...formData, 
-                    primary_color: e.target.value,
-                    brand_colors: {
-                      ...formData.brand_colors,
-                      primary: e.target.value
-                    }
-                  })}
-                />
+              {/* Primary Color and Header Background side by side */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="primary_color">Primary Color</Label>
+                  <div className="mt-1">
+                    <Input
+                      id="primary_color"
+                      type="color"
+                      value={formData.brand_colors?.primary || formData.primary_color || '#FFD700'}
+                      onChange={(e) => setFormData({
+                        ...formData, 
+                        primary_color: e.target.value,
+                        brand_colors: {
+                          ...formData.brand_colors,
+                          primary: e.target.value
+                        }
+                      })}
+                      className="h-12 w-24"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="header_background_enabled">Header Background</Label>
+                  <div className="flex items-center space-x-2 mt-3">
+                    <Switch
+                      id="header_background_enabled"
+                      checked={formData.header_background_enabled}
+                      onCheckedChange={(checked) => setFormData({
+                        ...formData,
+                        header_background_enabled: checked
+                      })}
+                    />
+                    <Label htmlFor="header_background_enabled">Enable Header Background</Label>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-4 border-t pt-4">
@@ -2954,58 +2975,79 @@ setReviewForm({
                   </Select>
                 </div>
               </div>
-
-              <div className="space-y-4 border-t pt-4">
-                <h4 className="text-lg font-medium">Header Settings</h4>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="header_background_enabled"
-                    checked={formData.header_background_enabled}
-                    onCheckedChange={(checked) => setFormData({
-                      ...formData,
-                      header_background_enabled: checked
-                    })}
-                  />
-                  <Label htmlFor="header_background_enabled">Enable Header Background</Label>
-                </div>
                 
-                {formData.header_background_enabled && (
-                  <div>
-                    <Label htmlFor="header_background_style">Header Background Style</Label>
-                    <Select 
-                      value={formData.header_background_style} 
-                      onValueChange={(value) => setFormData({...formData, header_background_style: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="bright">Bright</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </div>
+              {formData.header_background_enabled && (
+                <div className="border-t pt-4">
+                  <Label htmlFor="header_background_style">Header Background Style</Label>
+                  <Select 
+                    value={formData.header_background_style} 
+                    onValueChange={(value) => setFormData({...formData, header_background_style: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="bright">Bright</SelectItem>
+                      <SelectItem value="dark">Dark</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">Logo Settings</h4>
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <ImageUpload
-                      label="Header Logo"
-                      value={formData.header_logo_url || ''}
-                      onChange={(url) => setFormData({...formData, header_logo_url: url})}
-                      clientId={clientId!}
-                    />
+                    <Label className="text-sm font-medium">Header Logo</Label>
+                    <div className="mt-2">
+                      <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                        {formData.header_logo_url ? (
+                          <img 
+                            src={formData.header_logo_url} 
+                            alt="Header Logo" 
+                            className="w-full h-full object-contain"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center h-full text-muted-foreground">
+                            No logo uploaded
+                          </div>
+                        )}
+                      </AspectRatio>
+                      <div className="mt-2">
+                        <ImageUpload
+                          label=""
+                          value={formData.header_logo_url || ''}
+                          onChange={(url) => setFormData({...formData, header_logo_url: url})}
+                          clientId={clientId!}
+                        />
+                      </div>
+                    </div>
                   </div>
                   <div>
-                    <ImageUpload
-                      label="Footer Logo"
-                      value={formData.footer_logo_url || ''}
-                      onChange={(url) => setFormData({...formData, footer_logo_url: url})}
-                      clientId={clientId!}
-                    />
+                    <Label className="text-sm font-medium">Footer Logo</Label>
+                    <div className="mt-2">
+                      <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                        {formData.footer_logo_url ? (
+                          <img 
+                            src={formData.footer_logo_url} 
+                            alt="Footer Logo" 
+                            className="w-full h-full object-contain"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center h-full text-muted-foreground">
+                            No logo uploaded
+                          </div>
+                        )}
+                      </AspectRatio>
+                      <div className="mt-2">
+                        <ImageUpload
+                          label=""
+                          value={formData.footer_logo_url || ''}
+                          onChange={(url) => setFormData({...formData, footer_logo_url: url})}
+                          clientId={clientId!}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3176,12 +3218,30 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.homepage_hero_background_url}
-                        onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
-                        clientId={clientId!}
-                      />
+                      <Label className="text-sm font-medium">Hero Background Image</Label>
+                      <div className="mt-2">
+                        <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                          {formData.homepage_hero_background_url ? (
+                            <img 
+                              src={formData.homepage_hero_background_url} 
+                              alt="Hero Background" 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-muted-foreground">
+                              No image uploaded
+                            </div>
+                          )}
+                        </AspectRatio>
+                        <div className="mt-2">
+                          <ImageUpload
+                            label=""
+                            value={formData.homepage_hero_background_url}
+                            onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
+                            clientId={clientId!}
+                          />
+                        </div>
+                      </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
@@ -3246,12 +3306,30 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="About Section Image"
-                        value={formData.homepage_about_section_image_url || ''}
-                        onChange={(url) => setFormData({...formData, homepage_about_section_image_url: url})}
-                        clientId={clientId!}
-                      />
+                      <Label className="text-sm font-medium">About Section Image</Label>
+                      <div className="mt-2">
+                        <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                          {formData.homepage_about_section_image_url ? (
+                            <img 
+                              src={formData.homepage_about_section_image_url} 
+                              alt="About Section" 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-muted-foreground">
+                              No image uploaded
+                            </div>
+                          )}
+                        </AspectRatio>
+                        <div className="mt-2">
+                          <ImageUpload
+                            label=""
+                            value={formData.homepage_about_section_image_url || ''}
+                            onChange={(url) => setFormData({...formData, homepage_about_section_image_url: url})}
+                            clientId={clientId!}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -3560,12 +3638,30 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.about_page_hero_background_url}
-                        onChange={(url) => setFormData({...formData, about_page_hero_background_url: url})}
-                        clientId={clientId!}
-                      />
+                      <Label className="text-sm font-medium">Hero Background Image</Label>
+                      <div className="mt-2">
+                        <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                          {formData.about_page_hero_background_url ? (
+                            <img 
+                              src={formData.about_page_hero_background_url} 
+                              alt="About Hero Background" 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-muted-foreground">
+                              No image uploaded
+                            </div>
+                          )}
+                        </AspectRatio>
+                        <div className="mt-2">
+                          <ImageUpload
+                            label=""
+                            value={formData.about_page_hero_background_url}
+                            onChange={(url) => setFormData({...formData, about_page_hero_background_url: url})}
+                            clientId={clientId!}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -3585,12 +3681,30 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="About Section Image"
-                        value={formData.about_page_about_section_image_url || ''}
-                        onChange={(url) => setFormData({...formData, about_page_about_section_image_url: url})}
-                        clientId={clientId!}
-                      />
+                      <Label className="text-sm font-medium">About Section Image</Label>
+                      <div className="mt-2">
+                        <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                          {formData.about_page_about_section_image_url ? (
+                            <img 
+                              src={formData.about_page_about_section_image_url} 
+                              alt="About Section" 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-muted-foreground">
+                              No image uploaded
+                            </div>
+                          )}
+                        </AspectRatio>
+                        <div className="mt-2">
+                          <ImageUpload
+                            label=""
+                            value={formData.about_page_about_section_image_url || ''}
+                            onChange={(url) => setFormData({...formData, about_page_about_section_image_url: url})}
+                            clientId={clientId!}
+                          />
+                        </div>
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="about_story">Restaurant Story Text</Label>
@@ -3713,12 +3827,30 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.menu_page_hero_background_url}
-                        onChange={(url) => setFormData({...formData, menu_page_hero_background_url: url})}
-                        clientId={clientId!}
-                      />
+                      <Label className="text-sm font-medium">Hero Background Image</Label>
+                      <div className="mt-2">
+                        <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                          {formData.menu_page_hero_background_url ? (
+                            <img 
+                              src={formData.menu_page_hero_background_url} 
+                              alt="Menu Hero Background" 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-muted-foreground">
+                              No image uploaded
+                            </div>
+                          )}
+                        </AspectRatio>
+                        <div className="mt-2">
+                          <ImageUpload
+                            label=""
+                            value={formData.menu_page_hero_background_url}
+                            onChange={(url) => setFormData({...formData, menu_page_hero_background_url: url})}
+                            clientId={clientId!}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -3762,12 +3894,30 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.contact_page_hero_background_url}
-                        onChange={(url) => setFormData({...formData, contact_page_hero_background_url: url})}
-                        clientId={clientId!}
-                      />
+                      <Label className="text-sm font-medium">Hero Background Image</Label>
+                      <div className="mt-2">
+                        <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                          {formData.contact_page_hero_background_url ? (
+                            <img 
+                              src={formData.contact_page_hero_background_url} 
+                              alt="Contact Hero Background" 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-muted-foreground">
+                              No image uploaded
+                            </div>
+                          )}
+                        </AspectRatio>
+                        <div className="mt-2">
+                          <ImageUpload
+                            label=""
+                            value={formData.contact_page_hero_background_url}
+                            onChange={(url) => setFormData({...formData, contact_page_hero_background_url: url})}
+                            clientId={clientId!}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -3837,12 +3987,30 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <ImageUpload
-                        label="Hero Background Image"
-                        value={formData.reviews_page_hero_background_url}
-                        onChange={(url) => setFormData({...formData, reviews_page_hero_background_url: url})}
-                        clientId={clientId!}
-                      />
+                      <Label className="text-sm font-medium">Hero Background Image</Label>
+                      <div className="mt-2">
+                        <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden">
+                          {formData.reviews_page_hero_background_url ? (
+                            <img 
+                              src={formData.reviews_page_hero_background_url} 
+                              alt="Reviews Hero Background" 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-muted-foreground">
+                              No image uploaded
+                            </div>
+                          )}
+                        </AspectRatio>
+                        <div className="mt-2">
+                          <ImageUpload
+                            label=""
+                            value={formData.reviews_page_hero_background_url}
+                            onChange={(url) => setFormData({...formData, reviews_page_hero_background_url: url})}
+                            clientId={clientId!}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
