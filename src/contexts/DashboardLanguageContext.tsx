@@ -70,6 +70,12 @@ const translations = {
     'general.openingHours': 'Horarios de Apertura',
     'general.socialMedia': 'Redes Sociales',
     'general.deliveryInfo': 'Información de Delivery',
+    'general.subdomain': 'Subdominio',
+    'general.hideWhatsAppButton': 'Ocultar Botón de WhatsApp del Menú',
+    'general.hidden': 'Oculto',
+    'general.visible': 'Visible',
+    'general.password': 'Contraseña',
+    'general.hidePhoneButton': 'Ocultar Botón de Teléfono del Menú',
     
     // Appearance tab
     'appearance.title': 'Configuración de Apariencia',
@@ -129,10 +135,11 @@ const translations = {
     'reviews.comment': 'Comentario',
     
     // Images tab
-    'images.title': 'Gestión de Imágenes',
-    'images.description': 'Administra todas las imágenes del sitio web',
+    'images.title': 'Imágenes del Cliente',
+    'images.description': 'Haz clic en cualquier imagen para copiar su URL. Gestiona las imágenes subidas por este cliente.',
     'images.uploadNew': 'Subir Nueva Imagen',
     'images.customImages': 'Imágenes Personalizadas',
+    'images.selectClient': 'Selecciona un cliente para ver las imágenes.',
   },
   en: {
     // Navigation
@@ -193,6 +200,12 @@ const translations = {
     'general.openingHours': 'Opening Hours',
     'general.socialMedia': 'Social Media',
     'general.deliveryInfo': 'Delivery Information',
+    'general.subdomain': 'Subdomain',
+    'general.hideWhatsAppButton': 'Hide WhatsApp Button from Menu',
+    'general.hidden': 'Hidden',
+    'general.visible': 'Visible',
+    'general.password': 'Password',
+    'general.hidePhoneButton': 'Hide Phone Button from Menu',
     
     // Appearance tab
     'appearance.title': 'Appearance Settings',
@@ -252,10 +265,11 @@ const translations = {
     'reviews.comment': 'Comment',
     
     // Images tab
-    'images.title': 'Image Management',
-    'images.description': 'Manage all website images',
+    'images.title': 'Client Images',
+    'images.description': 'Click any image to copy its URL. Manage images uploaded by this client.',
     'images.uploadNew': 'Upload New Image',
     'images.customImages': 'Custom Images',
+    'images.selectClient': 'Select a client to view images.',
   }
 };
 

@@ -2604,7 +2604,7 @@ setReviewForm({
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="restaurant_name">Restaurant Name</Label>
+                  <Label htmlFor="restaurant_name">{t('general.restaurantName')}</Label>
                   <Input
                     id="restaurant_name"
                     value={formData.restaurant_name}
@@ -2612,7 +2612,7 @@ setReviewForm({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('general.email')}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -2621,7 +2621,7 @@ setReviewForm({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone</Label>
+                  <Label htmlFor="phone">{t('general.phone')}</Label>
                   <PhoneInput
                     countryCode={formData.phone_country_code}
                     phoneNumber={formData.phone}
@@ -2632,7 +2632,7 @@ setReviewForm({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="whatsapp">WhatsApp</Label>
+                  <Label htmlFor="whatsapp">{t('general.whatsapp')}</Label>
                   <PhoneInput
                     countryCode={formData.whatsapp_country_code}
                     phoneNumber={formData.whatsapp}
@@ -2645,7 +2645,7 @@ setReviewForm({
               </div>
               
               <div>
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">{t('general.address')}</Label>
                 <Textarea
                   id="address"
                   value={formData.address}
@@ -2656,7 +2656,7 @@ setReviewForm({
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="hide_whatsapp_button_menu">Hide WhatsApp Button from Menu</Label>
+                  <Label htmlFor="hide_whatsapp_button_menu">{t('general.hideWhatsAppButton')}</Label>
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="hide_whatsapp_button_menu"
@@ -2664,13 +2664,13 @@ setReviewForm({
                       onCheckedChange={(checked) => setFormData({...formData, hide_whatsapp_button_menu: checked})}
                     />
                     <Label htmlFor="hide_whatsapp_button_menu" className="text-sm text-muted-foreground">
-                      {formData.hide_whatsapp_button_menu ? 'Hidden' : 'Visible'}
+                      {formData.hide_whatsapp_button_menu ? t('general.hidden') : t('general.visible')}
                     </Label>
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="hide_phone_button_menu">Hide Phone Button from Menu</Label>
+                  <Label htmlFor="hide_phone_button_menu">{t('general.hidePhoneButton')}</Label>
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="hide_phone_button_menu"
@@ -2678,7 +2678,7 @@ setReviewForm({
                       onCheckedChange={(checked) => setFormData({...formData, hide_phone_button_menu: checked})}
                     />
                     <Label htmlFor="hide_phone_button_menu" className="text-sm text-muted-foreground">
-                      {formData.hide_phone_button_menu ? 'Hidden' : 'Visible'}
+                      {formData.hide_phone_button_menu ? t('general.hidden') : t('general.visible')}
                     </Label>
                   </div>
                 </div>
@@ -2732,7 +2732,7 @@ setReviewForm({
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="subdomain">Subdomain</Label>
+                <Label htmlFor="subdomain">{t('general.subdomain')}</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     id="subdomain"
@@ -5402,14 +5402,14 @@ This changes the default domain from 'demos' to '${formData.subdomain}' across a
         <TabsContent value="custom-images">
           <Card>
             <CardHeader>
-              <CardTitle>Client Images</CardTitle>
-              <CardDescription>Click any image to copy its URL. Manage images uploaded by this client.</CardDescription>
+              <CardTitle>{t('images.title')}</CardTitle>
+              <CardDescription>{t('images.description')}</CardDescription>
             </CardHeader>
             <CardContent>
               {effectiveClientId ? (
                 <CustomImagesManager selectedClientId={effectiveClientId} />
               ) : (
-                <p className="text-sm text-muted-foreground">Select a client to view images.</p>
+                <p className="text-sm text-muted-foreground">{t('images.selectClient')}</p>
               )}
             </CardContent>
           </Card>

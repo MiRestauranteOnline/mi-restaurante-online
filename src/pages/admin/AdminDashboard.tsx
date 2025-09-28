@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Users, Building } from "lucide-react";
+import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 
 interface Client {
   id: string;
@@ -36,6 +37,7 @@ export default function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
   const [stats, setStats] = useState({ totalClients: 0, totalUsers: 0 });
   const { toast } = useToast();
+  const { t } = useDashboardLanguage();
 
   const [formData, setFormData] = useState<CreateClientForm>({
     email: '',
@@ -194,7 +196,7 @@ export default function AdminDashboard() {
             <form onSubmit={handleCreateClient} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('general.email')}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -204,7 +206,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('general.password')}</Label>
                   <Input
                     id="password"
                     type="password"
@@ -215,7 +217,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="restaurantName">Restaurant Name</Label>
+                  <Label htmlFor="restaurantName">{t('general.restaurantName')}</Label>
                   <Input
                     id="restaurantName"
                     value={formData.restaurantName}
@@ -224,7 +226,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="subdomain">Subdomain</Label>
+                  <Label htmlFor="subdomain">{t('general.subdomain')}</Label>
                   <Input
                     id="subdomain"
                     value={formData.subdomain}
@@ -234,7 +236,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone</Label>
+                  <Label htmlFor="phone">{t('general.phone')}</Label>
                   <Input
                     id="phone"
                     value={formData.phone}
@@ -251,7 +253,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div>
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">{t('general.address')}</Label>
                 <Textarea
                   id="address"
                   value={formData.address}
