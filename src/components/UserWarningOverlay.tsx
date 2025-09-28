@@ -13,7 +13,7 @@ export function UserWarningOverlay({ isOpen, onConfirm, tabName }: UserWarningOv
 
   return (
     <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex justify-center pt-4">
-      <div className="bg-white border border-border rounded-lg shadow-lg p-6 max-w-md mx-4">
+      <div className="bg-white border border-border rounded-lg shadow-lg p-6 max-w-md mx-4 h-fit">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2">
             <AlertTriangle className="h-6 w-6 text-amber-500" />
