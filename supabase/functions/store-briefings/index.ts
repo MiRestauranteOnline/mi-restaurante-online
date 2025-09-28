@@ -22,7 +22,9 @@ serve(async (req) => {
       websiteRequirements,
       menuData,
       reviewsData,
-      teamData
+      teamData,
+      openingHoursData,
+      imagesData
     } = await req.json();
 
     if (!clientId || !contentBriefing) {
@@ -310,6 +312,70 @@ serve(async (req) => {
           } else {
             console.log('Successfully created team member:', member.name);
           }
+        }
+      }
+    }
+
+    // Process opening hours if provided
+    if (openingHoursData && openingHoursData.opening_hours) {
+      console.log('Processing opening hours data for client:', actualClientId);
+      
+      const { error: hoursError } = await supabase
+        .from('clients')
+        .update({
+          opening_hours: openingHoursData.opening_hours
+        })
+        .eq('id', actualClientId);
+
+      if (hoursError) {
+        console.error('Error storing opening hours:', hoursError);
+      } else {
+        console.log('Successfully stored opening hours');
+      }
+    }
+
+    // Process images data if provided
+    if (imagesData) {
+      console.log('Processing images data for client:', actualClientId);
+      
+      // Update carousel settings in admin_content
+      const { error: carouselError } = await supabase
+        .from('admin_content')
+        .upsert({
+          client_id: actualClientId,
+          carousel_enabled: imagesData.carousel_enabled,
+          carousel_display_order: 2, // Default position
+          content_briefing: contentBriefing,
+          style_briefing: styleBriefing || '',
+          contact_delivery_briefing: contactDeliveryBriefing || ''
+        }, {
+          onConflict: 'client_id'
+        });
+
+      if (carouselError) {
+        console.error('Error updating carousel settings:', carouselError);
+      } else {
+        console.log('Successfully updated carousel settings');
+      }
+
+      // Store carousel images if provided
+      if (imagesData.carousel_enabled && imagesData.carousel_images?.length > 0) {
+        const carouselImagesToInsert = imagesData.carousel_images.map((image: any, index: number) => ({
+          client_id: actualClientId,
+          image_url: image.imageUrl,
+          alt_text: image.altText || '',
+          display_order: index,
+          is_active: true
+        }));
+
+        const { error: carouselImagesError } = await supabase
+          .from('carousel_images')
+          .insert(carouselImagesToInsert);
+
+        if (carouselImagesError) {
+          console.error('Error storing carousel images:', carouselImagesError);
+        } else {
+          console.log('Successfully stored carousel images');
         }
       }
     }

@@ -3,9 +3,9 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SignupStep1 } from "@/components/signup/SignupStep1";
 import { SignupStep2 } from "@/components/signup/SignupStep2";
-import { SignupStep3, type MenuData } from "@/components/signup/SignupStep3";
-import { SignupStep4, type ReviewsData } from "@/components/signup/SignupStep4";
-import { SignupStep5, type TeamData } from "@/components/signup/SignupStep5";
+import { SignupStep3Combined, type CombinedData } from "@/components/signup/SignupStep3Combined";
+import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/signup/SignupStep4OpeningHours";
+import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,15 +71,20 @@ const Signup = () => {
     brandInfo: "",
     websiteStyle: "",
   });
-  const [menuData, setMenuData] = useState<MenuData>({
+  const [combinedData, setCombinedData] = useState<CombinedData>({
     categories: [],
     items: [],
-  });
-  const [reviewsData, setReviewsData] = useState<ReviewsData>({
     reviews: [],
-  });
-  const [teamData, setTeamData] = useState<TeamData>({
     teamMembers: [],
+  });
+  const [openingHoursData, setOpeningHoursData] = useState<OpeningHoursData>({
+    opening_hours: {},
+  });
+  const [imagesData, setImagesData] = useState<ImagesData>({
+    carousel_enabled: false,
+    carousel_images: [],
+    custom_images_enabled: false,
+    custom_images: [],
   });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
@@ -149,18 +154,18 @@ const Signup = () => {
     setCurrentStep(3); // Move to menu step
   };
 
-  const handleStep3Complete = async (menu: MenuData) => {
-    setMenuData(menu);
-    setCurrentStep(4); // Move to reviews step
+  const handleStep3Complete = async (combined: CombinedData) => {
+    setCombinedData(combined);
+    setCurrentStep(4); // Move to opening hours step
   };
 
-  const handleStep4Complete = async (reviews: ReviewsData) => {
-    setReviewsData(reviews);
-    setCurrentStep(5); // Move to team step
+  const handleStep4Complete = async (openingHours: OpeningHoursData) => {
+    setOpeningHoursData(openingHours);
+    setCurrentStep(5); // Move to images step
   };
 
-  const handleStep5Complete = async (team: TeamData) => {
-    setTeamData(team);
+  const handleStep5Complete = async (images: ImagesData) => {
+    setImagesData(images);
     
     try {
       // Create briefing summaries from accumulated data
@@ -179,9 +184,11 @@ const Signup = () => {
           contactDeliveryBriefing,
           signupData,
           websiteRequirements,
-          menuData,
-          reviewsData,
-          teamData
+          menuData: { categories: combinedData.categories, items: combinedData.items },
+          reviewsData: { reviews: combinedData.reviews },
+          teamData: { teamMembers: combinedData.teamMembers },
+          openingHoursData,
+          imagesData
         }
       });
 
@@ -267,7 +274,7 @@ const Signup = () => {
                 }`}>
                   3
                 </div>
-                <span className="ml-2 font-medium text-xs sm:text-sm">Menú</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Contenido</span>
               </div>
 
               <div className={`w-8 h-0.5 ${currentStep > 3 ? 'bg-primary' : 'bg-muted'}`} />
@@ -278,7 +285,7 @@ const Signup = () => {
                 }`}>
                   4
                 </div>
-                <span className="ml-2 font-medium text-xs sm:text-sm">Reseñas</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Horarios</span>
               </div>
 
               <div className={`w-8 h-0.5 ${currentStep > 4 ? 'bg-primary' : 'bg-muted'}`} />
@@ -289,7 +296,7 @@ const Signup = () => {
                 }`}>
                   5
                 </div>
-                <span className="ml-2 font-medium text-xs sm:text-sm">Equipo</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Imágenes</span>
               </div>
 
               <div className={`w-8 h-0.5 ${currentStep > 5 ? 'bg-primary' : 'bg-muted'}`} />
@@ -326,26 +333,26 @@ const Signup = () => {
               )}
 
               {currentStep === 3 && (
-                <SignupStep3 
+                <SignupStep3Combined 
                   onComplete={handleStep3Complete}
                   onBack={handleBackToStep2}
-                  initialData={menuData}
+                  initialData={combinedData}
                 />
               )}
 
               {currentStep === 4 && (
-                <SignupStep4 
+                <SignupStep4OpeningHours 
                   onComplete={handleStep4Complete}
                   onBack={handleBackToStep3}
-                  initialData={reviewsData}
+                  initialData={openingHoursData}
                 />
               )}
 
               {currentStep === 5 && (
-                <SignupStep5 
+                <SignupStep5Images 
                   onComplete={handleStep5Complete}
                   onBack={handleBackToStep4}
-                  initialData={teamData}
+                  initialData={imagesData}
                 />
               )}
               
