@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Utensils, Plus, X } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
+import { MenuUpload } from "@/components/MenuUpload";
 import type { SignupData, WebsiteRequirements, SocialMedia } from "@/pages/Signup";
 
 const requirementsSchema = z.object({
@@ -180,14 +181,14 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                 name="downloadableMenuUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Menú Descargable (Opcional)</FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      Proporciona un enlace a tu menú en PDF u otro formato descargable
-                    </p>
                     <FormControl>
-                      <Input 
-                        placeholder="https://example.com/menu.pdf o URL de Google Drive/Dropbox"
-                        {...field}
+                      <MenuUpload
+                        label="Menú Descargable (Opcional)"
+                        description="Sube tu menú en PDF o proporciona un enlace directo"
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        clientId={signupData.subdomain}
+                        maxSizeMB={15}
                       />
                     </FormControl>
                     <FormMessage />
