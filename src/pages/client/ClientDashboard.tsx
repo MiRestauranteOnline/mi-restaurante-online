@@ -344,24 +344,49 @@ export default function ClientDashboard() {
 
   const handleAdminContentSave = async (updatedContent = adminContent) => {
     try {
-      const { error } = await supabase
-        .from('admin_content')
-        .upsert({
-          client_id: selectedClientId,
-          ...updatedContent
-        });
+      // Ensure we update the existing row when present, otherwise insert
+      let targetId = updatedContent?.id as string | undefined;
 
-      if (error) throw error;
-      
+      if (!targetId) {
+        const { data: existing, error: findError } = await supabase
+          .from('admin_content')
+          .select('id')
+          .eq('client_id', selectedClientId)
+          .maybeSingle();
+        if (findError) throw findError;
+        targetId = existing?.id;
+      }
+
+      let saved;
+      if (targetId) {
+        const { data, error } = await supabase
+          .from('admin_content')
+          .update({ ...updatedContent, client_id: selectedClientId })
+          .eq('id', targetId)
+          .select('*')
+          .single();
+        if (error) throw error;
+        saved = data;
+      } else {
+        const { data, error } = await supabase
+          .from('admin_content')
+          .insert([{ client_id: selectedClientId, ...updatedContent }])
+          .select('*')
+          .single();
+        if (error) throw error;
+        saved = data;
+      }
+
+      setAdminContent(saved);
       toast({
-        title: "Guardado",
-        description: "Configuración del carousel guardada",
+        title: 'Guardado',
+        description: 'Preferencias del carousel actualizadas',
       });
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: "No se pudo guardar la configuración del carousel",
-        variant: "destructive",
+        title: 'Error',
+        description: error.message || 'No se pudo guardar la configuración del carousel',
+        variant: 'destructive',
       });
     }
   };
