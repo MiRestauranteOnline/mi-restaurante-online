@@ -66,7 +66,7 @@ const App = () => (
             </Route>
             <Route path="/client" element={<ClientDashboardLayout />}>
               <Route index element={<ClientDashboard />} />
-              <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","menu","team","reviews"]} />} />
+              <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews"]} />} />
               <Route path="subscription" element={<ClientSubscription />} />
             </Route>
             <Route path="*" element={<NotFound />} />

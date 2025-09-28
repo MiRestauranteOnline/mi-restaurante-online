@@ -951,6 +951,8 @@ const [reviewForm, setReviewForm] = useState({
       fetchTeamMembers();
       fetchReviews();
       fetchUserRole();
+    } else {
+      console.log('No effectiveClientId found');
     }
   }, [effectiveClientId]);
 
@@ -1276,7 +1278,10 @@ const [reviewForm, setReviewForm] = useState({
           .single();
 
         if (error && error.code !== 'PGRST116') throw error;
+        console.log('User role fetched:', data?.role || 'no role');
         setUserRole(data?.role || null);
+      } else {
+        console.log('No user found');
       }
     } catch (error: any) {
       console.error('Failed to fetch user role:', error);
@@ -2479,7 +2484,7 @@ setReviewForm({
           {showTab('social') && <TabsTrigger value="social">Social Media</TabsTrigger>}
           {showTab('delivery') && <TabsTrigger value="delivery">Delivery</TabsTrigger>}
           {showTab('branding') && <TabsTrigger value="branding">Branding</TabsTrigger>}
-          {(userRole === 'admin' || userConfirmedWarning) && showTab('content') && <TabsTrigger value="content">Change Content</TabsTrigger>}
+          {showTab('content') && <TabsTrigger value="content">Change Content</TabsTrigger>}
           {showTab('briefing') && <TabsTrigger value="briefing">Briefing</TabsTrigger>}
           {showTab('menu') && <TabsTrigger value="menu">Menu Items</TabsTrigger>}
           {showTab('team') && <TabsTrigger value="team">Team Members</TabsTrigger>}
@@ -3158,8 +3163,7 @@ setReviewForm({
           </Card>
         </TabsContent>
 
-        {userRole === 'admin' && (
-          <TabsContent value="content">
+        <TabsContent value="content">
             <div className="space-y-6">
               
               {/* HOMEPAGE SECTION */}
@@ -4326,7 +4330,6 @@ setReviewForm({
               </div>
             </div>
           </TabsContent>
-        )}
 
         <TabsContent value="menu">
           {/* Downloadable Menu Upload Section */}
