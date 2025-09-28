@@ -1335,11 +1335,12 @@ const [reviewForm, setReviewForm] = useState({
     if (!effectiveClientId) return;
     
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('menu_items')
         .select('*')
         .eq('client_id', effectiveClientId)
-        .order('name');
+        .order('display_order', { ascending: true })
+        .order('name', { ascending: true });
 
       if (error) throw error;
       console.log('Menu items fetched:', Array.isArray(data) ? data.length : 0);
@@ -2360,8 +2361,15 @@ setReviewForm({
       setMenuItems(newMenuItems);
 
       try {
-        // Not persisting order in DB yet; visual order updated only
-        toast({ title: "Success", description: "Item order updated" });
+        // Persist display_order in DB for this category
+        for (let i = 0; i < reorderedItems.length; i++) {
+          await (supabase as any)
+            .from('menu_items')
+            .update({ display_order: i + 1 })
+            .eq('id', reorderedItems[i].id);
+        }
+        await fetchMenuItems();
+        toast({ title: "Success", description: "Item order saved" });
       } catch (error: any) {
         toast({
           title: "Error", 
