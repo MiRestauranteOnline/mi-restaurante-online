@@ -87,6 +87,7 @@ const Signup = () => {
     custom_images: [],
   });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isProcessingFinalStep, setIsProcessingFinalStep] = useState(false);
 
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
     setSignupData(formData);
@@ -175,6 +176,7 @@ const Signup = () => {
 
   const handleStep5Complete = async (images: ImagesData) => {
     setImagesData(images);
+    setIsProcessingFinalStep(true);
     
     try {
       // Create briefing summaries from accumulated data
@@ -225,6 +227,8 @@ const Signup = () => {
       }
     } catch (error) {
       console.error('Error processing briefings:', error);
+    } finally {
+      setIsProcessingFinalStep(false);
     }
     
     setCurrentStep(6); // Move to success step
@@ -359,11 +363,12 @@ const Signup = () => {
               )}
 
               {currentStep === 5 && (
-                <SignupStep5Images 
-                  onComplete={handleStep5Complete}
-                  onBack={handleBackToStep4}
-                  initialData={imagesData}
-                />
+              <SignupStep5Images
+                onComplete={handleStep5Complete}
+                onBack={handleBackToStep4}
+                initialData={imagesData}
+                isProcessingFinalStep={isProcessingFinalStep}
+              />
               )}
               
               {currentStep === 6 && (

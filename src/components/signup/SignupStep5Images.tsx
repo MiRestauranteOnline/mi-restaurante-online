@@ -39,9 +39,10 @@ interface SignupStep5ImagesProps {
   onComplete: (data: ImagesData) => void;
   onBack: () => void;
   initialData?: ImagesData;
+  isProcessingFinalStep?: boolean;
 }
 
-export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupStep5ImagesProps) => {
+export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessingFinalStep = false }: SignupStep5ImagesProps) => {
   const form = useForm<ImagesFormData>({
     resolver: zodResolver(imagesSchema),
     defaultValues: {
@@ -370,8 +371,13 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver
             </Button>
-            <Button type="submit" disabled={isProcessingImages}>
-              {isProcessingImages ? 'Procesando imágenes...' : 'Finalizar Registro'}
+            <Button type="submit" disabled={isProcessingImages || isProcessingFinalStep}>
+              {isProcessingFinalStep ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Finalizando registro...
+                </div>
+              ) : isProcessingImages ? 'Procesando imágenes...' : 'Finalizar Registro'}
             </Button>
           </div>
         </form>
