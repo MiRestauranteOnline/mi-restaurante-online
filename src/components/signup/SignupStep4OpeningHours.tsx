@@ -24,13 +24,6 @@ const daySchema = z.object({
   open: z.string().optional(),
   close: z.string().optional(),
   closed: z.boolean(),
-}).refine((data) => {
-  if (!data.closed) {
-    return data.open && data.close;
-  }
-  return true;
-}, {
-  message: "Debe especificar horarios de apertura y cierre cuando el día está marcado como abierto",
 });
 
 const openingHoursSchema = z.object({
@@ -58,13 +51,13 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
     resolver: zodResolver(openingHoursSchema),
     defaultValues: {
       opening_hours: initialData?.opening_hours || {
-        monday: { open: "09:00", close: "22:00", closed: false },
-        tuesday: { open: "09:00", close: "22:00", closed: false },
-        wednesday: { open: "09:00", close: "22:00", closed: false },
-        thursday: { open: "09:00", close: "22:00", closed: false },
-        friday: { open: "09:00", close: "22:00", closed: false },
-        saturday: { open: "09:00", close: "22:00", closed: false },
-        sunday: { open: "09:00", close: "22:00", closed: false },
+        monday: { open: "09:00", close: "23:00", closed: false },
+        tuesday: { open: "09:00", close: "23:00", closed: false },
+        wednesday: { open: "09:00", close: "23:00", closed: false },
+        thursday: { open: "09:00", close: "23:00", closed: false },
+        friday: { open: "09:00", close: "23:00", closed: false },
+        saturday: { open: "09:00", close: "23:00", closed: false },
+        sunday: { open: "09:00", close: "23:00", closed: false },
       },
     },
   });

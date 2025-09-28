@@ -355,30 +355,6 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
             </CardContent>
           </Card>
 
-          {/* Skip Option */}
-          <Card className="border-yellow-200 bg-yellow-50">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="text-yellow-600 text-sm">⚠️</div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-yellow-800">¿Omitir imágenes?</p>
-                  <p className="text-xs text-yellow-700 mt-1">
-                    Si omites este paso, tu sitio se publicará con imágenes de stock profesionales. 
-                    Puedes personalizarlas fácilmente después a través de tu panel de control.
-                  </p>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleSkip}
-                    className="mt-2 text-yellow-700 border-yellow-300 hover:bg-yellow-100"
-                  >
-                    Omitir por ahora
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Navigation */}
           <div className="flex justify-between pt-6">
