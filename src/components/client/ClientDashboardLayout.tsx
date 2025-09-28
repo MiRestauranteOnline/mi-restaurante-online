@@ -90,7 +90,7 @@ export default function ClientDashboardLayout() {
 
   useEffect(() => {
     if (selectedClientId) {
-      if (location.pathname === '/client' || location.pathname === '/client/dashboard') {
+      if (location.pathname === '/client') {
         navigate(`/client/dashboard/${selectedClientId}`, { replace: true });
       }
     }

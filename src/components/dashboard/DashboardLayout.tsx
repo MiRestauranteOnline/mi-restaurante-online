@@ -103,7 +103,7 @@ export default function DashboardLayout() {
   // Redirect non-admin users to the client portal
   useEffect(() => {
     if (user && !isAdmin) {
-      navigate('/client/dashboard', { replace: true });
+      navigate('/client', { replace: true });
     }
   }, [user, isAdmin, navigate]);
 
