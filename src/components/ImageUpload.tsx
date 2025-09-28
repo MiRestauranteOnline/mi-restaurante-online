@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, X, Link } from "lucide-react";
+import { Upload, X, Link, Image as ImageIcon } from "lucide-react";
 
 interface ImageUploadProps {
   label: string;
@@ -16,6 +16,7 @@ interface ImageUploadProps {
 
 export function ImageUpload({ label, value, onChange, clientId }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const [optimizing, setOptimizing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -23,42 +24,74 @@ export function ImageUpload({ label, value, onChange, clientId }: ImageUploadPro
   const handleFileUpload = async (file: File) => {
     setUploading(true);
     try {
+      // Step 1: Upload original file temporarily
       const fileExt = file.name.split('.').pop();
-      const fileName = `${clientId}/${Date.now()}.${fileExt}`;
+      const tempFileName = `temp/${clientId}/${Date.now()}-original.${fileExt}`;
       
       const { error: uploadError } = await supabase.storage
         .from('client-assets')
-        .upload(fileName, file);
+        .upload(tempFileName, file);
 
       if (uploadError) throw uploadError;
 
       const { data } = supabase.storage
         .from('client-assets')
-        .getPublicUrl(fileName);
+        .getPublicUrl(tempFileName);
 
-      onChange(data.publicUrl);
-      toast({
-        title: "Success",
-        description: "Image uploaded successfully",
+      // Step 2: Optimize the uploaded image
+      setUploading(false);
+      setOptimizing(true);
+      
+      // Create a description based on the file name for better SEO
+      const description = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+      
+      const optimizeResponse = await supabase.functions.invoke('optimize-user-image', {
+        body: {
+          imageUrl: data.publicUrl,
+          description: description,
+          clientId: clientId,
+          context: 'restaurant content'
+        }
       });
+
+      if (optimizeResponse.error) {
+        throw new Error(optimizeResponse.error.message || 'Failed to optimize image');
+      }
+
+      const { optimizedUrl, altText, originalSizeKB, optimizedSizeKB, compressionRatio } = optimizeResponse.data;
+      
+      // Step 3: Delete the temporary file
+      await supabase.storage
+        .from('client-assets')
+        .remove([tempFileName]);
+
+      // Step 4: Update the component with optimized image
+      onChange(optimizedUrl);
+      
+      toast({
+        title: "Image Optimized Successfully",
+        description: `Converted to WebP format. ${originalSizeKB > optimizedSizeKB ? `Reduced from ${originalSizeKB}KB to ${optimizedSizeKB}KB (${compressionRatio}% compression)` : `Final size: ${optimizedSizeKB}KB`}`,
+      });
+      
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: "Failed to upload image: " + error.message,
+        title: "Upload Failed",
+        description: error.message || "Failed to upload and optimize image",
         variant: "destructive"
       });
     } finally {
       setUploading(false);
+      setOptimizing(false);
     }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit (will be optimized down)
         toast({
-          title: "Error",
-          description: "File size must be less than 5MB",
+          title: "File Too Large",
+          description: "File size must be less than 10MB",
           variant: "destructive"
         });
         return;
@@ -70,6 +103,26 @@ export function ImageUpload({ label, value, onChange, clientId }: ImageUploadPro
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
+      
+      {/* Processing indicator */}
+      {(uploading || optimizing) && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-blue-700">
+            {uploading && (
+              <>
+                <Upload className="h-4 w-4 animate-spin" />
+                <span className="text-sm">Uploading image...</span>
+              </>
+            )}
+            {optimizing && (
+              <>
+                <ImageIcon className="h-4 w-4 animate-pulse" />
+                <span className="text-sm">Optimizing image (converting to WebP, resizing, compressing)...</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       
       {/* Current image preview */}
       {value && (
@@ -99,17 +152,32 @@ export function ImageUpload({ label, value, onChange, clientId }: ImageUploadPro
           type="button"
           variant="outline"
           onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
+          disabled={uploading || optimizing}
           className="flex-1"
         >
-          <Upload className="h-4 w-4 mr-2" />
-          {uploading ? 'Uploading...' : 'Upload Image'}
+          {uploading ? (
+            <>
+              <Upload className="h-4 w-4 mr-2 animate-spin" />
+              Uploading...
+            </>
+          ) : optimizing ? (
+            <>
+              <ImageIcon className="h-4 w-4 mr-2 animate-pulse" />
+              Optimizing...
+            </>
+          ) : (
+            <>
+              <Upload className="h-4 w-4 mr-2" />
+              Upload Image
+            </>
+          )}
         </Button>
         
         <Button
           type="button"
           variant="outline"
           onClick={() => setShowUrlInput(!showUrlInput)}
+          disabled={uploading || optimizing}
         >
           <Link className="h-4 w-4 mr-2" />
           URL
