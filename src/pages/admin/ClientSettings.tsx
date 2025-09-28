@@ -978,6 +978,11 @@ const [reviewForm, setReviewForm] = useState({
     }
   }, [effectiveClientId]);
 
+  // Debug team members
+  useEffect(() => {
+    console.log('Team members state changed:', teamMembers.length, teamMembers);
+  }, [teamMembers]);
+
   const fetchClient = async () => {
     if (!effectiveClientId) return;
     
@@ -1365,7 +1370,7 @@ const [reviewForm, setReviewForm] = useState({
         .order('display_order');
 
       if (error) throw error;
-      console.log('Team members fetched:', Array.isArray(data) ? data.length : 0);
+      console.log('Team members fetched for client', effectiveClientId, ':', Array.isArray(data) ? data.length : 0, data);
       setTeamMembers(data || []);
     } catch (error: any) {
       toast({
