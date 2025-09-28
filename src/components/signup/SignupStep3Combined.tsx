@@ -320,6 +320,8 @@ export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupS
                                 value={field.value || ""}
                                 onChange={field.onChange}
                                 clientId="signup"
+                                context="menu-item"
+                                description={`menu item photo - ${form.watch(`items.${index}.name`) || 'dish'}`}
                               />
                             </FormControl>
                             <FormMessage />
@@ -522,6 +524,8 @@ export const SignupStep3Combined = ({ onComplete, onBack, initialData }: SignupS
                               value={field.value || ""}
                               onChange={field.onChange}
                               clientId="signup"
+                              context="team-member"
+                              description={`team member profile photo - ${form.watch(`teamMembers.${index}.name`) || 'staff member'}`}
                             />
                           </FormControl>
                           <FormMessage />

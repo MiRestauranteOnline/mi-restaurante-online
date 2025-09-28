@@ -459,6 +459,8 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                         value={field.value}
                         onChange={field.onChange}
                         clientId="temp"
+                        context="logo"
+                        description="restaurant logo"
                       />
                     </FormControl>
                     <FormMessage />

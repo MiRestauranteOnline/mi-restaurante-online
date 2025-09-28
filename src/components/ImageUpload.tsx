@@ -12,9 +12,11 @@ interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
   clientId: string;
+  context?: string; // e.g., 'carousel', 'menu-item', 'team-member', 'hero-background', etc.
+  description?: string; // Optional custom description for better SEO
 }
 
-export function ImageUpload({ label, value, onChange, clientId }: ImageUploadProps) {
+export function ImageUpload({ label, value, onChange, clientId, context = 'restaurant content', description }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
@@ -42,15 +44,28 @@ export function ImageUpload({ label, value, onChange, clientId }: ImageUploadPro
       setUploading(false);
       setOptimizing(true);
       
-      // Create a description based on the file name for better SEO
-      const description = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+      // Create a description based on context, custom description, or file name
+      let imageDescription = description;
+      if (!imageDescription) {
+        const fileName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+        const contextMap: Record<string, string> = {
+          'carousel': `carousel image for restaurant showcase - ${fileName}`,
+          'menu-item': `menu item photo - ${fileName}`,
+          'team-member': `team member profile photo - ${fileName}`,
+          'hero-background': `hero background image - ${fileName}`,
+          'about-section': `about section image - ${fileName}`,
+          'logo': `restaurant logo - ${fileName}`,
+          'restaurant content': `restaurant content image - ${fileName}`
+        };
+        imageDescription = contextMap[context] || `restaurant image - ${fileName}`;
+      }
       
       const optimizeResponse = await supabase.functions.invoke('optimize-user-image', {
         body: {
           imageUrl: data.publicUrl,
-          description: description,
+          description: imageDescription,
           clientId: clientId,
-          context: 'restaurant content'
+          context: context
         }
       });
 

@@ -170,6 +170,8 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
                                   value={field.value || ""}
                                   onChange={field.onChange}
                                   clientId="signup"
+                                  context="carousel"
+                                  description="carousel showcase image for restaurant"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -291,6 +293,8 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData }: SignupSte
                                   value={field.value || ""}
                                   onChange={field.onChange}
                                   clientId="signup"
+                                  context="restaurant content"
+                                  description="custom restaurant image for website personalization"
                                 />
                               </FormControl>
                               <FormMessage />

@@ -3133,6 +3133,8 @@ setReviewForm({
                       value={formData.header_logo_url || ''}
                       onChange={(url) => setFormData({...formData, header_logo_url: url})}
                       clientId={clientId!}
+                      context="logo"
+                      description="restaurant header logo"
                     />
                   </div>
                   <div>
@@ -3141,6 +3143,8 @@ setReviewForm({
                       value={formData.footer_logo_url || ''}
                       onChange={(url) => setFormData({...formData, footer_logo_url: url})}
                       clientId={clientId!}
+                      context="logo"
+                      description="restaurant footer logo"
                     />
                   </div>
                 </div>
@@ -3323,6 +3327,8 @@ setReviewForm({
                         value={formData.homepage_hero_background_url}
                         onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
                         clientId={clientId!}
+                        context="hero-background"
+                        description="homepage hero background image"
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4847,6 +4853,8 @@ setReviewForm({
                   value=""
                   onChange={(imageUrl) => handleCarouselImageUpload(imageUrl)}
                   clientId={effectiveClientId}
+                  context="carousel"
+                  description="carousel showcase image for restaurant homepage"
                 />
                 
                 {carouselImages.length > 0 && (

@@ -475,6 +475,8 @@ export default function TeamMembers() {
                           value={field.value || ''}
                           onChange={(url) => field.onChange(url)}
                           clientId={selectedClientId}
+                          context="team-member"
+                          description="team member profile photo"
                         />
                       </FormControl>
                       <FormMessage />
