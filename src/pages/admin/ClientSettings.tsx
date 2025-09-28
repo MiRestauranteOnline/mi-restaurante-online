@@ -4795,48 +4795,50 @@ setReviewForm({
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="carousel-enabled">Mostrar Carousel</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Activa o desactiva el carousel en la página principal
-                  </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="carousel-enabled">Mostrar Carousel</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Activa o desactiva el carousel en la página principal
+                    </p>
+                  </div>
+                  <Switch
+                    id="carousel-enabled"
+                    checked={adminContent?.carousel_enabled ?? true}
+                    onCheckedChange={async (checked) => {
+                      const next = { ...adminContent, carousel_enabled: checked } as any;
+                      setAdminContent(next);
+                      await saveCarouselSetting({ carousel_enabled: checked });
+                    }}
+                  />
                 </div>
-                <Switch
-                  id="carousel-enabled"
-                  checked={adminContent?.carousel_enabled ?? true}
-                  onCheckedChange={async (checked) => {
-                    const next = { ...adminContent, carousel_enabled: checked } as any;
-                    setAdminContent(next);
-                    await saveCarouselSetting({ carousel_enabled: checked });
-                  }}
-                />
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="carousel-order">Posición del Carousel</Label>
-                <Select
-                  value={adminContent?.carousel_display_order?.toString() ?? "2"}
-                  onValueChange={async (value) => {
-                    const val = parseInt(value);
-                    const next = { ...adminContent, carousel_display_order: val } as any;
-                    setAdminContent(next);
-                    await saveCarouselSetting({ carousel_display_order: val });
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona la posición" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="3">Posición 1 (Después del Hero)</SelectItem>
-                    <SelectItem value="4">Posición 2 (Después de Servicios)</SelectItem>
-                    <SelectItem value="5">Posición 3 (Después de Menú)</SelectItem>
-                    <SelectItem value="6">Posición 4 (Después de Historia)</SelectItem>
-                    <SelectItem value="7">Posición 5 (Después de Testimonios)</SelectItem>
-                    <SelectItem value="8">Posición 6 (Después de Equipo)</SelectItem>
-                    <SelectItem value="9">Posición 7 (Antes de Contacto)</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="carousel-order">Posición del Carousel</Label>
+                  <Select
+                    value={adminContent?.carousel_display_order?.toString() ?? "3"}
+                    onValueChange={async (value) => {
+                      const val = parseInt(value);
+                      const next = { ...adminContent, carousel_display_order: val } as any;
+                      setAdminContent(next);
+                      await saveCarouselSetting({ carousel_display_order: val });
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Posición 1 (Después del Hero)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="3">Posición 1 (Después del Hero)</SelectItem>
+                      <SelectItem value="4">Posición 2 (Después de Servicios)</SelectItem>
+                      <SelectItem value="5">Posición 3 (Después de Menú)</SelectItem>
+                      <SelectItem value="6">Posición 4 (Después de Historia)</SelectItem>
+                      <SelectItem value="7">Posición 5 (Después de Testimonios)</SelectItem>
+                      <SelectItem value="8">Posición 6 (Después de Equipo)</SelectItem>
+                      <SelectItem value="9">Posición 7 (Antes de Contacto)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardContent>
           </Card>
