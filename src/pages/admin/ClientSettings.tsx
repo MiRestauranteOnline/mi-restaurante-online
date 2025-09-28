@@ -382,18 +382,26 @@ function SortableCategoryCard({
                 )}
               </div>
               ) : (
-                <div className="space-y-2">
-                  {categoryItems.map((item) => (
-                    <SortableMenuItem
-                      key={item.id}
-                      item={item}
-                      currencySymbol={formData.other_customizations.currency}
-                      onEdit={openMenuItemDialog}
-                      onDelete={handleDeleteMenuItem}
-                      onToggleStatus={handleToggleItemStatus}
-                    />
-                  ))}
-                </div>
+                <DndContext
+                  sensors={itemSensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={(event) => onItemDragEnd(event, category.id)}
+                >
+                  <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+                    <div className="space-y-2">
+                      {categoryItems.map((item) => (
+                        <SortableMenuItem
+                          key={item.id}
+                          item={item}
+                          currencySymbol={formData.other_customizations.currency}
+                          onEdit={openMenuItemDialog}
+                          onDelete={handleDeleteMenuItem}
+                          onToggleStatus={handleToggleItemStatus}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
             )}
           </CardContent>
         </CollapsibleContent>
