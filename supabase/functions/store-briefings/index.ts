@@ -421,16 +421,29 @@ serve(async (req) => {
           .eq('client_id', actualClientId);
 
         const existingUrls = new Set(existingCarouselImages?.map(img => img.image_url) || []);
-        
-        const carouselImagesToInsert = imagesData.carousel_images
-          .filter((image: any) => !existingUrls.has(image.imageUrl))
-          .map((image: any, index: number) => ({
-            client_id: actualClientId,
-            image_url: image.imageUrl,
-            alt_text: image.altText || '',
-            display_order: index,
-            is_active: true
-          }));
+
+        // Normalize, dedupe and filter out invalid/empty URLs before insert
+        const seen = new Set<string>();
+        const sanitized = imagesData.carousel_images
+          .map((img: any) => ({
+            imageUrl: (img?.imageUrl || '').trim(),
+            altText: (img?.altText || '').trim(),
+          }))
+          .filter((img: any) => img.imageUrl && /^https?:\/\//i.test(img.imageUrl))
+          .filter((img: any) => !existingUrls.has(img.imageUrl))
+          .filter((img: any) => {
+            if (seen.has(img.imageUrl)) return false;
+            seen.add(img.imageUrl);
+            return true;
+          });
+
+        const carouselImagesToInsert = sanitized.map((image: any, index: number) => ({
+          client_id: actualClientId,
+          image_url: image.imageUrl,
+          alt_text: image.altText || `Carousel image ${index + 1}`,
+          display_order: index,
+          is_active: true
+        }));
 
         if (carouselImagesToInsert.length > 0) {
           const { error: carouselImagesError } = await supabase
@@ -443,7 +456,7 @@ serve(async (req) => {
             console.log('Successfully stored carousel images');
           }
         } else {
-          console.log('All carousel images already exist, skipping insert');
+          console.log('No new valid carousel images to insert (deduped/filtered)');
         }
       }
 
