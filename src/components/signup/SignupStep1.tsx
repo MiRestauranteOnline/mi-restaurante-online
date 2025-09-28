@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, CreditCard, Shield, Clock, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +24,8 @@ const signupSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Solo se permiten letras minúsculas, números y guiones"),
   email: z.string().email("Email inválido"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-  phone: z.string().min(10, "Número de teléfono inválido"),
+  phoneCountryCode: z.string().min(1, "Selecciona un código de país"),
+  phone: z.string().min(6, "Número de teléfono inválido"),
   address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"),
   hasCustomDomain: z.boolean().optional(),
   customDomain: z.string().optional(),
@@ -50,6 +52,8 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
   const [isCheckingSubdomain, setIsCheckingSubdomain] = useState(false);
   const [subdomainError, setSubdomainError] = useState<string>("");
   const [subdomainCheckTimeout, setSubdomainCheckTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [countryCode, setCountryCode] = useState("+51"); // Default to Peru
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const { toast } = useToast();
 
@@ -60,6 +64,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       subdomain: initialData.subdomain,
       email: initialData.email,
       password: initialData.password,
+      phoneCountryCode: "+51", // Default to Peru
       phone: initialData.phone,
       address: initialData.address || "", // New address field
       hasCustomDomain: initialData.hasCustomDomain || false,
@@ -67,6 +72,13 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       referralSource: initialData.referralSource || "",
     }
   });
+
+  // Initialize phone number from initial data
+  useEffect(() => {
+    if (initialData.phone) {
+      setPhoneNumber(initialData.phone);
+    }
+  }, [initialData.phone]);
 
   // Check subdomain on initial load if there's already a value
   useEffect(() => {
@@ -147,10 +159,13 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
         return;
       }
 
-      // Clean custom domain if provided
+      // Clean custom domain if provided and combine phone data
       const cleanedData = {
         ...data,
         customDomain: data.hasCustomDomain && data.customDomain ? cleanDomain(data.customDomain) : "",
+        phone: phoneNumber,
+        phone_country_code: countryCode,
+        whatsapp_country_code: countryCode,
       };
       
       await onComplete(cleanedData, selectedPlan);
@@ -367,15 +382,28 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
 
           <FormField
             control={form.control}
-            name="phone"
+            name="phoneCountryCode"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Teléfono</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="tel"
-                    placeholder="+57 300 123 4567"
-                    {...field}
+                  <PhoneInput
+                    countryCode={countryCode}
+                    phoneNumber={phoneNumber}
+                    onCountryCodeChange={(code) => {
+                      setCountryCode(code);
+                      field.onChange(code);
+                    }}
+                    onPhoneNumberChange={(number) => {
+                      // Auto-remove country code if entered
+                      let cleanNumber = number;
+                      if (number.startsWith(countryCode.replace('+', ''))) {
+                        cleanNumber = number.slice(countryCode.length - 1);
+                      }
+                      setPhoneNumber(cleanNumber);
+                      form.setValue('phone', cleanNumber);
+                    }}
+                    placeholder="123 456 789"
                   />
                 </FormControl>
                 <FormMessage />
