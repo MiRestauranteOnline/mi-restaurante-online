@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PhoneInput } from "@/components/ui/phone-input";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ImageUpload } from "@/components/ImageUpload";
+import { CustomImagesManager } from "@/components/client/CustomImagesManager";
 
 interface ClientContext {
   selectedClientId: string;
@@ -419,6 +420,7 @@ export default function ClientDashboard() {
           <TabsTrigger value="team">Equipo</TabsTrigger>
           <TabsTrigger value="reviews">Reseñas</TabsTrigger>
           <TabsTrigger value="carousel">Carousel</TabsTrigger>
+          <TabsTrigger value="custom-images">Mis Imágenes</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
@@ -1011,6 +1013,20 @@ export default function ClientDashboard() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="custom-images">
+          <Card>
+            <CardHeader>
+              <CardTitle>Mis Imágenes Personalizadas</CardTitle>
+              <CardDescription>
+                Gestiona las imágenes que subiste durante el registro. Haz clic en cualquier imagen para copiar su URL.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CustomImagesManager selectedClientId={selectedClientId} />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
