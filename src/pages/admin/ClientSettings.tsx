@@ -2587,13 +2587,13 @@ setReviewForm({
           {showTab('delivery') && <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>}
           {showTab('branding') && <TabsTrigger value="branding">Marca</TabsTrigger>}
           {showTab('content') && <TabsTrigger value="content">Contenido</TabsTrigger>}
-          {showTab('briefing') && <TabsTrigger value="briefing">Briefing</TabsTrigger>}
+          {showTab('briefing') && <TabsTrigger value="briefing">{t('nav.briefing')}</TabsTrigger>}
           {showTab('menu') && <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>}
           {showTab('team') && <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>}
           {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
           {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
           {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
-          {userRole === 'admin' && <TabsTrigger value="setup-prompt">Setup Prompt</TabsTrigger>}
+          {userRole === 'admin' && <TabsTrigger value="setup-prompt">{t('nav.setupPrompt')}</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="basic">
@@ -5192,16 +5192,16 @@ setReviewForm({
       <TabsContent value="briefing">
         <Card>
           <CardHeader>
-            <CardTitle>Briefings del Cliente</CardTitle>
+            <CardTitle>{t('briefing.title')}</CardTitle>
             <CardDescription>
-              Administra los tres tipos de briefings para generar contenido personalizado
+              {t('briefing.description')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Content Briefing */}
             <div>
               <Label htmlFor="content-briefing" className="text-base font-semibold">
-                Content Briefing
+                {t('briefing.contentTitle')}
               </Label>
               <p className="text-sm text-muted-foreground mb-2">
                 Describe tu restaurante, tipo de comida, ambiente, ubicación y audiencia objetivo
@@ -5219,7 +5219,7 @@ setReviewForm({
             {/* Style Briefing */}
             <div>
               <Label htmlFor="style-briefing" className="text-base font-semibold">
-                Style Briefing
+                {t('briefing.styleTitle')}
               </Label>
               <p className="text-sm text-muted-foreground mb-2">
                 Especifica preferencias de estilo, colores, fuentes y diseño para el sitio web
@@ -5287,7 +5287,7 @@ setReviewForm({
       <TabsContent value="setup-prompt">
         <Card>
           <CardHeader>
-            <CardTitle>Setup Prompt for New Projects</CardTitle>
+            <CardTitle>{t('setupPrompt.title')}</CardTitle>
             <CardDescription>
               Instructions for setting up a new Lovable project based on this client
             </CardDescription>

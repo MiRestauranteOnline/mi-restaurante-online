@@ -23,6 +23,8 @@ const translations = {
     'nav.reviews': 'Reseñas',
     'nav.settings': 'Configuración',
     'nav.images': 'Imágenes',
+    'nav.briefing': 'Briefing',
+    'nav.setupPrompt': 'Configuración Inicial',
     
     // Admin Navigation
     'admin.clientManagement': 'Gestión de Clientes',
@@ -388,6 +390,16 @@ const translations = {
     'images.uploadNew': 'Subir Nueva Imagen',
     'images.customImages': 'Imágenes Personalizadas',
     'images.selectClient': 'Selecciona un cliente para ver las imágenes.',
+
+    // Briefing
+    'briefing.title': 'Briefings del Cliente',
+    'briefing.description': 'Administra los tres tipos de briefings para generar contenido personalizado',
+    'briefing.contentTitle': 'Briefing de Contenido',
+    'briefing.styleTitle': 'Briefing de Estilo',
+    'briefing.contactTitle': 'Briefing de Contacto/Delivery/Redes Sociales',
+
+    // Setup Prompt
+    'setupPrompt.title': 'Configuración Inicial para Nuevos Proyectos',
   },
   en: {
     // Navigation
@@ -401,6 +413,8 @@ const translations = {
     'nav.reviews': 'Reviews',
     'nav.settings': 'Settings',
     'nav.images': 'Images',
+    'nav.briefing': 'Briefing',
+    'nav.setupPrompt': 'Setup Prompt',
     
     // Admin Navigation
     'admin.clientManagement': 'Client Management',
@@ -668,6 +682,16 @@ const translations = {
     'images.uploadNew': 'Upload New Image',
     'images.customImages': 'Custom Images',
     'images.selectClient': 'Select a client to view images.',
+
+    // Briefing
+    'briefing.title': 'Client Briefings',
+    'briefing.description': 'Manage the three types of briefings to generate personalized content',
+    'briefing.contentTitle': 'Content Briefing',
+    'briefing.styleTitle': 'Style Briefing',
+    'briefing.contactTitle': 'Contact/Delivery/Social Media Briefing',
+
+    // Setup Prompt
+    'setupPrompt.title': 'Setup Prompt for New Projects',
   }
 };
 
