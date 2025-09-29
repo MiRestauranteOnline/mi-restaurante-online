@@ -17,7 +17,9 @@ import {
   TrendingUp,
   Users,
   Crown,
-  ArrowRight
+  ArrowRight,
+  Monitor,
+  Tablet
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -304,8 +306,8 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
           <Card>
             <CardHeader>
               <CardTitle className="text-xl font-bold flex items-center gap-2">
-                <div className="p-2 bg-gradient-to-r from-primary to-accent rounded-md">
-                  <BarChart3 className="h-5 w-5 text-white" />
+                <div className="p-2 bg-primary/10 rounded-md">
+                  <BarChart3 className="h-5 w-5 text-primary" />
                 </div>
                 Interacciones de Usuarios
               </CardTitle>
@@ -316,14 +318,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <MessageCircle className="h-4 w-4 text-green-700" />
+                      <MessageCircle className="h-4 w-4 text-primary" />
                       <span className="text-sm font-medium">WhatsApp</span>
                     </div>
-                    <span className="text-lg font-bold text-green-700">{totals.whatsapp_clicks}</span>
+                    <span className="text-lg font-bold text-primary">{totals.whatsapp_clicks}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-gradient-to-r from-green-600 to-green-700 h-3 rounded-full transition-all duration-500" 
+                      className="bg-primary h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min((totals.whatsapp_clicks / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -333,14 +335,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-primary" />
+                      <Phone className="h-4 w-4 text-accent-foreground" />
                       <span className="text-sm font-medium">Llamadas</span>
                     </div>
-                    <span className="text-lg font-bold text-primary">{totals.phone_clicks}</span>
+                    <span className="text-lg font-bold text-accent-foreground">{totals.phone_clicks}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-gradient-to-r from-primary to-primary/80 h-3 rounded-full transition-all duration-500" 
+                      className="bg-accent h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min((totals.phone_clicks / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -350,14 +352,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Download className="h-4 w-4 text-accent-foreground" />
+                      <Download className="h-4 w-4 text-orange-700" />
                       <span className="text-sm font-medium">Descargas</span>
                     </div>
-                    <span className="text-lg font-bold text-accent-foreground">{totals.menu_downloads}</span>
+                    <span className="text-lg font-bold text-orange-700">{totals.menu_downloads}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-gradient-to-r from-accent to-accent/80 h-3 rounded-full transition-all duration-500" 
+                      className="bg-orange-600 h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min((totals.menu_downloads / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -372,8 +374,8 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-r from-secondary to-muted rounded-md">
-                    <Smartphone className="h-4 w-4 text-white" />
+                  <div className="p-2 bg-secondary/10 rounded-md">
+                    <Smartphone className="h-4 w-4 text-secondary-foreground" />
                   </div>
                   Dispositivos Utilizados
                 </CardTitle>
@@ -390,13 +392,15 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                       .sort(([,a], [,b]) => b - a)
                       .map(([device, count], index) => {
                         const percentage = Math.round((count / totals.unique_sessions) * 100);
-                        const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-secondary to-secondary/80'];
-                        const iconColors = ['text-primary', 'text-accent-foreground', 'text-secondary-foreground'];
+                        const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-orange-600 to-orange-700'];
+                        const iconColors = ['text-primary', 'text-accent-foreground', 'text-orange-700'];
+                        const deviceIcons = [Smartphone, Monitor, Tablet];
+                        const DeviceIcon = deviceIcons[index % 3];
                         return (
                           <div key={device} className="space-y-2">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <Smartphone className={`h-4 w-4 ${iconColors[index % 3]}`} />
+                                <DeviceIcon className={`h-4 w-4 ${iconColors[index % 3]}`} />
                                 <span className="text-sm font-medium capitalize">{device}</span>
                               </div>
                               <div className="text-right">
@@ -423,8 +427,8 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-r from-accent to-primary rounded-md">
-                    <Eye className="h-4 w-4 text-white" />
+                  <div className="p-2 bg-accent/10 rounded-md">
+                    <Eye className="h-4 w-4 text-accent-foreground" />
                   </div>
                   Popularidad del Menú
                 </CardTitle>
@@ -442,7 +446,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                       .slice(0, 4)
                       .map(([section, data], index) => {
                         const percentage = Math.round((data.views / totals.page_views) * 100);
-                        const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-secondary to-secondary/80', 'from-muted to-primary'];
+                        const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-orange-600 to-orange-700', 'from-secondary to-secondary/80'];
                         return (
                           <div key={section} className="space-y-2">
                             <div className="flex items-center justify-between">
