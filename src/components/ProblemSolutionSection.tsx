@@ -16,54 +16,54 @@ import { businessData } from "@/config/businessData";
 export const ProblemSolutionSection = () => {
   const problems = [
     {
-      icon: TrendingDown,
-      title: "Invisible en Google",
-      description: "Cuando buscan 'restaurante cerca de mí', aparece tu competencia, no tú.",
+      icon: Users,
+      title: "Invisibles para nuevos clientes",
+      description: "No tienes información online. Clientes potenciales no te encuentran cuando buscan restaurantes.",
+      color: "text-destructive"
+    },
+    {
+      icon: Smartphone,
+      title: "Sin menú ni fotos online",
+      description: "Clientes buscan tu menú y ambiente antes de decidir. Si no lo encuentran, van a la competencia.",
+      color: "text-destructive"
+    },
+    {
+      icon: XCircle,
+      title: "Websites que no funcionan",
+      description: "Sitios web mal hechos, sin soporte, que se caen constantemente. Pierdes credibilidad.",
       color: "text-destructive"
     },
     {
       icon: Clock,
-      title: "Perdiendo clientes cada hora",
-      description: "Competidores con websites profesionales capturan TUS clientes potenciales.",
-      color: "text-destructive"
-    },
-    {
-      icon: DollarSign,
-      title: "Sin control de tu presencia digital",
-      description: "No puedes actualizar menús, precios o información cuando necesitas.",
-      color: "text-destructive"
-    },
-    {
-      icon: Users,
-      title: "Cero datos de rendimiento",
-      description: "No sabes cuántos clientes podrías estar captando online.",
+      title: "Depender de desarrolladores lentos",
+      description: "Esperas semanas para actualizar tu menú o precios. Sin control sobre tu presencia digital.",
       color: "text-destructive"
     }
   ];
 
   const solutions = [
     {
-      icon: CheckCircle,
-      title: "Dominas Google en 72 horas",
-      description: "SEO optimizado desde día 1. Apareces primero cuando buscan restaurantes.",
+      icon: TrendingUp,
+      title: "Presencia online profesional",
+      description: "Tu restaurante visible 24/7 con toda la información que clientes buscan para decidir.",
       color: "text-primary"
     },
     {
       icon: Smartphone,
-      title: "Website profesional listo ya",
-      description: "Mientras competidores esperan meses, tú ya estás capturando clientes online.",
-      color: "text-primary"
-    },
-    {
-      icon: TrendingUp,
-      title: "Control total con dashboard",
-      description: "Actualizas menú, precios e info al instante. Sin depender de nadie.",
+      title: "Menú y galería siempre actualizados",
+      description: "Muestra tus platos y ambiente. Clientes ven exactamente qué ofreces antes de venir.",
       color: "text-primary"
     },
     {
       icon: CheckCircle,
-      title: "Analytics y reportes incluidos",
-      description: "Sabes exactamente cuántos clientes generas y optimizas resultados.",
+      title: "Soporte rápido y sitio confiable",
+      description: "Servicio de alta calidad y sitio web que funciona perfectamente, siempre.",
+      color: "text-primary"
+    },
+    {
+      icon: Users,
+      title: "Control total en tus manos",
+      description: "Actualizas menú, precios y contenido tú mismo en minutos. Sin esperar a nadie.",
       color: "text-primary"
     }
   ];
