@@ -100,7 +100,7 @@ const Signup = () => {
     setIsProcessingPayment(true);
     
     try {
-      console.log('Creating account after payment for:', formData, 'with plan:', plan);
+      console.log('Creating account and initiating payment for:', formData, 'with plan:', plan);
       
       // Create account using public signup function
       const { data, error } = await supabase.functions.invoke('signup-client', {
@@ -112,57 +112,67 @@ const Signup = () => {
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
           whatsapp_country_code: formData.whatsapp_country_code,
-          address: formData.address, // Include address field
-          paymentId: 'demo-payment-success',
+          address: formData.address,
+          paymentId: 'pending-mercadopago',
           customDomain: formData.customDomain,
           referralSource: formData.referralSource,
-          // Include all signup data for briefing generation
+          plan_type: plan,
           signupFormData: formData,
           websiteRequirements: websiteRequirements,
         },
       });
 
       console.log('Signup response received:', { data, error });
-      console.log('Data type:', typeof data, 'Error type:', typeof error);
 
       if (error) {
-        // Handle specific backend errors
         console.error('Edge function error:', error);
         throw new Error(error.message || 'Error en el servidor');
       }
       
-      // Check if the response has an error property
       if (data?.error) {
         console.error('Response contains error:', data.error);
         throw new Error(data.error);
       }
       
-      if (data?.success) {
-        console.log('Account created successfully after payment:', data);
-        setIsProcessingPayment(false);
-        // Move to step 2 for website requirements
-        setCurrentStep(2);
+      if (data?.success && data?.clientId) {
+        console.log('Account created successfully, initiating payment:', data);
+        
+        // Now initiate Mercado Pago payment
+        // First create the plan
+        const { data: planData, error: planError } = await supabase.functions.invoke('create-mercadopago-plan', {
+          body: { planType: plan },
+        });
+
+        if (planError || !planData?.success) {
+          throw new Error('Error creando el plan de pago');
+        }
+
+        // Then create the subscription
+        const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-subscription', {
+          body: {
+            planId: planData.plan.id,
+            customerEmail: formData.email,
+            customerName: formData.restaurantName,
+            clientId: data.clientId,
+            planType: plan,
+          },
+        });
+
+        if (subscriptionError || !subscriptionData?.success) {
+          throw new Error('Error creando la suscripción');
+        }
+
+        // Redirect to Mercado Pago payment page
+        window.location.href = subscriptionData.initPoint;
       } else {
-        console.error('Unexpected response format:', data);
-        console.log('Data.success value:', data?.success);
-        // Force success if we got here without errors (backend completed successfully)
-        console.log('Forcing success due to no errors and successful logs');
-        setIsProcessingPayment(false);
-        setCurrentStep(2);
+        throw new Error('Respuesta inesperada del servidor');
       }
     } catch (error: any) {
-      console.error('Account creation error after payment:', error);
+      console.error('Account creation/payment error:', error);
       setIsProcessingPayment(false);
       
-      // Show the specific error message from the backend
-      const errorMessage = error.message || 'Error al crear la cuenta después del pago. Por favor contacta soporte.';
-      
-      // If it's a specific backend error, show it to the user
-      if (errorMessage.includes('subdominio') || errorMessage.includes('email')) {
-        alert(errorMessage);
-      } else {
-        alert('Error al crear la cuenta. Por favor contacta soporte si el problema persiste.');
-      }
+      const errorMessage = error.message || 'Error al procesar el registro. Por favor contacta soporte.';
+      alert(errorMessage);
     }
   };
 

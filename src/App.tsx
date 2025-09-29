@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Signup from "./pages/Signup";
 import RebillAdmin from "./pages/RebillAdmin";
+import MercadoPagoAdmin from "./pages/MercadoPagoAdmin";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import UnifiedDashboard from "./pages/dashboard/UnifiedDashboard";
 import ClientManagement from "./pages/admin/ClientManagement";
@@ -61,6 +62,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/registro" element={<Signup />} />
             <Route path="/admin/rebill" element={<RebillAdmin />} />
+            <Route path="/admin/mercadopago" element={<MercadoPagoAdmin />} />
             <Route path="/dashboard" element={<DashboardLanguageProvider><DashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<UnifiedDashboard />} />
             </Route>

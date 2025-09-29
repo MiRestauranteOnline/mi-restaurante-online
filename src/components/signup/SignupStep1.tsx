@@ -187,35 +187,40 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
     }
   };
 
-  const initiateRebillPayment = async (data: SignupFormData) => {
-    const planAmounts = {
-      basic: 29700, // S/297 in centavos
-      advanced: 49700, // S/497 in centavos
-    };
-
-    // Call Supabase function to create Rebill subscription
-    const { data: paymentData, error } = await supabase.functions.invoke('create-rebill-subscription', {
-      body: {
-        plan_type: selectedPlan,
-        amount: planAmounts[selectedPlan],
-        currency: 'PEN', // Peruvian Sol
-        customer: {
-          email: data.email,
-          name: data.restaurantName,
-          phone: data.phone,
+  const initiateMercadoPagoPayment = async (data: SignupFormData, clientId: string) => {
+    try {
+      // First, create or get the plan
+      const { data: planData, error: planError } = await supabase.functions.invoke('create-mercadopago-plan', {
+        body: {
+          planType: selectedPlan,
         },
-        signup_data: JSON.stringify(data),
-        return_url: `${window.location.origin}/registro?step=2&plan=${selectedPlan}`,
-        webhook_url: `${window.location.origin}/api/rebill-webhook`,
-      },
-    });
+      });
 
-    if (error) {
-      throw new Error('Error creating subscription');
+      if (planError || !planData?.success) {
+        throw new Error('Error creating payment plan');
+      }
+
+      // Then create the subscription
+      const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-subscription', {
+        body: {
+          planId: planData.plan.id,
+          customerEmail: data.email,
+          customerName: data.restaurantName,
+          clientId: clientId,
+          planType: selectedPlan,
+        },
+      });
+
+      if (subscriptionError || !subscriptionData?.success) {
+        throw new Error('Error creating subscription');
+      }
+
+      // Redirect to Mercado Pago payment page
+      window.location.href = subscriptionData.initPoint;
+    } catch (error) {
+      console.error('Payment initiation error:', error);
+      throw error;
     }
-
-    // Redirect to Rebill payment page
-    window.location.href = paymentData.payment_url;
   };
 
   return (
