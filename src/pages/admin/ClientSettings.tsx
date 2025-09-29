@@ -2649,7 +2649,7 @@ setReviewForm({
       </div>
 
       <Tabs defaultValue="basic" className="w-full" onValueChange={handleTabChange}>
-        <TabsList className="flex flex-wrap gap-2 overflow-x-auto max-w-full">
+        <TabsList>
           {showTab('basic') && <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>}
           {showTab('domain') && <TabsTrigger value="domain">Dominio</TabsTrigger>}
           {showTab('hours') && <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>}
@@ -2661,28 +2661,12 @@ setReviewForm({
           {showTab('menu') && <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>}
           {showTab('team') && <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>}
           {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
-          {showTab('analytics') && <TabsTrigger value="analytics">Analíticas</TabsTrigger>}
           {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
           {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="advanced">Avanzado</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="setup-prompt">{t('nav.setupPrompt')}</TabsTrigger>}
         </TabsList>
 
-        <TabsContent value="analytics">
-          <Card>
-            <CardHeader>
-              <CardTitle>Analíticas</CardTitle>
-              <CardDescription>Resumen de métricas clave del sitio</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {effectiveClientId ? (
-                <AnalyticsOverview clientId={effectiveClientId} />
-              ) : (
-                <div className="text-sm text-muted-foreground">Selecciona un restaurante para ver sus analíticas.</div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="basic">
           <Card>

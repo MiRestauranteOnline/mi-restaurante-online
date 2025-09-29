@@ -34,6 +34,7 @@ import ClientDashboard from "./pages/client/ClientDashboard";
 // import ClientSettingsPage from "./pages/client/ClientSettings";
 import ClientSubscription from "./pages/client/ClientSubscription";
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
+import ClientAnalytics from "./pages/client/ClientAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -73,7 +74,8 @@ const App = () => (
             </Route>
             <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<ClientDashboard />} />
-              <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","analytics","carousel","custom-images"]} />} />
+              <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","carousel","custom-images"]} />} />
+              <Route path="analytics/:clientId" element={<ClientAnalytics />} />
               <Route path="subscription" element={<ClientSubscription />} />
             </Route>
             <Route path="*" element={<NotFound />} />
