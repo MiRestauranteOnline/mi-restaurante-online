@@ -150,6 +150,18 @@ const Soporte = () => {
     setIsSubmitting(true);
     
     console.log("Submitting support request:", data);
+
+    // Quick health check (does not create a ticket)
+    try {
+      const pingResp = await fetch('https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/send-support-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8' },
+        body: JSON.stringify({ ping: true })
+      });
+      console.log('Ping status:', pingResp.status);
+    } catch (e) {
+      console.warn('Ping failed:', e);
+    }
     
     try {
       console.log("Calling send-support-email function...");

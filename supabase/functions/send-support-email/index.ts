@@ -32,8 +32,16 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     console.log("Processing support email request...");
-    const requestData: SupportRequest = await req.json();
+    const requestData: (SupportRequest & { ping?: boolean }) = await req.json();
     console.log("Request data received:", requestData);
+
+    if (requestData.ping) {
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     const { name, email, subject, message, clientId, supportType, premiumEmail, premiumPin } = requestData;
 
     console.log("Support request received:", { name, email, subject, supportType, clientId });
