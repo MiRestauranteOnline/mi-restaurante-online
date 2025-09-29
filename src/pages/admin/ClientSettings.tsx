@@ -3953,17 +3953,17 @@ setReviewForm({
 
               {/* REVIEWS PAGE SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">Reviews Page</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.reviewsPage')}</h3>
                 
                 {/* Hero Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Hero Section</CardTitle>
+                    <CardTitle>{t('content.heroSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="reviews_page_hero_title_first_line">First Line Hero Title</Label>
+                        <Label htmlFor="reviews_page_hero_title_first_line">{t('content.reviewsPageHeroFirstLine')}</Label>
                         <Input
                           id="reviews_page_hero_title_first_line"
                           value={formData.reviews_page_hero_title_first_line}
@@ -3971,7 +3971,7 @@ setReviewForm({
                         />
                       </div>
                       <div>
-                        <Label htmlFor="reviews_page_hero_title_second_line">Second Line Hero Title</Label>
+                        <Label htmlFor="reviews_page_hero_title_second_line">{t('content.reviewsPageHeroSecondLine')}</Label>
                         <Input
                           id="reviews_page_hero_title_second_line"
                           value={formData.reviews_page_hero_title_second_line}
@@ -3980,7 +3980,7 @@ setReviewForm({
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="reviews_page_hero_description">Hero Description</Label>
+                      <Label htmlFor="reviews_page_hero_description">{t('content.reviewsPageHeroDescription')}</Label>
                       <Textarea
                         id="reviews_page_hero_description"
                         value={formData.reviews_page_hero_description}
@@ -3990,7 +3990,7 @@ setReviewForm({
                     </div>
                     <div>
                       <ImageUpload
-                        label="Hero Background Image"
+                        label={t('content.reviewsPageHeroBackgroundImage')}
                         value={formData.reviews_page_hero_background_url}
                         onChange={(url) => setFormData({...formData, reviews_page_hero_background_url: url})}
                         clientId={clientId!}
@@ -4002,23 +4002,23 @@ setReviewForm({
 
               {/* SERVICES CONTENT SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">Services Content</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.servicesContent')}</h3>
                 
                 {/* Service Cards */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Service Cards</CardTitle>
+                    <CardTitle>{t('content.serviceCards')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {/* Service Card 1 */}
                     <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">First Service Card</h4>
+                      <h4 className="font-medium text-primary">{t('content.firstServiceCard')}</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="services_card1_icon">First Service Card Icon</Label>
+                          <Label htmlFor="services_card1_icon">{t('content.firstServiceCardIcon')}</Label>
                           <Select value={formData.services_card1_icon} onValueChange={(value) => setFormData({...formData, services_card1_icon: value})}>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select icon" />
+                              <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
                             <SelectContent>
                               {iconOptions.map((icon) => (
@@ -4030,7 +4030,7 @@ setReviewForm({
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor="services_card1_title">First Service Card Title</Label>
+                          <Label htmlFor="services_card1_title">{t('content.firstServiceCardTitle')}</Label>
                           <Input
                             id="services_card1_title"
                             value={formData.services_card1_title}
@@ -4039,7 +4039,7 @@ setReviewForm({
                         </div>
                       </div>
                       <div>
-                        <Label htmlFor="services_card1_description">First Service Card Description</Label>
+                        <Label htmlFor="services_card1_description">{t('content.firstServiceCardDescription')}</Label>
                         <Textarea
                           id="services_card1_description"
                           value={formData.services_card1_description}
@@ -4049,7 +4049,7 @@ setReviewForm({
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="services_card1_button_text">First Service Card Button</Label>
+                          <Label htmlFor="services_card1_button_text">{t('content.firstServiceCardButton')}</Label>
                           <Input
                             id="services_card1_button_text"
                             value={formData.services_card1_button_text}
@@ -4057,7 +4057,7 @@ setReviewForm({
                           />
                         </div>
                         <div>
-                          <Label htmlFor="services_card1_button_link">First Service Card Link</Label>
+                          <Label htmlFor="services_card1_button_link">{t('content.firstServiceCardLink')}</Label>
                           <Input
                             id="services_card1_button_link"
                             value={formData.services_card1_button_link}
@@ -4069,13 +4069,13 @@ setReviewForm({
 
                     {/* Service Card 2 */}
                     <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">Second Service Card</h4>
+                      <h4 className="font-medium text-primary">{t('content.secondServiceCard')}</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="services_card2_icon">Second Service Card Icon</Label>
+                          <Label htmlFor="services_card2_icon">{t('content.secondServiceCardIcon')}</Label>
                           <Select value={formData.services_card2_icon} onValueChange={(value) => setFormData({...formData, services_card2_icon: value})}>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select icon" />
+                              <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
                             <SelectContent>
                               {iconOptions.map((icon) => (
@@ -4087,7 +4087,7 @@ setReviewForm({
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor="services_card2_title">Second Service Card Title</Label>
+                          <Label htmlFor="services_card2_title">{t('content.secondServiceCardTitle')}</Label>
                           <Input
                             id="services_card2_title"
                             value={formData.services_card2_title}
@@ -4096,7 +4096,7 @@ setReviewForm({
                         </div>
                       </div>
                       <div>
-                        <Label htmlFor="services_card2_description">Second Service Card Description</Label>
+                        <Label htmlFor="services_card2_description">{t('content.secondServiceCardDescription')}</Label>
                         <Textarea
                           id="services_card2_description"
                           value={formData.services_card2_description}
@@ -4106,7 +4106,7 @@ setReviewForm({
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="services_card2_button_text">Second Service Card Button</Label>
+                          <Label htmlFor="services_card2_button_text">{t('content.secondServiceCardButton')}</Label>
                           <Input
                             id="services_card2_button_text"
                             value={formData.services_card2_button_text}
@@ -4114,7 +4114,7 @@ setReviewForm({
                           />
                         </div>
                         <div>
-                          <Label htmlFor="services_card2_button_link">Second Service Card Link</Label>
+                          <Label htmlFor="services_card2_button_link">{t('content.secondServiceCardLink')}</Label>
                           <Input
                             id="services_card2_button_link"
                             value={formData.services_card2_button_link}
@@ -4126,13 +4126,13 @@ setReviewForm({
 
                     {/* Service Card 3 */}
                     <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">Third Service Card</h4>
+                      <h4 className="font-medium text-primary">{t('content.thirdServiceCard')}</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="services_card3_icon">Third Service Card Icon</Label>
+                          <Label htmlFor="services_card3_icon">{t('content.thirdServiceCardIcon')}</Label>
                           <Select value={formData.services_card3_icon} onValueChange={(value) => setFormData({...formData, services_card3_icon: value})}>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select icon" />
+                              <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
                             <SelectContent>
                               {iconOptions.map((icon) => (
@@ -4144,7 +4144,7 @@ setReviewForm({
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor="services_card3_title">Third Service Card Title</Label>
+                          <Label htmlFor="services_card3_title">{t('content.thirdServiceCardTitle')}</Label>
                           <Input
                             id="services_card3_title"
                             value={formData.services_card3_title}
@@ -4153,7 +4153,7 @@ setReviewForm({
                         </div>
                       </div>
                       <div>
-                        <Label htmlFor="services_card3_description">Third Service Card Description</Label>
+                        <Label htmlFor="services_card3_description">{t('content.thirdServiceCardDescription')}</Label>
                         <Textarea
                           id="services_card3_description"
                           value={formData.services_card3_description}
@@ -4163,7 +4163,7 @@ setReviewForm({
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="services_card3_button_text">Third Service Card Button</Label>
+                          <Label htmlFor="services_card3_button_text">{t('content.thirdServiceCardButton')}</Label>
                           <Input
                             id="services_card3_button_text"
                             value={formData.services_card3_button_text}
@@ -4171,7 +4171,7 @@ setReviewForm({
                           />
                         </div>
                         <div>
-                          <Label htmlFor="services_card3_button_link">Third Service Card Link</Label>
+                          <Label htmlFor="services_card3_button_link">{t('content.thirdServiceCardLink')}</Label>
                           <Input
                             id="services_card3_button_link"
                             value={formData.services_card3_button_link}
@@ -4186,16 +4186,16 @@ setReviewForm({
                 {/* Service Features */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Service Features</CardTitle>
+                    <CardTitle>{t('content.serviceFeatures')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {/* Feature 1 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="services_feature1_icon">First Feature Icon</Label>
+                        <Label htmlFor="services_feature1_icon">{t('content.firstFeatureIcon')}</Label>
                         <Select value={formData.services_feature1_icon} onValueChange={(value) => setFormData({...formData, services_feature1_icon: value})}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select icon" />
+                            <SelectValue placeholder={t('content.selectIcon')} />
                           </SelectTrigger>
                           <SelectContent>
                             {iconOptions.map((icon) => (
@@ -4207,7 +4207,7 @@ setReviewForm({
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="services_feature1_text">First Feature Text</Label>
+                        <Label htmlFor="services_feature1_text">{t('content.firstFeatureText')}</Label>
                         <Input
                           id="services_feature1_text"
                           value={formData.services_feature1_text}
@@ -4219,10 +4219,10 @@ setReviewForm({
                     {/* Feature 2 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="services_feature2_icon">Second Feature Icon</Label>
+                        <Label htmlFor="services_feature2_icon">{t('content.secondFeatureIcon')}</Label>
                         <Select value={formData.services_feature2_icon} onValueChange={(value) => setFormData({...formData, services_feature2_icon: value})}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select icon" />
+                            <SelectValue placeholder={t('content.selectIcon')} />
                           </SelectTrigger>
                           <SelectContent>
                             {iconOptions.map((icon) => (
@@ -4234,7 +4234,7 @@ setReviewForm({
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="services_feature2_text">Second Feature Text</Label>
+                        <Label htmlFor="services_feature2_text">{t('content.secondFeatureText')}</Label>
                         <Input
                           id="services_feature2_text"
                           value={formData.services_feature2_text}
@@ -4246,10 +4246,10 @@ setReviewForm({
                     {/* Feature 3 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="services_feature3_icon">Third Feature Icon</Label>
+                        <Label htmlFor="services_feature3_icon">{t('content.thirdFeatureIcon')}</Label>
                         <Select value={formData.services_feature3_icon} onValueChange={(value) => setFormData({...formData, services_feature3_icon: value})}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select icon" />
+                            <SelectValue placeholder={t('content.selectIcon')} />
                           </SelectTrigger>
                           <SelectContent>
                             {iconOptions.map((icon) => (
@@ -4261,7 +4261,7 @@ setReviewForm({
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="services_feature3_text">Third Feature Text</Label>
+                        <Label htmlFor="services_feature3_text">{t('content.thirdFeatureText')}</Label>
                         <Input
                           id="services_feature3_text"
                           value={formData.services_feature3_text}
@@ -4275,22 +4275,22 @@ setReviewForm({
 
               {/* STATS CONTENT SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">Stats Content</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.statsContent')}</h3>
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Statistics</CardTitle>
+                    <CardTitle>{t('content.statistics')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {/* Stat 1 */}
                     <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">First Stat</h4>
+                      <h4 className="font-medium text-primary">{t('content.firstStat')}</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                          <Label htmlFor="stats_item1_icon">First Stat Icon</Label>
+                          <Label htmlFor="stats_item1_icon">{t('content.firstStatIcon')}</Label>
                           <Select value={formData.stats_item1_icon} onValueChange={(value) => setFormData({...formData, stats_item1_icon: value})}>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select icon" />
+                              <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
                             <SelectContent>
                               {iconOptions.map((icon) => (
@@ -4302,7 +4302,7 @@ setReviewForm({
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor="stats_item1_number">First Stat Number</Label>
+                          <Label htmlFor="stats_item1_number">{t('content.firstStatNumber')}</Label>
                           <Input
                             id="stats_item1_number"
                             value={formData.stats_item1_number}
@@ -4310,7 +4310,7 @@ setReviewForm({
                           />
                         </div>
                         <div>
-                          <Label htmlFor="stats_item1_label">First Stat Label</Label>
+                          <Label htmlFor="stats_item1_label">{t('content.firstStatLabel')}</Label>
                           <Input
                             id="stats_item1_label"
                             value={formData.stats_item1_label}
@@ -4322,13 +4322,13 @@ setReviewForm({
 
                     {/* Stat 2 */}
                     <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">Second Stat</h4>
+                      <h4 className="font-medium text-primary">{t('content.secondStat')}</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                          <Label htmlFor="stats_item2_icon">Second Stat Icon</Label>
+                          <Label htmlFor="stats_item2_icon">{t('content.secondStatIcon')}</Label>
                           <Select value={formData.stats_item2_icon} onValueChange={(value) => setFormData({...formData, stats_item2_icon: value})}>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select icon" />
+                              <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
                             <SelectContent>
                               {iconOptions.map((icon) => (
@@ -4340,7 +4340,7 @@ setReviewForm({
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor="stats_item2_number">Second Stat Number</Label>
+                          <Label htmlFor="stats_item2_number">{t('content.secondStatNumber')}</Label>
                           <Input
                             id="stats_item2_number"
                             value={formData.stats_item2_number}
@@ -4348,7 +4348,7 @@ setReviewForm({
                           />
                         </div>
                         <div>
-                          <Label htmlFor="stats_item2_label">Second Stat Label</Label>
+                          <Label htmlFor="stats_item2_label">{t('content.secondStatLabel')}</Label>
                           <Input
                             id="stats_item2_label"
                             value={formData.stats_item2_label}
@@ -4360,13 +4360,13 @@ setReviewForm({
 
                     {/* Stat 3 */}
                     <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">Third Stat</h4>
+                      <h4 className="font-medium text-primary">{t('content.thirdStat')}</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                          <Label htmlFor="stats_item3_icon">Third Stat Icon</Label>
+                          <Label htmlFor="stats_item3_icon">{t('content.thirdStatIcon')}</Label>
                           <Select value={formData.stats_item3_icon} onValueChange={(value) => setFormData({...formData, stats_item3_icon: value})}>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select icon" />
+                              <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
                             <SelectContent>
                               {iconOptions.map((icon) => (
@@ -4378,7 +4378,7 @@ setReviewForm({
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor="stats_item3_number">Third Stat Number</Label>
+                          <Label htmlFor="stats_item3_number">{t('content.thirdStatNumber')}</Label>
                           <Input
                             id="stats_item3_number"
                             value={formData.stats_item3_number}
@@ -4386,7 +4386,7 @@ setReviewForm({
                           />
                         </div>
                         <div>
-                          <Label htmlFor="stats_item3_label">Third Stat Label</Label>
+                          <Label htmlFor="stats_item3_label">{t('content.thirdStatLabel')}</Label>
                           <Input
                             id="stats_item3_label"
                             value={formData.stats_item3_label}
