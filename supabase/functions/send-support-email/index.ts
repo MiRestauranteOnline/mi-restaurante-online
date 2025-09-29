@@ -136,7 +136,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Support ticket created:", ticket.ticket_number);
 
     // Determine email destination
-    const supportEmail = supportType === "premium" ? "premiumsoporte@mirestaurant.online" : "soporte@mirestaurant.online";
+    const supportEmail = supportType === "premium" ? "premiumsoporte@mirestaurante.online" : "soporte@mirestaurante.online";
 
     // Send email notification to support team
     const emailSubject = `${supportType === "premium" ? "[PREMIUM] " : ""}Nuevo Ticket de Soporte: ${ticket.ticket_number}`;
