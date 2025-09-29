@@ -7,60 +7,87 @@ import {
   Zap, 
   Image as ImageIcon, 
   Star,
-  Instagram,
   Smartphone,
-  Settings
+  Settings,
+  Shield,
+  DollarSign,
+  Clock,
+  Headphones
 } from "lucide-react";
 
 export const BenefitsSection = () => {
   const benefits = [
     {
+      icon: DollarSign,
+      title: "Sin Comisiones por Cliente",
+      description: "0% de comisión. A diferencia de otros servicios, no cobramos por cada cliente que te llega.",
+      color: "text-primary"
+    },
+    {
       icon: Download,
-      title: "Menú Descargable PDF",
-      description: "Tus clientes pueden descargar el menú completo en PDF directamente desde tu sitio web.",
-      color: "text-primary"
-    },
-    {
-      icon: MessageCircle,
-      title: "WhatsApp Directo",
-      description: "Botón flotante de WhatsApp para que tus clientes te contacten al instante.",
-      color: "text-primary"
-    },
-    {
-      icon: Search,
-      title: "Optimizado para Google",
-      description: "SEO básico incluido para que aparezcan en las búsquedas de 'restaurantes cerca de mí'.",
-      color: "text-accent"
-    },
-    {
-      icon: Zap,
-      title: "Carga Rápida",
-      description: "Sitio web optimizado para cargar en menos de 3 segundos, incluso en móviles.",
-      color: "text-primary"
-    },
-    {
-      icon: ImageIcon,
-      title: "Galería Profesional",
-      description: "Galería optimizada para mostrar tus mejores platos de manera atractiva.",
-      color: "text-accent"
-    },
-    {
-      icon: Smartphone,
-      title: "Optimizado para Móvil",
-      description: "Diseño responsive que se ve perfecto en celulares, tablets y computadoras.",
-      color: "text-primary"
-    },
-    {
-      icon: Star,
-      title: "Muestra tus Mejores Reseñas",
-      description: "Show your best reviews on your site for credibility.",
+      title: "Menú Digital Siempre Actualizado",
+      description: "Tu menú completo online y descargable en PDF. Clientes ven tus platos antes de decidir.",
       color: "text-accent"
     },
     {
       icon: Settings,
-      title: "Sistema de Gestión PIN",
-      description: "Cambia precios, horarios y contenido básico tú mismo con nuestro sistema seguro PIN.",
+      title: "Control Total - Sin Esperas",
+      description: "Actualiza menú, precios y horarios tú mismo en minutos. No dependas de desarrolladores lentos.",
       color: "text-primary"
+    },
+    {
+      icon: Headphones,
+      title: "Soporte de Alta Calidad",
+      description: "Atención rápida cuando lo necesites. Nada de tickets ignorados o sitios caídos.",
+      color: "text-accent"
+    },
+    {
+      icon: ImageIcon,
+      title: "Galería Profesional",
+      description: "Muestra tus platos y ambiente con galería optimizada. Atrae más clientes con fotos impactantes.",
+      color: "text-primary"
+    },
+    {
+      icon: Search,
+      title: "Domina Google Desde Día 1",
+      description: "SEO profesional incluido. Aparece primero cuando buscan 'restaurantes cerca de mí'.",
+      color: "text-accent"
+    },
+    {
+      icon: Clock,
+      title: "Online en 72 Horas",
+      description: "Tu sitio web profesional listo en 3 días. Mientras competidores esperan meses, tú ya capturas clientes.",
+      color: "text-primary"
+    },
+    {
+      icon: Shield,
+      title: "Hosting Confiable y Rápido",
+      description: "Sitio web que funciona 24/7 sin caídas. Carga en menos de 3 segundos en cualquier dispositivo.",
+      color: "text-accent"
+    },
+    {
+      icon: MessageCircle,
+      title: "WhatsApp Directo",
+      description: "Botón flotante de WhatsApp para que clientes te contacten al instante desde cualquier página.",
+      color: "text-primary"
+    },
+    {
+      icon: Smartphone,
+      title: "Perfecto en Móvil",
+      description: "Diseño responsive impecable. El 80% de tus clientes te buscarán desde el celular.",
+      color: "text-accent"
+    },
+    {
+      icon: Star,
+      title: "Muestra tus Mejores Reseñas",
+      description: "Sección de testimonios para generar confianza. Muestra por qué eres la mejor opción.",
+      color: "text-primary"
+    },
+    {
+      icon: Zap,
+      title: "Dashboard de Gestión",
+      description: "Panel intuitivo para gestionar todo tu contenido sin conocimientos técnicos.",
+      color: "text-accent"
     }
   ];
 
@@ -83,7 +110,7 @@ export const BenefitsSection = () => {
         </div>
 
         {/* Benefits Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit, index) => {
             const Icon = benefit.icon;
             return (
