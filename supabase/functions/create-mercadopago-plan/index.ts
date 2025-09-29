@@ -43,6 +43,9 @@ serve(async (req) => {
 
     const plan = planDetails[planType];
 
+    const origin = req.headers.get('origin') || 'https://mirestauranteonline.com';
+    console.log('Creating Mercado Pago plan with origin:', origin, 'and type:', planType);
+
     const response = await fetch('https://api.mercadopago.com/preapproval_plan', {
       method: 'POST',
       headers: {
@@ -57,7 +60,7 @@ serve(async (req) => {
           transaction_amount: plan.price,
           currency_id: 'PEN',
         },
-        back_url: `${req.headers.get('origin')}/signup/success`,
+        back_url: `${origin}/signup/success`,
       }),
     });
 

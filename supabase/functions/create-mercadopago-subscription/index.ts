@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 interface CreateSubscriptionRequest {
-  planId: string;
+  planId?: string | null;
   customerEmail: string;
   customerName: string;
   clientId: string;
@@ -32,28 +32,32 @@ serve(async (req) => {
 
     const origin = req.headers.get('origin') || 'https://mirestauranteonline.com';
 
+    const payload: any = {
+      reason: `Suscripción ${planType === 'basic' ? 'Básica' : 'Avanzada'} - Mi Restaurante Online`,
+      payer_email: customerEmail,
+      auto_recurring: {
+        frequency: 1,
+        frequency_type: 'months',
+        transaction_amount: planType === 'basic' ? 297 : 497,
+        currency_id: 'PEN',
+        start_date: new Date().toISOString(),
+      },
+      back_url: `${origin}/signup/success?client_id=${clientId}`,
+      status: 'pending',
+      external_reference: clientId,
+    };
+
+    if (planId) {
+      payload.preapproval_plan_id = planId;
+    }
+
     const response = await fetch('https://api.mercadopago.com/preapproval', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        preapproval_plan_id: planId,
-        reason: `Suscripción ${planType === 'basic' ? 'Básica' : 'Avanzada'} - Mi Restaurante Online`,
-        payer_email: customerEmail,
-        card_token_id: null, // Will be collected via checkout
-        auto_recurring: {
-          frequency: 1,
-          frequency_type: 'months',
-          transaction_amount: planType === 'basic' ? 297 : 497,
-          currency_id: 'PEN',
-          start_date: new Date().toISOString(),
-        },
-        back_url: `${origin}/signup/success?client_id=${clientId}`,
-        status: 'pending',
-        external_reference: clientId,
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {

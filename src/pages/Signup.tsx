@@ -139,27 +139,29 @@ const Signup = () => {
         
         try {
           // Now initiate Mercado Pago payment
-          // First create the plan
+          // First try to create the plan (fallback to direct subscription if it fails)
+          let planId: string | null = null;
           console.log('Calling create-mercadopago-plan with plan type:', plan);
-          const { data: planData, error: planError } = await supabase.functions.invoke('create-mercadopago-plan', {
-            body: { planType: plan },
-          });
+          try {
+            const { data: planData, error: planError } = await supabase.functions.invoke('create-mercadopago-plan', {
+              body: { planType: plan },
+            });
+            console.log('Plan response:', { planData, planError });
 
-          console.log('Plan response:', { planData, planError });
-
-          if (planError) {
-            console.error('Plan creation error:', planError);
-            throw new Error(`Error creando el plan de pago: ${planError.message}`);
+            if (planError) {
+              console.warn('Plan creation error, will continue without plan:', planError);
+            } else if (!planData?.success) {
+              console.warn('Plan creation failed (no success flag), continuing without plan:', planData);
+            } else {
+              planId = planData.plan.id;
+            }
+          } catch (planException) {
+            console.warn('Plan creation threw exception, continuing without plan:', planException);
           }
-          
-          if (!planData?.success) {
-            console.error('Plan creation failed:', planData);
-            throw new Error('Error creando el plan de pago');
-          }
 
-          // Then create the subscription
+          // Create the subscription (works with or without planId)
           console.log('Calling create-mercadopago-subscription with:', {
-            planId: planData.plan.id,
+            planId,
             email: formData.email,
             name: formData.restaurantName,
             clientId: data.client.id,
@@ -168,13 +170,29 @@ const Signup = () => {
           
           const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-subscription', {
             body: {
-              planId: planData.plan.id,
+              planId,
               customerEmail: formData.email,
               customerName: formData.restaurantName,
               clientId: data.client.id,
               planType: plan,
             },
           });
+
+          console.log('Subscription response:', { subscriptionData, subscriptionError });
+
+          if (subscriptionError) {
+            console.error('Subscription creation error:', subscriptionError);
+            throw new Error(`Error creando la suscripción: ${subscriptionError.message}`);
+          }
+          
+          if (!subscriptionData?.success) {
+            console.error('Subscription creation failed:', subscriptionData);
+            throw new Error('Error creando la suscripción');
+          }
+
+          // Redirect to Mercado Pago payment page
+          console.log('Redirecting to Mercado Pago:', subscriptionData.initPoint);
+          window.location.href = subscriptionData.initPoint;
 
           console.log('Subscription response:', { subscriptionData, subscriptionError });
 
