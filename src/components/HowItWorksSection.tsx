@@ -12,33 +12,33 @@ export const HowItWorksSection = () => {
     {
       step: "1",
       icon: MessageSquare,
-      title: "Conversemos",
-      description: "Completa el formulario o contáctanos por WhatsApp. Te preguntaremos sobre tu restaurante, estilo y necesidades.",
-      duration: "15 minutos",
+      title: "Aplicas",
+      description: "Completa nuestro formulario de registro simple con la información básica de tu restaurante.",
+      duration: "5 minutos",
       color: "bg-primary/10 text-primary border-primary/20"
     },
     {
       step: "2", 
       icon: Palette,
-      title: "Diseñamos",
-      description: "Nuestro equipo crea el diseño personalizado basado en tu marca, menú y público objetivo.",
-      duration: "24 horas",
+      title: "Preparamos tu sitio",
+      description: "Creamos tu sitio web optimizado con tu información, menú y fotos usando nuestro sistema probado.",
+      duration: "48 horas",
       color: "bg-accent/10 text-accent border-accent/20"
     },
     {
       step: "3",
       icon: Code,
-      title: "Desarrollamos",
-      description: "Programamos tu sitio web con todas las funcionalidades: WhatsApp, menú PDF, SEO y optimización móvil.",
-      duration: "48 horas",
+      title: "Entregamos completo",
+      description: "Te enviamos tu sitio web listo con todas las funcionalidades: WhatsApp, menú PDF, SEO y móvil optimizado.",
+      duration: "72 horas",
       color: "bg-primary/10 text-primary border-primary/20"
     },
     {
       step: "4",
       icon: Rocket,
-      title: "¡Lanzamos!",
-      description: "Tu sitio está listo. Te entregamos el acceso completo y comenzamos el soporte continuo por WhatsApp.",
-      duration: "72 horas",
+      title: "Eliges tu dominio",
+      description: "Decides si usar nuestro subdominio gratuito (turestaurante.mirestauranteonline.com) o conectar tu propio dominio.",
+      duration: "Tu decides",
       color: "bg-accent/10 text-accent border-accent/20"
     }
   ];
