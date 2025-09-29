@@ -275,6 +275,18 @@ const translations = {
     'menu.itemDescription': 'Item Description',
     'menu.price': 'Price',
     'menu.category': 'Category',
+    'menu.editMenuItem': 'Edit Menu Item',
+    'menu.addMenuItem': 'Add Menu Item',
+    'menu.showOnHomepage': 'Show on Homepage',
+    'menu.showOnHomepageDesc': 'Display this item on the homepage (max 8 items)',
+    'menu.showImageHome': 'Show Image on Homepage',
+    'menu.showImageHomeDesc': 'Display image when shown on homepage',
+    'menu.showImageMenu': 'Show Image on Menu Page',
+    'menu.showImageMenuDesc': 'Display image on the full menu page',
+    'menu.displayOrder': 'Display Order',
+    'menu.selectCategory': 'Select category',
+    'menu.imageUrl': 'Image URL',
+    'menu.saveMenu': 'Save Menu',
     
     // Carousel tab
     'carousel.title': 'Carousel Settings',

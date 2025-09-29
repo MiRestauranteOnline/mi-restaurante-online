@@ -4906,7 +4906,7 @@ setReviewForm({
               />
             </div>
             <div>
-              <Label htmlFor="display_order">Display Order</Label>
+              <Label htmlFor="display_order">{t('menu.displayOrder')}</Label>
               <Input
                 id="display_order"
                 type="number"
@@ -4915,8 +4915,8 @@ setReviewForm({
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>Cancel</Button>
-              <Button onClick={() => handleSaveCategory()}>Save</Button>
+              <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>{t('common.cancel')}</Button>
+              <Button onClick={() => handleSaveCategory()}>{t('common.save')}</Button>
             </div>
           </div>
         </DialogContent>
@@ -4926,7 +4926,7 @@ setReviewForm({
       <Dialog open={showMenuItemDialog} onOpenChange={setShowMenuItemDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{editingMenuItem ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
+            <DialogTitle>{editingMenuItem ? t('menu.editMenuItem') : t('menu.addMenuItem')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4939,7 +4939,7 @@ setReviewForm({
                 />
               </div>
               <div>
-                <Label htmlFor="item_price">Price</Label>
+                <Label htmlFor="item_price">{t('menu.price')}</Label>
                 <Input
                   id="item_price"
                   type="number"
@@ -4959,10 +4959,10 @@ setReviewForm({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="item_category">Category</Label>
+                <Label htmlFor="item_category">{t('menu.category')}</Label>
                 <Select value={menuItemForm.category_id} onValueChange={(value) => setMenuItemForm({...menuItemForm, category_id: value})}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder={t('menu.selectCategory')} />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((cat) => (
@@ -4972,7 +4972,7 @@ setReviewForm({
                 </Select>
               </div>
               <div>
-                <Label htmlFor="item_image_url">Image URL</Label>
+                <Label htmlFor="item_image_url">{t('menu.imageUrl')}</Label>
                 <Input
                   id="item_image_url"
                   value={menuItemForm.image_url}
@@ -4985,8 +4985,8 @@ setReviewForm({
             <div className="space-y-4 pt-4 border-t">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Show on Homepage</Label>
-                  <p className="text-sm text-muted-foreground">Display this item on the homepage (max 8 items)</p>
+                  <Label>{t('menu.showOnHomepage')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('menu.showOnHomepageDesc')}</p>
                 </div>
                 <Switch
                   checked={menuItemForm.show_on_homepage || false}
@@ -4996,8 +4996,8 @@ setReviewForm({
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Show Image on Homepage</Label>
-                  <p className="text-sm text-muted-foreground">Display image when shown on homepage</p>
+                  <Label>{t('menu.showImageHome')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('menu.showImageHomeDesc')}</p>
                 </div>
                 <Switch
                   checked={menuItemForm.show_image_home || false}
@@ -5007,8 +5007,8 @@ setReviewForm({
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Show Image on Menu Page</Label>
-                  <p className="text-sm text-muted-foreground">Display image on the full menu page</p>
+                  <Label>{t('menu.showImageMenu')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('menu.showImageMenuDesc')}</p>
                 </div>
                 <Switch
                   checked={menuItemForm.show_image_menu !== false}
@@ -5017,8 +5017,8 @@ setReviewForm({
               </div>
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowMenuItemDialog(false)}>Cancel</Button>
-              <Button onClick={handleSaveMenuItem}>Save</Button>
+              <Button variant="outline" onClick={() => setShowMenuItemDialog(false)}>{t('common.cancel')}</Button>
+              <Button onClick={handleSaveMenuItem}>{t('common.save')}</Button>
             </div>
           </div>
         </DialogContent>
