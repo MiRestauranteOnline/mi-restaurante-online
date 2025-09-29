@@ -935,6 +935,53 @@ export type Database = {
           },
         ]
       }
+      premium_features: {
+        Row: {
+          analytics_enabled: boolean | null
+          analytics_setup_date: string | null
+          client_id: string
+          created_at: string
+          google_analytics_id: string | null
+          google_search_console_verification: string | null
+          id: string
+          monthly_reports_enabled: boolean | null
+          premium_support_enabled: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          analytics_enabled?: boolean | null
+          analytics_setup_date?: string | null
+          client_id: string
+          created_at?: string
+          google_analytics_id?: string | null
+          google_search_console_verification?: string | null
+          id?: string
+          monthly_reports_enabled?: boolean | null
+          premium_support_enabled?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          analytics_enabled?: boolean | null
+          analytics_setup_date?: string | null
+          client_id?: string
+          created_at?: string
+          google_analytics_id?: string | null
+          google_search_console_verification?: string | null
+          id?: string
+          monthly_reports_enabled?: boolean | null
+          premium_support_enabled?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "premium_features_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           client_id: string
