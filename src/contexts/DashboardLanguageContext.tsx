@@ -141,8 +141,14 @@ const translations = {
     'reviews.comment': 'Comentario',
     'reviews.reviewerName': 'Nombre del Reseñador',
     
+    // Menu tab
+    'menu.createFirstCategoryButton': 'Crear Primera Categoría',
+    'menu.manageDescription': 'Administra las categorías y productos de tu menú. Arrastra las categorías para reordenarlas.',
     
-    // Images tab
+    // Team tab
+    'team.teamMembers': 'Miembros del Equipo',
+    'team.addTeamMember': 'Agregar Miembro del Equipo',
+    'team.noTeamMembers': 'No se encontraron miembros del equipo. ¡Agrega tu primer miembro del equipo!',
     'images.title': 'Imágenes del Cliente',
     'images.description': 'Haz clic en cualquier imagen para copiar su URL. Gestiona las imágenes subidas por este cliente.',
     'images.uploadNew': 'Subir Nueva Imagen',

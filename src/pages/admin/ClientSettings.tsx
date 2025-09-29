@@ -4622,20 +4622,20 @@ setReviewForm({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                Menu Management
+                {t('menu.title')}
                 <div className="flex gap-2">
                   <Button onClick={() => openCategoryDialog()}>
                     <FolderPlus className="h-4 w-4 mr-2" />
-                    New Category
+                    {t('menu.newCategory')}
                   </Button>
                   <Button onClick={() => openMenuItemDialog()}>
                     <Plus className="h-4 w-4 mr-2" />
-                    New Item
+                    {t('menu.newItem')}
                   </Button>
                 </div>
               </CardTitle>
               <CardDescription>
-                Manage your menu categories and items. Drag categories to reorder them.
+                {t('menu.manageDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -4644,7 +4644,7 @@ setReviewForm({
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
-                    placeholder="Search menu items..."
+                    placeholder={t('menu.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-9"
@@ -4656,11 +4656,11 @@ setReviewForm({
                 <div className="text-center py-12">
                   <div className="text-muted-foreground">
                     <FolderPlus className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <h3 className="text-lg font-medium mb-2">No categories found</h3>
-                    <p className="text-sm mb-4">Create your first category to start organizing your menu</p>
+                    <h3 className="text-lg font-medium mb-2">{t('menu.noCategoriesFound')}</h3>
+                    <p className="text-sm mb-4">{t('menu.createFirstCategory')}</p>
                     <Button onClick={() => openCategoryDialog()}>
                       <FolderPlus className="mr-2 h-4 w-4" />
-                      Create First Category
+                      {t('menu.createFirstCategoryButton')}
                     </Button>
                   </div>
                 </div>
@@ -4713,10 +4713,10 @@ setReviewForm({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              Team Members
+              {t('team.teamMembers')}
               <Button onClick={() => openTeamMemberDialog()}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Team Member
+                {t('team.addTeamMember')}
               </Button>
             </CardTitle>
           </CardHeader>
@@ -4740,7 +4740,7 @@ setReviewForm({
                   </SortableContext>
                 </DndContext>
               ) : (
-                <p className="text-muted-foreground text-center py-4">No team members found. Add your first team member!</p>
+                <p className="text-muted-foreground text-center py-4">{t('team.noTeamMembers')}</p>
               )}
             </div>
           </CardContent>
