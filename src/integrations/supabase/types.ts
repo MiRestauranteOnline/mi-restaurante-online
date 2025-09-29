@@ -403,6 +403,39 @@ export type Database = {
           },
         ]
       }
+      analytics_events: {
+        Row: {
+          client_id: string
+          created_at: string
+          device_type: string | null
+          event_data: Json
+          event_type: string
+          id: string
+          session_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          device_type?: string | null
+          event_data?: Json
+          event_type: string
+          id?: string
+          session_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          device_type?: string | null
+          event_data?: Json
+          event_type?: string
+          id?: string
+          session_id?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       carousel_images: {
         Row: {
           alt_text: string | null
@@ -721,6 +754,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      daily_analytics: {
+        Row: {
+          avg_time_on_page: number
+          bounce_rate: number
+          client_id: string
+          created_at: string
+          date: string
+          device_breakdown: Json
+          id: string
+          menu_downloads: number
+          menu_section_data: Json
+          phone_clicks: number
+          reservation_clicks: number
+          total_page_views: number
+          unique_sessions: number
+          updated_at: string
+          whatsapp_clicks: number
+        }
+        Insert: {
+          avg_time_on_page?: number
+          bounce_rate?: number
+          client_id: string
+          created_at?: string
+          date: string
+          device_breakdown?: Json
+          id?: string
+          menu_downloads?: number
+          menu_section_data?: Json
+          phone_clicks?: number
+          reservation_clicks?: number
+          total_page_views?: number
+          unique_sessions?: number
+          updated_at?: string
+          whatsapp_clicks?: number
+        }
+        Update: {
+          avg_time_on_page?: number
+          bounce_rate?: number
+          client_id?: string
+          created_at?: string
+          date?: string
+          device_breakdown?: Json
+          id?: string
+          menu_downloads?: number
+          menu_section_data?: Json
+          phone_clicks?: number
+          reservation_clicks?: number
+          total_page_views?: number
+          unique_sessions?: number
+          updated_at?: string
+          whatsapp_clicks?: number
+        }
+        Relationships: []
       }
       generated_articles: {
         Row: {

@@ -16,6 +16,7 @@ import { PhoneInput } from "@/components/ui/phone-input";
 import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { ImageUpload } from "@/components/ImageUpload";
 import { CustomImagesManager } from "@/components/client/CustomImagesManager";
+import { AnalyticsOverview } from "@/components/client/AnalyticsOverview";
 
 interface ClientContext {
   selectedClientId: string;
@@ -419,6 +420,7 @@ export default function ClientDashboard() {
           <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>
           <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>
           <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>
+          <TabsTrigger value="analytics">Analíticas</TabsTrigger>
           <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>
           <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>
         </TabsList>
@@ -1015,6 +1017,10 @@ export default function ClientDashboard() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <AnalyticsOverview clientId={selectedClientId} />
         </TabsContent>
 
         <TabsContent value="custom-images">
