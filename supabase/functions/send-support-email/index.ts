@@ -159,7 +159,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "Mi Restaurante Online <soporte@mirestaurant.online>",
+      from: "Mi Restaurante Support <onboarding@resend.dev>", // Using verified domain for testing
       to: [supportEmail],
       subject: emailSubject,
       html: emailContent,
@@ -174,7 +174,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to customer
     const confirmationResponse = await resend.emails.send({
-      from: "Mi Restaurante Online <soporte@mirestaurant.online>",
+      from: "Mi Restaurante Support <onboarding@resend.dev>", // Using verified domain for testing
       to: [email],
       subject: `Confirmación de Ticket de Soporte: ${ticket.ticket_number}`,
       html: `
