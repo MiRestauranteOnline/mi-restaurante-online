@@ -3,6 +3,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
 
 interface CreatePlanRequest {
@@ -67,7 +68,11 @@ serve(async (req) => {
     if (!response.ok) {
       const errorData = await response.text();
       console.error('Mercado Pago plan creation error:', errorData);
-      throw new Error(`Failed to create plan: ${response.status} ${errorData}`);
+      // Return a handled error with 200 status so the client can display it
+      return new Response(
+        JSON.stringify({ success: false, error: `Failed to create plan: ${response.status} ${errorData}` }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      );
     }
 
     const data = await response.json();

@@ -187,7 +187,7 @@ const Signup = () => {
           
           if (!subscriptionData?.success) {
             console.error('Subscription creation failed:', subscriptionData);
-            throw new Error('Error creando la suscripción');
+            throw new Error(subscriptionData?.error || 'Error creando la suscripción');
           }
 
           // Redirect to Mercado Pago payment page
