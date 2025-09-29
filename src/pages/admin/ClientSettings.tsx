@@ -3654,7 +3654,7 @@ setReviewForm({
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="homepage_cta_button2_text">Second CTA Button Text</Label>
+                        <Label htmlFor="homepage_cta_button2_text">{t('content.secondCtaButtonText')}</Label>
                         <Input
                           id="homepage_cta_button2_text"
                           value={formData.homepage_cta_button2_text}
@@ -3662,7 +3662,7 @@ setReviewForm({
                         />
                       </div>
                       <div>
-                        <Label htmlFor="homepage_cta_button2_link">Second CTA Button Link</Label>
+                        <Label htmlFor="homepage_cta_button2_link">{t('content.secondCtaButtonLink')}</Label>
                         <Input
                           id="homepage_cta_button2_link"
                           value={formData.homepage_cta_button2_link}
@@ -3676,17 +3676,17 @@ setReviewForm({
 
               {/* ABOUT PAGE SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">About Page</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.aboutPage')}</h3>
                 
                 {/* Hero Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Hero Section</CardTitle>
+                    <CardTitle>{t('content.heroSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="about_page_hero_title_first_line">First Line Hero Title</Label>
+                        <Label htmlFor="about_page_hero_title_first_line">{t('content.aboutPageHeroFirstLine')}</Label>
                         <Input
                           id="about_page_hero_title_first_line"
                           value={formData.about_page_hero_title_first_line}
@@ -3694,7 +3694,7 @@ setReviewForm({
                         />
                       </div>
                       <div>
-                        <Label htmlFor="about_page_hero_title_second_line">Second Line Hero Title</Label>
+                        <Label htmlFor="about_page_hero_title_second_line">{t('content.aboutPageHeroSecondLine')}</Label>
                         <Input
                           id="about_page_hero_title_second_line"
                           value={formData.about_page_hero_title_second_line}
@@ -3703,7 +3703,7 @@ setReviewForm({
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="about_page_hero_description">Hero Description</Label>
+                      <Label htmlFor="about_page_hero_description">{t('content.aboutPageHeroDescription')}</Label>
                       <Textarea
                         id="about_page_hero_description"
                         value={formData.about_page_hero_description}
@@ -3713,7 +3713,7 @@ setReviewForm({
                     </div>
                     <div>
                       <ImageUpload
-                        label="Hero Background Image"
+                        label={t('content.aboutPageHeroBackgroundImage')}
                         value={formData.about_page_hero_background_url}
                         onChange={(url) => setFormData({...formData, about_page_hero_background_url: url})}
                         clientId={clientId!}
@@ -3725,11 +3725,11 @@ setReviewForm({
                 {/* About Content */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>About Content</CardTitle>
+                    <CardTitle>{t('content.aboutContent')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="about_us_label">"Acerca de Nosotros" Label</Label>
+                      <Label htmlFor="about_us_label">{t('content.aboutUsLabel')}</Label>
                       <Input
                         id="about_us_label"
                         value={formData.about_us_label}
@@ -3738,14 +3738,14 @@ setReviewForm({
                     </div>
                     <div>
                       <ImageUpload
-                        label="About Section Image"
+                        label={t('content.aboutSectionImage')}
                         value={formData.about_page_about_section_image_url || ''}
                         onChange={(url) => setFormData({...formData, about_page_about_section_image_url: url})}
                         clientId={clientId!}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="about_story">Restaurant Story Text</Label>
+                      <Label htmlFor="about_story">{t('content.restaurantStoryText')}</Label>
                       <Textarea
                         id="about_story"
                         value={formData.about_story}
@@ -3754,7 +3754,7 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <Label htmlFor="about_chef_info">Chef Information Text</Label>
+                      <Label htmlFor="about_chef_info">{t('content.chefInformationText')}</Label>
                       <Textarea
                         id="about_chef_info"
                         value={formData.about_chef_info}
@@ -3763,7 +3763,7 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <Label htmlFor="about_mission">Mission Statement Text</Label>
+                      <Label htmlFor="about_mission">{t('content.missionStatementText')}</Label>
                       <Textarea
                         id="about_mission"
                         value={formData.about_mission}
@@ -3777,11 +3777,11 @@ setReviewForm({
                 {/* Team Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Team Section</CardTitle>
+                    <CardTitle>{t('content.teamSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="our_team_label">"Nuestro Equipo" Label</Label>
+                      <Label htmlFor="our_team_label">{t('content.ourTeamLabel')}</Label>
                       <Input
                         id="our_team_label"
                         value={formData.our_team_label}
@@ -3790,7 +3790,7 @@ setReviewForm({
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="about_team_section_title_first_line">First Line Team Title</Label>
+                        <Label htmlFor="about_team_section_title_first_line">{t('content.firstLineTeamTitle')}</Label>
                         <Input
                           id="about_team_section_title_first_line"
                           value={formData.about_team_section_title_first_line}
@@ -3798,7 +3798,7 @@ setReviewForm({
                         />
                       </div>
                       <div>
-                        <Label htmlFor="about_team_section_title_second_line">Second Line Team Title</Label>
+                        <Label htmlFor="about_team_section_title_second_line">{t('content.secondLineTeamTitle')}</Label>
                         <Input
                           id="about_team_section_title_second_line"
                           value={formData.about_team_section_title_second_line}
@@ -3807,7 +3807,7 @@ setReviewForm({
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="about_team_section_description">Team Section Description</Label>
+                      <Label htmlFor="about_team_section_description">{t('content.teamSectionDescription')}</Label>
                       <Textarea
                         id="about_team_section_description"
                         value={formData.about_team_section_description}
@@ -3821,16 +3821,16 @@ setReviewForm({
 
               {/* MENU PAGE SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">Menu Page</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.menuPage')}</h3>
                 
                 {/* Hero Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Hero Section</CardTitle>
+                    <CardTitle>{t('content.heroSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="our_menu_label">"Nuestro Menú" Label</Label>
+                      <Label htmlFor="our_menu_label">{t('content.ourMenuLabel')}</Label>
                       <Input
                         id="our_menu_label"
                         value={formData.our_menu_label}
@@ -3839,7 +3839,7 @@ setReviewForm({
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="menu_page_hero_title_first_line">First Line Hero Title</Label>
+                        <Label htmlFor="menu_page_hero_title_first_line">{t('content.menuPageHeroFirstLine')}</Label>
                         <Input
                           id="menu_page_hero_title_first_line"
                           value={formData.menu_page_hero_title_first_line}
@@ -3847,7 +3847,7 @@ setReviewForm({
                         />
                       </div>
                       <div>
-                        <Label htmlFor="menu_page_hero_title_second_line">Second Line Hero Title</Label>
+                        <Label htmlFor="menu_page_hero_title_second_line">{t('content.menuPageHeroSecondLine')}</Label>
                         <Input
                           id="menu_page_hero_title_second_line"
                           value={formData.menu_page_hero_title_second_line}
@@ -3856,7 +3856,7 @@ setReviewForm({
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="menu_page_hero_description">Hero Description</Label>
+                      <Label htmlFor="menu_page_hero_description">{t('content.menuPageHeroDescription')}</Label>
                       <Textarea
                         id="menu_page_hero_description"
                         value={formData.menu_page_hero_description}
@@ -3866,7 +3866,7 @@ setReviewForm({
                     </div>
                     <div>
                       <ImageUpload
-                        label="Hero Background Image"
+                        label={t('content.menuPageHeroBackgroundImage')}
                         value={formData.menu_page_hero_background_url}
                         onChange={(url) => setFormData({...formData, menu_page_hero_background_url: url})}
                         clientId={clientId!}
@@ -3878,17 +3878,17 @@ setReviewForm({
 
               {/* CONTACT PAGE SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">Contact Page</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.contactPage')}</h3>
                 
                 {/* Hero Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Hero Section</CardTitle>
+                    <CardTitle>{t('content.heroSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="contact_page_hero_title_first_line">First Line Hero Title</Label>
+                        <Label htmlFor="contact_page_hero_title_first_line">{t('content.contactPageHeroFirstLine')}</Label>
                         <Input
                           id="contact_page_hero_title_first_line"
                           value={formData.contact_page_hero_title_first_line}
@@ -3896,7 +3896,7 @@ setReviewForm({
                         />
                       </div>
                       <div>
-                        <Label htmlFor="contact_page_hero_title_second_line">Second Line Hero Title</Label>
+                        <Label htmlFor="contact_page_hero_title_second_line">{t('content.contactPageHeroSecondLine')}</Label>
                         <Input
                           id="contact_page_hero_title_second_line"
                           value={formData.contact_page_hero_title_second_line}
@@ -3905,7 +3905,7 @@ setReviewForm({
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="contact_page_hero_description">Hero Description</Label>
+                      <Label htmlFor="contact_page_hero_description">{t('content.contactPageHeroDescription')}</Label>
                       <Textarea
                         id="contact_page_hero_description"
                         value={formData.contact_page_hero_description}
@@ -3915,7 +3915,7 @@ setReviewForm({
                     </div>
                     <div>
                       <ImageUpload
-                        label="Hero Background Image"
+                        label={t('content.contactPageHeroBackgroundImage')}
                         value={formData.contact_page_hero_background_url}
                         onChange={(url) => setFormData({...formData, contact_page_hero_background_url: url})}
                         clientId={clientId!}
@@ -3927,11 +3927,11 @@ setReviewForm({
                 {/* Contact Content */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Contact Content</CardTitle>
+                    <CardTitle>{t('content.contactContent')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="contact_reservation_title">Reservation Box Title</Label>
+                      <Label htmlFor="contact_reservation_title">{t('content.reservationBoxTitle')}</Label>
                       <Input
                         id="contact_reservation_title"
                         value={formData.contact_reservation_title}
@@ -3939,7 +3939,7 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <Label htmlFor="contact_reservation_description">Reservation Box Description</Label>
+                      <Label htmlFor="contact_reservation_description">{t('content.reservationBoxDescription')}</Label>
                       <Textarea
                         id="contact_reservation_description"
                         value={formData.contact_reservation_description}
@@ -4401,15 +4401,15 @@ setReviewForm({
 
               {/* FOOTER SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">Footer</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.footer')}</h3>
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Footer Content</CardTitle>
+                    <CardTitle>{t('content.footerContent')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="footer_description">Footer Description Text</Label>
+                      <Label htmlFor="footer_description">{t('content.footerDescriptionText')}</Label>
                       <Textarea
                         id="footer_description"
                         value={formData.footer_description}

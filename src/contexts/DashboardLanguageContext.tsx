@@ -259,6 +259,50 @@ const translations = {
     'content.ctaSectionDescription': 'Descripción de la Sección CTA',
     'content.firstCtaButtonText': 'Texto del Primer Botón CTA',
     'content.firstCtaButtonLink': 'Enlace del Primer Botón CTA',
+    'content.secondCtaButtonText': 'Texto del Segundo Botón CTA',
+    'content.secondCtaButtonLink': 'Enlace del Segundo Botón CTA',
+    
+    // About Page
+    'content.aboutPage': 'Página Acerca de',
+    'content.aboutPageHeroTitle': 'Título Hero de Página Acerca de',
+    'content.aboutPageHeroFirstLine': 'Primera Línea Hero Acerca de',
+    'content.aboutPageHeroSecondLine': 'Segunda Línea Hero Acerca de',
+    'content.aboutPageHeroDescription': 'Descripción Hero Acerca de',
+    'content.aboutPageHeroBackgroundImage': 'Imagen de Fondo Hero Acerca de',
+    'content.aboutContent': 'Contenido Acerca de',
+    'content.aboutUsLabel': 'Etiqueta "Acerca de Nosotros"',
+    'content.restaurantStoryText': 'Texto de la Historia del Restaurante',
+    'content.chefInformationText': 'Texto de Información del Chef',
+    'content.missionStatementText': 'Texto de Declaración de Misión',
+    'content.teamSection': 'Sección Equipo',
+    'content.ourTeamLabel': 'Etiqueta "Nuestro Equipo"',
+    'content.firstLineTeamTitle': 'Primera Línea del Título Equipo',
+    'content.secondLineTeamTitle': 'Segunda Línea del Título Equipo',
+    'content.teamSectionDescription': 'Descripción de la Sección Equipo',
+    
+    // Menu Page
+    'content.menuPage': 'Página Menú',
+    'content.ourMenuLabel': 'Etiqueta "Nuestro Menú"',
+    'content.menuPageHeroFirstLine': 'Primera Línea Hero Menú',
+    'content.menuPageHeroSecondLine': 'Segunda Línea Hero Menú',
+    'content.menuPageHeroDescription': 'Descripción Hero Menú',
+    'content.menuPageHeroBackgroundImage': 'Imagen de Fondo Hero Menú',
+    
+    // Contact Page
+    'content.contactPage': 'Página Contacto',
+    'content.contactPageHeroFirstLine': 'Primera Línea Hero Contacto',
+    'content.contactPageHeroSecondLine': 'Segunda Línea Hero Contacto',
+    'content.contactPageHeroDescription': 'Descripción Hero Contacto',
+    'content.contactPageHeroBackgroundImage': 'Imagen de Fondo Hero Contacto',
+    'content.contactContent': 'Contenido de Contacto',
+    'content.reservationBoxTitle': 'Título de Caja de Reserva',
+    'content.reservationBoxDescription': 'Descripción de Caja de Reserva',
+    
+    // Footer
+    'content.footer': 'Footer',
+    'content.footerContent': 'Contenido del Footer',
+    'content.footerDescriptionText': 'Texto de Descripción del Footer',
+    
     'images.title': 'Imágenes del Cliente',
     'images.description': 'Haz clic en cualquier imagen para copiar su URL. Gestiona las imágenes subidas por este cliente.',
     'images.uploadNew': 'Subir Nueva Imagen',
