@@ -177,27 +177,11 @@ export function SupportManagement({ clientId, client }: SupportManagementProps) 
                     <p className="text-sm text-muted-foreground">Respuesta en 24-48 horas</p>
                   </div>
                 </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                  <div>
-                    <p className="font-medium">Documentación y guías</p>
-                    <p className="text-sm text-muted-foreground">Acceso completo a recursos de ayuda</p>
-                  </div>
-                </div>
 
                 <div className="flex items-start gap-3">
                   <XCircle className="h-5 w-5 text-red-500 mt-0.5" />
                   <div>
                     <p className="font-medium">Soporte prioritario por WhatsApp</p>
-                    <p className="text-sm text-muted-foreground">Disponible en plan avanzado</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <XCircle className="h-5 w-5 text-red-500 mt-0.5" />
-                  <div>
-                    <p className="font-medium">Soporte telefónico directo</p>
                     <p className="text-sm text-muted-foreground">Disponible en plan avanzado</p>
                   </div>
                 </div>
@@ -234,12 +218,12 @@ export function SupportManagement({ clientId, client }: SupportManagementProps) 
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm">Respuesta en menos de 4 horas</span>
+                  <span className="text-sm">Respuesta en menos de 24 horas</span>
                 </li>
               </ul>
               
-              <Button variant="outline" className="w-full mt-4">
-                Ver Planes y Precios
+              <Button className="w-full mt-4">
+                Actualizar a Plan Avanzado
               </Button>
             </CardContent>
           </Card>
