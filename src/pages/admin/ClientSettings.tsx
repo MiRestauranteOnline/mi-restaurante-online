@@ -2627,7 +2627,7 @@ setReviewForm({
                     phoneNumber={formData.phone}
                     onCountryCodeChange={(code) => setFormData({...formData, phone_country_code: code})}
                     onPhoneNumberChange={(number) => setFormData({...formData, phone: number})}
-                    placeholder="123 456 789"
+                    placeholder={t('general.phonePlaceholder')}
                     maxLength={12}
                   />
                 </div>
@@ -2638,7 +2638,7 @@ setReviewForm({
                     phoneNumber={formData.whatsapp}
                     onCountryCodeChange={(code) => setFormData({...formData, whatsapp_country_code: code})}
                     onPhoneNumberChange={(number) => setFormData({...formData, whatsapp: number})}
-                    placeholder="987 654 321"
+                    placeholder={t('general.whatsappPlaceholder')}
                     maxLength={12}
                   />
                 </div>
@@ -2684,7 +2684,7 @@ setReviewForm({
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="show_whatsapp_popup">Show WhatsApp Popup</Label>
+                  <Label htmlFor="show_whatsapp_popup">{t('general.showWhatsAppPopup')}</Label>
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="show_whatsapp_popup"
@@ -2692,7 +2692,7 @@ setReviewForm({
                       onCheckedChange={(checked) => setFormData({...formData, show_whatsapp_popup: checked})}
                     />
                     <Label htmlFor="show_whatsapp_popup" className="text-sm text-muted-foreground">
-                      {formData.show_whatsapp_popup ? 'Enabled' : 'Disabled'}
+                      {formData.show_whatsapp_popup ? t('general.enabled') : t('general.disabled')}
                     </Label>
                   </div>
                 </div>
@@ -2705,7 +2705,7 @@ setReviewForm({
                     id="custom_cta_button_text"
                     value={formData.custom_cta_button_text}
                     onChange={(e) => setFormData({...formData, custom_cta_button_text: e.target.value})}
-                    placeholder="Reserve Table"
+                    placeholder={t('general.ctaButtonPlaceholder')}
                   />
                 </div>
                 <div>
@@ -2714,7 +2714,7 @@ setReviewForm({
                     id="custom_cta_button_link"
                     value={formData.custom_cta_button_link}
                     onChange={(e) => setFormData({...formData, custom_cta_button_link: e.target.value})}
-                    placeholder="#contact or https://example.com"
+                    placeholder={t('general.ctaLinkPlaceholder')}
                   />
                 </div>
               </div>
@@ -2738,7 +2738,7 @@ setReviewForm({
                     id="subdomain"
                     value={formData.subdomain}
                     onChange={(e) => setFormData({...formData, subdomain: e.target.value})}
-                    placeholder="clientname"
+                    placeholder={t('general.subdomainPlaceholder')}
                   />
                   <span className="text-sm text-muted-foreground">.mirestaurante.online</span>
                 </div>
@@ -2753,7 +2753,7 @@ setReviewForm({
                   id="domain"
                   value={formData.domain}
                   onChange={(e) => setFormData({...formData, domain: e.target.value})}
-                  placeholder="www.clientrestaurant.com"
+                  placeholder={t('general.customDomainPlaceholder')}
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   Client's custom domain. Client must configure DNS to point to our hosting.
