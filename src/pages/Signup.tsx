@@ -134,7 +134,7 @@ const Signup = () => {
         throw new Error(data.error);
       }
       
-      if (data?.success && data?.clientId) {
+      if (data?.success && data?.client?.id) {
         console.log('Account created successfully, initiating payment:', data);
         
         // Now initiate Mercado Pago payment
@@ -153,7 +153,7 @@ const Signup = () => {
             planId: planData.plan.id,
             customerEmail: formData.email,
             customerName: formData.restaurantName,
-            clientId: data.clientId,
+            clientId: data.client.id,
             planType: plan,
           },
         });
