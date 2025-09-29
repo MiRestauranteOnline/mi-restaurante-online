@@ -260,6 +260,17 @@ interface Review {
   review_date?: string;
 }
 
+interface PremiumFeatures {
+  id: string;
+  client_id: string;
+  google_analytics_id?: string;
+  google_search_console_verification?: string;
+  analytics_setup_date?: string;
+  analytics_enabled: boolean;
+  monthly_reports_enabled: boolean;
+  premium_support_enabled: boolean;
+}
+
 // Sortable Category Card Component for Menu Tab
 function SortableCategoryCard({ 
   category, 
@@ -665,6 +676,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const [client, setClient] = useState<Client | null>(null);
   const [clientSettings, setClientSettings] = useState<ClientSettings | null>(null);
   const [adminContent, setAdminContent] = useState<AdminContent | null>(null);
+  const [premiumFeatures, setPremiumFeatures] = useState<PremiumFeatures | null>(null);
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -967,7 +979,13 @@ const [reviewForm, setReviewForm] = useState({
     contact_us_label: '',
     about_us_label: '',
     our_menu_label: '',
-    our_team_label: ''
+    our_team_label: '',
+    // Premium Features
+    google_analytics_id: '',
+    google_search_console_verification: '',
+    analytics_enabled: false,
+    monthly_reports_enabled: false,
+    premium_support_enabled: false
   });
 
   useEffect(() => {
@@ -981,6 +999,7 @@ const [reviewForm, setReviewForm] = useState({
       fetchTeamMembers();
       fetchReviews();
       fetchCarouselImages();
+      fetchPremiumFeatures();
       fetchUserRole();
     } else {
       console.log('No effectiveClientId found');
@@ -1141,6 +1160,35 @@ const [reviewForm, setReviewForm] = useState({
         description: "Failed to load client settings: " + error.message,
         variant: "destructive"
       });
+    }
+  };
+
+  const fetchPremiumFeatures = async () => {
+    if (!effectiveClientId) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('premium_features')
+        .select('*')
+        .eq('client_id', effectiveClientId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      
+      if (data) {
+        setPremiumFeatures(data);
+        setFormData(prev => ({
+          ...prev,
+          google_analytics_id: data.google_analytics_id || '',
+          google_search_console_verification: data.google_search_console_verification || '',
+          analytics_enabled: data.analytics_enabled || false,
+          monthly_reports_enabled: data.monthly_reports_enabled || false,
+          premium_support_enabled: data.premium_support_enabled || false
+        }));
+      }
+    } catch (error: any) {
+      console.error('Failed to load premium features:', error.message);
+      // Don't show error toast for premium features as they might not exist yet
     }
   };
 
@@ -1726,6 +1774,27 @@ const [reviewForm, setReviewForm] = useState({
           });
 
         if (adminContentError) throw adminContentError;
+      }
+
+      // Update or create premium features if any premium feature fields have values
+      if (formData.google_analytics_id || formData.google_search_console_verification || 
+          formData.analytics_enabled || formData.monthly_reports_enabled || formData.premium_support_enabled) {
+        const { error: premiumFeaturesError } = await supabase
+          .from('premium_features')
+          .upsert({
+            client_id: clientId,
+            google_analytics_id: formData.google_analytics_id,
+            google_search_console_verification: formData.google_search_console_verification,
+            analytics_enabled: formData.analytics_enabled,
+            monthly_reports_enabled: formData.monthly_reports_enabled,
+            premium_support_enabled: formData.premium_support_enabled,
+            analytics_setup_date: formData.analytics_enabled && formData.google_analytics_id ? new Date().toISOString() : null,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'client_id'
+          });
+
+        if (premiumFeaturesError) throw premiumFeaturesError;
       }
 
       console.log('Saved data response:', data); // Debug log
@@ -2593,6 +2662,7 @@ setReviewForm({
           {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
           {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
           {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
+          {userRole === 'admin' && <TabsTrigger value="advanced">Avanzado</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="setup-prompt">{t('nav.setupPrompt')}</TabsTrigger>}
         </TabsList>
 
@@ -5278,6 +5348,99 @@ setReviewForm({
                 <li>Genera imágenes profesionales que coinciden con tu marca</li>
                 <li>Todo el contenido se crea en español y se optimiza para Lima, Perú</li>
               </ul>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      {/* Advanced Tab */}
+      <TabsContent value="advanced">
+        <Card>
+          <CardHeader>
+            <CardTitle>Configuración Avanzada</CardTitle>
+            <CardDescription>
+              Configuración de analíticas y herramientas avanzadas para usuarios premium.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Google Analytics Section */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <h3 className="text-lg font-semibold">Google Analytics 4</h3>
+                <Switch
+                  checked={formData.analytics_enabled}
+                  onCheckedChange={(checked) => setFormData({...formData, analytics_enabled: checked})}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="google_analytics_id">ID de Google Analytics (GA4)</Label>
+                <Input
+                  id="google_analytics_id"
+                  value={formData.google_analytics_id}
+                  onChange={(e) => setFormData({...formData, google_analytics_id: e.target.value})}
+                  placeholder="G-XXXXXXXXXX"
+                />
+                <p className="text-xs text-muted-foreground">
+                  <strong>Cómo obtenerlo:</strong><br />
+                  1. Ve a <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Google Analytics</a><br />
+                  2. Selecciona tu propiedad → Administración → Configuración de la propiedad<br />
+                  3. Copia el ID de medición (formato: G-XXXXXXXXXX)
+                </p>
+              </div>
+            </div>
+
+            {/* Google Search Console Section */}
+            <div className="space-y-4 pt-6 border-t">
+              <h3 className="text-lg font-semibold">Google Search Console</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="google_search_console_verification">Código de verificación GSC</Label>
+                <Input
+                  id="google_search_console_verification"
+                  value={formData.google_search_console_verification}
+                  onChange={(e) => setFormData({...formData, google_search_console_verification: e.target.value})}
+                  placeholder="google-site-verification=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                />
+                <p className="text-xs text-muted-foreground">
+                  <strong>Cómo obtenerlo:</strong><br />
+                  1. Ve a <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Google Search Console</a><br />
+                  2. Agrega una propiedad nueva con el dominio del cliente<br />
+                  3. Selecciona "Etiqueta HTML" como método de verificación<br />
+                  4. Copia solo el valor del atributo content (sin las comillas)
+                </p>
+              </div>
+            </div>
+
+            {/* Premium Features Section */}
+            <div className="space-y-4 pt-6 border-t">
+              <h3 className="text-lg font-semibold">Funciones Premium</h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="monthly_reports_enabled">Reportes Mensuales</Label>
+                    <p className="text-sm text-muted-foreground">Genera reportes automáticos de rendimiento</p>
+                  </div>
+                  <Switch
+                    id="monthly_reports_enabled"
+                    checked={formData.monthly_reports_enabled}
+                    onCheckedChange={(checked) => setFormData({...formData, monthly_reports_enabled: checked})}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="premium_support_enabled">Soporte Premium</Label>
+                    <p className="text-sm text-muted-foreground">Acceso a soporte prioritario y personalizado</p>
+                  </div>
+                  <Switch
+                    id="premium_support_enabled"
+                    checked={formData.premium_support_enabled}
+                    onCheckedChange={(checked) => setFormData({...formData, premium_support_enabled: checked})}
+                  />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
