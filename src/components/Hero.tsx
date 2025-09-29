@@ -34,7 +34,7 @@ export const Hero = () => {
             {/* Credibility Badge */}
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full border border-primary/20">
               <Star className="w-4 h-4 fill-current" />
-              <span className="text-sm font-medium">Más de 100 sitios web creados internacionalmente</span>
+              <span className="text-sm font-medium">Fundado por diseñador con 100+ proyectos internacionales</span>
             </div>
 
             {/* Main Headline */}
