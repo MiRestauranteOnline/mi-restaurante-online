@@ -86,7 +86,7 @@ export const ProblemSolutionSection = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-16 max-w-7xl mx-auto items-start">
           {/* Problems Side */}
           <div className="space-y-8">
             <div className="text-center lg:text-left">
@@ -106,20 +106,18 @@ export const ProblemSolutionSection = () => {
               {problems.map((problem, index) => {
                 const Icon = problem.icon;
                 return (
-                  <Card key={index} className="border-destructive/20 hover:border-destructive/30 transition-colors">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center ${problem.color} flex-shrink-0`}>
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-foreground mb-2">
-                            {problem.title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            {problem.description}
-                          </p>
-                        </div>
+                  <Card key={index} className="border-destructive/20 hover:border-destructive/30 transition-colors h-full">
+                    <CardContent className="p-6 h-full flex items-start gap-4">
+                      <div className={`w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center ${problem.color} flex-shrink-0`}>
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-foreground mb-2">
+                          {problem.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {problem.description}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -162,20 +160,18 @@ export const ProblemSolutionSection = () => {
               {solutions.map((solution, index) => {
                 const Icon = solution.icon;
                 return (
-                  <Card key={index} className="border-primary/20 hover:border-primary/30 transition-colors">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center ${solution.color} flex-shrink-0`}>
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-foreground mb-2">
-                            {solution.title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            {solution.description}
-                          </p>
-                        </div>
+                  <Card key={index} className="border-primary/20 hover:border-primary/30 transition-colors h-full">
+                    <CardContent className="p-6 h-full flex items-start gap-4">
+                      <div className={`w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center ${solution.color} flex-shrink-0`}>
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-foreground mb-2">
+                          {solution.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {solution.description}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
