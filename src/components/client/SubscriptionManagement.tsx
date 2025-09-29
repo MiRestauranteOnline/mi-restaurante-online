@@ -141,6 +141,17 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     return plan === 'basic' ? 297 : 497;
   };
 
+  const isValidDate = (dateString?: string) => {
+    if (!dateString) return false;
+    const d = new Date(dateString);
+    return !isNaN(d.getTime()) && d.getFullYear() >= 2000;
+  };
+
+  const formatDateEs = (dateString: string) => new Date(dateString).toLocaleDateString('es-ES');
+
+  const canShowCancellation = (status: string) => status !== 'cancelled' && status !== 'expired';
+  const canChangePlan = (status: string) => status !== 'cancelled' && status !== 'expired';
+
   return (
     <div className="space-y-6">
       <div>
@@ -181,7 +192,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
             <span>
-              Próxima Facturación: {new Date(subscription.next_billing_date).toLocaleDateString('es-ES')}
+              Próxima Facturación: {isValidDate(subscription.next_billing_date) ? formatDateEs(subscription.next_billing_date) : 'Por confirmar'}
             </span>
           </div>
 
@@ -236,7 +247,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               <li>• Soporte por WhatsApp</li>
               <li>• Hasta 3,000 visitas/mes o 6 GB</li>
             </ul>
-            {subscription.plan_type === 'advanced' && subscription.subscription_status === 'active' && (
+            {subscription.plan_type === 'advanced' && canChangePlan(subscription.subscription_status) && (
               <Button className="w-full mt-4" variant="outline" onClick={handleDowngrade}>
                 Cambiar a Básico
               </Button>
@@ -263,7 +274,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               <li>• Nuevas secciones personalizadas</li>
               <li>• Soporte prioritario</li>
             </ul>
-            {subscription.plan_type === 'basic' && subscription.subscription_status === 'active' && (
+            {subscription.plan_type === 'basic' && canChangePlan(subscription.subscription_status) && (
               <Button className="w-full mt-4" onClick={handleUpgrade}>
                 <ArrowUp className="h-4 w-4 mr-2" />
                 Actualizar a Avanzado
@@ -314,7 +325,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
       )}
 
       {/* Cancellation Warning */}
-      {subscription.subscription_status === 'active' && (
+      {canShowCancellation(subscription.subscription_status) && (
         <Card className="border-destructive/50 bg-destructive/5">
           <CardHeader>
             <CardTitle className="text-destructive flex items-center gap-2">
@@ -326,7 +337,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             <Alert className="border-destructive/50">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription className="font-medium">
-                <strong>ADVERTENCIA IMPORTANTE:</strong> Si cancelas tu suscripción, tu sitio web será <strong>DESACTIVADO PERMANENTEMENTE</strong> al final de tu período de facturación actual ({new Date(subscription.next_billing_date).toLocaleDateString('es-ES')}).
+                <strong>ADVERTENCIA IMPORTANTE:</strong> Si cancelas tu suscripción, tu sitio web será <strong>DESACTIVADO PERMANENTEMENTE</strong> al final de tu período de facturación actual{isValidDate(subscription.next_billing_date) ? ` (${formatDateEs(subscription.next_billing_date)})` : ''}.
               </AlertDescription>
             </Alert>
             
@@ -357,7 +368,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                     <p className="font-semibold text-foreground">Esta acción cancelará tu suscripción permanentemente.</p>
                     <div className="bg-destructive/10 p-3 rounded-md">
                       <p className="font-medium text-destructive mb-2">Tu sitio web será DESACTIVADO el:</p>
-                      <p className="text-lg font-bold">{new Date(subscription.next_billing_date).toLocaleDateString('es-ES')}</p>
+                      <p className="text-lg font-bold">{isValidDate(subscription.next_billing_date) ? formatDateEs(subscription.next_billing_date) : 'Fin del período actual'}</p>
                     </div>
                     <ul className="space-y-1 text-sm">
                       <li>• Tus clientes NO podrán acceder a tu página web</li>
