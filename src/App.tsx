@@ -73,7 +73,7 @@ const App = () => (
             </Route>
             <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<ClientDashboard />} />
-              <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","carousel","custom-images"]} />} />
+              <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","analytics","carousel","custom-images"]} />} />
               <Route path="subscription" element={<ClientSubscription />} />
             </Route>
             <Route path="*" element={<NotFound />} />
