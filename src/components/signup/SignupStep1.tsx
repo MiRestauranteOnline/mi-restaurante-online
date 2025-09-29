@@ -48,7 +48,6 @@ declare global {
 
 export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = false }: SignupStep1Props) => {
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
-  const [paymentMethod, setPaymentMethod] = useState<'rebill' | 'demo'>('demo');
   const [isCheckingSubdomain, setIsCheckingSubdomain] = useState(false);
   const [subdomainError, setSubdomainError] = useState<string>("");
   const [subdomainCheckTimeout, setSubdomainCheckTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -176,7 +175,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       
       toast({
         title: "Información guardada",
-        description: paymentMethod === 'demo' ? "Continuando sin pago..." : "Procesando pago...",
+        description: "Redirigiendo a Mercado Pago...",
       });
     } catch (error: any) {
       toast({
@@ -575,31 +574,29 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
               </Card>
             </div>
 
-            {/* Payment Method Selection */}
-            <div className="space-y-4">
-              <h4 className="font-semibold">Método de Pago</h4>
-              <RadioGroup value={paymentMethod} onValueChange={(value) => setPaymentMethod(value as 'rebill' | 'demo')}>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3 p-3 border rounded-lg">
-                    <RadioGroupItem value="demo" id="demo" />
-                    <label htmlFor="demo" className="flex-1 cursor-pointer">
-                      <div className="font-medium">Continuar sin Pago (Demo)</div>
-                      <div className="text-sm text-muted-foreground">
-                        Tu cuenta Rebill está en revisión. Puedes crear tu sitio web gratis mientras tanto.
-                      </div>
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-3 p-3 border rounded-lg opacity-50">
-                    <RadioGroupItem value="rebill" id="rebill" disabled />
-                    <label htmlFor="rebill" className="flex-1">
-                      <div className="font-medium text-muted-foreground">Pago con Tarjeta (Próximamente)</div>
-                      <div className="text-sm text-muted-foreground">
-                        Disponible cuando se active tu cuenta Rebill
-                      </div>
-                    </label>
-                  </div>
+            {/* Payment Method Info */}
+            <div className="space-y-3 bg-muted/30 p-4 rounded-lg border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <CreditCard className="w-5 h-5 text-primary" />
                 </div>
-              </RadioGroup>
+                <div className="flex-1">
+                  <h4 className="font-semibold">Pago Seguro con Mercado Pago</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Procesamos tu pago de forma segura con Mercado Pago
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
+                <div className="flex items-center gap-1">
+                  <Shield className="w-3 h-3" />
+                  <span>Pago 100% seguro</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  <span>Activación inmediata</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -611,13 +608,13 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
           >
             {isProcessingPayment ? (
               <>
-                <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Procesando Pago...
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Redirigiendo a Mercado Pago...
               </>
             ) : (
               <>
                 <CreditCard className="w-4 h-4 mr-2" />
-                {paymentMethod === 'demo' ? 'Crear Cuenta (Demo)' : `Pagar ${selectedPlan === 'basic' ? 'S/297' : 'S/497'} y Crear Cuenta`}
+                Continuar al Pago - {selectedPlan === 'basic' ? 'S/297' : 'S/497'}/mes
               </>
             )}
           </Button>
