@@ -148,29 +148,34 @@ const Soporte = () => {
     setIsSubmitting(true);
     
     try {
-      // Here you would send to different emails based on support type
-      const targetEmail = data.supportType === "premium" 
-        ? "premiumsoporte@mirestaurante.online" 
-        : "soporte@mirestaurante.online";
+      const { error } = await supabase.functions.invoke('send-support-email', {
+        body: {
+          name: data.name,
+          email: data.email,
+          subject: data.subject,
+          message: data.message,
+          clientId: data.clientId || null,
+          supportType: data.supportType,
+          premiumEmail: data.premiumEmail || null,
+          premiumPin: data.premiumPin || null
+        }
+      });
 
-      console.log("Support form submitted:", { ...data, targetEmail });
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      if (error) {
+        throw error;
+      }
+
       setSubmitted(true);
       toast({
-        title: "Mensaje enviado exitosamente",
-        description: data.supportType === "premium" 
-          ? "Tu mensaje fue enviado a soporte premium. Te contactaremos en menos de 4 horas."
-          : "Te contactaremos pronto para ayudarte.",
+        title: "Ticket creado exitosamente",
+        description: "Hemos recibido tu solicitud y creado un ticket de soporte. Te responderemos pronto.",
       });
-    } catch (error) {
-      console.error("Error sending support message:", error);
+    } catch (error: any) {
+      console.error('Error submitting support request:', error);
       toast({
-        title: "Error al enviar mensaje",
-        description: "Por favor intenta nuevamente o contáctanos directamente.",
-        variant: "destructive",
+        title: "Error",
+        description: error.message || "Hubo un error al enviar tu mensaje. Por favor intenta nuevamente.",
+        variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);

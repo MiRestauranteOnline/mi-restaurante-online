@@ -1,5 +1,7 @@
-import { useOutletContext } from 'react-router-dom';
-import { SupportManagement } from '@/components/client/SupportManagement';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { TicketViewer } from "@/components/client/TicketViewer";
+import { useOutletContext } from "react-router-dom";
 
 interface ClientContext {
   selectedClientId: string;
@@ -7,7 +9,7 @@ interface ClientContext {
 }
 
 export default function ClientSupport() {
-  const { selectedClientId, selectedClient } = useOutletContext<ClientContext>();
+  const { selectedClientId } = useOutletContext<ClientContext>();
 
-  return <SupportManagement clientId={selectedClientId} client={selectedClient} />;
+  return <TicketViewer clientId={selectedClientId} />;
 }
