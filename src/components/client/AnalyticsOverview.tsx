@@ -225,15 +225,15 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
         <div className="space-y-6">
           {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-l-4 border-l-blue-500">
+            <Card className="border-l-4 border-l-primary">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Vistas de Página</CardTitle>
-                <div className="p-2 bg-blue-500/10 rounded-md">
-                  <Eye className="h-4 w-4 text-blue-600" />
+                <div className="p-2 bg-primary/10 rounded-md">
+                  <Eye className="h-4 w-4 text-primary" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-blue-600">{totals.page_views.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-primary">{totals.page_views.toLocaleString()}</div>
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <TrendingUp className="h-3 w-3 mr-1" />
                   {Math.round(totals.page_views / Math.max(analytics.length, 1))} promedio diario
@@ -241,15 +241,15 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-l-green-500">
+            <Card className="border-l-4 border-l-amber-600">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Visitantes Únicos</CardTitle>
-                <div className="p-2 bg-green-500/10 rounded-md">
-                  <Users className="h-4 w-4 text-green-600" />
+                <div className="p-2 bg-amber-600/10 rounded-md">
+                  <Users className="h-4 w-4 text-amber-700" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{totals.unique_sessions.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-amber-700">{totals.unique_sessions.toLocaleString()}</div>
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <TrendingUp className="h-3 w-3 mr-1" />
                   {Math.round(totals.unique_sessions / Math.max(analytics.length, 1))} promedio diario
@@ -257,19 +257,19 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-l-orange-500">
+            <Card className="border-l-4 border-l-orange-600">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Tiempo Promedio</CardTitle>
-                <div className="p-2 bg-orange-500/10 rounded-md">
-                  <Clock className="h-4 w-4 text-orange-600" />
+                <div className="p-2 bg-orange-600/10 rounded-md">
+                  <Clock className="h-4 w-4 text-orange-700" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-orange-600">{formatTime(avgTimeOnPage)}</div>
+                <div className="text-2xl font-bold text-orange-700">{formatTime(avgTimeOnPage)}</div>
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
                     <div 
-                      className="bg-orange-500 h-2 rounded-full transition-all duration-300" 
+                      className="bg-orange-600 h-2 rounded-full transition-all duration-300" 
                       style={{ width: `${Math.min((avgTimeOnPage / 300) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -278,19 +278,19 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-l-purple-500">
+            <Card className="border-l-4 border-l-stone-600">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Tasa de Rebote</CardTitle>
-                <div className="p-2 bg-purple-500/10 rounded-md">
-                  <Mouse className="h-4 w-4 text-purple-600" />
+                <div className="p-2 bg-stone-600/10 rounded-md">
+                  <Mouse className="h-4 w-4 text-stone-700" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-purple-600">{avgBounceRate}%</div>
+                <div className="text-2xl font-bold text-stone-700">{avgBounceRate}%</div>
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
                     <div 
-                      className="bg-purple-500 h-2 rounded-full transition-all duration-300" 
+                      className="bg-stone-600 h-2 rounded-full transition-all duration-300" 
                       style={{ width: `${avgBounceRate}%` }}
                     ></div>
                   </div>
@@ -304,7 +304,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
           <Card>
             <CardHeader>
               <CardTitle className="text-xl font-bold flex items-center gap-2">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-md">
+                <div className="p-2 bg-gradient-to-r from-primary to-amber-600 rounded-md">
                   <BarChart3 className="h-5 w-5 text-white" />
                 </div>
                 Interacciones de Usuarios
@@ -316,14 +316,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <MessageCircle className="h-4 w-4 text-green-600" />
+                      <MessageCircle className="h-4 w-4 text-green-700" />
                       <span className="text-sm font-medium">WhatsApp</span>
                     </div>
-                    <span className="text-lg font-bold text-green-600">{totals.whatsapp_clicks}</span>
+                    <span className="text-lg font-bold text-green-700">{totals.whatsapp_clicks}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-500" 
+                      className="bg-gradient-to-r from-green-600 to-green-700 h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min((totals.whatsapp_clicks / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -333,14 +333,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-blue-600" />
+                      <Phone className="h-4 w-4 text-amber-700" />
                       <span className="text-sm font-medium">Llamadas</span>
                     </div>
-                    <span className="text-lg font-bold text-blue-600">{totals.phone_clicks}</span>
+                    <span className="text-lg font-bold text-amber-700">{totals.phone_clicks}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-gradient-to-r from-blue-400 to-blue-600 h-3 rounded-full transition-all duration-500" 
+                      className="bg-gradient-to-r from-amber-600 to-amber-700 h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min((totals.phone_clicks / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -350,14 +350,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Download className="h-4 w-4 text-purple-600" />
+                      <Download className="h-4 w-4 text-orange-700" />
                       <span className="text-sm font-medium">Descargas</span>
                     </div>
-                    <span className="text-lg font-bold text-purple-600">{totals.menu_downloads}</span>
+                    <span className="text-lg font-bold text-orange-700">{totals.menu_downloads}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-gradient-to-r from-purple-400 to-purple-600 h-3 rounded-full transition-all duration-500" 
+                      className="bg-gradient-to-r from-orange-600 to-orange-700 h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min((totals.menu_downloads / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -372,7 +372,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-md">
+                  <div className="p-2 bg-gradient-to-r from-stone-600 to-stone-700 rounded-md">
                     <Smartphone className="h-4 w-4 text-white" />
                   </div>
                   Dispositivos Utilizados
@@ -390,8 +390,8 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                       .sort(([,a], [,b]) => b - a)
                       .map(([device, count], index) => {
                         const percentage = Math.round((count / totals.unique_sessions) * 100);
-                        const colors = ['from-blue-400 to-blue-600', 'from-green-400 to-green-600', 'from-purple-400 to-purple-600'];
-                        const iconColors = ['text-blue-600', 'text-green-600', 'text-purple-600'];
+                        const colors = ['from-primary to-amber-600', 'from-amber-600 to-orange-600', 'from-orange-600 to-stone-600'];
+                        const iconColors = ['text-primary', 'text-amber-700', 'text-orange-700'];
                         return (
                           <div key={device} className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -423,7 +423,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-md">
+                  <div className="p-2 bg-gradient-to-r from-amber-600 to-orange-600 rounded-md">
                     <Eye className="h-4 w-4 text-white" />
                   </div>
                   Popularidad del Menú
@@ -442,7 +442,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                       .slice(0, 4)
                       .map(([section, data], index) => {
                         const percentage = Math.round((data.views / totals.page_views) * 100);
-                        const colors = ['from-yellow-400 to-orange-500', 'from-green-400 to-emerald-500', 'from-blue-400 to-cyan-500', 'from-purple-400 to-pink-500'];
+                        const colors = ['from-primary to-amber-600', 'from-amber-600 to-orange-600', 'from-orange-600 to-stone-600', 'from-stone-600 to-primary'];
                         return (
                           <div key={section} className="space-y-2">
                             <div className="flex items-center justify-between">
