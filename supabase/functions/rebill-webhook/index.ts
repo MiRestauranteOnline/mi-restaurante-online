@@ -88,7 +88,13 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Create client record
+    // Parse plan type from metadata or default to basic
+    const planType = websiteRequirements.plan_type || 'basic';
+    const currentDate = new Date().toISOString();
+    const subscriptionEndDate = new Date();
+    subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1);
+
+    // Create client record with subscription information
     const { data: client, error: clientError } = await supabaseAdmin
       .from('clients')
       .insert({
@@ -99,6 +105,14 @@ const handler = async (req: Request): Promise<Response> => {
         email: signupData.email,
         payment_id: payload.data.id,
         website_requirements: websiteRequirements,
+        plan_type: planType,
+        subscription_status: 'active',
+        payment_status: 'paid',
+        subscription_start_date: currentDate,
+        subscription_end_date: subscriptionEndDate.toISOString(),
+        next_billing_date: subscriptionEndDate.toISOString(),
+        rebill_subscription_id: payload.data.id,
+        rebill_customer_id: payload.data.customer.email,
       })
       .select()
       .single();

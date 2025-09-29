@@ -23,6 +23,7 @@ export interface SignupData {
   hasCustomDomain?: boolean;
   customDomain?: string;
   referralSource?: string;
+  plan_type?: 'basic' | 'advanced';
 }
 
 export interface SocialMedia {
@@ -93,7 +94,8 @@ const Signup = () => {
   const [isProcessingFinalStep, setIsProcessingFinalStep] = useState(false);
 
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
-    setSignupData(formData);
+    const updatedData = { ...formData, plan_type: plan };
+    setSignupData(updatedData);
     setSelectedPlan(plan);
     setIsProcessingPayment(true);
     
@@ -202,7 +204,7 @@ const Signup = () => {
           styleBriefing,
           contactDeliveryBriefing,
           signupData,
-          websiteRequirements,
+          websiteRequirements: { ...websiteRequirements, plan_type: signupData.plan_type || 'basic' },
           menuData: { categories: combinedData.categories, items: combinedData.items },
           reviewsData: { reviews: combinedData.reviews },
           teamData: { teamMembers: combinedData.teamMembers },
