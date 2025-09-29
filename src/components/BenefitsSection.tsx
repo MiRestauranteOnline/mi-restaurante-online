@@ -49,8 +49,8 @@ export const BenefitsSection = () => {
     },
     {
       icon: Search,
-      title: "Domina Google Desde Día 1",
-      description: "SEO profesional incluido. Aparece primero cuando buscan 'restaurantes cerca de mí'.",
+      title: "Optimizado para Google",
+      description: "SEO técnico incluido. Tu restaurante será visible cuando clientes busquen en Google.",
       color: "text-accent"
     },
     {
