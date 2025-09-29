@@ -241,15 +241,15 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-l-amber-600">
+            <Card className="border-l-4 border-l-accent">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Visitantes Únicos</CardTitle>
-                <div className="p-2 bg-amber-600/10 rounded-md">
-                  <Users className="h-4 w-4 text-amber-700" />
+                <div className="p-2 bg-accent/10 rounded-md">
+                  <Users className="h-4 w-4 text-accent-foreground" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-amber-700">{totals.unique_sessions.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-accent-foreground">{totals.unique_sessions.toLocaleString()}</div>
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <TrendingUp className="h-3 w-3 mr-1" />
                   {Math.round(totals.unique_sessions / Math.max(analytics.length, 1))} promedio diario
@@ -278,19 +278,19 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
               </CardContent>
             </Card>
 
-            <Card className="border-l-4 border-l-stone-600">
+            <Card className="border-l-4 border-l-secondary">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Tasa de Rebote</CardTitle>
-                <div className="p-2 bg-stone-600/10 rounded-md">
-                  <Mouse className="h-4 w-4 text-stone-700" />
+                <div className="p-2 bg-secondary/10 rounded-md">
+                  <Mouse className="h-4 w-4 text-secondary-foreground" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-stone-700">{avgBounceRate}%</div>
+                <div className="text-2xl font-bold text-secondary-foreground">{avgBounceRate}%</div>
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
                     <div 
-                      className="bg-stone-600 h-2 rounded-full transition-all duration-300" 
+                      className="bg-secondary h-2 rounded-full transition-all duration-300" 
                       style={{ width: `${avgBounceRate}%` }}
                     ></div>
                   </div>
@@ -304,7 +304,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
           <Card>
             <CardHeader>
               <CardTitle className="text-xl font-bold flex items-center gap-2">
-                <div className="p-2 bg-gradient-to-r from-primary to-amber-600 rounded-md">
+                <div className="p-2 bg-gradient-to-r from-primary to-accent rounded-md">
                   <BarChart3 className="h-5 w-5 text-white" />
                 </div>
                 Interacciones de Usuarios
@@ -333,14 +333,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-amber-700" />
+                      <Phone className="h-4 w-4 text-primary" />
                       <span className="text-sm font-medium">Llamadas</span>
                     </div>
-                    <span className="text-lg font-bold text-amber-700">{totals.phone_clicks}</span>
+                    <span className="text-lg font-bold text-primary">{totals.phone_clicks}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-gradient-to-r from-amber-600 to-amber-700 h-3 rounded-full transition-all duration-500" 
+                      className="bg-gradient-to-r from-primary to-primary/80 h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min((totals.phone_clicks / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -350,14 +350,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Download className="h-4 w-4 text-orange-700" />
+                      <Download className="h-4 w-4 text-accent-foreground" />
                       <span className="text-sm font-medium">Descargas</span>
                     </div>
-                    <span className="text-lg font-bold text-orange-700">{totals.menu_downloads}</span>
+                    <span className="text-lg font-bold text-accent-foreground">{totals.menu_downloads}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-gradient-to-r from-orange-600 to-orange-700 h-3 rounded-full transition-all duration-500" 
+                      className="bg-gradient-to-r from-accent to-accent/80 h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min((totals.menu_downloads / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -372,7 +372,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-r from-stone-600 to-stone-700 rounded-md">
+                  <div className="p-2 bg-gradient-to-r from-secondary to-muted rounded-md">
                     <Smartphone className="h-4 w-4 text-white" />
                   </div>
                   Dispositivos Utilizados
@@ -390,8 +390,8 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                       .sort(([,a], [,b]) => b - a)
                       .map(([device, count], index) => {
                         const percentage = Math.round((count / totals.unique_sessions) * 100);
-                        const colors = ['from-primary to-amber-600', 'from-amber-600 to-orange-600', 'from-orange-600 to-stone-600'];
-                        const iconColors = ['text-primary', 'text-amber-700', 'text-orange-700'];
+                        const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-secondary to-secondary/80'];
+                        const iconColors = ['text-primary', 'text-accent-foreground', 'text-secondary-foreground'];
                         return (
                           <div key={device} className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -423,7 +423,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-r from-amber-600 to-orange-600 rounded-md">
+                  <div className="p-2 bg-gradient-to-r from-accent to-primary rounded-md">
                     <Eye className="h-4 w-4 text-white" />
                   </div>
                   Popularidad del Menú
@@ -442,7 +442,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                       .slice(0, 4)
                       .map(([section, data], index) => {
                         const percentage = Math.round((data.views / totals.page_views) * 100);
-                        const colors = ['from-primary to-amber-600', 'from-amber-600 to-orange-600', 'from-orange-600 to-stone-600', 'from-stone-600 to-primary'];
+                        const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-secondary to-secondary/80', 'from-muted to-primary'];
                         return (
                           <div key={section} className="space-y-2">
                             <div className="flex items-center justify-between">
