@@ -133,7 +133,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
             {uploading && (
               <>
                 <Upload className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Uploading image...</span>
+                <span className="text-sm">{t('imageUpload.uploading')}</span>
               </>
             )}
             {optimizing && (

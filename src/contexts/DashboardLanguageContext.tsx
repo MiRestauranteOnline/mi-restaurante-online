@@ -303,6 +303,11 @@ const translations = {
     'content.footerContent': 'Contenido del Footer',
     'content.footerDescriptionText': 'Texto de Descripción del Footer',
     
+    // WhatsApp Messages
+    'content.whatsappMessages': 'Mensajes de WhatsApp',
+    'content.whatsappReservationTemplate': 'Plantilla de Mensaje de Reserva',
+    'content.whatsappGeneralMessage': 'Mensaje de Contacto General',
+    
     'images.title': 'Imágenes del Cliente',
     'images.description': 'Haz clic en cualquier imagen para copiar su URL. Gestiona las imágenes subidas por este cliente.',
     'images.uploadNew': 'Subir Nueva Imagen',
@@ -496,6 +501,11 @@ const translations = {
     'reviews.reviewerName': 'Reviewer Name',
     'menu.editCategory': 'Edit Category',
     
+    
+    // WhatsApp Messages
+    'content.whatsappMessages': 'WhatsApp Messages',
+    'content.whatsappReservationTemplate': 'Reservation Message Template',
+    'content.whatsappGeneralMessage': 'General Contact Message',
     
     // Images tab
     'images.title': 'Client Images',

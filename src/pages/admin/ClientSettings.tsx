@@ -4423,15 +4423,15 @@ setReviewForm({
 
               {/* WHATSAPP MESSAGES SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">WhatsApp Messages</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.whatsappMessages')}</h3>
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle>WhatsApp Messages</CardTitle>
+                    <CardTitle>{t('content.whatsappMessages')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="whatsapp_reservation_message">Reservation Message Template</Label>
+                      <Label htmlFor="whatsapp_reservation_message">{t('content.whatsappReservationTemplate')}</Label>
                       <Textarea
                         id="whatsapp_reservation_message"
                         value={formData.whatsapp_reservation_message}
@@ -4441,7 +4441,7 @@ setReviewForm({
                       />
                     </div>
                     <div>
-                      <Label htmlFor="whatsapp_general_message">General Contact Message</Label>
+                      <Label htmlFor="whatsapp_general_message">{t('content.whatsappGeneralMessage')}</Label>
                       <Input
                         id="whatsapp_general_message"
                         value={formData.whatsapp_general_message}
