@@ -5028,7 +5028,7 @@ setReviewForm({
       <Dialog open={showTeamMemberDialog} onOpenChange={setShowTeamMemberDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{editingTeamMember ? 'Edit Team Member' : 'Add New Team Member'}</DialogTitle>
+            <DialogTitle>{editingTeamMember ? t('team.editTeamMember') : t('team.addTeamMember')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -5037,33 +5037,33 @@ setReviewForm({
                 <Input
                   value={teamMemberForm.name}
                   onChange={(e) => setTeamMemberForm({...teamMemberForm, name: e.target.value})}
-                  placeholder="Team member name"
+                  placeholder={t('team.namePlaceholder')}
                 />
               </div>
               <div>
-                <Label>Title</Label>
+                <Label>{t('team.jobTitle')}</Label>
                 <Input
                   value={teamMemberForm.title}
                   onChange={(e) => setTeamMemberForm({...teamMemberForm, title: e.target.value})}
-                  placeholder="Job title"
+                  placeholder={t('team.titlePlaceholder')}
                 />
               </div>
             </div>
             
             <div>
-              <Label>Bio</Label>
+              <Label>{t('team.bio')}</Label>
               <Textarea
                 value={teamMemberForm.bio}
                 onChange={(e) => setTeamMemberForm({...teamMemberForm, bio: e.target.value})}
-                placeholder="Short bio"
+                placeholder={t('team.bioPlaceholder')}
                 rows={3}
               />
             </div>
             
             <div>
-              <Label>Profile Image</Label>
+              <Label>{t('team.profileImage')}</Label>
               <ImageUpload
-                label="Profile Image"
+                label={t('team.profileImage')}
                 value={teamMemberForm.image_url}
                 onChange={(url) => setTeamMemberForm({...teamMemberForm, image_url: url})}
                 clientId={clientId || ''}
@@ -5071,8 +5071,8 @@ setReviewForm({
             </div>
             
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowTeamMemberDialog(false)}>Cancel</Button>
-              <Button onClick={handleSaveTeamMember}>Save</Button>
+              <Button variant="outline" onClick={() => setShowTeamMemberDialog(false)}>{t('common.cancel')}</Button>
+              <Button onClick={handleSaveTeamMember}>{t('common.save')}</Button>
             </div>
           </div>
         </DialogContent>

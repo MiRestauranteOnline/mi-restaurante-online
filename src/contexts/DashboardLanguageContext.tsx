@@ -161,6 +161,13 @@ const translations = {
     'team.memberName': 'Nombre del Miembro',
     'team.position': 'Cargo',
     'team.bio': 'Biografía',
+    'team.editTeamMember': 'Editar Miembro del Equipo',
+    'team.addTeamMember': 'Agregar Nuevo Miembro del Equipo',
+    'team.jobTitle': 'Título',
+    'team.profileImage': 'Imagen de Perfil',
+    'team.namePlaceholder': 'Nombre del miembro del equipo',
+    'team.titlePlaceholder': 'Título del trabajo',
+    'team.bioPlaceholder': 'Biografía corta',
     
     // Reviews tab
     'reviews.title': 'Reseñas',
@@ -177,7 +184,7 @@ const translations = {
     
     // Team tab
     'team.teamMembers': 'Miembros del Equipo',
-    'team.addTeamMember': 'Agregar Miembro del Equipo',
+    
     'team.noTeamMembers': 'No se encontraron miembros del equipo. ¡Agrega tu primer miembro del equipo!',
     
     // Branding tab
@@ -357,6 +364,13 @@ const translations = {
     'team.memberName': 'Member Name',
     'team.position': 'Position',
     'team.bio': 'Biography',
+    'team.editTeamMember': 'Edit Team Member',
+    'team.addTeamMember': 'Add New Team Member',
+    'team.jobTitle': 'Title',
+    'team.profileImage': 'Profile Image',
+    'team.namePlaceholder': 'Team member name',
+    'team.titlePlaceholder': 'Job title',
+    'team.bioPlaceholder': 'Short bio',
     
     // Menu tab
     'reviews.reviewerName': 'Reviewer Name',
