@@ -4604,12 +4604,12 @@ setReviewForm({
                     {saving ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Saving...
+                        {t('common.saving')}
                       </>
                     ) : (
                       <>
                         <Save className="mr-2 h-4 w-4" />
-                        Save Menu
+                        {t('menu.saveMenu')}
                       </>
                     )}
                   </Button>
