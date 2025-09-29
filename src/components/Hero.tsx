@@ -61,7 +61,7 @@ export const Hero = () => {
                 <span className="text-lg line-through text-destructive ml-2">S/500</span>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
-                Sin costo inicial • Precio fijo de por vida si contratas ahora
+                🎯 Sin costo inicial • Precio garantizado de por vida • Oferta por tiempo limitado
               </p>
             </div>
 
