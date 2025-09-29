@@ -1111,6 +1111,71 @@ export type Database = {
         }
         Relationships: []
       }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          client_id: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          id: string
+          last_response_at: string | null
+          message: string
+          priority: string
+          resolved_at: string | null
+          response_count: number
+          status: string
+          subject: string
+          support_type: string
+          ticket_number: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          client_id?: string | null
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          id?: string
+          last_response_at?: string | null
+          message: string
+          priority?: string
+          resolved_at?: string | null
+          response_count?: number
+          status?: string
+          subject: string
+          support_type?: string
+          ticket_number: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          client_id?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          last_response_at?: string | null
+          message?: string
+          priority?: string
+          resolved_at?: string | null
+          response_count?: number
+          status?: string
+          subject?: string
+          support_type?: string
+          ticket_number?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       target_keywords: {
         Row: {
           category: string
@@ -1197,6 +1262,47 @@ export type Database = {
         }
         Relationships: []
       }
+      ticket_responses: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          created_by_email: string
+          created_by_name: string
+          id: string
+          is_internal_note: boolean
+          message: string
+          ticket_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          created_by_email: string
+          created_by_name: string
+          id?: string
+          is_internal_note?: boolean
+          message: string
+          ticket_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          created_by_email?: string
+          created_by_name?: string
+          id?: string
+          is_internal_note?: boolean
+          message?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_responses_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_clients: {
         Row: {
           client_id: string
@@ -1268,6 +1374,10 @@ export type Database = {
         Returns: Json
       }
       generate_support_pin: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_ticket_number: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
