@@ -335,7 +335,7 @@ className="bg-destructive h-2 rounded-full transition-all duration-300"
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-accent-foreground" />
+                      <Phone className="h-4 w-4 text-accent" />
                       <span className="text-sm font-medium">Llamadas</span>
                     </div>
                     <span className="text-lg font-bold text-accent-foreground">{totals.phone_clicks}</span>
@@ -392,9 +392,9 @@ className="bg-destructive h-3 rounded-full transition-all duration-500"
                       .sort(([,a], [,b]) => b - a)
                       .map(([device, count], index) => {
                         const percentage = Math.round((count / totals.unique_sessions) * 100);
-                        const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-orange-600 to-orange-700'];
-                        const iconColors = ['text-primary', 'text-accent-foreground', 'text-orange-700'];
-const DeviceIcon = device === 'desktop' ? Monitor : device === 'tablet' ? Tablet : Smartphone;
+                        const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-destructive to-destructive/80'];
+                        const iconColors = ['text-primary', 'text-accent', 'text-destructive'];
+                        const DeviceIcon = device === 'desktop' ? Monitor : device === 'tablet' ? Tablet : Smartphone;
                         return (
                           <div key={device} className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -427,7 +427,7 @@ const DeviceIcon = device === 'desktop' ? Monitor : device === 'tablet' ? Tablet
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="p-2 bg-accent/10 rounded-md">
-                    <Eye className="h-4 w-4 text-accent-foreground" />
+                    <Eye className="h-4 w-4 text-accent" />
                   </div>
                   Popularidad del Menú
                 </CardTitle>
