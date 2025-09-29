@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.0";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+console.log("Resend API key configured:", !!Deno.env.get("RESEND_API_KEY"));
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -23,12 +24,16 @@ interface SupportRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log("Send support email function called");
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    console.log("Processing support email request...");
     const requestData: SupportRequest = await req.json();
+    console.log("Request data received:", requestData);
     const { name, email, subject, message, clientId, supportType, premiumEmail, premiumPin } = requestData;
 
     console.log("Support request received:", { name, email, subject, supportType, clientId });

@@ -136,6 +136,8 @@ const Soporte = () => {
   };
 
   const onSubmit = async (data: SupportFormData) => {
+    console.log("=== FORM SUBMISSION STARTED ===");
+    console.log("Support form data:", data);
     if (data.supportType === "premium" && !isPremiumVerified) {
       toast({
         title: "Verificación requerida",
@@ -147,7 +149,10 @@ const Soporte = () => {
 
     setIsSubmitting(true);
     
+    console.log("Submitting support request:", data);
+    
     try {
+      console.log("Calling send-support-email function...");
       const { error } = await supabase.functions.invoke('send-support-email', {
         body: {
           name: data.name,
@@ -161,9 +166,14 @@ const Soporte = () => {
         }
       });
 
+      console.log("Edge function response:", { error });
+
       if (error) {
+        console.error("Edge function error:", error);
         throw error;
       }
+
+      console.log("Ticket submitted successfully");
 
       setSubmitted(true);
       toast({
