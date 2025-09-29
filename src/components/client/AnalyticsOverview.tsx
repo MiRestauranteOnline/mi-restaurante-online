@@ -284,7 +284,7 @@ className="bg-destructive h-2 rounded-full transition-all duration-300"
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Tasa de Rebote</CardTitle>
                 <div className="p-2 bg-secondary/10 rounded-md">
-                  <Mouse className="h-4 w-4 text-foreground" />
+                  <Mouse className="h-4 w-4 text-secondary" />
                 </div>
               </CardHeader>
               <CardContent>
@@ -375,7 +375,7 @@ className="bg-destructive h-3 rounded-full transition-all duration-500"
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="p-2 bg-secondary/10 rounded-md">
-                    <Smartphone className="h-4 w-4 text-foreground" />
+                    <Smartphone className="h-4 w-4 text-secondary" />
                   </div>
                   Dispositivos Utilizados
                 </CardTitle>
