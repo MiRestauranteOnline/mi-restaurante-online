@@ -102,6 +102,14 @@ const Signup = () => {
     try {
       console.log('Creating account and initiating payment for:', formData, 'with plan:', plan);
       
+      // Fetch payment settings to check test mode
+      const { data: paymentSettings } = await supabase
+        .from('payment_settings')
+        .select('test_mode, test_payer_email')
+        .single();
+
+      console.log('Payment settings:', paymentSettings);
+
       // Create account using public signup function
       const { data, error } = await supabase.functions.invoke('signup-client', {
         body: {
@@ -160,18 +168,24 @@ const Signup = () => {
           }
 
           // Create the subscription (works with or without planId)
+          // Use test payer email if test mode is enabled, otherwise use customer email
+          const payerEmail = (paymentSettings?.test_mode && paymentSettings?.test_payer_email)
+            ? paymentSettings.test_payer_email
+            : formData.email;
+
           console.log('Calling create-mercadopago-subscription with:', {
             planId,
-            email: formData.email,
-            name: formData.restaurantName,
+            payerEmail,
+            customerName: formData.restaurantName,
             clientId: data.client.id,
             planType: plan,
+            isTestMode: paymentSettings?.test_mode
           });
           
           const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-subscription', {
             body: {
               planId,
-              customerEmail: formData.email,
+              customerEmail: payerEmail,
               customerName: formData.restaurantName,
               clientId: data.client.id,
               planType: plan,
