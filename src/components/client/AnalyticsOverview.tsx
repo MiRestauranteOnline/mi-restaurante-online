@@ -284,7 +284,7 @@ className="bg-destructive h-2 rounded-full transition-all duration-300"
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Tasa de Rebote</CardTitle>
                 <div className="p-2 bg-secondary/10 rounded-md">
-                  <Mouse className="h-4 w-4 text-secondary-foreground" />
+                  <Mouse className="h-4 w-4 text-foreground" />
                 </div>
               </CardHeader>
               <CardContent>
@@ -375,7 +375,7 @@ className="bg-destructive h-3 rounded-full transition-all duration-500"
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="p-2 bg-secondary/10 rounded-md">
-                    <Smartphone className="h-4 w-4 text-secondary-foreground" />
+                    <Smartphone className="h-4 w-4 text-foreground" />
                   </div>
                   Dispositivos Utilizados
                 </CardTitle>
@@ -393,13 +393,13 @@ className="bg-destructive h-3 rounded-full transition-all duration-500"
                       .map(([device, count], index) => {
                         const percentage = Math.round((count / totals.unique_sessions) * 100);
                         const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-destructive to-destructive/80'];
-                        const iconColors = ['text-primary', 'text-accent', 'text-destructive'];
                         const DeviceIcon = device === 'desktop' ? Monitor : device === 'tablet' ? Tablet : Smartphone;
+                        const colorClass = device === 'desktop' ? 'text-accent' : device === 'tablet' ? 'text-destructive' : 'text-primary';
                         return (
                           <div key={device} className="space-y-2">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <DeviceIcon className={`h-4 w-4 ${iconColors[index % 3]}`} />
+                                <DeviceIcon className={`h-4 w-4 ${colorClass}`} />
                                 <span className="text-sm font-medium capitalize">{device}</span>
                               </div>
                               <div className="text-right">
