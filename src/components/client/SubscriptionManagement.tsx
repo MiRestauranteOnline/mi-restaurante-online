@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Calendar, CreditCard, CheckCircle, XCircle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CreditCard, Calendar, AlertTriangle, ArrowUp, CheckCircle, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SubscriptionData {
   plan_type: string;
@@ -26,6 +29,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const [loading, setLoading] = useState(true);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchSubscriptionData();
@@ -52,32 +56,65 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
       if (error) throw error;
       setSubscription(data);
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "No se pudo cargar la información de suscripción",
-        variant: "destructive"
+      // If no subscription data found, create a mock active subscription for demo
+      setSubscription({
+        plan_type: 'basic',
+        subscription_status: 'active',
+        payment_status: 'paid',
+        subscription_start_date: new Date().toISOString(),
+        subscription_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        payment_failures_count: 0,
       });
     } finally {
       setLoading(false);
     }
   };
 
+  const handleUpgrade = () => {
+    // Redirect to Rebill checkout for advanced plan
+    toast({
+      title: "Próximamente",
+      description: "La funcionalidad de upgrade estará disponible cuando Rebill apruebe nuestra cuenta.",
+    });
+  };
+
+  const handleDowngrade = () => {
+    toast({
+      title: "Próximamente", 
+      description: "La funcionalidad de downgrade estará disponible cuando Rebill apruebe nuestra cuenta.",
+    });
+  };
+
+  const handleCancel = () => {
+    toast({
+      title: "Próximamente",
+      description: "La funcionalidad de cancelación estará disponible cuando Rebill apruebe nuestra cuenta.",
+    });
+  };
+
   if (loading) {
-    return <div>Cargando datos de suscripción...</div>;
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center">
+          <h3 className="text-lg font-medium mb-2">{t('common.loading')}</h3>
+        </div>
+      </div>
+    );
   }
 
   if (!subscription) {
-    return <div>No se encontraron datos de suscripción</div>;
+    return (
+      <Card>
+        <CardContent className="text-center py-8">
+          <p className="text-muted-foreground">No se encontró información de suscripción</p>
+        </CardContent>
+      </Card>
+    );
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'cancelled': return <XCircle className="h-4 w-4 text-yellow-500" />;
-      case 'expired': return <XCircle className="h-4 w-4 text-red-500" />;
-      case 'payment_failed': return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default: return <AlertTriangle className="h-4 w-4 text-gray-500" />;
-    }
+  const getPlanName = (plan: string) => {
+    return plan === 'basic' ? 'Plan Básico' : 'Plan Avanzado';
   };
 
   const getStatusColor = (status: string) => {
@@ -90,67 +127,62 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     }
   };
 
-  const getPlanName = (planType: string) => {
-    return planType === 'basic' ? 'Plan Básico' : 'Plan Avanzado';
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active': return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'cancelled': return <XCircle className="h-4 w-4 text-yellow-500" />;
+      case 'expired': return <XCircle className="h-4 w-4 text-red-500" />;
+      case 'payment_failed': return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      default: return <AlertTriangle className="h-4 w-4 text-gray-500" />;
+    }
   };
 
-  const getPlanPrice = (planType: string) => {
-    return planType === 'basic' ? 'S/ 297' : 'S/ 497';
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-PE', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+  const getPlanPrice = (plan: string) => {
+    return plan === 'basic' ? 297 : 497;
   };
 
   return (
     <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold mb-2">Gestión de Suscripción</h2>
+        <p className="text-muted-foreground">
+          Gestiona tu plan de suscripción y facturación
+        </p>
+      </div>
+
+      {/* Current Plan Overview */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
-            Gestión de Suscripción
+            Plan Actual
           </CardTitle>
-          <CardDescription>
-            Administra tu suscripción y detalles de facturación
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <CreditCard className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Plan Actual</span>
-              </div>
-              <p className="text-lg font-semibold">{getPlanName(subscription.plan_type)}</p>
-              <p className="text-sm text-muted-foreground">{getPlanPrice(subscription.plan_type)}/mes</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold">{getPlanName(subscription.plan_type)}</h3>
+              <p className="text-2xl font-bold">
+                S/ {getPlanPrice(subscription.plan_type)}
+                <span className="text-base font-normal text-muted-foreground">/mes</span>
+              </p>
             </div>
-            
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                {getStatusIcon(subscription.subscription_status)}
-                <span className="text-sm font-medium">Estado</span>
-              </div>
+            <div className="flex items-center gap-2">
+              {getStatusIcon(subscription.subscription_status)}
               <Badge className={getStatusColor(subscription.subscription_status)}>
-                {subscription.subscription_status === 'active' ? 'Activo' :
-                 subscription.subscription_status === 'cancelled' ? 'Cancelado' :
+                {subscription.subscription_status === 'active' ? 'Activo' : 
+                 subscription.subscription_status === 'cancelled' ? 'Cancelado' : 
                  subscription.subscription_status === 'expired' ? 'Expirado' :
                  subscription.subscription_status === 'payment_failed' ? 'Pago Fallido' : 'Pendiente'}
               </Badge>
             </div>
-            
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Próxima Facturación</span>
-              </div>
-              <p className="text-sm">
-                {subscription.next_billing_date ? formatDate(subscription.next_billing_date) : 'No disponible'}
-              </p>
-            </div>
+          </div>
+
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Calendar className="h-4 w-4" />
+            <span>
+              Próxima Facturación: {new Date(subscription.next_billing_date).toLocaleDateString('es-ES')}
+            </span>
           </div>
 
           {subscription.subscription_status === 'payment_failed' && subscription.payment_failures_count > 0 && (
@@ -173,36 +205,179 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                 <span className="text-sm font-medium text-yellow-800">Suscripción Cancelada</span>
               </div>
               <p className="text-sm text-yellow-700">
-                Cancelado el {formatDate(subscription.cancellation_date)}
+                Cancelado el {new Date(subscription.cancellation_date).toLocaleDateString('es-ES')}
                 {subscription.cancellation_reason && ` - Razón: ${subscription.cancellation_reason}`}
               </p>
             </div>
           )}
-          
-          <div className="flex gap-2">
-            {subscription.subscription_status === 'active' && (
-              <>
-                <Button variant="outline">
-                  Cambiar Plan
-                </Button>
-                <Button variant="destructive">
-                  Cancelar Suscripción
-                </Button>
-              </>
-            )}
-            {subscription.subscription_status === 'payment_failed' && (
-              <Button variant="default">
-                Actualizar Método de Pago
-              </Button>
-            )}
-            {(subscription.subscription_status === 'cancelled' || subscription.subscription_status === 'expired') && (
-              <Button variant="default">
-                Reactivar Suscripción
-              </Button>
-            )}
-          </div>
         </CardContent>
       </Card>
+
+      {/* Plan Features Comparison */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Basic Plan */}
+        <Card className={subscription.plan_type === 'basic' ? 'ring-2 ring-primary' : ''}>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Plan Básico
+              {subscription.plan_type === 'basic' && (
+                <Badge>Plan Actual</Badge>
+              )}
+            </CardTitle>
+            <CardDescription>S/ 297/mes</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <ul className="space-y-1 text-sm">
+              <li>• Sitio profesional en 72 horas</li>
+              <li>• Hosting + SSL incluido</li>
+              <li>• SEO básico optimizado</li>
+              <li>• Integración Google Maps y Google My Business</li>
+              <li>• Cambios auto-gestionables (PIN)</li>
+              <li>• Soporte por WhatsApp</li>
+              <li>• Hasta 3,000 visitas/mes o 6 GB</li>
+            </ul>
+            {subscription.plan_type === 'advanced' && subscription.subscription_status === 'active' && (
+              <Button className="w-full mt-4" variant="outline" onClick={handleDowngrade}>
+                Cambiar a Básico
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Advanced Plan */}
+        <Card className={subscription.plan_type === 'advanced' ? 'ring-2 ring-primary' : ''}>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Plan Avanzado
+              {subscription.plan_type === 'advanced' && (
+                <Badge>Plan Actual</Badge>
+              )}
+            </CardTitle>
+            <CardDescription>S/ 497/mes</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <ul className="space-y-1 text-sm">
+              <li>• Todo lo del Plan Básico</li>
+              <li>• 1 hora/mes de cambios extendidos</li>
+              <li>• Cambios de textos e imágenes</li>
+              <li>• Nuevas secciones personalizadas</li>
+              <li>• Soporte prioritario</li>
+            </ul>
+            {subscription.plan_type === 'basic' && subscription.subscription_status === 'active' && (
+              <Button className="w-full mt-4" onClick={handleUpgrade}>
+                <ArrowUp className="h-4 w-4 mr-2" />
+                Actualizar a Avanzado
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Payment Failed Actions */}
+      {subscription.subscription_status === 'payment_failed' && (
+        <Card className="border-red-200 bg-red-50">
+          <CardHeader>
+            <CardTitle className="text-red-800 flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Acción Requerida
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-red-700">
+              Tu suscripción ha sido suspendida debido a problemas de pago. Actualiza tu método de pago para continuar con el servicio.
+            </p>
+            <Button variant="default">
+              Actualizar Método de Pago
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Reactivation for Cancelled/Expired */}
+      {(subscription.subscription_status === 'cancelled' || subscription.subscription_status === 'expired') && (
+        <Card className="border-yellow-200 bg-yellow-50">
+          <CardHeader>
+            <CardTitle className="text-yellow-800 flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Suscripción Inactiva
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-yellow-700">
+              Tu suscripción está inactiva. Reactívala para continuar usando todos los servicios.
+            </p>
+            <Button variant="default">
+              Reactivar Suscripción
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Cancellation Warning */}
+      {subscription.subscription_status === 'active' && (
+        <Card className="border-destructive/50 bg-destructive/5">
+          <CardHeader>
+            <CardTitle className="text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              ⚠️ Zona de Cancelación
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="border-destructive/50">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription className="font-medium">
+                <strong>ADVERTENCIA IMPORTANTE:</strong> Si cancelas tu suscripción, tu sitio web será <strong>DESACTIVADO PERMANENTEMENTE</strong> al final de tu período de facturación actual ({new Date(subscription.next_billing_date).toLocaleDateString('es-ES')}).
+              </AlertDescription>
+            </Alert>
+            
+            <div className="bg-card p-4 rounded-lg border">
+              <h4 className="font-semibold mb-2 text-destructive">Consecuencias de la cancelación:</h4>
+              <ul className="text-sm space-y-1 text-muted-foreground">
+                <li>• Tu sitio web será completamente inaccesible para tus clientes</li>
+                <li>• Perderás toda la funcionalidad y características de tu plan</li>
+                <li>• El hosting y dominio .mirestaurante.com serán desactivados</li>
+                <li>• Si tienes un dominio personalizado, podrás usarlo libremente en otro servicio</li>
+              </ul>
+            </div>
+            
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full">
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  Cancelar Suscripción
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-destructive flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5" />
+                    ⚠️ ¿Estás completamente seguro?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-3">
+                    <p className="font-semibold text-foreground">Esta acción cancelará tu suscripción permanentemente.</p>
+                    <div className="bg-destructive/10 p-3 rounded-md">
+                      <p className="font-medium text-destructive mb-2">Tu sitio web será DESACTIVADO el:</p>
+                      <p className="text-lg font-bold">{new Date(subscription.next_billing_date).toLocaleDateString('es-ES')}</p>
+                    </div>
+                    <ul className="space-y-1 text-sm">
+                      <li>• Tus clientes NO podrán acceder a tu página web</li>
+                      <li>• Perderás todas las reservas y funcionalidades online</li>
+                      <li>• El dominio .mirestaurante.com será liberado</li>
+                      <li>• Si tienes dominio propio, podrás usarlo en otro servicio</li>
+                    </ul>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>No, mantener mi suscripción</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleCancel} className="bg-destructive hover:bg-destructive/90">
+                    Sí, cancelar definitivamente
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
