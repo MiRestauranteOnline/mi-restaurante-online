@@ -346,7 +346,7 @@ function SortableCategoryCard({
                   onClick={() => openMenuItemDialog(undefined, category.name)}
                 >
                   <Plus className="h-4 w-4" />
-                  Add Item
+                  Agregar Producto
                 </Button>
                 <Button
                   variant="ghost"
@@ -2700,7 +2700,7 @@ setReviewForm({
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>
-                  <Label htmlFor="custom_cta_button_text">Custom Menu CTA Button Text</Label>
+                  <Label htmlFor="custom_cta_button_text">Texto del Botón CTA Personalizado</Label>
                   <Input
                     id="custom_cta_button_text"
                     value={formData.custom_cta_button_text}
@@ -2709,7 +2709,7 @@ setReviewForm({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="custom_cta_button_link">Custom Menu CTA Button Link</Label>
+                  <Label htmlFor="custom_cta_button_link">Enlace del Botón CTA Personalizado</Label>
                   <Input
                     id="custom_cta_button_link"
                     value={formData.custom_cta_button_link}
@@ -2748,7 +2748,7 @@ setReviewForm({
               </div>
               
               <div>
-                <Label htmlFor="domain">Custom Domain</Label>
+                <Label htmlFor="domain">{t('general.customDomain')}</Label>
                 <Input
                   id="domain"
                   value={formData.domain}
@@ -2837,7 +2837,7 @@ setReviewForm({
                   {!hours.closed && (
                     <>
                       <div className="flex items-center gap-2">
-                        <Label className="text-sm">Opens:</Label>
+                        <Label className="text-sm">{t('general.opens')}:</Label>
                         <Input
                           type="time"
                           value={hours.open}
@@ -2852,7 +2852,7 @@ setReviewForm({
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <Label className="text-sm">Closes:</Label>
+                        <Label className="text-sm">{t('general.closes')}:</Label>
                         <Input
                           type="time"
                           value={hours.close}
@@ -3317,7 +3317,7 @@ setReviewForm({
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="homepage_hero_description">Hero Subtitle Text</Label>
+                      <Label htmlFor="homepage_hero_description">Texto del Subtítulo del Hero</Label>
                       <Textarea
                         id="homepage_hero_description"
                         value={formData.homepage_hero_description}
@@ -3389,7 +3389,7 @@ setReviewForm({
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="homepage_about_section_description">About Section Description</Label>
+                      <Label htmlFor="homepage_about_section_description">Descripción de la Sección Acerca de</Label>
                       <Textarea
                         id="homepage_about_section_description"
                         value={formData.homepage_about_section_description}
@@ -4752,10 +4752,10 @@ setReviewForm({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              Reviews
+              {t('reviews.title')}
               <Button onClick={() => openReviewDialog()}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Review
+                {t('reviews.addReview')}
               </Button>
             </CardTitle>
           </CardHeader>
@@ -4894,11 +4894,11 @@ setReviewForm({
       <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editingCategory ? 'Edit Category' : 'Add Category'}</DialogTitle>
+            <DialogTitle>{editingCategory ? t('menu.editCategory') : t('menu.addCategory')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="category_name">Name</Label>
+              <Label htmlFor="category_name">{t('common.name')}</Label>
               <Input
                 id="category_name"
                 value={categoryForm.name}
@@ -4931,7 +4931,7 @@ setReviewForm({
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="item_name">Name</Label>
+                <Label htmlFor="item_name">{t('common.name')}</Label>
                 <Input
                   id="item_name"
                   value={menuItemForm.name}
@@ -4950,7 +4950,7 @@ setReviewForm({
               </div>
             </div>
             <div>
-              <Label htmlFor="item_description">Description</Label>
+              <Label htmlFor="item_description">{t('common.description')}</Label>
               <Textarea
                 id="item_description"
                 value={menuItemForm.description}
@@ -5033,7 +5033,7 @@ setReviewForm({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Name</Label>
+                <Label>{t('common.name')}</Label>
                 <Input
                   value={teamMemberForm.name}
                   onChange={(e) => setTeamMemberForm({...teamMemberForm, name: e.target.value})}
@@ -5087,7 +5087,7 @@ setReviewForm({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Reviewer Name</Label>
+                <Label>{t('reviews.reviewerName')}</Label>
                 <Input
                   value={reviewForm.reviewer_name}
                   onChange={(e) => setReviewForm({...reviewForm, reviewer_name: e.target.value})}

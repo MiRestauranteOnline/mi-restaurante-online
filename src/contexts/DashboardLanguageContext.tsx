@@ -76,6 +76,12 @@ const translations = {
     'general.visible': 'Visible',
     'general.password': 'Contraseña',
     'general.hidePhoneButton': 'Ocultar Botón de Teléfono del Menú',
+    'general.customButton': 'Botón Personalizado',
+    'general.customDomain': 'Dominio Personalizado',
+    'general.opens': 'Abre',
+    'general.closes': 'Cierra',
+    'general.heroDescription': 'Descripción del Hero',
+    'general.sectionDescription': 'Descripción de la Sección',
     
     // Appearance tab
     'appearance.title': 'Configuración de Apariencia',
@@ -127,12 +133,14 @@ const translations = {
     'team.bio': 'Biografía',
     
     // Reviews tab
-    'reviews.title': 'Gestión de Reseñas',
+    'reviews.title': 'Reseñas',
     'reviews.description': 'Administra las reseñas de clientes',
     'reviews.addReview': 'Agregar Reseña',
     'reviews.customerName': 'Nombre del Cliente',
     'reviews.rating': 'Calificación',
     'reviews.comment': 'Comentario',
+    'reviews.reviewerName': 'Nombre del Reseñador',
+    
     
     // Images tab
     'images.title': 'Imágenes del Cliente',
@@ -206,6 +214,12 @@ const translations = {
     'general.visible': 'Visible',
     'general.password': 'Password',
     'general.hidePhoneButton': 'Hide Phone Button from Menu',
+    'general.customButton': 'Custom Button',
+    'general.customDomain': 'Custom Domain',
+    'general.opens': 'Opens',
+    'general.closes': 'Closes',
+    'general.heroDescription': 'Hero Description',
+    'general.sectionDescription': 'Section Description',
     
     // Appearance tab
     'appearance.title': 'Appearance Settings',
@@ -256,13 +270,10 @@ const translations = {
     'team.position': 'Position',
     'team.bio': 'Biography',
     
-    // Reviews tab
-    'reviews.title': 'Reviews Management',
-    'reviews.description': 'Manage customer reviews',
-    'reviews.addReview': 'Add Review',
-    'reviews.customerName': 'Customer Name',
-    'reviews.rating': 'Rating',
-    'reviews.comment': 'Comment',
+    // Menu tab
+    'reviews.reviewerName': 'Reviewer Name',
+    'menu.editCategory': 'Edit Category',
+    
     
     // Images tab
     'images.title': 'Client Images',
