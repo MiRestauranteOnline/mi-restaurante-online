@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { MessageSquare, Clock, CheckCircle, AlertTriangle, User, Mail, Calendar } from "lucide-react";
 import { format } from "date-fns";
@@ -168,14 +169,32 @@ export function TicketManagement() {
           message: newResponse,
           is_internal_note: isInternalNote,
           created_by_name: "Admin",
-          created_by_email: "admin@mirestaurant.online"
+          created_by_email: "admin@mirestaurante.online"
         });
 
       if (error) throw error;
 
+      // Send email notification to customer if not an internal note
+      if (!isInternalNote) {
+        try {
+          await supabase.functions.invoke('send-support-response', {
+            body: {
+              ticketNumber: selectedTicket.ticket_number,
+              customerEmail: selectedTicket.customer_email,
+              customerName: selectedTicket.customer_name,
+              responseMessage: newResponse,
+              originalSubject: selectedTicket.subject
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send email notification:', emailError);
+          // Don't fail the response creation if email fails
+        }
+      }
+
       toast({
         title: "Success",
-        description: isInternalNote ? "Internal note added" : "Response added"
+        description: isInternalNote ? "Internal note added" : "Response added and customer notified"
       });
 
       setNewResponse("");
@@ -199,6 +218,122 @@ export function TicketManagement() {
   if (loading) {
     return <div className="flex justify-center p-8">Loading tickets...</div>;
   }
+
+  const activeTickets = tickets.filter(t => t.status !== "closed" && t.status !== "resolved");
+  const closedTickets = tickets.filter(t => t.status === "closed" || t.status === "resolved");
+
+  const renderTicketCard = (ticket: SupportTicket) => (
+    <Card
+      key={ticket.id}
+      className={`cursor-pointer transition-all hover:shadow-md ${
+        selectedTicket?.id === ticket.id ? "ring-2 ring-primary" : ""
+      } ${ticket.support_type === "premium" ? "border-orange-200" : "border-blue-200"}`}
+      onClick={() => selectTicket(ticket)}
+    >
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              {ticket.ticket_number}
+            </Badge>
+            <Badge className={statusColors[ticket.status as keyof typeof statusColors]}>
+              {ticket.status}
+            </Badge>
+            <Badge variant="outline" className={priorityColors[ticket.priority as keyof typeof priorityColors]}>
+              {ticket.priority}
+            </Badge>
+            {ticket.support_type === "premium" && (
+              <Badge className="bg-orange-500 text-white">PREMIUM</Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <MessageSquare className="h-3 w-3" />
+            {ticket.response_count}
+          </div>
+        </div>
+        
+        <h3 className="font-medium text-sm mb-1 line-clamp-1">{ticket.subject}</h3>
+        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{ticket.message}</p>
+        
+        <div className="flex justify-between items-center text-xs text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <User className="h-3 w-3" />
+            {ticket.customer_name}
+          </div>
+          <div className="flex items-center gap-1">
+            <Calendar className="h-3 w-3" />
+            {format(new Date(ticket.created_at), "MMM d")}
+          </div>
+        </div>
+        
+        {ticket.clients?.restaurant_name && (
+          <div className="mt-1 text-xs text-muted-foreground">
+            Client: {ticket.clients.restaurant_name}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  const renderTicketsSection = (ticketsToRender: SupportTicket[], showSeparateSections = true) => {
+    if (!showSeparateSections || supportTypeFilter !== "all") {
+      return (
+        <div className="space-y-4">
+          {ticketsToRender.map(renderTicketCard)}
+          {ticketsToRender.length === 0 && (
+            <Card>
+              <CardContent className="p-6 text-center text-muted-foreground">
+                No tickets found
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      );
+    }
+
+    const premiumTickets = ticketsToRender.filter(t => t.support_type === "premium");
+    const generalTickets = ticketsToRender.filter(t => t.support_type === "general");
+
+    return (
+      <div className="space-y-6">
+        {/* Premium Tickets Section */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-orange-600">Premium Tickets</h3>
+            <Badge variant="outline" className="bg-orange-50 text-orange-600 border-orange-200">
+              {premiumTickets.length}
+            </Badge>
+          </div>
+          {premiumTickets.map(renderTicketCard)}
+          {premiumTickets.length === 0 && (
+            <Card className="border-orange-200">
+              <CardContent className="p-6 text-center text-muted-foreground">
+                No premium tickets found
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* General Tickets Section */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-blue-600">General Tickets</h3>
+            <Badge variant="outline" className="bg-blue-50 text-blue-600 border-blue-200">
+              {generalTickets.length}
+            </Badge>
+          </div>
+          {generalTickets.map(renderTicketCard)}
+          {generalTickets.length === 0 && (
+            <Card className="border-blue-200">
+              <CardContent className="p-6 text-center text-muted-foreground">
+                No general tickets found
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
@@ -232,214 +367,25 @@ export function TicketManagement() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tickets List */}
-        <div className="space-y-6">
-          {supportTypeFilter === "all" && (
-            <>
-              {/* Premium Tickets Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-semibold text-orange-600">Premium Tickets</h2>
-                  <Badge variant="outline" className="bg-orange-50 text-orange-600 border-orange-200">
-                    {tickets.filter(t => t.support_type === "premium").length}
-                  </Badge>
-                </div>
-                {tickets.filter(ticket => ticket.support_type === "premium").map((ticket) => (
-                  <Card
-                    key={ticket.id}
-                    className={`cursor-pointer transition-all hover:shadow-md border-orange-200 ${
-                      selectedTicket?.id === ticket.id ? "ring-2 ring-orange-500" : ""
-                    }`}
-                    onClick={() => selectTicket(ticket)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-xs bg-orange-50 text-orange-600 border-orange-200">
-                            {ticket.ticket_number}
-                          </Badge>
-                          <Badge className={statusColors[ticket.status as keyof typeof statusColors]}>
-                            {ticket.status}
-                          </Badge>
-                          <Badge variant="outline" className={priorityColors[ticket.priority as keyof typeof priorityColors]}>
-                            {ticket.priority}
-                          </Badge>
-                          <Badge className="bg-orange-500 text-white">PREMIUM</Badge>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <MessageSquare className="h-3 w-3" />
-                          {ticket.response_count}
-                        </div>
-                      </div>
-                      
-                      <h3 className="font-medium text-sm mb-1 line-clamp-1">{ticket.subject}</h3>
-                      <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{ticket.message}</p>
-                      
-                      <div className="flex justify-between items-center text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <User className="h-3 w-3" />
-                          {ticket.customer_name}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {format(new Date(ticket.created_at), "MMM d")}
-                        </div>
-                      </div>
-                      
-                      {ticket.clients?.restaurant_name && (
-                        <div className="mt-1 text-xs text-muted-foreground">
-                          Client: {ticket.clients.restaurant_name}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-                
-                {tickets.filter(t => t.support_type === "premium").length === 0 && (
-                  <Card className="border-orange-200">
-                    <CardContent className="p-6 text-center text-muted-foreground">
-                      No premium tickets found
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-
-              {/* General Tickets Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-semibold text-blue-600">General Tickets</h2>
-                  <Badge variant="outline" className="bg-blue-50 text-blue-600 border-blue-200">
-                    {tickets.filter(t => t.support_type === "general").length}
-                  </Badge>
-                </div>
-                {tickets.filter(ticket => ticket.support_type === "general").map((ticket) => (
-                  <Card
-                    key={ticket.id}
-                    className={`cursor-pointer transition-all hover:shadow-md border-blue-200 ${
-                      selectedTicket?.id === ticket.id ? "ring-2 ring-blue-500" : ""
-                    }`}
-                    onClick={() => selectTicket(ticket)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
-                            {ticket.ticket_number}
-                          </Badge>
-                          <Badge className={statusColors[ticket.status as keyof typeof statusColors]}>
-                            {ticket.status}
-                          </Badge>
-                          <Badge variant="outline" className={priorityColors[ticket.priority as keyof typeof priorityColors]}>
-                            {ticket.priority}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <MessageSquare className="h-3 w-3" />
-                          {ticket.response_count}
-                        </div>
-                      </div>
-                      
-                      <h3 className="font-medium text-sm mb-1 line-clamp-1">{ticket.subject}</h3>
-                      <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{ticket.message}</p>
-                      
-                      <div className="flex justify-between items-center text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <User className="h-3 w-3" />
-                          {ticket.customer_name}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {format(new Date(ticket.created_at), "MMM d")}
-                        </div>
-                      </div>
-                      
-                      {ticket.clients?.restaurant_name && (
-                        <div className="mt-1 text-xs text-muted-foreground">
-                          Client: {ticket.clients.restaurant_name}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-                
-                {tickets.filter(t => t.support_type === "general").length === 0 && (
-                  <Card className="border-blue-200">
-                    <CardContent className="p-6 text-center text-muted-foreground">
-                      No general tickets found
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-            </>
-          )}
-
-          {/* Filtered View */}
-          {supportTypeFilter !== "all" && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold">
-                {supportTypeFilter === "premium" ? "Premium" : "General"} Tickets ({tickets.length})
-              </h2>
-              {tickets.map((ticket) => (
-                <Card
-                  key={ticket.id}
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    selectedTicket?.id === ticket.id ? "ring-2 ring-primary" : ""
-                  } ${ticket.support_type === "premium" ? "border-orange-200" : "border-blue-200"}`}
-                  onClick={() => selectTicket(ticket)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">
-                          {ticket.ticket_number}
-                        </Badge>
-                        <Badge className={statusColors[ticket.status as keyof typeof statusColors]}>
-                          {ticket.status}
-                        </Badge>
-                        <Badge variant="outline" className={priorityColors[ticket.priority as keyof typeof priorityColors]}>
-                          {ticket.priority}
-                        </Badge>
-                        {ticket.support_type === "premium" && (
-                          <Badge className="bg-orange-500 text-white">PREMIUM</Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <MessageSquare className="h-3 w-3" />
-                        {ticket.response_count}
-                      </div>
-                    </div>
-                    
-                    <h3 className="font-medium text-sm mb-1 line-clamp-1">{ticket.subject}</h3>
-                    <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{ticket.message}</p>
-                    
-                    <div className="flex justify-between items-center text-xs text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        {ticket.customer_name}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {format(new Date(ticket.created_at), "MMM d")}
-                      </div>
-                    </div>
-                    
-                    {ticket.clients?.restaurant_name && (
-                      <div className="mt-1 text-xs text-muted-foreground">
-                        Client: {ticket.clients.restaurant_name}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-              
-              {tickets.length === 0 && (
-                <Card>
-                  <CardContent className="p-6 text-center text-muted-foreground">
-                    No tickets found
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          )}
+        <div>
+          <Tabs defaultValue="active" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="active">
+                Active Tickets ({activeTickets.length})
+              </TabsTrigger>
+              <TabsTrigger value="closed">
+                Closed/Resolved ({closedTickets.length})
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="active" className="mt-4">
+              {renderTicketsSection(activeTickets, true)}
+            </TabsContent>
+            
+            <TabsContent value="closed" className="mt-4">
+              {renderTicketsSection(closedTickets, false)}
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Ticket Details */}
