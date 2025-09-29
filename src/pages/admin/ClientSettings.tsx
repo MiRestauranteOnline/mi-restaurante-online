@@ -4779,7 +4779,7 @@ setReviewForm({
                   </SortableContext>
                 </DndContext>
               ) : (
-                <p className="text-muted-foreground text-center py-4">No reviews found. Add your first review!</p>
+                <p className="text-muted-foreground text-center py-4">{t('reviews.noReviewsFound')}</p>
               )}
             </div>
           </CardContent>
@@ -5082,7 +5082,7 @@ setReviewForm({
       <Dialog open={showReviewDialog} onOpenChange={setShowReviewDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{editingReview ? 'Edit Review' : 'Add New Review'}</DialogTitle>
+            <DialogTitle>{editingReview ? t('reviews.editReview') : t('reviews.addNewReview')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -5091,11 +5091,11 @@ setReviewForm({
                 <Input
                   value={reviewForm.reviewer_name}
                   onChange={(e) => setReviewForm({...reviewForm, reviewer_name: e.target.value})}
-                  placeholder="Customer name"
+                  placeholder={t('reviews.customerNamePlaceholder')}
                 />
               </div>
               <div>
-                <Label>Star Rating</Label>
+                <Label>{t('reviews.starRating')}</Label>
                 <Select 
                   value={reviewForm.star_rating.toString()} 
                   onValueChange={(value) => setReviewForm({...reviewForm, star_rating: parseFloat(value)})}
@@ -5104,33 +5104,33 @@ setReviewForm({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0.5">0.5 Stars</SelectItem>
-                    <SelectItem value="1">1 Star</SelectItem>
-                    <SelectItem value="1.5">1.5 Stars</SelectItem>
-                    <SelectItem value="2">2 Stars</SelectItem>
-                    <SelectItem value="2.5">2.5 Stars</SelectItem>
-                    <SelectItem value="3">3 Stars</SelectItem>
-                    <SelectItem value="3.5">3.5 Stars</SelectItem>
-                    <SelectItem value="4">4 Stars</SelectItem>
-                    <SelectItem value="4.5">4.5 Stars</SelectItem>
-                    <SelectItem value="5">5 Stars</SelectItem>
+                    <SelectItem value="0.5">0.5 {t('reviews.stars')}</SelectItem>
+                    <SelectItem value="1">1 {t('reviews.star')}</SelectItem>
+                    <SelectItem value="1.5">1.5 {t('reviews.stars')}</SelectItem>
+                    <SelectItem value="2">2 {t('reviews.stars')}</SelectItem>
+                    <SelectItem value="2.5">2.5 {t('reviews.stars')}</SelectItem>
+                    <SelectItem value="3">3 {t('reviews.stars')}</SelectItem>
+                    <SelectItem value="3.5">3.5 {t('reviews.stars')}</SelectItem>
+                    <SelectItem value="4">4 {t('reviews.stars')}</SelectItem>
+                    <SelectItem value="4.5">4.5 {t('reviews.stars')}</SelectItem>
+                    <SelectItem value="5">5 {t('reviews.stars')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             
             <div>
-              <Label>Review Text</Label>
+              <Label>{t('reviews.reviewText')}</Label>
               <Textarea
                 value={reviewForm.review_text}
                 onChange={(e) => setReviewForm({...reviewForm, review_text: e.target.value})}
-                placeholder="Customer review"
+                placeholder={t('reviews.customerReview')}
                 rows={4}
               />
             </div>
             
             <div>
-              <Label>Review Date</Label>
+              <Label>{t('reviews.reviewDate')}</Label>
               <div className="space-y-3 mt-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -5146,7 +5146,7 @@ setReviewForm({
                     htmlFor="use-current-date-admin"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    Use current date ({format(new Date(), 'dd/MM/yyyy')})
+                    {t('reviews.useCurrentDate')} ({format(new Date(), 'dd/MM/yyyy')})
                   </label>
                 </div>
                 <Popover>
@@ -5161,7 +5161,7 @@ setReviewForm({
                       {reviewForm.review_date ? (
                         format(reviewForm.review_date, "dd/MM/yyyy")
                       ) : (
-                        <span>Select a date</span>
+                        <span>{t('reviews.selectDate')}</span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -5181,8 +5181,8 @@ setReviewForm({
             </div>
             
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowReviewDialog(false)}>Cancel</Button>
-              <Button onClick={handleSaveReview}>Save</Button>
+              <Button variant="outline" onClick={() => setShowReviewDialog(false)}>{t('common.cancel')}</Button>
+              <Button onClick={handleSaveReview}>{t('common.save')}</Button>
             </div>
           </div>
         </DialogContent>

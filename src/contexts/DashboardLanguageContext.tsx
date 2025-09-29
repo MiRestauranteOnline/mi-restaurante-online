@@ -173,10 +173,20 @@ const translations = {
     'reviews.title': 'Reseñas',
     'reviews.description': 'Administra las reseñas de clientes',
     'reviews.addReview': 'Agregar Reseña',
+    'reviews.editReview': 'Editar Reseña',
+    'reviews.addNewReview': 'Agregar Nueva Reseña',
     'reviews.customerName': 'Nombre del Cliente',
-    'reviews.rating': 'Calificación',
-    'reviews.comment': 'Comentario',
     'reviews.reviewerName': 'Nombre del Reseñador',
+    'reviews.starRating': 'Calificación con Estrellas',
+    'reviews.reviewText': 'Texto de la Reseña',
+    'reviews.reviewDate': 'Fecha de la Reseña',
+    'reviews.customerReview': 'Reseña del cliente',
+    'reviews.customerNamePlaceholder': 'Nombre del cliente',
+    'reviews.useCurrentDate': 'Usar fecha actual',
+    'reviews.selectDate': 'Seleccionar una fecha',
+    'reviews.noReviewsFound': 'No se encontraron reseñas. ¡Agrega tu primera reseña!',
+    'reviews.stars': 'Estrellas',
+    'reviews.star': 'Estrella',
     
     // Menu tab
     'menu.createFirstCategoryButton': 'Crear Primera Categoría',
@@ -536,6 +546,25 @@ const translations = {
     'team.titlePlaceholder': 'Job title',
     'team.bioPlaceholder': 'Short bio',
     
+    // Reviews tab
+    'reviews.title': 'Reviews',
+    'reviews.description': 'Manage customer reviews',
+    'reviews.addReview': 'Add Review',
+    'reviews.editReview': 'Edit Review',
+    'reviews.addNewReview': 'Add New Review',
+    'reviews.customerName': 'Customer Name',
+    'reviews.reviewerName': 'Reviewer Name',
+    'reviews.starRating': 'Star Rating',
+    'reviews.reviewText': 'Review Text',
+    'reviews.reviewDate': 'Review Date',
+    'reviews.customerReview': 'Customer review',
+    'reviews.customerNamePlaceholder': 'Customer name',
+    'reviews.useCurrentDate': 'Use current date',
+    'reviews.selectDate': 'Select a date',
+    'reviews.noReviewsFound': 'No reviews found. Add your first review!',
+    'reviews.stars': 'Stars',
+    'reviews.star': 'Star',
+    
     // Branding tab
     'branding.title': 'Branding & Customization',
     'branding.primaryColor': 'Primary Color',
@@ -562,11 +591,7 @@ const translations = {
     'imageUpload.enterImageUrl': 'Enter image URL',
     'imageUpload.optimizingMessage': 'Optimizing image (converting to WebP, resizing, compressing)...',
     
-    // Menu tab
-    'reviews.reviewerName': 'Reviewer Name',
-    'menu.editCategory': 'Edit Category',
-    
-    
+    // Content tab translations
     // WhatsApp Messages
     'content.whatsappMessages': 'WhatsApp Messages',
     'content.whatsappReservationTemplate': 'Reservation Message Template',
