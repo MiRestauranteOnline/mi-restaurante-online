@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Star, CheckCircle } from "lucide-react";
+import { MessageCircle, Star, CheckCircle, ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero-restaurant-websites.jpg";
 import { businessData } from "@/config/businessData";
+import { useNavigate } from "react-router-dom";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+  
   const handleWhatsAppClick = () => {
     window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(businessData.contact.whatsapp.message)}`, "_blank");
+  };
+
+  const handleSignupClick = () => {
+    navigate('/signup');
   };
 
   return (
@@ -63,18 +70,19 @@ export const Hero = () => {
               <Button 
                 size="lg" 
                 className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary transition-smooth flex items-center gap-2"
-                onClick={handleWhatsAppClick}
+                onClick={handleSignupClick}
               >
-                <MessageCircle className="w-5 h-5" />
-                Contactar por WhatsApp
+                <ArrowRight className="w-5 h-5" />
+                Comenzar a Hacer Crecer Mi Restaurante
               </Button>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="border-primary text-primary hover:bg-primary/5"
-                onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                className="border-primary text-primary hover:bg-primary/5 flex items-center gap-2"
+                onClick={handleWhatsAppClick}
               >
-                Ver Precios
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp
               </Button>
             </div>
 
