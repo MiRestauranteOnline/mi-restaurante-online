@@ -193,6 +193,17 @@ const translations = {
     'branding.headerBackground': 'Fondo del Header',
     'branding.enableHeaderBackground': 'Habilitar Fondo del Header',
     'branding.headerBackgroundStyle': 'Estilo del Fondo del Header',
+    'branding.themeSettings': 'Configuración de Tema',
+    'branding.theme': 'Tema',
+    'branding.bright': 'Claro',
+    'branding.dark': 'Oscuro',
+    'branding.logoSettings': 'Configuración de Logo',
+    'branding.headerLogo': 'Logo del Header',
+    'branding.footerLogo': 'Logo del Footer',
+    'branding.typography': 'Tipografía',
+    'branding.titleFont': 'Fuente de Títulos',
+    'branding.titleFontWeight': 'Peso de Fuente de Títulos',
+    'branding.bodyFont': 'Fuente del Cuerpo',
     
     // Content tab
     'content.homepage': 'Página Principal',
