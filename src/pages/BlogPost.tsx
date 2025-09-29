@@ -323,7 +323,7 @@ const BlogPost = () => {
                       <ul className="space-y-2 text-sm mb-4">
                         <li>✓ Diseño web profesional</li>
                         <li>✓ Menú digital integrado</li>
-                        <li>✓ Sistema de reservas</li>
+                        <li>✓ Menú digital</li>
                         <li>✓ SEO optimizado</li>
                       </ul>
                       <Link to="/contacto">

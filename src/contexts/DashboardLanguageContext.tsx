@@ -86,7 +86,7 @@ const translations = {
     'general.disabled': 'Deshabilitado',
     'general.phonePlaceholder': '123 456 789',
     'general.whatsappPlaceholder': '987 654 321',
-    'general.ctaButtonPlaceholder': 'Reservar Mesa',
+    'general.ctaButtonPlaceholder': 'Contactar',
     'general.ctaLinkPlaceholder': '#contacto o https://ejemplo.com',
     'general.subdomainPlaceholder': 'nombrecliente',
     'general.customDomainPlaceholder': 'www.restaurantecliente.com',

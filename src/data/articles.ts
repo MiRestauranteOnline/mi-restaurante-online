@@ -55,7 +55,7 @@ export const articles: Article[] = [
         <ul>
           <li><strong>Mayor visibilidad en Google:</strong> Aparecer cuando buscan "restaurante cerca de mí"</li>
           <li><strong>Menú digital actualizable:</strong> Sin costos de impresión recurrentes</li>
-          <li><strong>Sistema de reservas 24/7:</strong> Los clientes pueden reservar a cualquier hora</li>
+          <li><strong>Contacto directo 24/7:</strong> Los clientes pueden contactarte a cualquier hora</li>
           <li><strong>Credibilidad profesional:</strong> Transmites confianza y calidad</li>
           <li><strong>Análisis de comportamiento:</strong> Sabes qué buscan tus clientes</li>
         </ul>
@@ -81,12 +81,12 @@ export const articles: Article[] = [
           <li><strong>Sobre nosotros:</strong> Historia del restaurante y del chef</li>
           <li><strong>Galería de fotos:</strong> Platos signature y ambiente del local</li>
           <li><strong>Ubicación y contacto:</strong> Mapa, dirección, teléfono, horarios</li>
-          <li><strong>Reservas online:</strong> Integrado con WhatsApp o sistema propio</li>
+          <li><strong>WhatsApp directo:</strong> Integrado con WhatsApp para contacto inmediato</li>
         </ul>
 
         <h4>Funcionalidades Avanzadas:</h4>
         <ul>
-          <li><strong>Sistema de reservas en tiempo real</strong></li>
+          <li><strong>Sistema de gestión de pedidos</strong></li>
           <li><strong>Integración con delivery (PedidosYa, Rappi)</strong></li>
           <li><strong>Blog gastronómico para SEO</strong></li>
           <li><strong>Testimonios y reseñas de clientes</strong></li>
@@ -117,7 +117,7 @@ export const articles: Article[] = [
               <td class="border border-gray-300 p-3"><strong>Profesional</strong></td>
               <td class="border border-gray-300 p-3">S/1,500 - S/3,000</td>
               <td class="border border-gray-300 p-3">S/100 - S/200</td>
-              <td class="border border-gray-300 p-3">Reservas, blog, SEO básico, analytics</td>
+              <td class="border border-gray-300 p-3">Menú digital, blog, SEO básico, analytics</td>
             </tr>
             <tr>
               <td class="border border-gray-300 p-3"><strong>Premium</strong></td>
@@ -189,7 +189,7 @@ export const articles: Article[] = [
         <h3>Central (Miraflores)</h3>
         <ul>
           <li><strong>Storytelling visual:</strong> Cuenta la historia de cada ingrediente peruano</li>
-          <li><strong>Reservas integradas:</strong> Sistema propio conectado con OpenTable</li>
+          <li><strong>Contacto integrado:</strong> Sistema propio conectado con WhatsApp</li>
           <li><strong>Contenido premium:</strong> Videos del proceso de cocina</li>
         </ul>
 
@@ -214,7 +214,7 @@ export const articles: Article[] = [
           <li><strong>Información desactualizada:</strong> Horarios, precios y menú obsoletos alejan clientes</li>
           <li><strong>Sitio web lento:</strong> Si tarda más de 3 segundos, perderás 40% de visitantes</li>
           <li><strong>No optimizado para móviles:</strong> 80% de búsquedas son desde smartphones</li>
-          <li><strong>Falta de llamadas a la acción:</strong> Debe ser fácil reservar o pedir</li>
+          <li><strong>Falta de llamadas a la acción:</strong> Debe ser fácil contactar o pedir</li>
           <li><strong>Sin integración con redes sociales:</strong> Desperdicias el contenido de Instagram</li>
         </ol>
 
@@ -292,9 +292,9 @@ export const articles: Article[] = [
           </thead>
           <tbody>
             <tr>
-              <td class="border border-gray-300 p-3">Sistema de reservas online</td>
+              <td class="border border-gray-300 p-3">Sistema de contacto directo</td>
               <td class="border border-gray-300 p-3">+S/300-800</td>
-              <td class="border border-gray-300 p-3">Reservas 24/7 automáticas</td>
+              <td class="border border-gray-300 p-3">Contacto 24/7 automático</td>
             </tr>
             <tr>
               <td class="border border-gray-300 p-3">Menú digital con QR</td>
@@ -344,7 +344,7 @@ export const articles: Article[] = [
 
         <h4>❌ Limitaciones:</h4>
         <ul>
-          <li>Sin sistema de reservas</li>
+          <li>Sin sistema de contacto directo</li>
           <li>Actualizaciones manuales del menú</li>
           <li>Soporte limitado post-lanzamiento</li>
         </ul>
@@ -355,7 +355,7 @@ export const articles: Article[] = [
         <h4>✅ Qué Incluye:</h4>
         <ul>
           <li>8-12 páginas completamente optimizadas</li>
-          <li>Sistema de reservas integrado con notificaciones</li>
+          <li>Sistema de contacto integrado con notificaciones</li>
           <li>Menú digital avanzado con categorías y filtros</li>
           <li>Galería de fotos profesional con lightbox</li>
           <li>SEO optimizado para búsquedas locales</li>
@@ -495,7 +495,7 @@ export const articles: Article[] = [
         <h3>💳 Presupuesto Medio (S/1,500 - S/3,000)</h3>
         <ul>
           <li>Invierte en <strong>diseño profesional</strong> que refleje tu marca</li>
-          <li>Incluye <strong>sistema de reservas</strong> para automatizar</li>
+          <li>Incluye <strong>sistema de contacto</strong> para automatizar</li>
           <li>Asegura <strong>SEO básico</strong> para aparecer en Google</li>
           <li>Contempla <strong>mantenimiento</strong> en tu presupuesto mensual</li>
         </ul>
@@ -514,7 +514,7 @@ export const articles: Article[] = [
         
         <h3>📈 Incrementos Promedio Reportados:</h3>
         <ul>
-          <li><strong>+35% en reservas telefónicas</strong> (clientes ven menú online primero)</li>
+          <li><strong>+35% en llamadas directas</strong> (clientes ven menú online primero)</li>
           <li><strong>+40% en clientes nuevos</strong> (mejor visibilidad en Google)</li>
           <li><strong>-50% en llamadas consultando horarios/precios</strong> (info disponible 24/7)</li>
           <li><strong>+25% en pedidos de delivery</strong> (proceso más fluido)</li>
@@ -527,7 +527,7 @@ export const articles: Article[] = [
           <p><strong>Costo mensual:</strong> S/180 (hosting + mantenimiento)</p>
           <p><strong>Resultado en 6 meses:</strong></p>
           <ul class="mt-2">
-            <li>+18 reservas semanales adicionales</li>
+            <li>+18 contactos semanales adicionales</li>
             <li>Ticket promedio: S/85</li>
             <li><strong>Ingresos adicionales mensuales: S/6,120</strong></li>
             <li><strong>ROI: 340% en el primer año</strong></li>

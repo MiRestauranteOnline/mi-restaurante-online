@@ -44,8 +44,8 @@ export const Hero = () => {
                 <span className="text-primary block">en Solo 72 Horas</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-lg">
-                Creamos sitios web profesionales que convierten visitantes en clientes. Con menú digital, 
-                reservas online y SEO optimizado para que te encuentren en Google. Desde S/297/mes, sin costos iniciales.
+                Creamos sitios web profesionales que convierten visitantes en clientes. Con menú digital 
+                y SEO optimizado para que te encuentren en Google. Desde S/297/mes, sin costos iniciales.
               </p>
             </div>
 
@@ -90,19 +90,27 @@ export const Hero = () => {
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-primary" />
-                SEO Básico Incluido
+                Website Listo en 72 Horas
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-primary" />
-                Optimizado para Móvil
+                Hosting & SSL Incluido
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-primary" />
-                Menú Descargable PDF
+                CDN para Mayor Velocidad
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-primary" />
-                WhatsApp Directo
+                Dashboard de Control Total
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary" />
+                Sin Costo Inicial
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary" />
+                Cancela Cuando Quieras
               </div>
             </div>
           </div>

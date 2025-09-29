@@ -372,7 +372,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                     </div>
                     <ul className="space-y-1 text-sm">
                       <li>• Tus clientes NO podrán acceder a tu página web</li>
-                      <li>• Perderás todas las reservas y funcionalidades online</li>
+                      <li>• Perderás todas las funcionalidades online</li>
                       <li>• El dominio .mirestaurante.com será liberado</li>
                       <li>• Si tienes dominio propio, podrás usarlo en otro servicio</li>
                     </ul>

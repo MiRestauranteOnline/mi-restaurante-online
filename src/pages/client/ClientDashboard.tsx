@@ -537,7 +537,7 @@ export default function ClientDashboard() {
                     id="custom_cta_button_text"
                     value={formData.custom_cta_button_text || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, custom_cta_button_text: e.target.value }))}
-                    placeholder="Reservar Mesa"
+                    placeholder="Contactar"
                   />
                 </div>
                 <div>
