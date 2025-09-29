@@ -243,7 +243,7 @@ export default function SubscriptionManagement() {
           {selectedClient && mockSubscriptions[selectedClient] && (
             <Card>
               <CardHeader>
-                <CardTitle>Subscription Management</CardTitle>
+                <CardTitle>{t('admin.subscriptionManagement')}</CardTitle>
                 <CardDescription>
                   Manage subscription for {clients.find(c => c.id === selectedClient)?.restaurant_name}
                 </CardDescription>
