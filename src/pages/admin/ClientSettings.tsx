@@ -3054,13 +3054,13 @@ setReviewForm({
           )}
           <Card>
             <CardHeader>
-              <CardTitle>Branding & Customization</CardTitle>
+              <CardTitle>{t('branding.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Primary Color and Header Background side by side */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="primary_color">Primary Color</Label>
+                  <Label htmlFor="primary_color">{t('branding.primaryColor')}</Label>
                   <div className="mt-1">
                     <Input
                       id="primary_color"
@@ -3079,7 +3079,7 @@ setReviewForm({
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="header_background_enabled">Header Background</Label>
+                  <Label htmlFor="header_background_enabled">{t('branding.headerBackground')}</Label>
                   <div className="flex items-center space-x-2 mt-3">
                     <Switch
                       id="header_background_enabled"
@@ -3089,7 +3089,7 @@ setReviewForm({
                         header_background_enabled: checked
                       })}
                     />
-                    <Label htmlFor="header_background_enabled">Enable Header Background</Label>
+                    <Label htmlFor="header_background_enabled">Habilitar Fondo del Header</Label>
                   </div>
                 </div>
               </div>
@@ -3112,7 +3112,7 @@ setReviewForm({
                 
               {formData.header_background_enabled && (
                 <div className="border-t pt-4">
-                  <Label htmlFor="header_background_style">Header Background Style</Label>
+                  <Label htmlFor="header_background_style">Estilo del Fondo del Header</Label>
                   <Select 
                     value={formData.header_background_style} 
                     onValueChange={(value) => setFormData({...formData, header_background_style: value})}
@@ -3290,17 +3290,17 @@ setReviewForm({
               
               {/* HOMEPAGE SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-primary border-b pb-2">Homepage</h3>
+                <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.homepage')}</h3>
                 
                 {/* Hero Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Hero Section</CardTitle>
+                    <CardTitle>{t('content.heroSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="homepage_hero_title_first_line">First Line Hero Title</Label>
+                        <Label htmlFor="homepage_hero_title_first_line">{t('content.firstLineHeroTitle')}</Label>
                         <Input
                           id="homepage_hero_title_first_line"
                           value={formData.homepage_hero_title_first_line}
@@ -3308,7 +3308,7 @@ setReviewForm({
                         />
                       </div>
                       <div>
-                        <Label htmlFor="homepage_hero_title_second_line">Second Line Hero Title</Label>
+                        <Label htmlFor="homepage_hero_title_second_line">{t('content.secondLineHeroTitle')}</Label>
                         <Input
                           id="homepage_hero_title_second_line"
                           value={formData.homepage_hero_title_second_line}
@@ -3327,7 +3327,7 @@ setReviewForm({
                     </div>
                     <div>
                       <ImageUpload
-                        label="Hero Background Image"
+                        label="Imagen de Fondo del Hero"
                         value={formData.homepage_hero_background_url}
                         onChange={(url) => setFormData({...formData, homepage_hero_background_url: url})}
                         clientId={clientId!}
@@ -3337,7 +3337,7 @@ setReviewForm({
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="homepage_hero_right_button_text">Right Hero Button Text</Label>
+                        <Label htmlFor="homepage_hero_right_button_text">{t('content.rightHeroButtonText')}</Label>
                         <Input
                           id="homepage_hero_right_button_text"
                           value={formData.homepage_hero_right_button_text}
@@ -3345,7 +3345,7 @@ setReviewForm({
                         />
                       </div>
                       <div>
-                        <Label htmlFor="homepage_hero_right_button_link">Right Hero Button Link</Label>
+                        <Label htmlFor="homepage_hero_right_button_link">{t('content.rightHeroButtonLink')}</Label>
                         <Input
                           id="homepage_hero_right_button_link"
                           value={formData.homepage_hero_right_button_link}
@@ -3359,7 +3359,7 @@ setReviewForm({
                 {/* About Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>About Section</CardTitle>
+                    <CardTitle>{t('content.aboutSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
@@ -3411,7 +3411,7 @@ setReviewForm({
                 {/* Menu Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Menu Section</CardTitle>
+                    <CardTitle>{t('content.menuSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
@@ -3455,7 +3455,7 @@ setReviewForm({
                 {/* Services Section */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Services Section</CardTitle>
+                    <CardTitle>{t('content.servicesSection')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
