@@ -228,7 +228,7 @@ const Soporte = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="pt-20 pb-16">
+      <main className="pt-32 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -312,7 +312,7 @@ const Soporte = () => {
                       Respuesta Rápida
                     </h3>
                     <p className="text-sm text-blue-700">
-                      Respondemos a todos los mensajes de soporte dentro de 24 horas durante días laborables.
+                      Respondemos dentro de 48 horas para soporte estándar, y menos de 24 horas para soporte premium (plan avanzado).
                     </p>
                   </div>
                 </CardContent>
