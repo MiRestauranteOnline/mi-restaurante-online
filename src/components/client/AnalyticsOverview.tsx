@@ -247,11 +247,11 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Visitantes Únicos</CardTitle>
                 <div className="p-2 bg-accent/10 rounded-md">
-                  <Users className="h-4 w-4 text-accent-foreground" />
+                  <Users className="h-4 w-4 text-accent" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-accent-foreground">{totals.unique_sessions.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-accent">{totals.unique_sessions.toLocaleString()}</div>
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <TrendingUp className="h-3 w-3 mr-1" />
                   {Math.round(totals.unique_sessions / Math.max(analytics.length, 1))} promedio diario
@@ -262,8 +262,8 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
             <Card className="border-l-4 border-l-orange-600">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Tiempo Promedio</CardTitle>
-                <div className="p-2 bg-orange-600/10 rounded-md">
-                  <Clock className="h-4 w-4 text-orange-700" />
+<div className="p-2 bg-destructive/10 rounded-md">
+<Clock className="h-4 w-4 text-destructive" />
                 </div>
               </CardHeader>
               <CardContent>
@@ -271,7 +271,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
                     <div 
-                      className="bg-orange-600 h-2 rounded-full transition-all duration-300" 
+className="bg-destructive h-2 rounded-full transition-all duration-300"
                       style={{ width: `${Math.min((avgTimeOnPage / 300) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -352,14 +352,14 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Download className="h-4 w-4 text-orange-700" />
+<Download className="h-4 w-4 text-destructive" />
                       <span className="text-sm font-medium">Descargas</span>
                     </div>
                     <span className="text-lg font-bold text-orange-700">{totals.menu_downloads}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-orange-600 h-3 rounded-full transition-all duration-500" 
+className="bg-destructive h-3 rounded-full transition-all duration-500"
                       style={{ width: `${Math.min((totals.menu_downloads / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
                     ></div>
                   </div>
@@ -394,8 +394,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                         const percentage = Math.round((count / totals.unique_sessions) * 100);
                         const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-orange-600 to-orange-700'];
                         const iconColors = ['text-primary', 'text-accent-foreground', 'text-orange-700'];
-                        const deviceIcons = [Smartphone, Monitor, Tablet];
-                        const DeviceIcon = deviceIcons[index % 3];
+const DeviceIcon = device === 'desktop' ? Monitor : device === 'tablet' ? Tablet : Smartphone;
                         return (
                           <div key={device} className="space-y-2">
                             <div className="flex items-center justify-between">
