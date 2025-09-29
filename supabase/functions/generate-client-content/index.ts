@@ -38,6 +38,65 @@ function extractJson(text: string): string {
   return cleaned;
 }
 
+// Fact-checking function to validate content
+async function factCheckContent(content: any, briefing: string, restaurantName: string) {
+  const warnings: string[] = [];
+  
+  // Check for potentially made-up numerical data
+  const statsFields = ['stats_item1_number', 'stats_item2_number', 'stats_item3_number', 
+                      'stats_experience_number', 'stats_clients_number', 'stats_awards_number'];
+  
+  statsFields.forEach(field => {
+    const value = content.content?.[field];
+    if (value && typeof value === 'string') {
+      // Check for specific numbers that might be hallucinated
+      if (/\d+/.test(value) && !briefing.toLowerCase().includes(value.toLowerCase())) {
+        warnings.push(`Warning: Specific number "${value}" in ${field} may be fabricated - not found in briefing`);
+        // Replace with generic terms
+        if (field.includes('experience')) {
+          content.content[field] = 'Experiencia';
+        } else if (field.includes('client')) {
+          content.content[field] = 'Clientes';
+        } else if (field.includes('award')) {
+          content.content[field] = 'Calidad';
+        } else {
+          content.content[field] = '✓';
+        }
+      }
+    }
+  });
+  
+  // Check about_story for potentially made-up dates or specific claims
+  const aboutStory = content.content?.about_story;
+  if (aboutStory && typeof aboutStory === 'string') {
+    // Look for specific years that might be fabricated
+    const yearMatches = aboutStory.match(/\b(19|20)\d{2}\b/g);
+    if (yearMatches) {
+      yearMatches.forEach(year => {
+        if (!briefing.includes(year)) {
+          warnings.push(`Warning: Year "${year}" in about_story may be fabricated - not found in briefing`);
+          content.content.about_story = aboutStory.replace(new RegExp(`\\b${year}\\b`, 'g'), 'hace años');
+        }
+      });
+    }
+    
+    // Check for specific awards or recognitions not in briefing
+    const awardKeywords = ['premio', 'reconocimiento', 'galardón', 'certificación', 'distinción'];
+    awardKeywords.forEach(keyword => {
+      if (aboutStory.toLowerCase().includes(keyword) && !briefing.toLowerCase().includes(keyword)) {
+        warnings.push(`Warning: Mention of "${keyword}" in about_story may be fabricated - not found in briefing`);
+      }
+    });
+  }
+  
+  // Log warnings for debugging
+  if (warnings.length > 0) {
+    console.log('Fact-check warnings for', restaurantName, ':', warnings);
+  }
+  
+  return warnings;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -84,20 +143,36 @@ serve(async (req) => {
 
     console.log('Starting content generation for client:', clientId);
 
-    // Step 1: Generate client profile and content with ChatGPT
+    // Step 1: Get client data for trusted sources
+    const { data: clientData } = await supabase
+      .from('clients')
+      .select('social_media_links, domain, email, phone, whatsapp')
+      .eq('id', clientId)
+      .single();
+
+    // Step 2: Generate client profile and content with ChatGPT using trusted sources
     const contentPrompt = `
     Eres un experto en marketing para restaurantes y SEO local. Basándote en este briefing del cliente, necesitas crear contenido completo para su sitio web en español.
+
+    IMPORTANTE: SOLO USA INFORMACIÓN VERIFICABLE. NO INVENTES DATOS ESPECÍFICOS como años de experiencia, números de clientes, premios, o fechas de fundación si no están en el briefing.
 
     INFORMACIÓN DEL CLIENTE:
     - Nombre del restaurante: ${restaurantName}
     - Ubicación: ${address || 'Lima, Perú'}
     - Briefing: ${briefing}
+    - Sitio web actual: ${clientData?.domain || 'No especificado'}
+    - Redes sociales: ${JSON.stringify(clientData?.social_media_links || {})}
+    - Email: ${clientData?.email || 'No especificado'}
+    - Teléfono: ${clientData?.phone || 'No especificado'}
+    - WhatsApp: ${clientData?.whatsapp || 'No especificado'}
 
     TAREAS:
     1. Analiza el tipo de restaurante y su nicho
     2. Identifica a su audiencia objetivo
     3. Define el tono de marca apropiado
-    4. Crea contenido optimizado para SEO local
+    4. Verifica que no inventes datos específicos (fechas, números, premios)
+    5. Usa solo información del briefing y fuentes proporcionadas
+    6. Crea contenido optimizado para SEO local
 
     RESPONDE EN FORMATO JSON con esta estructura EXACTA:
 
@@ -166,36 +241,36 @@ serve(async (req) => {
         "about_us_label": "Acerca de Nosotros",
         "our_menu_label": "Nuestro Menú",
         "our_team_label": "Nuestro Equipo",
-        "stats_item1_number": "15+",
-        "stats_item1_label": "Años de Experiencia",
+        "stats_item1_number": "GENERAL (no específico inventado)",
+        "stats_item1_label": "Experiencia Gastronómica",
         "stats_item1_icon": "Clock",
-        "stats_item2_number": "5K+",
-        "stats_item2_label": "Clientes Felices",
+        "stats_item2_number": "GENERAL (no específico inventado)", 
+        "stats_item2_label": "Clientes Satisfechos",
         "stats_item2_icon": "Users",
-        "stats_item3_number": "10+",
-        "stats_item3_label": "Reconocimientos",
+        "stats_item3_number": "GENERAL (no específico inventado)",
+        "stats_item3_label": "Calidad Garantizada",
         "stats_item3_icon": "Award",
-        "stats_experience_number": "15+",
-        "stats_experience_label": "Años de Experiencia",
-        "stats_clients_number": "5K+",
-        "stats_clients_label": "Clientes Felices",
-        "stats_awards_number": "10+",
-        "stats_awards_label": "Reconocimientos",
+        "stats_experience_number": "GENERAL (no específico inventado)",
+        "stats_experience_label": "Experiencia Gastronómica", 
+        "stats_clients_number": "GENERAL (no específico inventado)",
+        "stats_clients_label": "Clientes Satisfechos",
+        "stats_awards_number": "GENERAL (no específico inventado)",
+        "stats_awards_label": "Calidad Garantizada",
         "services_card1_title": "Título del servicio 1",
         "services_card1_description": "Descripción del servicio 1",
         "services_card1_icon": "Utensils",
         "services_card1_button_text": "Más Info",
-        "services_card1_button_link": "https://wa.me/51987654321?text=Hola, me gustaría saber más sobre el servicio",
-        "services_card2_title": "Título del servicio 2",
-        "services_card2_description": "Descripción del servicio 2",
+        "services_card1_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre el servicio` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre el servicio'}",
+        "services_card2_title": "Título del servicio 2 (SOLO si está en briefing)",
+        "services_card2_description": "Descripción del servicio 2 (SOLO si está en briefing)",
         "services_card2_icon": "Truck",
         "services_card2_button_text": "Más Info",
-        "services_card2_button_link": "https://wa.me/51987654321?text=Hola, me gustaría saber más sobre delivery",
-        "services_card3_title": "Título del servicio 3",
-        "services_card3_description": "Descripción del servicio 3",
+        "services_card2_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre delivery` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre delivery'}",
+        "services_card3_title": "Título del servicio 3 (SOLO si está en briefing)",
+        "services_card3_description": "Descripción del servicio 3 (SOLO si está en briefing)",
         "services_card3_icon": "Users",
         "services_card3_button_text": "Más Info",
-        "services_card3_button_link": "https://wa.me/51987654321?text=Hola, me gustaría saber más sobre eventos",
+        "services_card3_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre eventos` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre eventos'}",
         "services_feature1_icon": "Clock",
         "services_feature1_text": "Texto feature 1",
         "services_feature2_icon": "Star",
@@ -215,21 +290,28 @@ serve(async (req) => {
       }
     }
 
+    REGLAS CRÍTICAS PARA EVITAR ALUCINACIONES:
+    1. NO INVENTES DATOS ESPECÍFICOS: No uses números de años de experiencia, cantidad de clientes, premios, o fechas de fundación específicas a menos que estén explícitamente en el briefing
+    2. USA TÉRMINOS GENERALES: En lugar de "15 años" usa "Años de experiencia", en lugar de "5K+ clientes" usa "Clientes satisfechos"
+    3. SOLO INCLUYE SERVICIOS MENCIONADOS: No agregues servicios (delivery, eventos, etc.) que no estén mencionados en el briefing
+    4. VERIFICA INFORMACIÓN: Si el briefing menciona redes sociales o sitio web, úsalos como referencia para validar información
+    5. SÉ CONSERVADOR: Es mejor ser general que específico si no tienes datos verificables
+
     IMPORTANTE:
     - Todo el contenido debe estar en español
-    - TÍTULOS DIVIDIDOS: Los campos "_first_line" y "_second_line" NO son dos títulos separados. Son UN SOLO título SEO optimizado que se divide en dos partes equilibradas sin romper palabras. Ejemplo: Si el título optimizado es "Auténtica Comida Peruana Tradicional", lo divides en "Auténtica Comida" (primera línea) y "Peruana Tradicional" (segunda línea)
+    - TÍTULOS DIVIDIDOS: Los campos "_first_line" y "_second_line" NO son dos títulos separados. Son UN SOLO título SEO optimizado que se divide en dos partes equilibradas sin romper palabras
     - Optimiza para SEO local de Lima, Perú (o la ubicación especificada)
     - Usa el tono de marca apropiado para el tipo de restaurante
     - Los prompts de imágenes deben ser en inglés para Leonardo AI
     - Para los iconos, selecciona de esta lista según el contexto: Utensils, Truck, Users, Clock, Star, MapPin, Award, Heart, Coffee, Zap
-    - Los stats deben ser realistas y apropiados para el tipo de restaurante
-    - Los servicios deben reflejar lo que realmente ofrece el restaurante según el briefing
-    - Los botones de servicios deben usar enlaces de WhatsApp apropiados
+    - Los stats deben ser GENERALES y apropiados (no específicos inventados)
+    - Los servicios deben reflejar SOLO lo que está en el briefing
+    - Los botones de servicios deben usar enlaces de WhatsApp del cliente si está disponible
     - Crea contenido coherente que refleje la personalidad del restaurante
-    - LABELS: Las etiquetas (our_story_label, etc.) deben ser cortas y descriptivas
-    - CTA: Crea un título y descripción persuasivos que motiven a la acción
-    - WHATSAPP: Los mensajes deben ser naturales y apropiados para el contexto del restaurante
-    - RESERVAS: El título y descripción de reservas deben ser claros y motivadores
+    - LABELS: Las etiquetas deben ser cortas y descriptivas
+    - CTA: Crea un título y descripción persuasivos pero realistas
+    - WHATSAPP: Usa el número real del cliente si está disponible
+    - RESERVAS: El título y descripción deben ser claros y motivadores
     - CONSISTENCIA: Todo el contenido debe mantener el mismo tono y personalidad de marca
     `;
 
@@ -243,7 +325,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { role: 'system', content: 'Eres un experto en marketing para restaurantes y SEO local. Responde siempre en formato JSON válido.' },
+          { role: 'system', content: 'Eres un experto en marketing para restaurantes y SEO local. CRÍTICO: NO INVENTES datos específicos como años de experiencia, números de clientes, premios o fechas. Usa solo información del briefing y fuentes verificables. Responde siempre en formato JSON válido.' },
           { role: 'user', content: contentPrompt }
         ],
         max_tokens: 3000,
@@ -271,12 +353,17 @@ serve(async (req) => {
     try {
       const contentText = extractJson(openaiData.choices[0].message.content);
       generatedContent = JSON.parse(contentText);
+      
+      // Step 3: Fact-check and validate content
+      console.log('Running fact-check validation...');
+      await factCheckContent(generatedContent, briefing, restaurantName);
+      
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', openaiData.choices[0].message.content);
       throw new Error('Failed to parse AI response as JSON');
     }
 
-    console.log('Content generated successfully');
+    console.log('Content generated and fact-checked successfully');
 
     // Step 2: Save TEXT content immediately (no images yet)
     const textUpdate = {
