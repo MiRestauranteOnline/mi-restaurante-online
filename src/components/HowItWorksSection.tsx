@@ -117,8 +117,8 @@ export const HowItWorksSection = () => {
               Experiencia internacional, <span className="text-primary">servicio local</span>
             </h3>
             <p className="text-lg text-muted-foreground mb-6">
-              Con más de 100 proyectos web internacionales, ahora traemos esa calidad y experiencia 
-              a restaurantes en Perú con precios accesibles y soporte rápido en español.
+              100+ proyectos internacionales avalan nuestra experiencia. 
+              Ahora en Perú con precios locales y soporte en español.
             </p>
             
             {/* Trust Indicators */}
