@@ -137,33 +137,64 @@ const Signup = () => {
       if (data?.success && data?.client?.id) {
         console.log('Account created successfully, initiating payment:', data);
         
-        // Now initiate Mercado Pago payment
-        // First create the plan
-        const { data: planData, error: planError } = await supabase.functions.invoke('create-mercadopago-plan', {
-          body: { planType: plan },
-        });
+        try {
+          // Now initiate Mercado Pago payment
+          // First create the plan
+          console.log('Calling create-mercadopago-plan with plan type:', plan);
+          const { data: planData, error: planError } = await supabase.functions.invoke('create-mercadopago-plan', {
+            body: { planType: plan },
+          });
 
-        if (planError || !planData?.success) {
-          throw new Error('Error creando el plan de pago');
-        }
+          console.log('Plan response:', { planData, planError });
 
-        // Then create the subscription
-        const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-subscription', {
-          body: {
+          if (planError) {
+            console.error('Plan creation error:', planError);
+            throw new Error(`Error creando el plan de pago: ${planError.message}`);
+          }
+          
+          if (!planData?.success) {
+            console.error('Plan creation failed:', planData);
+            throw new Error('Error creando el plan de pago');
+          }
+
+          // Then create the subscription
+          console.log('Calling create-mercadopago-subscription with:', {
             planId: planData.plan.id,
-            customerEmail: formData.email,
-            customerName: formData.restaurantName,
+            email: formData.email,
+            name: formData.restaurantName,
             clientId: data.client.id,
             planType: plan,
-          },
-        });
+          });
+          
+          const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-subscription', {
+            body: {
+              planId: planData.plan.id,
+              customerEmail: formData.email,
+              customerName: formData.restaurantName,
+              clientId: data.client.id,
+              planType: plan,
+            },
+          });
 
-        if (subscriptionError || !subscriptionData?.success) {
-          throw new Error('Error creando la suscripción');
+          console.log('Subscription response:', { subscriptionData, subscriptionError });
+
+          if (subscriptionError) {
+            console.error('Subscription creation error:', subscriptionError);
+            throw new Error(`Error creando la suscripción: ${subscriptionError.message}`);
+          }
+          
+          if (!subscriptionData?.success) {
+            console.error('Subscription creation failed:', subscriptionData);
+            throw new Error('Error creando la suscripción');
+          }
+
+          // Redirect to Mercado Pago payment page
+          console.log('Redirecting to Mercado Pago:', subscriptionData.initPoint);
+          window.location.href = subscriptionData.initPoint;
+        } catch (paymentError: any) {
+          console.error('Payment initialization error:', paymentError);
+          throw new Error(paymentError.message || 'Error al iniciar el pago');
         }
-
-        // Redirect to Mercado Pago payment page
-        window.location.href = subscriptionData.initPoint;
       } else {
         throw new Error('Respuesta inesperada del servidor');
       }

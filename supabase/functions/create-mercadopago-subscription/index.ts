@@ -14,6 +14,8 @@ interface CreateSubscriptionRequest {
 }
 
 serve(async (req) => {
+  console.log('create-mercadopago-subscription function called, method:', req.method);
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

@@ -10,6 +10,8 @@ interface CreatePlanRequest {
 }
 
 serve(async (req) => {
+  console.log('create-mercadopago-plan function called, method:', req.method);
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
