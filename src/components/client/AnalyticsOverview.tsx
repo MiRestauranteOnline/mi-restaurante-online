@@ -288,7 +288,7 @@ className="bg-destructive h-2 rounded-full transition-all duration-300"
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-secondary-foreground">{avgBounceRate}%</div>
+                <div className="text-2xl font-bold text-foreground">{avgBounceRate}%</div>
                 <div className="flex items-center mt-2 text-xs text-muted-foreground">
                   <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
                     <div 
@@ -319,7 +319,7 @@ className="bg-destructive h-2 rounded-full transition-all duration-300"
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <MessageCircle className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">WhatsApp</span>
+                      <span className="text-sm font-medium">Clics WhatsApp</span>
                     </div>
                     <span className="text-lg font-bold text-primary">{totals.whatsapp_clicks}</span>
                   </div>
@@ -335,10 +335,10 @@ className="bg-destructive h-2 rounded-full transition-all duration-300"
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-accent" />
-                      <span className="text-sm font-medium">Llamadas</span>
+                      <Phone className="h-4 w-4 text-yellow-600" />
+                      <span className="text-sm font-medium">Clics Teléfono</span>
                     </div>
-                    <span className="text-lg font-bold text-accent-foreground">{totals.phone_clicks}</span>
+                    <span className="text-lg font-bold text-yellow-600">{totals.phone_clicks}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
@@ -352,8 +352,8 @@ className="bg-destructive h-2 rounded-full transition-all duration-300"
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-<Download className="h-4 w-4 text-destructive" />
-                      <span className="text-sm font-medium">Descargas</span>
+                      <Download className="h-4 w-4 text-destructive" />
+                      <span className="text-sm font-medium">Descargas Menú</span>
                     </div>
                     <span className="text-lg font-bold text-orange-700">{totals.menu_downloads}</span>
                   </div>
