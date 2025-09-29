@@ -16,7 +16,8 @@ import {
   UtensilsCrossed,
   CreditCard,
   Star,
-  BarChart3
+  BarChart3,
+  Shield
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -119,6 +120,7 @@ export default function ClientDashboardLayout() {
   const sidebarItems = [
     { href: selectedClientId ? `/client/dashboard/${selectedClientId}` : '/client', icon: LayoutDashboard, label: t('nav.dashboard') },
     { href: `/client/analytics/${selectedClientId}`, icon: BarChart3, label: 'Analíticas' },
+    { href: `/client/support/${selectedClientId}`, icon: Shield, label: 'Soporte' },
     { href: '/client/subscription', icon: CreditCard, label: t('nav.subscription') },
   ];
 

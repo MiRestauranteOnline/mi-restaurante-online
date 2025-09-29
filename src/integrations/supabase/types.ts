@@ -1033,6 +1033,7 @@ export type Database = {
           id: string
           monthly_reports_enabled: boolean | null
           premium_support_enabled: boolean | null
+          unique_support_pin: string | null
           updated_at: string
         }
         Insert: {
@@ -1045,6 +1046,7 @@ export type Database = {
           id?: string
           monthly_reports_enabled?: boolean | null
           premium_support_enabled?: boolean | null
+          unique_support_pin?: string | null
           updated_at?: string
         }
         Update: {
@@ -1057,6 +1059,7 @@ export type Database = {
           id?: string
           monthly_reports_enabled?: boolean | null
           premium_support_enabled?: boolean | null
+          unique_support_pin?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1263,6 +1266,10 @@ export type Database = {
       generate_opening_hours_ordered: {
         Args: { opening_hours_obj: Json }
         Returns: Json
+      }
+      generate_support_pin: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_user_role: {
         Args: { _user_id: string }

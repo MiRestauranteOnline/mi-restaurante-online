@@ -9,9 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { businessData } from "@/config/businessData";
-import { Mail, Phone, Clock, MapPin, Send, CheckCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Mail, Phone, Clock, MapPin, Send, CheckCircle, Shield, AlertCircle } from "lucide-react";
 
 const supportSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
@@ -19,6 +22,16 @@ const supportSchema = z.object({
   subject: z.string().min(5, "El asunto debe tener al menos 5 caracteres"),
   message: z.string().min(20, "El mensaje debe tener al menos 20 caracteres"),
   clientId: z.string().optional(),
+  supportType: z.enum(["regular", "premium"]),
+  premiumEmail: z.string().optional(),
+  premiumPin: z.string().optional(),
+}).refine((data) => {
+  if (data.supportType === "premium") {
+    return data.premiumEmail && data.premiumPin && data.premiumPin.length === 8;
+  }
+  return true;
+}, {
+  message: "Para soporte premium, debes proporcionar email y PIN de 8 dígitos",
 });
 
 type SupportFormData = z.infer<typeof supportSchema>;
@@ -26,6 +39,8 @@ type SupportFormData = z.infer<typeof supportSchema>;
 const Soporte = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isPremiumVerified, setIsPremiumVerified] = useState(false);
+  const [verifyingPremium, setVerifyingPremium] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<SupportFormData>({
@@ -36,16 +51,109 @@ const Soporte = () => {
       subject: "",
       message: "",
       clientId: "",
+      supportType: "regular",
+      premiumEmail: "",
+      premiumPin: "",
     },
   });
 
+  const supportType = form.watch("supportType");
+  const premiumEmail = form.watch("premiumEmail");
+  const premiumPin = form.watch("premiumPin");
+
+  const verifyPremiumSupport = async () => {
+    if (!premiumEmail || !premiumPin || premiumPin.length !== 8) {
+      toast({
+        title: "Datos incompletos",
+        description: "Por favor ingresa email y PIN de 8 dígitos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setVerifyingPremium(true);
+    
+    try {
+      // First get the client by email
+      const { data: client, error: clientError } = await supabase
+        .from('clients')
+        .select('id, restaurant_name, plan_type')
+        .eq('email', premiumEmail)
+        .maybeSingle();
+
+      if (clientError || !client) {
+        toast({
+          title: "Email no encontrado",
+          description: "No encontramos ningún cliente con ese email",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (client.plan_type !== 'advanced') {
+        toast({
+          title: "Plan no válido",
+          description: "Este cliente no tiene plan avanzado activo",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check if PIN matches
+      const { data: premiumFeatures, error: pinError } = await supabase
+        .from('premium_features')
+        .select('unique_support_pin')
+        .eq('client_id', client.id)
+        .eq('unique_support_pin', premiumPin)
+        .maybeSingle();
+
+      if (pinError || !premiumFeatures) {
+        toast({
+          title: "PIN incorrecto",
+          description: "El PIN no coincide con nuestros registros",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Success
+      setIsPremiumVerified(true);
+      toast({
+        title: "Verificación exitosa",
+        description: `Bienvenido, ${client.restaurant_name}. Tienes acceso a soporte premium.`,
+      });
+
+    } catch (error) {
+      console.error("Error verifying premium support:", error);
+      toast({
+        title: "Error de verificación",
+        description: "Hubo un problema verificando tus datos. Intenta nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setVerifyingPremium(false);
+    }
+  };
+
   const onSubmit = async (data: SupportFormData) => {
+    if (data.supportType === "premium" && !isPremiumVerified) {
+      toast({
+        title: "Verificación requerida",
+        description: "Debes verificar tu PIN premium antes de enviar el mensaje",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
-      // Here you would normally send the form data to your backend
-      // For now, we'll simulate a successful submission
-      console.log("Support form submitted:", data);
+      // Here you would send to different emails based on support type
+      const targetEmail = data.supportType === "premium" 
+        ? "premiumsoporte@mirestaurante.online" 
+        : "soporte@mirestaurante.online";
+
+      console.log("Support form submitted:", { ...data, targetEmail });
       
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -53,7 +161,9 @@ const Soporte = () => {
       setSubmitted(true);
       toast({
         title: "Mensaje enviado exitosamente",
-        description: "Te contactaremos pronto para ayudarte.",
+        description: data.supportType === "premium" 
+          ? "Tu mensaje fue enviado a soporte premium. Te contactaremos en menos de 4 horas."
+          : "Te contactaremos pronto para ayudarte.",
       });
     } catch (error) {
       console.error("Error sending support message:", error);
@@ -241,6 +351,120 @@ const Soporte = () => {
                           )}
                         />
 
+                        {/* Support Type Selection */}
+                        <FormField
+                          control={form.control}
+                          name="supportType"
+                          render={({ field }) => (
+                            <FormItem className="space-y-3">
+                              <FormLabel>Tipo de Soporte</FormLabel>
+                              <FormControl>
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  className="flex flex-col space-y-2"
+                                >
+                                  <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="regular" id="regular" />
+                                    <Label htmlFor="regular">Soporte Regular</Label>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="premium" id="premium" />
+                                    <Label htmlFor="premium" className="flex items-center gap-2">
+                                      <Shield className="h-4 w-4 text-primary" />
+                                      Soporte Premium (Plan Avanzado)
+                                    </Label>
+                                  </div>
+                                </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Premium Support Verification */}
+                        {supportType === "premium" && (
+                          <div className="bg-muted p-4 rounded-lg space-y-4">
+                            <div className="flex items-center gap-2 text-primary">
+                              <Shield className="h-5 w-5" />
+                              <h3 className="font-semibold">Verificación de Soporte Premium</h3>
+                            </div>
+                            
+                            <p className="text-sm text-muted-foreground">
+                              Para acceder al soporte premium, verifica tu identidad con tu email y PIN único.
+                            </p>
+
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <FormField
+                                control={form.control}
+                                name="premiumEmail"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Email registrado</FormLabel>
+                                    <FormControl>
+                                      <Input type="email" placeholder="email@registrado.com" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <FormField
+                                control={form.control}
+                                name="premiumPin"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>PIN único (8 dígitos)</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="text" 
+                                        placeholder="12345678" 
+                                        maxLength={8}
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <Button 
+                                type="button"
+                                onClick={verifyPremiumSupport}
+                                disabled={verifyingPremium || !premiumEmail || !premiumPin || premiumPin.length !== 8}
+                                variant="outline"
+                              >
+                                {verifyingPremium ? (
+                                  <div className="flex items-center gap-2">
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                    Verificando...
+                                  </div>
+                                ) : (
+                                  "Verificar PIN"
+                                )}
+                              </Button>
+                              
+                              {isPremiumVerified && (
+                                <div className="flex items-center gap-2 text-green-600">
+                                  <CheckCircle className="h-4 w-4" />
+                                  <span className="text-sm font-medium">Verificado</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {!isPremiumVerified && (
+                              <div className="flex items-start gap-2 text-amber-600 bg-amber-50 p-3 rounded-md">
+                                <AlertCircle className="h-4 w-4 mt-0.5" />
+                                <p className="text-sm">
+                                  Debes verificar tu PIN antes de enviar el mensaje de soporte premium.
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
                         <FormField
                           control={form.control}
                           name="subject"
@@ -275,7 +499,7 @@ const Soporte = () => {
 
                         <Button 
                           type="submit" 
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || (supportType === "premium" && !isPremiumVerified)}
                           className="w-full"
                         >
                           {isSubmitting ? (
