@@ -44,8 +44,9 @@ export const Hero = () => {
                 <span className="text-primary block">en Solo 72 Horas</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-lg">
-                Creamos sitios web profesionales que convierten visitantes en clientes. Con menú digital 
-                y SEO optimizado para que te encuentren en Google. Desde S/297/mes, sin costos iniciales.
+                Transformamos tu restaurante con un sitio web que genera más clientes. 
+                Hosting incluido, entrega en 72 horas, y SEO optimizado para dominar Google. 
+                Todo desde S/297/mes, sin costo inicial.
               </p>
             </div>
 
