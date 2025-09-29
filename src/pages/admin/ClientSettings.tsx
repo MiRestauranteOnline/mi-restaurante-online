@@ -778,16 +778,16 @@ const [reviewForm, setReviewForm] = useState({
 
   // Icon options for dropdowns
   const iconOptions = [
-    { value: 'Utensils', label: 'Utensils' },
-    { value: 'Truck', label: 'Truck' },
-    { value: 'Users', label: 'Users' },
-    { value: 'Clock', label: 'Clock' },
-    { value: 'Star', label: 'Star' },
-    { value: 'MapPin', label: 'MapPin' },
-    { value: 'Award', label: 'Award' },
-    { value: 'Heart', label: 'Heart' },
-    { value: 'Coffee', label: 'Coffee' },
-    { value: 'Zap', label: 'Zap' }
+    { value: 'Utensils', label: t('icons.utensils') },
+    { value: 'Truck', label: t('icons.truck') },
+    { value: 'Users', label: t('icons.users') },
+    { value: 'Clock', label: t('icons.clock') },
+    { value: 'Star', label: t('icons.star') },
+    { value: 'MapPin', label: t('icons.mapPin') },
+    { value: 'Award', label: t('icons.award') },
+    { value: 'Heart', label: t('icons.heart') },
+    { value: 'Coffee', label: t('icons.coffee') },
+    { value: 'Zap', label: t('icons.zap') }
   ];
 
   const [formData, setFormData] = useState({

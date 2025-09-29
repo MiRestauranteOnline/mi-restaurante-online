@@ -361,6 +361,18 @@ const translations = {
     'content.thirdStatLabel': 'Etiqueta Tercera Estadística',
     'content.selectIcon': 'Seleccionar icono',
     
+    // Icon labels
+    'icons.utensils': 'Utensilios',
+    'icons.truck': 'Reparto',
+    'icons.users': 'Usuarios',
+    'icons.clock': 'Reloj',
+    'icons.star': 'Estrella',
+    'icons.mapPin': 'Ubicación',
+    'icons.award': 'Premio',
+    'icons.heart': 'Corazón',
+    'icons.coffee': 'Café',
+    'icons.zap': 'Rayo',
+    
     'images.title': 'Imágenes del Cliente',
     'images.description': 'Haz clic en cualquier imagen para copiar su URL. Gestiona las imágenes subidas por este cliente.',
     'images.uploadNew': 'Subir Nueva Imagen',
@@ -612,6 +624,18 @@ const translations = {
     'content.thirdStatNumber': 'Third Stat Number',
     'content.thirdStatLabel': 'Third Stat Label',
     'content.selectIcon': 'Select icon',
+    
+    // Icon labels
+    'icons.utensils': 'Utensils',
+    'icons.truck': 'Truck',
+    'icons.users': 'Users',
+    'icons.clock': 'Clock',
+    'icons.star': 'Star',
+    'icons.mapPin': 'Map Pin',
+    'icons.award': 'Award',
+    'icons.heart': 'Heart',
+    'icons.coffee': 'Coffee',
+    'icons.zap': 'Zap',
     
     // Images tab
     'images.title': 'Client Images',
