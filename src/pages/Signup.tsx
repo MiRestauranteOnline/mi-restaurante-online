@@ -146,45 +146,53 @@ const Signup = () => {
         console.log('Account created successfully, initiating payment:', data);
         
         try {
-          // Now initiate Mercado Pago payment
-          // First try to create the plan (fallback to direct subscription if it fails)
-          let planId: string | null = null;
-          console.log('Calling create-mercadopago-plan with plan type:', plan);
-          try {
-            const { data: planData, error: planError } = await supabase.functions.invoke('create-mercadopago-plan', {
-              body: { planType: plan },
-            });
-            console.log('Plan response:', { planData, planError });
+          // Fetch payment settings to check test mode
+          const { data: paymentSettings } = await supabase
+            .from('payment_settings')
+            .select('test_mode, test_payer_email')
+            .single();
 
-            if (planError) {
-              console.warn('Plan creation error, will continue without plan:', planError);
-            } else if (!planData?.success) {
-              console.warn('Plan creation failed (no success flag), continuing without plan:', planData);
-            } else {
-              planId = planData.plan.id;
-            }
-          } catch (planException) {
-            console.warn('Plan creation threw exception, continuing without plan:', planException);
-          }
-
-          // Create the subscription (works with or without planId)
           // Use test payer email if test mode is enabled, otherwise use customer email
           const payerEmail = (paymentSettings?.test_mode && paymentSettings?.test_payer_email)
             ? paymentSettings.test_payer_email
             : formData.email;
 
-          console.log('Calling create-mercadopago-subscription with:', {
-            planId,
+          console.log('Creating Mercado Pago checkout with:', {
             payerEmail,
             customerName: formData.restaurantName,
             clientId: data.client.id,
             planType: plan,
             isTestMode: paymentSettings?.test_mode
           });
+
           
-          const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-subscription', {
+          const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-mercadopago-checkout', {
             body: {
-              planId,
+              customerEmail: payerEmail,
+              customerName: formData.restaurantName,
+              clientId: data.client.id,
+              planType: plan,
+            },
+          });
+
+          console.log('Checkout response:', { checkoutData, checkoutError });
+
+          if (checkoutError) {
+            console.error('Checkout creation error:', checkoutError);
+            throw new Error(`Error creando el checkout: ${checkoutError.message}`);
+          }
+          
+          if (!checkoutData?.success) {
+            console.error('Checkout creation failed:', checkoutData);
+            throw new Error(checkoutData?.error || 'Error creando el checkout');
+          }
+
+          // Redirect to Mercado Pago payment page
+          console.log('Redirecting to Mercado Pago:', checkoutData.initPoint);
+          window.location.href = checkoutData.initPoint;
+          
+          const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-checkout', {
+            body: {
               customerEmail: payerEmail,
               customerName: formData.restaurantName,
               clientId: data.client.id,

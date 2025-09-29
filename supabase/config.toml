@@ -30,7 +30,7 @@ verify_jwt = false
 [functions.create-mercadopago-plan]
 verify_jwt = false
 
-[functions.create-mercadopago-subscription]
+[functions.create-mercadopago-checkout]
 verify_jwt = false
 
 [functions.mercadopago-webhook]
