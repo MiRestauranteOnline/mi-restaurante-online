@@ -25,6 +25,7 @@ const translations = {
     'nav.images': 'Imágenes',
     'nav.briefing': 'Briefing',
     'nav.setupPrompt': 'Configuración Inicial',
+    'nav.subscription': 'Suscripción',
     
     // Admin Navigation
     'admin.clientManagement': 'Gestión de Clientes',
@@ -415,6 +416,7 @@ const translations = {
     'nav.images': 'Images',
     'nav.briefing': 'Briefing',
     'nav.setupPrompt': 'Setup Prompt',
+    'nav.subscription': 'Subscription',
     
     // Admin Navigation
     'admin.clientManagement': 'Client Management',
