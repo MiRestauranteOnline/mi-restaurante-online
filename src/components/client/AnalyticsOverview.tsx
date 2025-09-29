@@ -222,157 +222,162 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
           </CardContent>
         </Card>
       ) : (
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList>
-            <TabsTrigger value="overview">Resumen</TabsTrigger>
-            <TabsTrigger value="engagement">Interacciones</TabsTrigger>
-            <TabsTrigger value="menu">Popularidad del Menú</TabsTrigger>
-            <TabsTrigger value="devices">Dispositivos</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Vistas de Página</CardTitle>
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totals.page_views.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {Math.round(totals.page_views / Math.max(analytics.length, 1))} por día en promedio
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Visitantes Únicos</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totals.unique_sessions.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {Math.round(totals.unique_sessions / Math.max(analytics.length, 1))} por día en promedio
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Tiempo Promedio</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{formatTime(avgTimeOnPage)}</div>
-                  <p className="text-xs text-muted-foreground">
-                    Por página visitada
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Tasa de Rebote</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{avgBounceRate}%</div>
-                  <p className="text-xs text-muted-foreground">
-                    Visitantes que ven solo una página
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="engagement" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Clics WhatsApp</CardTitle>
-                  <MessageCircle className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totals.whatsapp_clicks}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {Math.round(totals.whatsapp_clicks / Math.max(analytics.length, 1))} por día
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Llamadas</CardTitle>
-                  <Phone className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totals.phone_clicks}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {Math.round(totals.phone_clicks / Math.max(analytics.length, 1))} por día
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Descargas del Menú</CardTitle>
-                  <Download className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totals.menu_downloads}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {Math.round(totals.menu_downloads / Math.max(analytics.length, 1))} por día
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="menu" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Secciones Más Populares del Menú</CardTitle>
-                <CardDescription>
-                  Tiempo promedio que los visitantes pasan viendo cada sección
-                </CardDescription>
+        <div className="space-y-6">
+          {/* Overview Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="border-l-4 border-l-blue-500">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Vistas de Página</CardTitle>
+                <div className="p-2 bg-blue-500/10 rounded-md">
+                  <Eye className="h-4 w-4 text-blue-600" />
+                </div>
               </CardHeader>
               <CardContent>
-                {Object.keys(menuSections).length === 0 ? (
-                  <p className="text-muted-foreground text-center py-4">
-                    No hay datos de secciones del menú disponibles
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {Object.entries(menuSections)
-                      .sort(([,a], [,b]) => b.views - a.views)
-                      .map(([section, data]) => (
-                        <div key={section} className="flex items-center justify-between p-3 rounded-lg border">
-                          <div>
-                            <p className="font-medium">{section}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {data.views} vistas • {formatTime(Math.round(data.total_time / Math.max(data.count, 1)))} promedio
-                            </p>
-                          </div>
-                          <Badge variant="secondary">
-                            {Math.round((data.views / totals.page_views) * 100)}% del tráfico
-                          </Badge>
-                        </div>
-                      ))
-                    }
-                  </div>
-                )}
+                <div className="text-2xl font-bold text-blue-600">{totals.page_views.toLocaleString()}</div>
+                <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  {Math.round(totals.page_views / Math.max(analytics.length, 1))} promedio diario
+                </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="devices" className="space-y-4">
+            <Card className="border-l-4 border-l-green-500">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Visitantes Únicos</CardTitle>
+                <div className="p-2 bg-green-500/10 rounded-md">
+                  <Users className="h-4 w-4 text-green-600" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">{totals.unique_sessions.toLocaleString()}</div>
+                <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  {Math.round(totals.unique_sessions / Math.max(analytics.length, 1))} promedio diario
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-orange-500">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Tiempo Promedio</CardTitle>
+                <div className="p-2 bg-orange-500/10 rounded-md">
+                  <Clock className="h-4 w-4 text-orange-600" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">{formatTime(avgTimeOnPage)}</div>
+                <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                  <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                    <div 
+                      className="bg-orange-500 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${Math.min((avgTimeOnPage / 300) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  {Math.round((avgTimeOnPage / 300) * 100)}%
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-purple-500">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Tasa de Rebote</CardTitle>
+                <div className="p-2 bg-purple-500/10 rounded-md">
+                  <Mouse className="h-4 w-4 text-purple-600" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-purple-600">{avgBounceRate}%</div>
+                <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                  <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                    <div 
+                      className="bg-purple-500 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${avgBounceRate}%` }}
+                    ></div>
+                  </div>
+                  {avgBounceRate < 40 ? 'Excelente' : avgBounceRate < 60 ? 'Bueno' : 'Mejorable'}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Interaction Metrics */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl font-bold flex items-center gap-2">
+                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-md">
+                  <BarChart3 className="h-5 w-5 text-white" />
+                </div>
+                Interacciones de Usuarios
+              </CardTitle>
+              <CardDescription>Acciones importantes que los visitantes realizan en tu sitio</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="h-4 w-4 text-green-600" />
+                      <span className="text-sm font-medium">WhatsApp</span>
+                    </div>
+                    <span className="text-lg font-bold text-green-600">{totals.whatsapp_clicks}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min((totals.whatsapp_clicks / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{Math.round(totals.whatsapp_clicks / Math.max(analytics.length, 1))} por día</p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-blue-600" />
+                      <span className="text-sm font-medium">Llamadas</span>
+                    </div>
+                    <span className="text-lg font-bold text-blue-600">{totals.phone_clicks}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-blue-400 to-blue-600 h-3 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min((totals.phone_clicks / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{Math.round(totals.phone_clicks / Math.max(analytics.length, 1))} por día</p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Download className="h-4 w-4 text-purple-600" />
+                      <span className="text-sm font-medium">Descargas</span>
+                    </div>
+                    <span className="text-lg font-bold text-purple-600">{totals.menu_downloads}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-purple-400 to-purple-600 h-3 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min((totals.menu_downloads / Math.max(totals.whatsapp_clicks, totals.phone_clicks, totals.menu_downloads, 1)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{Math.round(totals.menu_downloads / Math.max(analytics.length, 1))} por día</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Device Breakdown */}
             <Card>
               <CardHeader>
-                <CardTitle>Dispositivos Utilizados</CardTitle>
-                <CardDescription>
-                  Distribución de visitantes por tipo de dispositivo
-                </CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-md">
+                    <Smartphone className="h-4 w-4 text-white" />
+                  </div>
+                  Dispositivos Utilizados
+                </CardTitle>
+                <CardDescription>Distribución de visitantes por tipo de dispositivo</CardDescription>
               </CardHeader>
               <CardContent>
                 {Object.keys(deviceBreakdown).length === 0 ? (
@@ -383,18 +388,28 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                   <div className="space-y-4">
                     {Object.entries(deviceBreakdown)
                       .sort(([,a], [,b]) => b - a)
-                      .map(([device, count]) => {
+                      .map(([device, count], index) => {
                         const percentage = Math.round((count / totals.unique_sessions) * 100);
+                        const colors = ['from-blue-400 to-blue-600', 'from-green-400 to-green-600', 'from-purple-400 to-purple-600'];
+                        const iconColors = ['text-blue-600', 'text-green-600', 'text-purple-600'];
                         return (
-                          <div key={device} className="flex items-center justify-between p-3 rounded-lg border">
-                            <div className="flex items-center space-x-3">
-                              <Smartphone className="h-5 w-5 text-muted-foreground" />
-                              <div>
-                                <p className="font-medium capitalize">{device}</p>
-                                <p className="text-sm text-muted-foreground">{count} visitantes</p>
+                          <div key={device} className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <Smartphone className={`h-4 w-4 ${iconColors[index % 3]}`} />
+                                <span className="text-sm font-medium capitalize">{device}</span>
+                              </div>
+                              <div className="text-right">
+                                <span className="text-lg font-bold">{percentage}%</span>
+                                <p className="text-xs text-muted-foreground">{count} visitantes</p>
                               </div>
                             </div>
-                            <Badge variant="secondary">{percentage}%</Badge>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div 
+                                className={`bg-gradient-to-r ${colors[index % 3]} h-2 rounded-full transition-all duration-500`}
+                                style={{ width: `${percentage}%` }}
+                              ></div>
+                            </div>
                           </div>
                         );
                       })
@@ -403,8 +418,59 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+
+            {/* Menu Sections */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-md">
+                    <Eye className="h-4 w-4 text-white" />
+                  </div>
+                  Popularidad del Menú
+                </CardTitle>
+                <CardDescription>Secciones más vistas y tiempo promedio</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {Object.keys(menuSections).length === 0 ? (
+                  <p className="text-muted-foreground text-center py-4">
+                    No hay datos de secciones del menú disponibles
+                  </p>
+                ) : (
+                  <div className="space-y-4">
+                    {Object.entries(menuSections)
+                      .sort(([,a], [,b]) => b.views - a.views)
+                      .slice(0, 4)
+                      .map(([section, data], index) => {
+                        const percentage = Math.round((data.views / totals.page_views) * 100);
+                        const colors = ['from-yellow-400 to-orange-500', 'from-green-400 to-emerald-500', 'from-blue-400 to-cyan-500', 'from-purple-400 to-pink-500'];
+                        return (
+                          <div key={section} className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium">{section}</span>
+                              <div className="text-right">
+                                <span className="text-lg font-bold">{percentage}%</span>
+                                <p className="text-xs text-muted-foreground">{data.views} vistas</p>
+                              </div>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div 
+                                className={`bg-gradient-to-r ${colors[index]} h-2 rounded-full transition-all duration-500`}
+                                style={{ width: `${percentage}%` }}
+                              ></div>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {formatTime(Math.round(data.total_time / Math.max(data.count, 1)))} tiempo promedio
+                            </p>
+                          </div>
+                        );
+                      })
+                    }
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       )}
     </div>
   );
