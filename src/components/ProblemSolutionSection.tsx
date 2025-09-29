@@ -17,26 +17,26 @@ export const ProblemSolutionSection = () => {
   const problems = [
     {
       icon: TrendingDown,
-      title: "Clientes no te encuentran online",
-      description: "Sin presencia web, pierdes clientes que buscan restaurantes en Google.",
+      title: "Invisible en Google",
+      description: "Cuando buscan 'restaurante cerca de mí', aparece tu competencia, no tú.",
       color: "text-destructive"
     },
     {
       icon: Clock,
-      title: "Sin menú ni información online",
-      description: "Clientes no pueden ver tu menú o información antes de decidir visitarte.",
+      title: "Perdiendo clientes cada hora",
+      description: "Competidores con websites profesionales capturan TUS clientes potenciales.",
       color: "text-destructive"
     },
     {
       icon: DollarSign,
-      title: "Dependes 100% del delivery",
-      description: "Apps como Rappi se llevan hasta 30% de comisión por cada pedido.",
+      title: "Sin control de tu presencia digital",
+      description: "No puedes actualizar menús, precios o información cuando necesitas.",
       color: "text-destructive"
     },
     {
       icon: Users,
-      title: "Sin información clara",
-      description: "Clientes no saben tu horario, ubicación exacta o especialidades.",
+      title: "Cero datos de rendimiento",
+      description: "No sabes cuántos clientes podrías estar captando online.",
       color: "text-destructive"
     }
   ];
@@ -44,26 +44,26 @@ export const ProblemSolutionSection = () => {
   const solutions = [
     {
       icon: CheckCircle,
-      title: "Presencia online profesional",
-      description: "Tu restaurante visible en Google con información completa y atractiva.",
+      title: "Dominas Google en 72 horas",
+      description: "SEO optimizado desde día 1. Apareces primero cuando buscan restaurantes.",
       color: "text-primary"
     },
     {
       icon: Smartphone,
-      title: "Pedidos directos por WhatsApp",
-      description: "Botón directo a WhatsApp con menú descargable, sin intermediarios.",
+      title: "Website profesional listo ya",
+      description: "Mientras competidores esperan meses, tú ya estás capturando clientes online.",
       color: "text-primary"
     },
     {
       icon: TrendingUp,
-      title: "Reduces comisiones",
-      description: "Clientes directos = mayor margen de ganancia en cada pedido.",
+      title: "Control total con dashboard",
+      description: "Actualizas menú, precios e info al instante. Sin depender de nadie.",
       color: "text-primary"
     },
     {
       icon: CheckCircle,
-      title: "Información completa 24/7",
-      description: "Horarios, ubicación, menú y contacto disponibles siempre.",
+      title: "Analytics y reportes incluidos",
+      description: "Sabes exactamente cuántos clientes generas y optimizas resultados.",
       color: "text-primary"
     }
   ];
@@ -132,12 +132,12 @@ export const ProblemSolutionSection = () => {
               <h4 className="font-semibold text-destructive mb-4">Impacto en tu negocio:</h4>
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-destructive">-40%</div>
-                  <div className="text-xs text-muted-foreground">Clientes potenciales</div>
+                  <div className="text-2xl font-bold text-destructive">0</div>
+                  <div className="text-xs text-muted-foreground">Visibilidad Google</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-destructive">30%</div>
-                  <div className="text-xs text-muted-foreground">Comisión delivery</div>
+                  <div className="text-2xl font-bold text-destructive">-50%</div>
+                  <div className="text-xs text-muted-foreground">Clientes vs competencia</div>
                 </div>
               </div>
             </div>
@@ -188,12 +188,12 @@ export const ProblemSolutionSection = () => {
               <h4 className="font-semibold text-primary mb-4">Resultados esperados:</h4>
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-primary">+60%</div>
-                  <div className="text-xs text-muted-foreground">Clientes directos</div>
+                  <div className="text-2xl font-bold text-primary">72h</div>
+                  <div className="text-xs text-muted-foreground">Online profesional</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-primary">S/0</div>
-                  <div className="text-xs text-muted-foreground">Comisiones</div>
+                  <div className="text-2xl font-bold text-primary">+80%</div>
+                  <div className="text-xs text-muted-foreground">Más visibilidad</div>
                 </div>
               </div>
             </div>
