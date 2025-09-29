@@ -2649,7 +2649,7 @@ setReviewForm({
       </div>
 
       <Tabs defaultValue="basic" className="w-full" onValueChange={handleTabChange}>
-        <TabsList>
+        <TabsList className="flex flex-wrap gap-2 overflow-x-auto max-w-full">
           {showTab('basic') && <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>}
           {showTab('domain') && <TabsTrigger value="domain">Dominio</TabsTrigger>}
           {showTab('hours') && <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>}
