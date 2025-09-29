@@ -107,14 +107,12 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
     whatsapp_clicks: acc.whatsapp_clicks + day.whatsapp_clicks,
     phone_clicks: acc.phone_clicks + day.phone_clicks,
     menu_downloads: acc.menu_downloads + day.menu_downloads,
-    reservation_clicks: acc.reservation_clicks + day.reservation_clicks,
   }), {
     page_views: 0,
     unique_sessions: 0,
     whatsapp_clicks: 0,
     phone_clicks: 0,
     menu_downloads: 0,
-    reservation_clicks: 0,
   });
 
   const avgTimeOnPage = analytics.length > 0 
@@ -289,7 +287,7 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
           </TabsContent>
 
           <TabsContent value="engagement" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Clics WhatsApp</CardTitle>
@@ -325,19 +323,6 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
                   <div className="text-2xl font-bold">{totals.menu_downloads}</div>
                   <p className="text-xs text-muted-foreground">
                     {Math.round(totals.menu_downloads / Math.max(analytics.length, 1))} por día
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Reservas</CardTitle>
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totals.reservation_clicks}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {Math.round(totals.reservation_clicks / Math.max(analytics.length, 1))} por día
                   </p>
                 </CardContent>
               </Card>
