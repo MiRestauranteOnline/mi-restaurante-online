@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -14,7 +15,9 @@ import {
   Phone,
   Calendar,
   TrendingUp,
-  Users
+  Users,
+  Crown,
+  ArrowRight
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -43,13 +46,32 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
   const [analytics, setAnalytics] = useState<DailyAnalytics[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState('7'); // days
+  const [clientPlan, setClientPlan] = useState<string>('basic');
   const { toast } = useToast();
 
   useEffect(() => {
     if (clientId) {
       fetchAnalytics();
+      fetchClientPlan();
     }
   }, [clientId, dateRange]);
+
+  const fetchClientPlan = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('clients')
+        .select('plan_type')
+        .eq('id', clientId)
+        .single();
+
+      if (error) throw error;
+      
+      setClientPlan(data?.plan_type || 'basic');
+    } catch (error: any) {
+      console.error('Error fetching client plan:', error);
+      setClientPlan('basic'); // Default to basic on error
+    }
+  };
 
   const fetchAnalytics = async () => {
     try {
@@ -135,6 +157,42 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
       <div className="flex items-center justify-center p-8">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
       </div>
+    );
+  }
+
+  // Show upgrade CTA for basic users
+  if (clientPlan === 'basic') {
+    return (
+      <Card className="mx-auto max-w-2xl">
+        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="mb-6 rounded-full bg-primary/10 p-6">
+            <Crown className="h-12 w-12 text-primary" />
+          </div>
+          <h3 className="mb-4 text-2xl font-bold">Analíticas Avanzadas</h3>
+          <p className="mb-6 text-muted-foreground max-w-md">
+            ¿Quieres ver analíticas detalladas directamente de tu sitio web y agregar Google Analytics y Google Search Console? 
+            Actualiza al plan avanzado para acceder a estas funciones.
+          </p>
+          <ul className="mb-8 space-y-2 text-sm text-muted-foreground">
+            <li className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-primary" />
+              Analíticas detalladas del sitio web
+            </li>
+            <li className="flex items-center gap-2">
+              <Eye className="h-4 w-4 text-primary" />
+              Integración con Google Analytics
+            </li>
+            <li className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              Google Search Console para SEO
+            </li>
+          </ul>
+          <Button size="lg" className="gap-2">
+            Actualizar a Plan Avanzado
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
