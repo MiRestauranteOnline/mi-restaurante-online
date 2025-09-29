@@ -114,10 +114,11 @@ export const HowItWorksSection = () => {
             </div>
             
             <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-3">
-              Más de <span className="text-primary">100 sitios web</span> creados internacionalmente
+              Experiencia internacional, <span className="text-primary">servicio local</span>
             </h3>
             <p className="text-lg text-muted-foreground mb-6">
-              Ahora, al servicio de restaurantes en Perú con precios locales y soporte en español
+              Con más de 100 proyectos web internacionales, ahora traemos esa calidad y experiencia 
+              a restaurantes en Perú con precios accesibles y soporte rápido en español.
             </p>
             
             {/* Trust Indicators */}
@@ -132,7 +133,7 @@ export const HowItWorksSection = () => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-primary rounded-full"></div>
-                <span>Fast support</span>
+                <span>Soporte rápido</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-accent rounded-full"></div>
