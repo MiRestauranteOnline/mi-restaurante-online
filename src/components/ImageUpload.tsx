@@ -6,6 +6,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, X, Link, Image as ImageIcon } from "lucide-react";
+import { useDashboardLanguage } from "@/contexts/DashboardLanguageContext";
 
 interface ImageUploadProps {
   label: string;
@@ -24,6 +25,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
   const [showUrlInput, setShowUrlInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { t } = useDashboardLanguage();
 
   const handleFileUpload = async (file: File) => {
     setUploading(true);
@@ -137,7 +139,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
             {optimizing && (
               <>
                 <ImageIcon className="h-4 w-4 animate-pulse" />
-                <span className="text-sm">Optimizing image (converting to WebP, resizing, compressing)...</span>
+                <span className="text-sm">{t('imageUpload.optimizingMessage')}</span>
               </>
             )}
           </div>
@@ -178,17 +180,17 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
           {uploading ? (
             <>
               <Upload className="h-4 w-4 mr-2 animate-spin" />
-              Uploading...
+              {t('imageUpload.uploading')}
             </>
           ) : optimizing ? (
             <>
               <ImageIcon className="h-4 w-4 mr-2 animate-pulse" />
-              Optimizing...
+              {t('imageUpload.optimizing')}
             </>
           ) : (
             <>
               <Upload className="h-4 w-4 mr-2" />
-              Upload Image
+              {t('imageUpload.uploadImage')}
             </>
           )}
         </Button>
@@ -200,14 +202,14 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
           disabled={uploading || optimizing}
         >
           <Link className="h-4 w-4 mr-2" />
-          URL
+          {t('imageUpload.url')}
         </Button>
       </div>
 
       {/* URL input */}
       {showUrlInput && (
         <Input
-          placeholder="Enter image URL"
+          placeholder={t('imageUpload.enterImageUrl')}
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />

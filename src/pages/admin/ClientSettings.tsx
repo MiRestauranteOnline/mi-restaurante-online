@@ -3256,10 +3256,10 @@ setReviewForm({
               </div>
 
               <div className="space-y-4 border-t pt-4">
-                <h4 className="text-lg font-medium">Other Settings</h4>
+                <h4 className="text-lg font-medium">{t('branding.otherSettings')}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="currency">Currency</Label>
+                    <Label htmlFor="currency">{t('branding.currency')}</Label>
                     <Input
                       id="currency"
                       value={formData.other_customizations.currency}

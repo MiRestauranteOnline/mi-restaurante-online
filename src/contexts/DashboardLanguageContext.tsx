@@ -204,6 +204,16 @@ const translations = {
     'branding.titleFont': 'Fuente de Títulos',
     'branding.titleFontWeight': 'Peso de Fuente de Títulos',
     'branding.bodyFont': 'Fuente del Cuerpo',
+    'branding.otherSettings': 'Otras Configuraciones',
+    'branding.currency': 'Moneda',
+    
+    // Image Upload
+    'imageUpload.uploading': 'Subiendo...',
+    'imageUpload.optimizing': 'Optimizando...',
+    'imageUpload.uploadImage': 'Subir Imagen',
+    'imageUpload.url': 'URL',
+    'imageUpload.enterImageUrl': 'Ingresa URL de imagen',
+    'imageUpload.optimizingMessage': 'Optimizando imagen (convirtiendo a WebP, redimensionando, comprimiendo)...',
     
     // Content tab
     'content.homepage': 'Página Principal',
@@ -382,6 +392,32 @@ const translations = {
     'team.namePlaceholder': 'Team member name',
     'team.titlePlaceholder': 'Job title',
     'team.bioPlaceholder': 'Short bio',
+    
+    // Branding tab
+    'branding.title': 'Branding & Customization',
+    'branding.primaryColor': 'Primary Color',
+    'branding.headerBackground': 'Header Background', 
+    'branding.themeSettings': 'Theme Settings',
+    'branding.theme': 'Theme',
+    'branding.bright': 'Bright',
+    'branding.dark': 'Dark',
+    'branding.logoSettings': 'Logo Settings',
+    'branding.headerLogo': 'Header Logo',
+    'branding.footerLogo': 'Footer Logo',
+    'branding.typography': 'Typography',
+    'branding.titleFont': 'Title Font',
+    'branding.titleFontWeight': 'Title Font Weight',
+    'branding.bodyFont': 'Body Font',
+    'branding.otherSettings': 'Other Settings',
+    'branding.currency': 'Currency',
+    
+    // Image Upload
+    'imageUpload.uploading': 'Uploading...',
+    'imageUpload.optimizing': 'Optimizing...',
+    'imageUpload.uploadImage': 'Upload Image',
+    'imageUpload.url': 'URL',
+    'imageUpload.enterImageUrl': 'Enter image URL',
+    'imageUpload.optimizingMessage': 'Optimizing image (converting to WebP, resizing, compressing)...',
     
     // Menu tab
     'reviews.reviewerName': 'Reviewer Name',
