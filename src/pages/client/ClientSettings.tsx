@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, Save } from 'lucide-react';
+import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -148,6 +149,7 @@ export default function ClientSettings() {
           <TabsTrigger value="general">{t('settings.general')}</TabsTrigger>
           <TabsTrigger value="appearance">{t('settings.appearance')}</TabsTrigger>
           <TabsTrigger value="contact">{t('settings.contact')}</TabsTrigger>
+          <TabsTrigger value="analytics">Analíticas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
@@ -261,6 +263,16 @@ export default function ClientSettings() {
             </CardContent>
           </Card>
         </TabsContent>
+      <TabsContent value="analytics" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Analíticas</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AnalyticsOverview clientId={selectedClientId} />
+          </CardContent>
+        </Card>
+      </TabsContent>
       </Tabs>
     </div>
   );
