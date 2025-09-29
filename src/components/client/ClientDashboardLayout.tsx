@@ -27,6 +27,8 @@ interface Client {
   id: string;
   restaurant_name: string;
   subdomain: string;
+  plan_type: string;
+  email: string;
 }
 
 interface UserClient {
@@ -61,7 +63,9 @@ export default function ClientDashboardLayout() {
           clients (
             id,
             restaurant_name,
-            subdomain
+            subdomain,
+            plan_type,
+            email
           )
         `)
         .eq('user_id', session.user.id);
