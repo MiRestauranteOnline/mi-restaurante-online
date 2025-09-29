@@ -4463,10 +4463,10 @@ setReviewForm({
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Downloadable Menu
+                Menú Descargable
               </CardTitle>
               <CardDescription>
-                Upload a PDF/image of your menu or paste a link. This will be displayed on your website with a download button.
+                Sube un PDF/imagen de tu menú o pega un enlace. Esto se mostrará en tu sitio web con un botón de descarga.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -4479,7 +4479,7 @@ setReviewForm({
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span className="text-sm font-medium">Current menu file</span>
+                        <span className="text-sm font-medium">Archivo de menú actual</span>
                       </div>
                       <div className="flex gap-2">
                         <a 
@@ -4488,7 +4488,7 @@ setReviewForm({
                           rel="noopener noreferrer"
                           className="text-sm text-primary hover:underline"
                         >
-                          View File
+                          Ver Archivo
                         </a>
                         <Button
                           variant="ghost"
@@ -4508,7 +4508,7 @@ setReviewForm({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* File Upload */}
                   <div className="space-y-2">
-                    <Label>Upload File</Label>
+                    <Label>Subir Archivo</Label>
                     <div className="flex gap-2">
                       <Button
                         type="button"
@@ -4520,11 +4520,11 @@ setReviewForm({
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
-                        {saving ? 'Uploading...' : 'Choose File'}
+                        {saving ? 'Subiendo...' : 'Elegir Archivo'}
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Supports PDF, JPG, PNG (max 10MB)
+                      Soporta PDF, JPG, PNG (máx 10MB)
                     </p>
                     <Input
                       id="menu-file-input"
@@ -4579,10 +4579,10 @@ setReviewForm({
 
                   {/* URL Input */}
                   <div className="space-y-2">
-                    <Label>Or Paste URL</Label>
+                    <Label>O Pega una URL</Label>
                     <div className="flex gap-2">
                       <Input
-                        placeholder="https://example.com/menu.pdf"
+                        placeholder="https://ejemplo.com/menu.pdf"
                         value={formData.downloadable_menu_url || ''}
                         onChange={(e) => setFormData({...formData, downloadable_menu_url: e.target.value})}
                         className="flex-1"
@@ -4626,11 +4626,11 @@ setReviewForm({
                 <div className="flex gap-2">
                   <Button onClick={() => openCategoryDialog()}>
                     <FolderPlus className="h-4 w-4 mr-2" />
-                    {t('menu.newCategory')}
+                    Nueva Categoría
                   </Button>
                   <Button onClick={() => openMenuItemDialog()}>
                     <Plus className="h-4 w-4 mr-2" />
-                    {t('menu.newItem')}
+                    Nuevo Producto
                   </Button>
                 </div>
               </CardTitle>
