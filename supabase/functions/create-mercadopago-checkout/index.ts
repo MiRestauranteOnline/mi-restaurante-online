@@ -28,9 +28,10 @@ serve(async (req) => {
       throw new Error('MERCADOPAGO_ACCESS_TOKEN not configured');
     }
 
-    console.log('Creating Mercado Pago Checkout Pro preference:', { customerEmail, planType, clientId });
-
+    const isTestToken = accessToken.startsWith('TEST-');
     const origin = req.headers.get('origin') || 'https://mirestauranteonline.com';
+    console.log('Creating Mercado Pago Checkout Pro preference:', { customerEmail, planType, clientId, origin, tokenMode: isTestToken ? 'TEST' : 'LIVE' });
+
     const amount = planType === 'basic' ? 297 : 497;
     const planTitle = planType === 'basic' ? 'Plan Básico' : 'Plan Avanzado';
 
@@ -61,12 +62,19 @@ serve(async (req) => {
       },
     };
 
-    // Include payer info if email is provided
+    // Include payer info; if invalid email, fallback to a sandbox email for testing
     if (customerEmail && customerEmail.includes('@')) {
       preferencePayload.payer = {
         email: customerEmail,
         name: customerName,
       };
+    } else {
+      const fallbackEmail = `buyer.test.${Date.now()}@example.com`;
+      preferencePayload.payer = {
+        email: fallbackEmail,
+        name: customerName || 'Test Buyer',
+      };
+      console.log('No valid payer email provided. Using fallback test email:', fallbackEmail);
     }
 
     const response = await fetch('https://api.mercadopago.com/checkout/preferences', {

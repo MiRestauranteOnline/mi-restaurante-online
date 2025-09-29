@@ -152,17 +152,22 @@ const Signup = () => {
             .select('test_mode, test_payer_email')
             .single();
 
-          // Use test payer email if test mode is enabled, otherwise use customer email
-          const payerEmail = (paymentSettings?.test_mode && paymentSettings?.test_payer_email)
+          const isTestMode = !!paymentSettings?.test_mode;
+          let payerEmail = (isTestMode && paymentSettings?.test_payer_email)
             ? paymentSettings.test_payer_email
             : formData.email;
+
+          if (!payerEmail || !payerEmail.includes('@')) {
+            console.warn('Invalid payer email detected. Falling back to sandbox test email.');
+            payerEmail = `buyer.test.${Date.now()}@example.com`;
+          }
 
           console.log('Creating Mercado Pago checkout with:', {
             payerEmail,
             customerName: formData.restaurantName,
             clientId: data.client.id,
             planType: plan,
-            isTestMode: paymentSettings?.test_mode
+            isTestMode
           });
 
           
@@ -191,46 +196,7 @@ const Signup = () => {
           console.log('Redirecting to Mercado Pago:', checkoutData.initPoint);
           window.location.href = checkoutData.initPoint;
           
-          const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-checkout', {
-            body: {
-              customerEmail: payerEmail,
-              customerName: formData.restaurantName,
-              clientId: data.client.id,
-              planType: plan,
-            },
-          });
-
-          console.log('Subscription response:', { subscriptionData, subscriptionError });
-
-          if (subscriptionError) {
-            console.error('Subscription creation error:', subscriptionError);
-            throw new Error(`Error creando la suscripción: ${subscriptionError.message}`);
-          }
-          
-          if (!subscriptionData?.success) {
-            console.error('Subscription creation failed:', subscriptionData);
-            throw new Error(subscriptionData?.error || 'Error creando la suscripción');
-          }
-
-          // Redirect to Mercado Pago payment page
-          console.log('Redirecting to Mercado Pago:', subscriptionData.initPoint);
-          window.location.href = subscriptionData.initPoint;
-
-          console.log('Subscription response:', { subscriptionData, subscriptionError });
-
-          if (subscriptionError) {
-            console.error('Subscription creation error:', subscriptionError);
-            throw new Error(`Error creando la suscripción: ${subscriptionError.message}`);
-          }
-          
-          if (!subscriptionData?.success) {
-            console.error('Subscription creation failed:', subscriptionData);
-            throw new Error('Error creando la suscripción');
-          }
-
-          // Redirect to Mercado Pago payment page
-          console.log('Redirecting to Mercado Pago:', subscriptionData.initPoint);
-          window.location.href = subscriptionData.initPoint;
+          // Removed duplicate checkout invocation and redirects to avoid multiple calls.
         } catch (paymentError: any) {
           console.error('Payment initialization error:', paymentError);
           throw new Error(paymentError.message || 'Error al iniciar el pago');
