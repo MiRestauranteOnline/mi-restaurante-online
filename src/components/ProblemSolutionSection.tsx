@@ -129,15 +129,15 @@ export const ProblemSolutionSection = () => {
 
             {/* Impact Stats */}
             <div className="bg-destructive/5 border border-destructive/20 p-6 rounded-xl">
-              <h4 className="font-semibold text-destructive mb-4">Impacto en tu negocio:</h4>
+              <h4 className="font-semibold text-destructive mb-4">El costo real de no tener presencia online:</h4>
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-destructive">0</div>
-                  <div className="text-xs text-muted-foreground">Visibilidad Google</div>
+                  <div className="text-2xl font-bold text-destructive">-40%</div>
+                  <div className="text-xs text-muted-foreground">Clientes perdidos mensual</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-destructive">-50%</div>
-                  <div className="text-xs text-muted-foreground">Clientes vs competencia</div>
+                  <div className="text-2xl font-bold text-destructive">0</div>
+                  <div className="text-xs text-muted-foreground">Control de tu negocio</div>
                 </div>
               </div>
             </div>
@@ -185,15 +185,15 @@ export const ProblemSolutionSection = () => {
 
             {/* Results Stats */}
             <div className="bg-primary/5 border border-primary/20 p-6 rounded-xl">
-              <h4 className="font-semibold text-primary mb-4">Resultados esperados:</h4>
+              <h4 className="font-semibold text-primary mb-4">Nuestra diferencia:</h4>
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-primary">72h</div>
-                  <div className="text-xs text-muted-foreground">Online profesional</div>
+                  <div className="text-2xl font-bold text-primary">0%</div>
+                  <div className="text-xs text-muted-foreground">Comisión por cliente</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-primary">+80%</div>
-                  <div className="text-xs text-muted-foreground">Más visibilidad</div>
+                  <div className="text-2xl font-bold text-primary">100%</div>
+                  <div className="text-xs text-muted-foreground">Control tuyo</div>
                 </div>
               </div>
             </div>
