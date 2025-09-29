@@ -8,7 +8,7 @@ const corsHeaders = {
 
 interface CreateSubscriptionRequest {
   planId?: string | null;
-  customerEmail: string;
+  customerEmail?: string | null;
   customerName: string;
   clientId: string;
   planType: 'basic' | 'advanced';
@@ -35,7 +35,6 @@ serve(async (req) => {
 
     const payload: any = {
       reason: `Suscripción ${planType === 'basic' ? 'Básica' : 'Avanzada'} - Mi Restaurante Online`,
-      payer_email: customerEmail,
       auto_recurring: {
         frequency: 1,
         frequency_type: 'months',
@@ -47,6 +46,14 @@ serve(async (req) => {
       status: 'pending',
       external_reference: clientId,
     };
+
+    // Only include payer_email when it looks like an email; otherwise, Mercado Pago will prompt login on their checkout
+    if (customerEmail && customerEmail.includes('@')) {
+      payload.payer_email = customerEmail;
+    } else {
+      console.log('No valid email provided; omitting payer_email to allow login on Mercado Pago checkout');
+    }
+
 
     if (planId) {
       payload.preapproval_plan_id = planId;
