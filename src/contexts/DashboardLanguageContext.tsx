@@ -91,6 +91,15 @@ const translations = {
     'general.closes': 'Cierra',
     'general.heroDescription': 'Descripción del Hero',
     'general.sectionDescription': 'Descripción de la Sección',
+    'general.monday': 'Lunes',
+    'general.tuesday': 'Martes',
+    'general.wednesday': 'Miércoles', 
+    'general.thursday': 'Jueves',
+    'general.friday': 'Viernes',
+    'general.saturday': 'Sábado',
+    'general.sunday': 'Domingo',
+    'general.open': 'Abierto',
+    'general.closed': 'Cerrado',
     
     // Appearance tab
     'appearance.title': 'Configuración de Apariencia',
@@ -243,7 +252,7 @@ const translations = {
     'general.address': 'Address',
     'general.whatsapp': 'WhatsApp',
     'general.coordinates': 'Coordinates',
-    'general.openingHours': 'Opening Hours',
+    
     'general.socialMedia': 'Social Media',
     'general.deliveryInfo': 'Delivery Information',
     'general.subdomain': 'Subdomain',

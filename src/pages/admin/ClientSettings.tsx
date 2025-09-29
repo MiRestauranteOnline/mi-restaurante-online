@@ -2809,7 +2809,7 @@ setReviewForm({
         <TabsContent value="hours">
           <Card>
             <CardHeader>
-              <CardTitle>Opening Hours</CardTitle>
+              <CardTitle>{t('general.openingHours')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
@@ -2817,7 +2817,7 @@ setReviewForm({
                 return (
                 <div key={day} className="flex items-center gap-4 p-4 border rounded-lg">
                   <div className="w-24">
-                    <Label className="text-sm font-medium capitalize">{day}</Label>
+                    <Label className="text-sm font-medium">{t(`general.${day}`)}</Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <Switch
@@ -2831,7 +2831,7 @@ setReviewForm({
                       })}
                     />
                     <span className="text-sm text-muted-foreground">
-                      {hours.closed ? 'Closed' : 'Open'}
+                      {hours.closed ? t('general.closed') : t('general.open')}
                     </span>
                   </div>
                   {!hours.closed && (
@@ -3095,16 +3095,16 @@ setReviewForm({
               </div>
 
               <div className="space-y-4 border-t pt-4">
-                <h4 className="text-lg font-medium">Theme Settings</h4>
+                <h4 className="text-lg font-medium">{t('branding.themeSettings')}</h4>
                 <div>
-                  <Label htmlFor="theme">Theme</Label>
+                  <Label htmlFor="theme">{t('branding.theme')}</Label>
                   <Select value={formData.theme} onValueChange={(value) => setFormData({...formData, theme: value})}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="bright">Bright</SelectItem>
-                      <SelectItem value="dark">Dark</SelectItem>
+                      <SelectItem value="bright">{t('branding.bright')}</SelectItem>
+                      <SelectItem value="dark">{t('branding.dark')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -3121,19 +3121,19 @@ setReviewForm({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="bright">Bright</SelectItem>
-                      <SelectItem value="dark">Dark</SelectItem>
+                      <SelectItem value="bright">{t('branding.bright')}</SelectItem>
+                      <SelectItem value="dark">{t('branding.dark')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               )}
 
               <div className="space-y-4 border-t pt-4">
-                <h4 className="text-lg font-medium">Logo Settings</h4>
+                <h4 className="text-lg font-medium">{t('branding.logoSettings')}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <ImageUpload
-                      label="Header Logo"
+                      label={t('branding.headerLogo')}
                       value={formData.header_logo_url || ''}
                       onChange={(url) => setFormData({...formData, header_logo_url: url})}
                       clientId={clientId!}
@@ -3143,7 +3143,7 @@ setReviewForm({
                   </div>
                   <div>
                     <ImageUpload
-                      label="Footer Logo"
+                      label={t('branding.footerLogo')}
                       value={formData.footer_logo_url || ''}
                       onChange={(url) => setFormData({...formData, footer_logo_url: url})}
                       clientId={clientId!}
@@ -3155,10 +3155,10 @@ setReviewForm({
               </div>
 
               <div className="space-y-4 border-t pt-4">
-                <h4 className="text-lg font-medium">Typography</h4>
+                <h4 className="text-lg font-medium">{t('branding.typography')}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="title_font">Title Font</Label>
+                    <Label htmlFor="title_font">{t('branding.titleFont')}</Label>
                     <Select
                       value={formData.title_font || 'Cormorant Garamond'}
                       onValueChange={(value) => setFormData({...formData, title_font: value})}
@@ -3195,7 +3195,7 @@ setReviewForm({
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="title_font_weight">Title Font Weight</Label>
+                    <Label htmlFor="title_font_weight">{t('branding.titleFontWeight')}</Label>
                     <Select
                       value={formData.title_font_weight || '400'}
                       onValueChange={(value) => setFormData({...formData, title_font_weight: value})}
@@ -3217,7 +3217,7 @@ setReviewForm({
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="body_font">Body Font</Label>
+                    <Label htmlFor="body_font">{t('branding.bodyFont')}</Label>
                     <Select
                       value={formData.body_font || 'Inter'}
                       onValueChange={(value) => setFormData({...formData, body_font: value})}
