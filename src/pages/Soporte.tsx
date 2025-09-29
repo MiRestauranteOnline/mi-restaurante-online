@@ -153,24 +153,44 @@ const Soporte = () => {
     
     try {
       console.log("Calling send-support-email function...");
-      const { error } = await supabase.functions.invoke('send-support-email', {
-        body: {
-          name: data.name,
-          email: data.email,
-          subject: data.subject,
-          message: data.message,
-          clientId: data.clientId || null,
-          supportType: data.supportType,
-          premiumEmail: data.premiumEmail || null,
-          premiumPin: data.premiumPin || null
+      const body = {
+        name: data.name,
+        email: data.email,
+        subject: data.subject,
+        message: data.message,
+        clientId: data.clientId || null,
+        supportType: data.supportType,
+        premiumEmail: data.premiumEmail || null,
+        premiumPin: data.premiumPin || null
+      };
+
+      let invokeError: any = null;
+      try {
+        const { error } = await supabase.functions.invoke('send-support-email', { body });
+        invokeError = error || null;
+        console.log("Edge function invoke returned", { error });
+      } catch (err) {
+        invokeError = err;
+        console.error("Invoke threw error", err);
+      }
+
+      if (invokeError) {
+        console.warn("Falling back to direct fetch for edge function...");
+        const resp = await fetch('https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/send-support-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8',
+          },
+          body: JSON.stringify(body)
+        });
+        if (!resp.ok) {
+          const txt = await resp.text();
+          console.error("Direct fetch failed", resp.status, txt);
+          throw new Error(`Edge function failed: ${resp.status}`);
         }
-      });
-
-      console.log("Edge function response:", { error });
-
-      if (error) {
-        console.error("Edge function error:", error);
-        throw error;
+        console.log("Direct fetch succeeded");
       }
 
       console.log("Ticket submitted successfully");
