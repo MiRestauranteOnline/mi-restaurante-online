@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, CheckCircle, XCircle, MessageCircle, Phone, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { businessData } from '@/config/businessData';
 
 interface SupportManagementProps {
   clientId: string;
@@ -137,9 +138,9 @@ export function SupportManagement({ clientId, client }: SupportManagementProps) 
                 className="w-full justify-start" 
                 variant="outline"
                 onClick={() => {
-                  if (client?.whatsapp) {
-                    window.open(`https://wa.me/${client.whatsapp_country_code}${client.whatsapp}?text=Hola, tengo una consulta sobre mi plan avanzado. Mi PIN es: ${premiumFeatures?.unique_support_pin}`, '_blank');
-                  }
+                  const supportMessage = `Hola, soy cliente del plan avanzado de soporte para ${client?.restaurant_name || 'mi restaurante'}. Mi email es: ${client?.email}. Mi PIN único es: ${premiumFeatures?.unique_support_pin}.`;
+                  const whatsappUrl = `${businessData.contact.whatsapp.url}?text=${encodeURIComponent(supportMessage)}`;
+                  window.open(whatsappUrl, '_blank');
                 }}
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
