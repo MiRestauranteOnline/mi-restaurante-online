@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 
 interface Client {
   id: string;
@@ -39,7 +39,7 @@ export default function ClientDashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t } = useDashboardLanguage();
 
   useEffect(() => {
     const checkAuth = async () => {
