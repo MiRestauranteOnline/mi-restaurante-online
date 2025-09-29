@@ -556,22 +556,36 @@ export type Database = {
         Row: {
           address: string | null
           brand_colors: Json | null
+          cancellation_date: string | null
+          cancellation_reason: string | null
           coordinates: Json | null
           created_at: string
           delivery: Json | null
           domain: string | null
           email: string | null
           id: string
+          last_payment_attempt: string | null
+          next_billing_date: string | null
           opening_hours: Json | null
           opening_hours_ordered: Json | null
           other_customizations: Json | null
+          payment_failures_count: number | null
+          payment_id: string | null
+          payment_status: string | null
           phone: string | null
           phone_country_code: string | null
+          plan_type: string | null
+          rebill_customer_id: string | null
+          rebill_subscription_id: string | null
           referral_source: string | null
           restaurant_name: string
           social_media_links: Json | null
           subdomain: string
+          subscription_end_date: string | null
+          subscription_start_date: string | null
+          subscription_status: string | null
           theme: string | null
+          trial_end_date: string | null
           updated_at: string
           vercel_dashboard_url: string | null
           vercel_project: string | null
@@ -582,22 +596,36 @@ export type Database = {
         Insert: {
           address?: string | null
           brand_colors?: Json | null
+          cancellation_date?: string | null
+          cancellation_reason?: string | null
           coordinates?: Json | null
           created_at?: string
           delivery?: Json | null
           domain?: string | null
           email?: string | null
           id?: string
+          last_payment_attempt?: string | null
+          next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
           other_customizations?: Json | null
+          payment_failures_count?: number | null
+          payment_id?: string | null
+          payment_status?: string | null
           phone?: string | null
           phone_country_code?: string | null
+          plan_type?: string | null
+          rebill_customer_id?: string | null
+          rebill_subscription_id?: string | null
           referral_source?: string | null
           restaurant_name: string
           social_media_links?: Json | null
           subdomain: string
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          subscription_status?: string | null
           theme?: string | null
+          trial_end_date?: string | null
           updated_at?: string
           vercel_dashboard_url?: string | null
           vercel_project?: string | null
@@ -608,22 +636,36 @@ export type Database = {
         Update: {
           address?: string | null
           brand_colors?: Json | null
+          cancellation_date?: string | null
+          cancellation_reason?: string | null
           coordinates?: Json | null
           created_at?: string
           delivery?: Json | null
           domain?: string | null
           email?: string | null
           id?: string
+          last_payment_attempt?: string | null
+          next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
           other_customizations?: Json | null
+          payment_failures_count?: number | null
+          payment_id?: string | null
+          payment_status?: string | null
           phone?: string | null
           phone_country_code?: string | null
+          plan_type?: string | null
+          rebill_customer_id?: string | null
+          rebill_subscription_id?: string | null
           referral_source?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
           subdomain?: string
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          subscription_status?: string | null
           theme?: string | null
+          trial_end_date?: string | null
           updated_at?: string
           vercel_dashboard_url?: string | null
           vercel_project?: string | null
@@ -1076,6 +1118,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_subscription_end_date: {
+        Args: { plan_type: string; start_date: string }
+        Returns: string
+      }
       generate_fast_load_data: {
         Args: { client_domain: string }
         Returns: undefined
@@ -1093,6 +1139,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_subscription_active: {
+        Args: { client_id: string }
         Returns: boolean
       }
       link_user_to_client: {
