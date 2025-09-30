@@ -8,7 +8,7 @@ import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/sig
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
-// import { EmbeddedPayment } from "@/components/signup/EmbeddedPayment";
+import { CardFieldsPayment } from "@/components/signup/CardFieldsPayment";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -386,19 +386,16 @@ const Signup = () => {
                     isProcessingPayment={isProcessingPayment}
                   />
                   {signupData.paymentId && (
-                    <div className="mt-8 flex items-center justify-between border rounded-lg p-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Plan seleccionado</p>
-                        <p className="text-lg font-semibold">{selectedPlan === 'basic' ? 'Básico' : 'Avanzado'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Total</p>
-                        <p className="text-lg font-semibold">S/ {selectedPlan === 'basic' ? 297 : 497} / mes</p>
-                      </div>
-                      <Button onClick={startCheckout} disabled={isProcessingPayment}>
-                        {isProcessingPayment ? 'Redirigiendo…' : 'Pagar con tarjeta'}
-                      </Button>
-                    </div>
+                    <CardFieldsPayment
+                      signupData={{
+                        email: signupData.email,
+                        restaurantName: signupData.restaurantName,
+                        paymentId: signupData.paymentId,
+                      }}
+                      selectedPlan={selectedPlan}
+                      onSuccess={() => setCurrentStep(3)}
+                      onBack={() => { /* stay on step 1 */ }}
+                    />
                   )}
                 </>
               )}
