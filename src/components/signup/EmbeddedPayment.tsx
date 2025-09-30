@@ -89,11 +89,12 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
                     paymentMethods: { maxInstallments: 1 },
                   }}
                   onReady={() => setLoading(false)}
-                  onSubmit={(param: any) => {
+                  onSubmit={(formData: any) => {
                     return new Promise<void>(async (resolve, reject) => {
                       try {
                         setCreating(true);
-                        const fd = (param && param.formData) || {};
+                        const fd = formData || {};
+                        console.log('CardPayment onSubmit formData:', fd);
                         const token = fd.token || fd.cardToken || fd.card_token;
                         const paymentMethodId = fd.payment_method_id || fd.paymentMethodId;
                         const issuerId = fd.issuer_id || fd.issuerId;
