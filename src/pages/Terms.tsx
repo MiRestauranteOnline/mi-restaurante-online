@@ -111,8 +111,7 @@ const Terms = () => {
                 al pago exitoso.
               </p>
               <p>
-                <strong>Cobros Mensuales Automáticos:</strong> Al suscribirte, autorizas expresamente a 
-                {businessData.company.legalName} a almacenar de forma segura tu información de tarjeta de crédito/débito 
+                <strong>Cobros Mensuales Automáticos:</strong> Al suscribirte, autorizas expresamente a {businessData.company.legalName} a almacenar de forma segura tu información de tarjeta de crédito/débito 
                 y a realizar cobros automáticos mensuales por el monto de tu plan seleccionado, cada mes en la misma 
                 fecha de tu registro inicial, hasta que canceles tu suscripción.
               </p>
@@ -123,7 +122,8 @@ const Terms = () => {
               <p>
                 <strong>Autorización de Cargos Variables:</strong> Al suscribirte, también autorizas expresamente 
                 cargos variables por sobrecargos de uso excedente y complementos aprobados que puedas agregar 
-                a tu cuenta durante el período de suscripción.
+                a tu cuenta durante el período de suscripción. Los cargos variables se notifican en el recibo del 
+                período y se calculan según la sección "Sobrecargos por Uso Adicional".
               </p>
             </CardContent>
           </Card>
@@ -141,7 +141,8 @@ const Terms = () => {
               <p>
                 <strong>Cuándo Toma Efecto:</strong> La cancelación toma efecto al final de tu ciclo de facturación 
                 actual. No se realizarán más cobros después de esa fecha. Seguirás teniendo acceso completo a tu sitio 
-                web hasta el último día de tu período pagado.
+                web hasta el último día de tu período pagado. Cualquier saldo pendiente (p. ej., sobrecargos de uso) 
+                se facturará y cargará en el medio de pago registrado.
               </p>
               <p>
                 <strong>Después de la Cancelación:</strong> Tu sitio web será desactivado al finalizar tu ciclo de 
@@ -206,8 +207,8 @@ const Terms = () => {
                 y cancelar la cuenta. Los contracargos fraudulentos pueden resultar en acciones legales.
               </p>
               <p>
-                <strong>Tarifas de Contracargo:</strong> Podemos transferir las tarifas razonables de contracargo 
-                cobradas por las redes de pago si una disputa se resuelve en tu contra.
+                <strong>Tarifas de Contracargo:</strong> Podemos trasladarte los costos razonables cobrados por 
+                redes/procesadores cuando la disputa se resuelva en nuestra favor.
               </p>
             </CardContent>
           </Card>
@@ -352,7 +353,8 @@ const Terms = () => {
               <p>
                 <strong>Precio de Lanzamiento Garantizado:</strong> Los clientes que se suscriban durante nuestro 
                 período promocional de lanzamiento mantienen su precio de suscripción de por vida mientras su cuenta 
-                permanezca activa sin interrupciones.
+                permanezca activa sin interrupciones. El precio de lanzamiento no incluye impuestos que cambien por 
+                ley ni comisiones de tu banco por conversión de moneda.
               </p>
             </CardContent>
           </Card>
@@ -418,8 +420,7 @@ const Terms = () => {
               <p>
                 <strong>Límite Máximo de Responsabilidad:</strong> En ningún caso nuestra responsabilidad total 
                 hacia ti por todos los daños, pérdidas y causas de acción (ya sea por contrato, agravio, 
-                incluyendo negligencia, o de otro modo) excederá el monto total que hayas pagado a {businessData.company.name} 
-                durante los últimos 12 meses anteriores al evento que dio lugar al reclamo.
+                incluyendo negligencia, o de otro modo) excederá el monto total que hayas pagado a {businessData.company.name} durante los últimos 12 meses anteriores al evento que dio lugar al reclamo.
               </p>
               <p>
                 <strong>Exclusión de Daños Indirectos:</strong> En la máxima medida permitida por la ley, 
@@ -614,6 +615,10 @@ const Terms = () => {
               <p>
                 <strong>Reactivación Después de Terminación:</strong> La reactivación de una cuenta terminada queda 
                 a nuestra discreción y puede estar sujeta a condiciones adicionales.
+              </p>
+              <p>
+                <strong>Manejo de Datos Post-Terminación:</strong> Tras la terminación, conservaremos copia de seguridad 
+                por hasta 6 meses solo para una eventual reactivación; luego, eliminaremos el contenido salvo obligaciones legales.
               </p>
             </CardContent>
           </Card>
