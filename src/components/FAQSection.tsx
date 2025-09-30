@@ -20,7 +20,7 @@ export const FAQSection = () => {
     },
     {
       question: "¿Qué pasa si quiero cancelar el servicio?",
-      answer: "Puedes cancelar en cualquier momento sin penalizaciones. Tras 6 meses de cancelación, el sitio se desactiva automáticamente. Como es un servicio administrado, no ofrecemos migración del sitio a otros servidores."
+      answer: "Puedes cancelar en cualquier momento sin penalizaciones. El sitio se desactiva en tu próximo ciclo de facturación. Guardamos tu sitio web por 6 meses en nuestro sistema para que puedas reactivarlo fácilmente. Como es un servicio administrado, no ofrecemos migración del sitio a otros servidores."
     },
     {
       question: "¿Dónde compro mi dominio?",
