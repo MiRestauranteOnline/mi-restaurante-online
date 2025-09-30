@@ -12,17 +12,27 @@ serve(async (req) => {
   }
 
   try {
-    const publicKey = Deno.env.get('MERCADOPAGO_PUBLIC_KEY');
-    const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN');
+    const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN') || '';
+    const pkDefault = Deno.env.get('MERCADOPAGO_PUBLIC_KEY');
+    const pkTest = Deno.env.get('MERCADOPAGO_PUBLIC_KEY_TEST');
+    const pkLive = Deno.env.get('MERCADOPAGO_PUBLIC_KEY_LIVE');
+
+    const isTest = accessToken.startsWith('TEST-');
+
+    // Choose the appropriate public key based on access token environment
+    const publicKey = isTest
+      ? (pkTest || pkDefault)
+      : (pkLive || pkDefault);
 
     if (!publicKey) {
-      return new Response(JSON.stringify({ success: false, error: 'MERCADOPAGO_PUBLIC_KEY not configured' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      });
+      return new Response(
+        JSON.stringify({ success: false, error: 'No Mercado Pago public key configured for the current mode', mode: isTest ? 'test' : 'live' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
     }
-
-    const isTest = !!accessToken && accessToken.startsWith('TEST-');
 
     return new Response(JSON.stringify({ success: true, publicKey, mode: isTest ? 'test' : 'live' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
