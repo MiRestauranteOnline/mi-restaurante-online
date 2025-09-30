@@ -30,7 +30,7 @@ export const CTASection = () => {
           </h2>
           
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Más de 100 restaurantes ya confían en nosotros. Tu sitio web profesional está a solo 72 horas de distancia.
+            Únete a más de 100 restaurantes que ya están creciendo online. Tu sitio web profesional, listo en 72 horas.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
