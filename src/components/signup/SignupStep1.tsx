@@ -112,11 +112,12 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
 
   const checkSubdomainAvailability = async (subdomain: string) => {
     if (!subdomain || subdomain.length < 3) {
+      console.log('Subdomain too short or empty:', subdomain);
       setSubdomainError("");
       return;
     }
 
-    console.log('Checking subdomain availability for:', subdomain);
+    console.log('🔍 Checking subdomain availability for:', subdomain);
     setIsCheckingSubdomain(true);
     setSubdomainError("");
 
@@ -127,26 +128,32 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
         .eq('subdomain', subdomain.toLowerCase())
         .maybeSingle();
 
-      console.log('Subdomain check result:', { data, error });
+      console.log('📊 Subdomain check result:', { 
+        searchedFor: subdomain.toLowerCase(),
+        data, 
+        error: error?.message || 'no error',
+        errorCode: error?.code 
+      });
 
       if (error && error.code !== 'PGRST116') {
-        console.error('Error checking subdomain:', error);
+        console.error('❌ Error checking subdomain:', error);
         setSubdomainError("Error al verificar disponibilidad");
         return;
       }
 
       if (data) {
-        console.log('Subdomain is taken:', data.subdomain);
+        console.log('🚫 Subdomain is taken:', data.subdomain);
         setSubdomainError("Este subdominio ya está en uso. Por favor elige otro.");
       } else {
-        console.log('Subdomain is available');
+        console.log('✅ Subdomain is available');
         setSubdomainError("");
       }
     } catch (error) {
-      console.error('Error checking subdomain:', error);
+      console.error('💥 Exception checking subdomain:', error);
       setSubdomainError("Error al verificar disponibilidad");
     } finally {
       setIsCheckingSubdomain(false);
+      console.log('🏁 Subdomain check completed');
     }
   };
 
@@ -301,13 +308,20 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                           clearTimeout(subdomainCheckTimeout);
                         }
                         
+                        // Clear previous error
+                        setSubdomainError("");
+                        setIsCheckingSubdomain(false);
+                        
                         if (newValue && newValue.length >= 3) {
-                          // Debounce the check with 1 second delay
+                          console.log('Setting timeout to check subdomain:', newValue);
+                          // Debounce the check with 500ms delay (reduced from 1 second)
                           const timeoutId = setTimeout(() => {
+                            console.log('Timeout triggered, checking subdomain:', newValue);
                             checkSubdomainAvailability(newValue);
-                          }, 1000);
+                          }, 500);
                           setSubdomainCheckTimeout(timeoutId);
                         } else {
+                          console.log('Subdomain too short, clearing error');
                           setSubdomainError("");
                           setIsCheckingSubdomain(false);
                         }
