@@ -56,12 +56,17 @@ serve(async (req) => {
       metadata: body.metadata || {},
     };
 
+    // Generate a UUID for idempotency
+    const uuid = crypto.getRandomValues(new Uint8Array(16));
+    const hexUuid = Array.from(uuid, byte => byte.toString(16).padStart(2, '0')).join('');
+    const formattedUuid = `${hexUuid.substring(0,8)}-${hexUuid.substring(8,12)}-${hexUuid.substring(12,16)}-${hexUuid.substring(16,20)}-${hexUuid.substring(20,32)}`;
+
     const resp = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
-        'X-Idempotency-Key': crypto.randomUUID(),
+        'X-Idempotency-Key': formattedUuid,
       },
       body: JSON.stringify(payload),
     });

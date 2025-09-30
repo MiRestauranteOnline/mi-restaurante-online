@@ -125,10 +125,14 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
               }
             });
 
+            console.log('Payment function response:', { data, error });
+
             if (error || !data?.success) {
+              console.error('Payment failed:', { data, error });
               throw new Error(data?.error || error?.message || 'Payment failed');
             }
 
+            console.log('Payment successful, calling onSuccess');
             toast({ title: 'Pago exitoso', description: 'Tu suscripción ha sido activada.' });
             onSuccess();
           } catch (err: any) {
