@@ -23,7 +23,7 @@ serve(async (req) => {
     // Get all published articles
     const { data: articles, error } = await supabase
       .from('generated_articles')
-      .select('id, title, content, slug, category')
+      .select('id, title, content, slug, category, excerpt, meta_description')
       .eq('status', 'published');
 
     if (error) throw error;
@@ -34,11 +34,38 @@ serve(async (req) => {
     const updates = [];
 
     for (const article of articles) {
+      let title = article.title;
       let content = article.content;
+      let slug = article.slug;
+      let excerpt = article.excerpt;
+      let metaDescription = article.meta_description;
       let wasModified = false;
 
-      // Fix 1: Replace 2024 with 2025 for current year references
-      // Be careful to only replace year references in appropriate contexts
+      // Fix 1: Replace 2024 with 2025 in ALL fields
+      const yearPattern = /2024/g;
+      
+      if (title && title.match(yearPattern)) {
+        title = title.replace(yearPattern, '2025');
+        wasModified = true;
+        console.log(`Updated title: ${article.title} -> ${title}`);
+      }
+      
+      if (slug && slug.match(yearPattern)) {
+        slug = slug.replace(yearPattern, '2025');
+        wasModified = true;
+      }
+      
+      if (excerpt && excerpt.match(yearPattern)) {
+        excerpt = excerpt.replace(yearPattern, '2025');
+        wasModified = true;
+      }
+      
+      if (metaDescription && metaDescription.match(yearPattern)) {
+        metaDescription = metaDescription.replace(yearPattern, '2025');
+        wasModified = true;
+      }
+
+      // Fix 2: Replace 2024 with 2025 for current year references in content
       const yearReplacements = [
         /en 2024/gi,
         /para 2024/gi,
@@ -46,7 +73,8 @@ serve(async (req) => {
         /del 2024/gi,
         /año 2024/gi,
         /este año \(2024\)/gi,
-        /temporada 2024/gi
+        /temporada 2024/gi,
+        /2024/g  // Also catch standalone 2024
       ];
 
       yearReplacements.forEach(pattern => {
@@ -98,6 +126,10 @@ serve(async (req) => {
       if (wasModified) {
         updates.push({
           id: article.id,
+          title: title,
+          slug: slug,
+          excerpt: excerpt,
+          meta_description: metaDescription,
           content: content
         });
         updatedCount++;
@@ -110,7 +142,13 @@ serve(async (req) => {
       for (const update of updates) {
         await supabase
           .from('generated_articles')
-          .update({ content: update.content })
+          .update({ 
+            title: update.title,
+            slug: update.slug,
+            excerpt: update.excerpt,
+            meta_description: update.meta_description,
+            content: update.content 
+          })
           .eq('id', update.id);
       }
     }
@@ -123,7 +161,7 @@ serve(async (req) => {
       updatedCount,
       totalArticles: articles.length,
       fixes: [
-        'Replaced 2024 references with 2025 where appropriate',
+        'Replaced 2024 references with 2025 in titles, slugs, excerpts, meta descriptions, and content',
         'Converted hardcoded domain URLs to relative paths',
         'Cleaned up absolute URLs for internal links'
       ]
