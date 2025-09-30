@@ -189,6 +189,17 @@ CONTENT REQUIREMENTS:
 - Write as an expert sharing knowledge, not making unverifiable claims
 - Focus on practical, actionable advice over statistics
 
+OPENING PARAGRAPH REQUIREMENTS (CRITICAL):
+- ❌ NEVER start articles with "Descubre" - it's overused and generic
+- ❌ Avoid other generic openers like "En este artículo", "Bienvenido a", "¿Sabías que?"
+- ✅ Start with a compelling hook: surprising fact, relatable question, bold statement, or scenario
+- ✅ Make each opening unique and engaging, directly addressing the reader's pain point
+- Examples of good openers:
+  * "El 73% de los clientes potenciales abandonan un sitio web de restaurante que tarda más de 3 segundos en cargar."
+  * "¿Tu restaurante está perdiendo clientes porque tu sitio web no aparece en Google?"
+  * "Imagina que un cliente busca 'mejor cevichería en Miraflores' y tu restaurante no aparece en los primeros resultados."
+  * "La competencia en el sector gastronómico limeño es feroz, y tu presencia digital puede ser el factor decisivo."
+
 TECHNICAL REQUIREMENTS:
 - Use proper HTML markup with semantic tags
 - Images should have descriptive alt text

@@ -34,7 +34,7 @@ serve(async (req) => {
       .select()
       .single();
 
-    // Get existing articles and keywords
+    // Get existing articles, keywords, and content gaps to avoid duplicates
     const { data: existingArticles } = await supabase
       .from('generated_articles')
       .select('title, category, keywords')
@@ -46,6 +46,10 @@ serve(async (req) => {
       .eq('is_covered', false)
       .order('priority', { ascending: false });
 
+    const { data: existingGaps } = await supabase
+      .from('content_gaps')
+      .select('topic, category, target_keywords, status');
+
     // Analyze content gaps using ChatGPT
     const gapAnalysisPrompt = `
 You are a content strategist for "Mi Restaurante Online", a restaurant website design company in Peru.
@@ -56,6 +60,9 @@ ${JSON.stringify(existingArticles, null, 2)}
 Target keywords not yet covered:
 ${JSON.stringify(targetKeywords, null, 2)}
 
+EXISTING content gaps already identified (DO NOT DUPLICATE THESE):
+${JSON.stringify(existingGaps, null, 2)}
+
 Restaurant industry categories we cover:
 - desarrollo-web (web development for restaurants)
 - marketing-digital (digital marketing for restaurants)  
@@ -63,21 +70,28 @@ Restaurant industry categories we cover:
 - casos-exito (success cases)
 - guias-practicas (practical guides)
 
-Analyze the content gaps and identify the TOP 3 most important topics we should create articles about to build topical authority for restaurant websites in Peru. Consider:
+CRITICAL REQUIREMENTS:
+1. Check existing content gaps and published articles carefully
+2. DO NOT suggest topics that are already covered or too similar to existing gaps
+3. Each new topic must be UNIQUE and fill a distinct content need
+4. Avoid near-duplicates like "SEO para Restaurantes" if we already have "SEO para Restaurantes Locales"
+
+Analyze the content gaps and identify the TOP 3 most important UNIQUE topics we should create articles about to build topical authority for restaurant websites in Peru. Consider:
 1. Keywords not yet covered
 2. Topics that support our main business (restaurant website design)
 3. Seasonal trends in Peru's restaurant industry
 4. Local market needs (Lima, Arequipa, Cusco, etc.)
+5. Topics that are distinctly different from what we already have
 
 Return JSON format:
 {
   "content_gaps": [
     {
-      "topic": "Topic title",
+      "topic": "Topic title (must be unique and not similar to existing)",
       "category": "one of the 5 categories",
       "target_keywords": ["keyword1", "keyword2"],
       "priority_score": 1-10,
-      "reasoning": "Why this topic is important"
+      "reasoning": "Why this topic is important and how it differs from existing content"
     }
   ]
 }
