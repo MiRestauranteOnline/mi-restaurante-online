@@ -119,6 +119,8 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
         identificationNumber: idNumber.trim(),
       });
 
+      console.log('Card token generated:', token);
+
       if (!token?.id) throw new Error("No se pudo generar el token de la tarjeta");
 
       const { data, error } = await supabase.functions.invoke("process-mercadopago-card-payment", {

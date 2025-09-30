@@ -47,13 +47,14 @@ serve(async (req) => {
       description: body.description || 'Pago Mi Restaurante Online',
       installments: body.installments || 1,
       payment_method_id: body.payment_method_id,
-      issuer_id: body.issuer_id,
+      issuer_id: body.issuer_id ? Number(body.issuer_id) : undefined,
       payer: {
         email: body.payer.email,
         first_name: body.payer.first_name || 'Cliente',
         identification: body.payer.identification || undefined,
       },
       metadata: body.metadata || {},
+      binary_mode: true,
     };
 
     // Generate a UUID for idempotency
