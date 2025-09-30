@@ -13,8 +13,6 @@ import {
   SecurityCode,
   getIdentificationTypes,
   createCardToken,
-  getPaymentMethods,
-  getIssuers,
 } from "@mercadopago/sdk-react";
 
 interface CardFieldsPaymentProps {
@@ -37,10 +35,7 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
   const [idType, setIdType] = useState<string>("");
   const [idNumber, setIdNumber] = useState<string>("");
   const [cardholderName, setCardholderName] = useState<string>("");
-  const [paymentMethodId, setPaymentMethodId] = useState<string>("");
-  const [issuerId, setIssuerId] = useState<string>("");
   const [mpMode, setMpMode] = useState<'test' | 'live' | null>(null);
-  const [cardNumberInstance, setCardNumberInstance] = useState<any>(null);
 
   const amount = selectedPlan === "basic" ? 297 : 497;
 
@@ -72,39 +67,6 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
     init();
   }, [toast]);
 
-  // Handle BIN change to get payment method and issuer
-  const handleBinChange = async (bin: string) => {
-    if (!bin || bin.length < 6) {
-      setPaymentMethodId("");
-      setIssuerId("");
-      return;
-    }
-
-    try {
-      console.log("Getting payment methods for BIN:", bin);
-      const { results } = await getPaymentMethods({ bin });
-      const paymentMethod = results?.[0];
-
-      if (paymentMethod) {
-        console.log("Payment method found:", paymentMethod);
-        setPaymentMethodId(paymentMethod.id);
-
-        // Get issuers if needed
-        if (paymentMethod.additional_info_needed?.includes("issuer_id")) {
-          const issuers = await getIssuers({ paymentMethodId: paymentMethod.id, bin });
-        if (issuers?.[0]) {
-          setIssuerId(String(issuers[0].id));
-          console.log("Issuer found:", issuers[0]);
-        }
-        } else if (paymentMethod.issuer) {
-          setIssuerId(String(paymentMethod.issuer.id));
-          console.log("Using default issuer:", paymentMethod.issuer);
-        }
-      }
-    } catch (e) {
-      console.warn("Failed to get payment method:", e);
-    }
-  };
 
   const handlePay = async () => {
     try {
@@ -112,7 +74,6 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
 
       if (!cardholderName.trim()) throw new Error("Ingresa el nombre del titular de la tarjeta");
       if (!idType || !idNumber.trim()) throw new Error("Completa el documento del titular");
-      if (!paymentMethodId) throw new Error("No se pudo detectar el método de pago. Verifica el número de tarjeta.");
 
       // Create token from mounted secure fields
       const token = await createCardToken({
@@ -207,16 +168,8 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
                 <div className="space-y-2">
                   <Label>Número de tarjeta</Label>
                   <div className="border rounded-md px-3 py-2">
-                    <CardNumber 
-                      placeholder="1234 1234 1234 1234" 
-                      onBinChange={(data: any) => handleBinChange(data?.bin)}
-                    />
+                    <CardNumber placeholder="1234 1234 1234 1234" />
                   </div>
-                  {paymentMethodId && (
-                    <div className="text-xs text-green-600">
-                      ✓ Método de pago detectado
-                    </div>
-                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
