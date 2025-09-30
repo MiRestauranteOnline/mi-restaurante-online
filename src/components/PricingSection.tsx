@@ -10,10 +10,6 @@ export const PricingSection = () => {
     window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
-  const handleApplicationClick = () => {
-    document.getElementById('application')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section id="pricing" className="py-20 bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -100,9 +96,9 @@ export const PricingSection = () => {
                 <Button 
                   variant="outline" 
                   className="w-full border-primary text-primary hover:bg-primary/5"
-                  onClick={handleApplicationClick}
+                  onClick={() => window.location.href = '/signup'}
                 >
-                  Aplicar Ahora
+                  Registrarse Ahora
                 </Button>
               </div>
             </CardContent>
@@ -160,9 +156,9 @@ export const PricingSection = () => {
                 <Button 
                   variant="outline" 
                   className="w-full border-accent text-accent hover:bg-accent/5"
-                  onClick={handleApplicationClick}
+                  onClick={() => window.location.href = '/signup'}
                 >
-                  Aplicar Ahora
+                  Registrarse Ahora
                 </Button>
               </div>
             </CardContent>

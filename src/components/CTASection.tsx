@@ -7,10 +7,6 @@ export const CTASection = () => {
     window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(businessData.contact.whatsapp.message)}`, "_blank");
   };
 
-  const handleScrollToPricing = () => {
-    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="relative py-24 overflow-hidden">
       {/* Parallax Background */}
@@ -37,17 +33,17 @@ export const CTASection = () => {
             <Button 
               size="lg" 
               className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary transition-smooth text-lg px-8 py-4"
-              onClick={handleWhatsAppClick}
+              onClick={() => window.location.href = '/signup'}
             >
-              Aplicar Ahora
+              Registrarse Ahora
             </Button>
             <Button 
               variant="outline" 
               size="lg" 
-              className="border-white text-primary hover:bg-white/10 hover:text-primary text-lg px-8 py-4"
-              onClick={handleScrollToPricing}
+              className="border-white text-white hover:bg-white/20 text-lg px-8 py-4"
+              onClick={handleWhatsAppClick}
             >
-              Ver Precios
+              Hablar por WhatsApp
             </Button>
           </div>
         </div>

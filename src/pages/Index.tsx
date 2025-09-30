@@ -5,7 +5,6 @@ import { BenefitsSection } from "@/components/BenefitsSection";
 import { HowItWorksSection } from "@/components/HowItWorksSection";
 import { CTASection } from "@/components/CTASection";
 import { PricingSection } from "@/components/PricingSection";
-import { ApplicationForm } from "@/components/ApplicationForm";
 import { FAQSection } from "@/components/FAQSection";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Footer } from "@/components/Footer";
@@ -40,11 +39,6 @@ const Index = () => {
       {/* Pricing Plans */}
       <section id="pricing">
         <PricingSection />
-      </section>
-      
-      {/* Application Form */}
-      <section id="application">
-        <ApplicationForm />
       </section>
       
       {/* FAQ Section */}

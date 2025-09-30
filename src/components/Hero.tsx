@@ -74,7 +74,7 @@ export const Hero = () => {
                 onClick={handleSignupClick}
               >
                 <ArrowRight className="w-5 h-5" />
-                Comenzar a Hacer Crecer Mi Restaurante
+                Registrarse Ahora
               </Button>
               <Button 
                 variant="outline" 

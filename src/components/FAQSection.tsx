@@ -8,43 +8,43 @@ export const FAQSection = () => {
   const faqs = [
     {
       question: "¿En cuánto tiempo estará listo mi sitio web?",
-      answer: "Tu demo funcional estará listo en 72 horas. Una vez aprobado el diseño y recibido el primer pago, el sitio final se entrega en 24 horas adicionales con tu dominio configurado."
+      answer: "Tu sitio web profesional estará completamente listo y online en 72 horas. Trabajamos con plantillas optimizadas de alta calidad que personalizamos con tu contenido, logo, menú y fotos."
     },
     {
       question: "¿Qué cambios puedo hacer yo mismo?",
-      answer: "Con el sistema PIN puedes cambiar: textos básicos, precios del menú, horarios, información de contacto, y agregar/quitar fotos. Para cambios más complejos, nuestro soporte te ayuda por WhatsApp."
+      answer: "A través de tu dashboard personal puedes actualizar: menú con precios, horarios de atención, información de contacto, imágenes, y textos básicos. Para cambios de diseño o funcionalidades adicionales, te ayudamos según tu plan."
     },
     {
-      question: "¿Ofrecen migración de mi sitio web actual?",
-      answer: "No ofrecemos migración porque trabajamos con un sistema administrado que garantiza rapidez y calidad. Si tienes un sitio actual, creamos uno completamente nuevo con tu contenido optimizado."
+      question: "¿Usan plantillas o diseños completamente personalizados?",
+      answer: "Utilizamos plantillas profesionales creadas internamente con las últimas tecnologías. Esto nos permite entregar sitios de alta calidad en 72 horas. No ofrecemos diseños completamente personalizados en los planes básicos, pero todas las plantillas son modernas y optimizadas para restaurantes."
     },
     {
       question: "¿Qué pasa si quiero cancelar el servicio?",
-      answer: "Puedes cancelar en cualquier momento. Tras 6 meses de no pago, el sitio se desactiva automáticamente. No hay penalizaciones ni costos ocultos de cancelación."
+      answer: "Puedes cancelar en cualquier momento sin penalizaciones. Tras 6 meses de cancelación, el sitio se desactiva automáticamente. Como es un servicio administrado, no ofrecemos migración del sitio a otros servidores."
     },
     {
-      question: "¿Dónde compro el dominio y correo electrónico?",
-      answer: "Recomendamos Namecheap para dominios y correos. Es más barato que GoDaddy y tiene un panel fácil de usar. Te guiamos en todo el proceso de compra y configuración."
+      question: "¿Dónde compro mi dominio?",
+      answer: "Los dominios se compran por separado. Recomendamos Namecheap (evitamos GoDaddy por costos altos y panel confuso). Te guiamos en todo el proceso de compra y lo configuramos sin costo adicional."
     },
     {
       question: "¿El precio de S/297 es realmente fijo de por vida?",
-      answer: "Sí, si contratas durante esta promoción, mantienes el precio de S/297 por mes de por vida, sin aumentos. Es nuestra garantía de precio fijo para clientes fundadores."
+      answer: "Sí, durante el período promocional de lanzamiento, el precio que contratas se mantiene de por vida mientras tu suscripción esté activa. Es nuestra garantía para early adopters."
     },
     {
-      question: "¿Qué incluye el hosting de 3,000 visitas mensuales?",
-      answer: "Son 3,000 visitas únicas por mes o 6 GB de ancho de banda, lo que sea mayor. Para la mayoría de restaurantes esto cubre perfectamente el tráfico inicial. Si creces, el sobrecargo es solo S/15 por cada 1,000 visitas adicionales."
+      question: "¿Qué incluye el límite de 3,000 visitas/mes?",
+      answer: "Incluye hasta 3,000 visitas mensuales o 6 GB de transferencia (lo que ocurra primero). Para la mayoría de restaurantes nuevos esto es más que suficiente. Sobrecargo: S/15 por cada 1,000 visitas o 3 GB adicionales."
     },
     {
-      question: "¿Pueden integrar mi página con delivery apps como Rappi?",
-      answer: "Sí, incluimos botones directos a tus perfiles en Rappi, PedidosYa, UberEats y otras plataformas de delivery. También podemos integrar el WhatsApp para pedidos directos."
+      question: "¿Puedo agregar funciones personalizadas no listadas?",
+      answer: "Las funciones listadas en nuestros planes son lo que incluimos. Si necesitas funcionalidades completamente personalizadas (sistemas de reservas complejos, e-commerce integrado, etc.), podemos cotizarlas por separado, pero no están incluidas en los planes base."
     },
     {
-      question: "¿El sitio web funciona bien en celulares?",
-      answer: "Absolutamente. Todos nuestros sitios son mobile-first, diseñados primero para celular y luego adaptados a computadora. Más del 80% de tus clientes visitarán desde el móvil."
+      question: "¿El sitio funciona bien en celulares?",
+      answer: "Sí, todos nuestros sitios son mobile-first. Se diseñan primero para móvil y luego se adaptan a desktop. Más del 80% de tus clientes visitarán desde celular, por eso es nuestra prioridad."
     },
     {
-      question: "¿Qué tipo de soporte recibo después del lanzamiento?",
-      answer: "Soporte completo por WhatsApp para dudas técnicas, cambios menores, y optimizaciones. El Plan Avanzado incluye 1 hora mensual para cambios más extensos como nuevas secciones o modificaciones de diseño."
+      question: "¿Qué diferencia hay entre Plan Básico y Avanzado en soporte?",
+      answer: "Plan Básico: Soporte WhatsApp básico y email (48h) para actualizaciones vía dashboard. Plan Avanzado: Soporte prioritario (24h), 1 hora/mes de cambios profesionales (textos, imágenes, secciones), analytics y WhatsApp premium con PIN único."
     }
   ];
 
