@@ -30,7 +30,7 @@ serve(async (req) => {
         .from('generated_articles')
         .select('id, title, meta_description, keywords, featured_image_url')
         .eq('status', 'published')
-        .order('published_at', { ascending: false });
+        .order('publish_date', { ascending: false });
       
       if (error) throw error;
       articles = data;
