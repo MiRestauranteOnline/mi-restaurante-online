@@ -152,7 +152,7 @@ const Signup = () => {
         setSignupData({ ...updatedData, paymentId: data.client.id });
         setIsProcessingPayment(false);
         // Go to embedded payment step
-        setCurrentStep(2);
+        // setCurrentStep(2); // Payment shown within Step 1
       } else {
         throw new Error('Respuesta inesperada del servidor');
       }
@@ -353,11 +353,27 @@ const Signup = () => {
           <Card className="border-border">
             <CardContent className="p-8">
               {currentStep === 1 && (
-                <SignupStep1 
-                  onComplete={handleStep1Complete}
-                  initialData={signupData}
-                  isProcessingPayment={isProcessingPayment}
-                />
+                <>
+                  <SignupStep1 
+                    onComplete={handleStep1Complete}
+                    initialData={signupData}
+                    isProcessingPayment={isProcessingPayment}
+                  />
+                  {signupData.paymentId && (
+                    <div className="mt-8">
+                      <EmbeddedPayment
+                        signupData={{
+                          email: signupData.email,
+                          restaurantName: signupData.restaurantName,
+                          paymentId: signupData.paymentId,
+                        }}
+                        selectedPlan={selectedPlan}
+                        onSuccess={() => setCurrentStep(3)}
+                        onBack={() => { /* stay on step 1 */ }}
+                      />
+                    </div>
+                  )}
+                </>
               )}
               
               {currentStep === 2 && (

@@ -46,7 +46,7 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
 
         // Create card payment brick
         await createCardPaymentBrick(mpInstance);
-        setLoading(false);
+        // loading state will be cleared on onReady callback
       } catch (err: any) {
         console.error('Embedded payment init error:', err);
         toast({ title: 'Error', description: err.message || 'No se pudo cargar el pago', variant: 'destructive' });
@@ -87,7 +87,7 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
       },
       callbacks: {
         onReady: () => {
-          // Brick ready
+          setLoading(false);
         },
         onSubmit: async ({ formData }: any) => {
           try {
@@ -165,11 +165,10 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
             <CardTitle>Pago con tarjeta</CardTitle>
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <div className="py-10 text-center text-muted-foreground">Cargando formulario de pago...</div>
-            ) : (
-              <div id="card-payment-brick" ref={containerRef} />
+            {loading && (
+              <div className="py-4 text-sm text-muted-foreground">Cargando formulario de pago...</div>
             )}
+            <div id="card-payment-brick" ref={containerRef} />
           </CardContent>
         </Card>
       </div>

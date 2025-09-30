@@ -249,7 +249,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       
       toast({
         title: "Información guardada",
-        description: "Redirigiendo a Mercado Pago...",
+        description: "Desplázate hacia abajo para completar el pago.",
       });
     } catch (error: any) {
       toast({
