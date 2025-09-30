@@ -12,6 +12,7 @@ import { EmbeddedPayment } from "@/components/signup/EmbeddedPayment";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
 
 export interface SignupData {
   email: string;
@@ -386,16 +387,18 @@ const Signup = () => {
                     isProcessingPayment={isProcessingPayment}
                   />
                   {(signupData.paymentId || signupData.email) && (
-                    <EmbeddedPayment
-                      signupData={{
-                        email: signupData.email,
-                        restaurantName: signupData.restaurantName,
-                        paymentId: signupData.paymentId,
-                      }}
-                      selectedPlan={selectedPlan}
-                      onSuccess={() => setCurrentStep(3)}
-                      onBack={() => { /* stay on step 1 */ }}
-                    />
+                    <DebugErrorBoundary>
+                      <EmbeddedPayment
+                        signupData={{
+                          email: signupData.email,
+                          restaurantName: signupData.restaurantName,
+                          paymentId: signupData.paymentId,
+                        }}
+                        selectedPlan={selectedPlan}
+                        onSuccess={() => setCurrentStep(3)}
+                        onBack={() => { /* stay on step 1 */ }}
+                      />
+                    </DebugErrorBoundary>
                   )}
                 </>
               )}
