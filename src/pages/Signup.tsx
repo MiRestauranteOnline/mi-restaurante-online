@@ -8,6 +8,7 @@ import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/sig
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -245,19 +246,19 @@ const Signup = () => {
 
   const handleStep2Complete = async (requirements: WebsiteRequirements) => {
     setWebsiteRequirements(requirements);
-    setCurrentStep(3); // Move to menu step
+    setCurrentStep(4); // Move to menu step
     window.scrollTo(0, 0);
   };
 
   const handleStep3Complete = async (combined: CombinedData) => {
     setCombinedData(combined);
-    setCurrentStep(4); // Move to opening hours step
+    setCurrentStep(5); // Move to opening hours step
     window.scrollTo(0, 0);
   };
 
   const handleStep4Complete = async (openingHours: OpeningHoursData) => {
     setOpeningHoursData(openingHours);
-    setCurrentStep(5); // Move to images step
+    setCurrentStep(6); // Move to images step
     window.scrollTo(0, 0);
   };
 
@@ -318,7 +319,7 @@ const Signup = () => {
       setIsProcessingFinalStep(false);
     }
     
-    setCurrentStep(6); // Move to success step
+    setCurrentStep(7); // Move to success step
   };
 
   const handleBackToStep1 = () => {
@@ -327,17 +328,17 @@ const Signup = () => {
   };
 
   const handleBackToStep2 = () => {
-    setCurrentStep(2);
-    window.scrollTo(0, 0);
-  };
-
-  const handleBackToStep3 = () => {
     setCurrentStep(3);
     window.scrollTo(0, 0);
   };
 
-  const handleBackToStep4 = () => {
+  const handleBackToStep3 = () => {
     setCurrentStep(4);
+    window.scrollTo(0, 0);
+  };
+
+  const handleBackToStep4 = () => {
+    setCurrentStep(5);
     window.scrollTo(0, 0);
   };
 
@@ -367,7 +368,7 @@ const Signup = () => {
                 }`}>
                   2
                 </div>
-                <span className="ml-2 font-medium text-xs sm:text-sm">Requisitos</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Pago</span>
               </div>
               
               <div className={`w-8 h-0.5 ${currentStep > 2 ? 'bg-primary' : 'bg-muted'}`} />
@@ -378,7 +379,7 @@ const Signup = () => {
                 }`}>
                   3
                 </div>
-                <span className="ml-2 font-medium text-xs sm:text-sm">Contenido</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Requisitos</span>
               </div>
 
               <div className={`w-8 h-0.5 ${currentStep > 3 ? 'bg-primary' : 'bg-muted'}`} />
@@ -389,7 +390,7 @@ const Signup = () => {
                 }`}>
                   4
                 </div>
-                <span className="ml-2 font-medium text-xs sm:text-sm">Horarios</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Contenido</span>
               </div>
 
               <div className={`w-8 h-0.5 ${currentStep > 4 ? 'bg-primary' : 'bg-muted'}`} />
@@ -400,7 +401,7 @@ const Signup = () => {
                 }`}>
                   5
                 </div>
-                <span className="ml-2 font-medium text-xs sm:text-sm">Imágenes</span>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Horarios</span>
               </div>
 
               <div className={`w-8 h-0.5 ${currentStep > 5 ? 'bg-primary' : 'bg-muted'}`} />
@@ -408,6 +409,17 @@ const Signup = () => {
               <div className={`flex items-center ${currentStep >= 6 ? 'text-primary' : 'text-muted-foreground'}`}>
                 <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
                   currentStep >= 6 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
+                }`}>
+                  6
+                </div>
+                <span className="ml-2 font-medium text-xs sm:text-sm">Imágenes</span>
+              </div>
+
+              <div className={`w-8 h-0.5 ${currentStep > 6 ? 'bg-primary' : 'bg-muted'}`} />
+              
+              <div className={`flex items-center ${currentStep >= 7 ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
+                  currentStep >= 7 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
                 }`}>
                   ✓
                 </div>
@@ -428,41 +440,60 @@ const Signup = () => {
               )}
               
               {currentStep === 2 && (
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold text-foreground mb-4">
+                    Procesando Pago
+                  </h2>
+                  <p className="text-muted-foreground mb-6">
+                    Tu cuenta ha sido creada. Continúa con la configuración.
+                  </p>
+                  <div className="flex gap-4 justify-center">
+                    <Button onClick={handleBackToStep1} variant="outline">
+                      Volver
+                    </Button>
+                    <Button onClick={() => setCurrentStep(3)}>
+                      Continuar
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
+              {currentStep === 3 && (
                 <SignupStep2 
                   onComplete={handleStep2Complete}
-                  onBack={handleBackToStep1}
+                  onBack={() => setCurrentStep(2)}
                   signupData={signupData}
                   initialData={websiteRequirements}
                 />
               )}
 
-              {currentStep === 3 && (
+              {currentStep === 4 && (
                 <SignupStep3Combined 
                   onComplete={handleStep3Complete}
-                  onBack={handleBackToStep2}
-                  onSkip={() => setCurrentStep(4)}
+                  onBack={() => setCurrentStep(3)}
+                  onSkip={() => setCurrentStep(5)}
                   initialData={combinedData}
                 />
               )}
 
-              {currentStep === 4 && (
+              {currentStep === 5 && (
                 <SignupStep4OpeningHours 
                   onComplete={handleStep4Complete}
-                  onBack={handleBackToStep3}
+                  onBack={() => setCurrentStep(4)}
                   initialData={openingHoursData}
                 />
               )}
 
-              {currentStep === 5 && (
+              {currentStep === 6 && (
               <SignupStep5Images
                 onComplete={handleStep5Complete}
-                onBack={handleBackToStep4}
+                onBack={() => setCurrentStep(5)}
                 initialData={imagesData}
                 isProcessingFinalStep={isProcessingFinalStep}
               />
               )}
               
-              {currentStep === 6 && (
+              {currentStep === 7 && (
                 <SignupSuccess 
                   signupData={signupData}
                   websiteRequirements={websiteRequirements}
