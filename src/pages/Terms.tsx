@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { businessData } from "@/config/businessData";
 
 const Terms = () => {
   return (
@@ -24,99 +25,389 @@ const Terms = () => {
         </div>
 
         <div className="space-y-8">
+          {/* Company Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Sobre Nuestros Servicios</CardTitle>
+              <CardTitle>Información de la Empresa</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground mb-4">
-                <strong>IMPORTANTE:</strong> Los paquetes incluyen sitios web de alta calidad. 
-                Utilizamos plantillas creadas internamente con las últimas tecnologías.
-              </p>
-              <p className="text-muted-foreground mb-4">
-                <strong>No ofrecemos funciones completamente personalizadas</strong> que no estén 
-                listadas en nuestra página dentro del paquete básico. Las opciones de desarrollo 
-                adicional pueden ser discutidas pero serán manejadas a través de cotizaciones personalizadas.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Paquetes y Funcionalidades</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold text-foreground mb-2">Plan Básico (S/297/mes)</h4>
-                  <ul className="list-disc pl-6 text-muted-foreground space-y-1">
-                    <li>Sitio profesional en 72 horas</li>
-                    <li>Hosting + SSL incluido</li>
-                    <li>SEO básico optimizado</li>
-                    <li>Botón WhatsApp integrado</li>
-                    <li>Menú descargable en PDF</li>
-                    <li>Cambios auto-gestionables (PIN)</li>
-                    <li>Soporte por WhatsApp</li>
-                    <li>Hasta 3,000 visitas/mes o 6 GB</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h4 className="font-semibold text-foreground mb-2">Plan Avanzado (S/497/mes)</h4>
-                  <p className="text-muted-foreground">Incluye todo del Plan Básico más:</p>
-                  <ul className="list-disc pl-6 text-muted-foreground space-y-1 mt-2">
-                    <li>1 hora/mes de cambios extendidos</li>
-                    <li>Cambios de textos e imágenes</li>
-                    <li>Nuevas secciones personalizadas</li>
-                    <li>Soporte prioritario</li>
-                    <li>Login opcional si necesitas</li>
-                    <li>Asesoría mensual incluida</li>
-                  </ul>
-                </div>
+              <div className="space-y-2 text-muted-foreground">
+                <p><strong>Razón Social:</strong> {businessData.company.legalName}</p>
+                <p><strong>RUC:</strong> {businessData.company.ruc}</p>
+                <p><strong>Nombre Comercial:</strong> {businessData.company.name}</p>
+                <p><strong>Dirección:</strong> {businessData.address.full}</p>
+                <p><strong>Email General:</strong> {businessData.contact.email.general}</p>
+                <p><strong>Email Soporte:</strong> soporte@mirestaurante.online</p>
+                <p><strong>Soporte Premium:</strong> premiumsoporte@mirestaurante.online</p>
+                <p><strong>Teléfono/WhatsApp:</strong> {businessData.contact.phone.display}</p>
               </div>
             </CardContent>
           </Card>
 
+          {/* Service Description */}
           <Card>
             <CardHeader>
-              <CardTitle>Limitaciones y Sobrecargos</CardTitle>
+              <CardTitle>Descripción del Servicio</CardTitle>
             </CardHeader>
-            <CardContent>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>Sobrecargo: S/15 por cada 1,000 visitas adicionales o 3 GB (lo que sea mayor)</li>
-                <li>Los dominios se adquieren por separado (recomendamos Namecheap)</li>
-                <li>Evitamos GoDaddy por costos altos y panel confuso</li>
-                <li>Las funciones no listadas requieren cotización personalizada</li>
-              </ul>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                Mi Restaurante Online ofrece un servicio de suscripción mensual que incluye el desarrollo, 
+                alojamiento y mantenimiento continuo de sitios web profesionales para restaurantes. Este es 
+                un servicio digital administrado; no vendemos productos físicos ni realizamos entregas materiales.
+              </p>
+              <p>
+                El servicio incluye: diseño web basado en plantillas profesionales optimizadas, alojamiento web, 
+                actualizaciones de contenido mediante panel de control, soporte técnico, y mantenimiento continuo 
+                de la infraestructura.
+              </p>
             </CardContent>
           </Card>
 
+          {/* Pricing and Plans */}
           <Card>
             <CardHeader>
-              <CardTitle>Garantías y Cancelación</CardTitle>
+              <CardTitle>Planes y Precios</CardTitle>
             </CardHeader>
-            <CardContent>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>Precio fijo de por vida si contratas durante el período promocional</li>
-                <li>Demo funcional entregado en 72 horas</li>
-                <li>Tras 6 meses de cancelación, el sitio se desactiva</li>
-                <li>No ofrecemos servicios de migración (sitio administrado)</li>
-              </ul>
+            <CardContent className="text-muted-foreground space-y-4">
+              <div>
+                <h3 className="font-semibold text-foreground mb-2">Plan Básico - S/ 297 por mes</h3>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>Hasta 3,000 visitas mensuales (6 GB de transferencia)</li>
+                  <li>Soporte básico por WhatsApp</li>
+                  <li>Soporte por email (respuesta en 48h)</li>
+                  <li>Actualizaciones de contenido autoservicio vía dashboard</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground mb-2">Plan Avanzado - S/ 497 por mes</h3>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>Hasta 6,000 visitas mensuales (12 GB de transferencia)</li>
+                  <li>1 hora/mes de soporte profesional para cambios de textos e imágenes</li>
+                  <li>Soporte prioritario (respuesta en 24h)</li>
+                  <li>WhatsApp premium con PIN único de soporte</li>
+                  <li>Dashboard de Analytics básico y reportes mensuales</li>
+                  <li>Configuración de Google Analytics y Search Console incluida</li>
+                </ul>
+              </div>
+              <div className="pt-4 border-t">
+                <h3 className="font-semibold text-foreground mb-2">Sobrecargos por Uso Adicional</h3>
+                <p>S/ 15 por cada 1,000 visitas adicionales o 3 GB de transferencia extra (lo que ocurra primero).</p>
+              </div>
             </CardContent>
           </Card>
 
+          {/* Billing Cycle */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Ciclo de Facturación y Pagos Recurrentes</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Moneda:</strong> Todos los precios están expresados en Soles Peruanos (S/ o PEN).
+              </p>
+              <p>
+                <strong>Primer Cobro:</strong> El primer cargo se realiza al momento de completar el registro 
+                y proporcionar tu información de pago. El sitio web se entrega dentro de las 72 horas posteriores 
+                al pago exitoso.
+              </p>
+              <p>
+                <strong>Cobros Mensuales Automáticos:</strong> Al suscribirte, autorizas expresamente a 
+                {businessData.company.legalName} a almacenar de forma segura tu información de tarjeta de crédito/débito 
+                y a realizar cobros automáticos mensuales por el monto de tu plan seleccionado, cada mes en la misma 
+                fecha de tu registro inicial, hasta que canceles tu suscripción.
+              </p>
+              <p>
+                <strong>Renovación Automática:</strong> Tu suscripción se renueva automáticamente cada mes. 
+                Recibirás un recibo por email después de cada cobro exitoso.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Cancellation Policy */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Política de Cancelación</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Cómo Cancelar:</strong> Puedes cancelar tu suscripción en cualquier momento desde tu panel 
+                de control del cliente o enviando un email a soporte@mirestaurante.online.
+              </p>
+              <p>
+                <strong>Cuándo Toma Efecto:</strong> La cancelación toma efecto al final de tu ciclo de facturación 
+                actual. No se realizarán más cobros después de esa fecha. Seguirás teniendo acceso completo a tu sitio 
+                web hasta el último día de tu período pagado.
+              </p>
+              <p>
+                <strong>Después de la Cancelación:</strong> Tu sitio web será desactivado al finalizar tu ciclo de 
+                facturación. Guardamos tu sitio web completo (incluyendo contenido, imágenes y configuraciones) en 
+                nuestro sistema durante 6 meses para que puedas reactivarlo fácilmente si decides volver.
+              </p>
+              <p>
+                <strong>Servicio Administrado:</strong> Como este es un servicio administrado y alojado, no ofrecemos 
+                migración del sitio web a otros servidores ni entrega del código fuente.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Refund Policy */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Política de Reembolsos</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Reembolsos por Mes Parcial:</strong> No ofrecemos reembolsos prorrateados por meses parciales 
+                ya pagados. Si cancelas a mitad de mes, mantendrás acceso hasta el final del período pagado.
+              </p>
+              <p>
+                <strong>Reembolsos por Incumplimiento de Servicio:</strong> Si no logramos entregar tu sitio web 
+                dentro de las 72 horas prometidas después del pago, o si experimentas interrupciones prolongadas del 
+                servicio por causas atribuibles a nosotros, puedes solicitar un reembolso proporcional por el tiempo 
+                sin servicio.
+              </p>
+              <p>
+                <strong>Cómo Solicitar un Reembolso:</strong> Envía un email a soporte@mirestaurante.online con tu 
+                número de cliente y el motivo de tu solicitud. Procesaremos las solicitudes válidas dentro de 7-10 
+                días hábiles.
+              </p>
+              <p>
+                <strong>Garantía de Satisfacción (Primer Mes):</strong> Si no estás satisfecho con tu sitio web 
+                durante los primeros 7 días desde la entrega, ofrecemos reembolso completo del primer mes.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Disputes and Chargebacks */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Disputas y Contracargos</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Contacta Primero:</strong> Antes de iniciar una disputa o contracargo con tu banco, 
+                te pedimos que nos contactes primero a soporte@mirestaurante.online. La mayoría de problemas 
+                pueden resolverse rápidamente mediante comunicación directa.
+              </p>
+              <p>
+                <strong>Evidencia que Mantenemos:</strong> Guardamos registros detallados de todos los servicios 
+                prestados, incluyendo: fecha de entrega del sitio web, logs de actividad en el dashboard, tickets 
+                de soporte atendidos, tiempo de actividad del servidor, capturas de pantalla de entregables, y 
+                emails de comunicación.
+              </p>
+              <p>
+                <strong>Consecuencias de Contracargos:</strong> Si se presenta un contracargo sin intentar resolver 
+                primero el problema con nosotros, nos reservamos el derecho de suspender inmediatamente el servicio 
+                y cancelar la cuenta. Los contracargos fraudulentos pueden resultar en acciones legales.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Service Delivery and SLAs */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Entrega del Servicio y Acuerdos de Nivel de Servicio (SLA)</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Entrega Inicial:</strong> Tu sitio web profesional estará completamente listo y publicado 
+                online dentro de las 72 horas (3 días hábiles) después de que recibamos tu pago y toda la información 
+                necesaria (logo, menú, fotos, textos).
+              </p>
+              <p>
+                <strong>Tiempo de Actividad del Servidor:</strong> Nos esforzamos por mantener un uptime del 99.5% 
+                mensual. El mantenimiento programado se notifica con 48 horas de anticipación.
+              </p>
+              <p>
+                <strong>Horarios de Soporte:</strong>
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li><strong>Plan Básico:</strong> Soporte por email con respuesta en 48 horas hábiles. WhatsApp disponible en horario de oficina ({businessData.businessHours.weekdays.display}).</li>
+                <li><strong>Plan Avanzado:</strong> Soporte prioritario con respuesta en 24 horas hábiles. WhatsApp premium disponible con tiempos de respuesta más rápidos.</li>
+              </ul>
+              <p>
+                <strong>Actualizaciones de Contenido:</strong> Las actualizaciones que realices tú mismo desde el 
+                dashboard (menú, horarios, fotos) son inmediatas. Los cambios que requieran intervención de nuestro 
+                equipo (Plan Avanzado) se completan según disponibilidad de tu paquete de horas mensuales.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Eligibility */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Elegibilidad y Requisitos</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Edad Mínima:</strong> Debes tener al menos 18 años de edad para suscribirte a nuestros servicios.
+              </p>
+              <p>
+                <strong>Información Precisa:</strong> Al registrarte, aceptas proporcionar información precisa, 
+                actualizada y completa sobre tu restaurante y datos de contacto. Debes mantener actualizada tu 
+                información de pago y email para recibir facturas y comunicaciones importantes.
+              </p>
+              <p>
+                <strong>Representación Legal:</strong> Declaras tener la autoridad legal para suscribir tu restaurante 
+                o negocio a estos servicios y aceptar estos términos en nombre de tu empresa.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Acceptable Use */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Uso Aceptable del Servicio</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Contenido Prohibido:</strong> No puedes publicar en tu sitio web contenido que sea ilegal, 
+                difamatorio, fraudulento, pornográfico, que viole derechos de propiedad intelectual, o que promueva 
+                actividades ilegales.
+              </p>
+              <p>
+                <strong>Actividades Prohibidas:</strong> No está permitido usar el servicio para phishing, distribución 
+                de malware, spam, violación de sanciones internacionales, o cualquier actividad fraudulenta.
+              </p>
+              <p>
+                <strong>Suspensión por Abuso:</strong> Nos reservamos el derecho de suspender o cancelar 
+                inmediatamente cuentas que violen esta política de uso aceptable, sin reembolso.
+              </p>
+              <p>
+                <strong>Cumplimiento de Leyes:</strong> Eres responsable de asegurar que el contenido de tu sitio web 
+                cumpla con todas las leyes aplicables en Perú y cualquier otra jurisdicción relevante.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Jurisdiction */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Jurisdicción y Ley Aplicable</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                Estos Términos de Servicio se rigen por las leyes de la República del Perú. Cualquier disputa que 
+                surja de o relacionada con estos términos o el servicio prestado será sometida a la jurisdicción 
+                exclusiva de los tribunales de Lima, Perú.
+              </p>
+              <p>
+                Las partes acuerdan intentar resolver cualquier disputa primero mediante negociación de buena fe. 
+                Si no se alcanza una solución en 30 días, cualquiera de las partes puede proceder con acciones legales 
+                formales.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Invoices and Communications */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Facturas y Comunicaciones</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Recibos por Email:</strong> Después de cada cobro mensual exitoso, enviaremos automáticamente 
+                un recibo a tu email registrado. Es tu responsabilidad mantener actualizada tu dirección de email.
+              </p>
+              <p>
+                <strong>Comunicaciones del Servicio:</strong> Enviamos notificaciones importantes sobre tu cuenta, 
+                mantenimiento programado, cambios en los términos, y recordatorios de pago a tu email registrado.
+              </p>
+              <p>
+                <strong>Mantén tu Información Actualizada:</strong> Debes actualizar tu email y método de pago en tu 
+                panel de control si cambian. No somos responsables por problemas causados por información de contacto 
+                desactualizada.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Promotions and Discounts */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Promociones y Descuentos</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Cupones de Descuento:</strong> Ocasionalmente ofrecemos cupones promocionales (ejemplo: 50% 
+                de descuento en el próximo mes). Estos descuentos son promocionales y de uso único.
+              </p>
+              <p>
+                <strong>No Modifican el Precio Base:</strong> Los cupones y descuentos promocionales no modifican 
+                el precio base de tu suscripción mensual. Una vez usado el cupón, tu tarjeta será cobrada al precio 
+                normal del plan en los ciclos siguientes.
+              </p>
+              <p>
+                <strong>Términos de Promociones:</strong> Cada promoción puede tener términos específicos y fecha de 
+                vencimiento. Los cupones no son transferibles ni canjeables por efectivo.
+              </p>
+              <p>
+                <strong>Precio de Lanzamiento Garantizado:</strong> Los clientes que se suscriban durante nuestro 
+                período promocional de lanzamiento mantienen su precio de suscripción de por vida mientras su cuenta 
+                permanezca activa sin interrupciones.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Complaints */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quejas y Reclamos</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Canal de Quejas:</strong> Si tienes alguna queja o reclamo sobre nuestro servicio, contáctanos:
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Email: soporte@mirestaurante.online</li>
+                <li>WhatsApp: {businessData.contact.phone.display}</li>
+                <li>Plan Avanzado: premiumsoporte@mirestaurante.online</li>
+              </ul>
+              <p>
+                <strong>Tiempo de Respuesta:</strong> Acusaremos recibo de tu queja dentro de las 24 horas hábiles. 
+                Investigaremos el problema y proporcionaremos una respuesta sustantiva dentro de 5 días hábiles.
+              </p>
+              <p>
+                <strong>Escalación:</strong> Si no estás satisfecho con la respuesta inicial, puedes solicitar 
+                escalación enviando un email a {businessData.contact.email.general} con el asunto "Escalación de Queja".
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Changes to Terms */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Cambios a estos Términos</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                Nos reservamos el derecho de modificar estos Términos de Servicio en cualquier momento. Los cambios 
+                significativos serán notificados por email con al menos 30 días de anticipación. El uso continuado 
+                del servicio después de la fecha de vigencia de los nuevos términos constituye tu aceptación de los mismos.
+              </p>
+              <p>
+                Los cambios de precios para clientes existentes serán notificados con 60 días de anticipación.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Contact */}
           <Card>
             <CardHeader>
               <CardTitle>Contacto</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                Para preguntas sobre estos términos, contacta:
+                Para cualquier pregunta sobre estos Términos de Servicio, contáctanos:
               </p>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>WhatsApp: +51 999 999 999</li>
-                <li>Email: info@mirestaurante.online</li>
-              </ul>
+              <div className="space-y-2 text-muted-foreground">
+                <p><strong>Empresa:</strong> {businessData.company.legalName}</p>
+                <p><strong>RUC:</strong> {businessData.company.ruc}</p>
+                <p><strong>Dirección:</strong> {businessData.address.full}</p>
+                <p><strong>Email Soporte:</strong> soporte@mirestaurante.online</p>
+                <p><strong>Soporte Premium:</strong> premiumsoporte@mirestaurante.online</p>
+                <p><strong>Email General:</strong> {businessData.contact.email.general}</p>
+                <p><strong>WhatsApp:</strong> {businessData.contact.phone.display}</p>
+              </div>
             </CardContent>
           </Card>
         </div>
