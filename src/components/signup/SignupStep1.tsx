@@ -51,6 +51,9 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
   const [isCheckingSubdomain, setIsCheckingSubdomain] = useState(false);
   const [subdomainError, setSubdomainError] = useState<string>("");
   const [subdomainCheckTimeout, setSubdomainCheckTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [isCheckingDomain, setIsCheckingDomain] = useState(false);
+  const [domainError, setDomainError] = useState<string>("");
+  const [domainCheckTimeout, setDomainCheckTimeout] = useState<NodeJS.Timeout | null>(null);
   const [countryCode, setCountryCode] = useState("+51"); // Default to Peru
   const [phoneNumber, setPhoneNumber] = useState("");
 
@@ -108,6 +111,49 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       .replace(/^www\./, '') // Remove www
       .replace(/\/$/, '') // Remove trailing slash
       .trim();
+  };
+
+  const checkDomainAvailability = async (domain: string) => {
+    if (!domain || domain.length < 3 || !domain.includes('.')) {
+      console.log('Domain too short/invalid:', domain);
+      setDomainError("");
+      return;
+    }
+
+    console.log('🔍 Checking domain availability for:', domain);
+    setIsCheckingDomain(true);
+    setDomainError("");
+
+    try {
+      const cleaned = cleanDomain(domain);
+      const { data, error } = await supabase
+        .from('clients')
+        .select('id, domain')
+        .eq('domain', cleaned)
+        .maybeSingle();
+
+      console.log('📊 Domain check result:', { searchedFor: cleaned, data, error: error?.message || 'no error', errorCode: error?.code });
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('❌ Error checking domain:', error);
+        setDomainError("Error al verificar dominio");
+        return;
+      }
+
+      if (data) {
+        console.log('🚫 Domain is taken:', data.domain);
+        setDomainError("Este dominio ya está en uso. Por favor elige otro.");
+      } else {
+        console.log('✅ Domain is available');
+        setDomainError("");
+      }
+    } catch (error) {
+      console.error('💥 Exception checking domain:', error);
+      setDomainError("Error al verificar dominio");
+    } finally {
+      setIsCheckingDomain(false);
+      console.log('🏁 Domain check completed');
+    }
   };
 
   const checkSubdomainAvailability = async (subdomain: string) => {
@@ -334,10 +380,10 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   </div>
                 </FormControl>
                 {isCheckingSubdomain && (
-                  <p className="text-sm text-muted-foreground">Verificando disponibilidad...</p>
+                  <p className="text-sm text-muted-foreground" role="status" aria-live="polite">Verificando disponibilidad...</p>
                 )}
                 {subdomainError && (
-                  <p className="text-sm text-destructive">{subdomainError}</p>
+                  <p className="text-sm text-destructive" role="alert" aria-live="assertive">{subdomainError}</p>
                 )}
                 <FormMessage />
               </FormItem>
@@ -371,17 +417,38 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dominio Personalizado</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="mirestaurante.com"
-                      {...field}
-                      onChange={(e) => {
-                        const cleaned = cleanDomain(e.target.value);
-                        field.onChange(cleaned);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
+                <FormControl>
+                  <Input 
+                    placeholder="mirestaurante.com"
+                    {...field}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      const cleaned = cleanDomain(raw);
+                      field.onChange(cleaned);
+
+                      // debounce domain availability check
+                      if (domainCheckTimeout) {
+                        clearTimeout(domainCheckTimeout);
+                      }
+                      setDomainError("");
+                      setIsCheckingDomain(false);
+
+                      if (cleaned && cleaned.includes('.')) {
+                        const timeoutId = setTimeout(() => {
+                          checkDomainAvailability(cleaned);
+                        }, 500);
+                        setDomainCheckTimeout(timeoutId);
+                      }
+                    }}
+                  />
+                </FormControl>
+                {isCheckingDomain && (
+                  <p className="text-sm text-muted-foreground">Verificando dominio...</p>
+                )}
+                {domainError && (
+                  <p className="text-sm text-destructive">{domainError}</p>
+                )}
+                <FormMessage />
                 </FormItem>
               )}
             />
