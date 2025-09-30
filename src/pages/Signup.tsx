@@ -137,13 +137,15 @@ const Signup = () => {
       console.log('Signup response received:', { data, error });
 
       if (error) {
-        console.error('Edge function error:', error);
-        throw new Error(error.message || 'Error en el servidor');
+        console.error('Edge function error:', error, 'response data:', data);
+        // Try to surface backend error (we return 200 on handled errors)
+        const backendMsg = data && (data as any).error ? (data as any).error : error.message;
+        throw new Error(backendMsg || 'Error en el servidor');
       }
       
-      if (data?.error) {
-        console.error('Response contains error:', data.error);
-        throw new Error(data.error);
+      if ((data as any)?.error) {
+        console.error('Response contains error:', (data as any).error);
+        throw new Error((data as any).error);
       }
       
       if (data?.success && data?.client?.id) {
@@ -159,9 +161,8 @@ const Signup = () => {
     } catch (error: any) {
       console.error('Account creation/payment error:', error);
       setIsProcessingPayment(false);
-      
-          const errorMessage = error.message || 'Error al procesar el registro. Por favor contacta soporte.';
-      alert(errorMessage);
+      const errorMessage = (error && error.message) || 'Error al procesar el registro. Por favor contacta soporte.';
+      toast({ title: 'No pudimos crear tu cuenta', description: errorMessage, variant: 'destructive' });
     }
   };
 

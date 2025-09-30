@@ -77,8 +77,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (existingClient) {
       return new Response(
-        JSON.stringify({ error: 'El subdominio ya está en uso' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: 'El subdominio ya está en uso' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -88,8 +88,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (emailExists) {
       return new Response(
-        JSON.stringify({ error: 'El email ya está registrado' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: 'El email ya está registrado' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -103,8 +103,8 @@ const handler = async (req: Request): Promise<Response> => {
     if (createUserError || !newUser.user) {
       console.error('Error creating user:', createUserError);
       return new Response(
-        JSON.stringify({ error: 'Error al crear el usuario', details: createUserError?.message }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: 'Error al crear el usuario', details: createUserError?.message }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -138,8 +138,8 @@ const handler = async (req: Request): Promise<Response> => {
       await supabaseAdmin.auth.admin.deleteUser(newUser.user.id);
       
       return new Response(
-        JSON.stringify({ error: 'Error al crear el cliente', details: clientError.message }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: 'Error al crear el cliente', details: clientError.message }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -162,8 +162,8 @@ const handler = async (req: Request): Promise<Response> => {
       await supabaseAdmin.from('clients').delete().eq('id', client.id);
       
       return new Response(
-        JSON.stringify({ error: 'Error al vincular usuario con cliente', details: linkError.message }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: 'Error al vincular usuario con cliente', details: linkError.message }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -238,9 +238,9 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error('Unexpected error in signup-client function:', error);
     return new Response(
-      JSON.stringify({ error: 'Error interno del servidor', details: error.message }),
+      JSON.stringify({ success: false, error: 'Error interno del servidor', details: error.message }),
       {
-        status: 500,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
