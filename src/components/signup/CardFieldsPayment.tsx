@@ -202,7 +202,11 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
                   <div className="border rounded-md px-3 py-2">
                     <CardNumber 
                       placeholder="1234 1234 1234 1234" 
-                      onBinChange={(data: any) => handleBinChange(data.bin)}
+                      onBinChange={(data: any) => handleBinChange(data?.bin)}
+                      onChange={(data: any) => {
+                        const bin = data?.bin || data?.data?.bin;
+                        if (bin && bin.length >= 6) handleBinChange(bin);
+                      }}
                     />
                   </div>
                   {paymentMethodId && (
