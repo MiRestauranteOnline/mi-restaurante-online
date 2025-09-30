@@ -24,7 +24,8 @@ serve(async (req) => {
       reviewsData,
       teamData,
       openingHoursData,
-      imagesData
+      imagesData,
+      skipBranding = false,
     } = await req.json();
 
     if (!clientId || !contentBriefing) {
@@ -193,8 +194,8 @@ serve(async (req) => {
       }
     }
 
-    // Generate branding based on the style briefing
-    if (styleBriefing) {
+    // Generate branding based on the style briefing (unless explicitly skipped)
+    if (styleBriefing && !skipBranding) {
       console.log('Generating branding for client:', actualClientId);
       try {
         const brandingResponse = await supabase.functions.invoke('generate-branding', {
@@ -214,6 +215,8 @@ serve(async (req) => {
         console.error('Error calling generate-branding function:', brandingError);
         // Don't throw here, briefings were already stored successfully
       }
+    } else if (skipBranding) {
+      console.log('Skipping branding generation as requested for client:', actualClientId);
     }
 
     // Store menu categories and items if provided

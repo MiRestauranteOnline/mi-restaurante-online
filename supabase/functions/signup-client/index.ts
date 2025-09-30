@@ -202,6 +202,8 @@ const handler = async (req: Request): Promise<Response> => {
             address: address || null,
           },
           websiteRequirements,
+          // IMPORTANT: avoid cascading failures during signup; branding can run later from dashboard
+          skipBranding: true,
         },
       });
 
