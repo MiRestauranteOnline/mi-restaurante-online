@@ -137,7 +137,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
 
       if (data) {
         console.log('Subdomain is taken:', data.subdomain);
-        setSubdomainError("Este subdominio ya está en uso");
+        setSubdomainError("Este subdominio ya está en uso. Por favor elige otro.");
       } else {
         console.log('Subdomain is available');
         setSubdomainError("");
@@ -152,14 +152,35 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
 
   const onSubmit = async (data: SignupFormData) => {
     try {
-      // Check subdomain availability one final time before submission
+      // Final validation before submission
       if (subdomainError) {
         toast({
-          title: "Error de validación",
+          title: "Subdominio no disponible",
           description: subdomainError,
           variant: "destructive",
         });
         return;
+      }
+
+      // Validate custom domain if provided
+      if (data.hasCustomDomain && data.customDomain) {
+        const cleanedDomain = cleanDomain(data.customDomain);
+        
+        // Check if custom domain is already taken
+        const { data: existingDomain } = await supabase
+          .from('clients')
+          .select('id, domain')
+          .eq('domain', cleanedDomain)
+          .maybeSingle();
+
+        if (existingDomain) {
+          toast({
+            title: "Dominio no disponible",
+            description: "Este dominio ya está en uso. Por favor elige otro.",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
       // Clean custom domain if provided and combine phone data
