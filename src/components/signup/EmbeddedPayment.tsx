@@ -92,12 +92,14 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
         onSubmit: async ({ formData }: any) => {
           try {
             setCreating(true);
+            console.log('Card Payment Brick formData:', formData);
+            
             // Process payment via edge function
             const { data, error } = await supabase.functions.invoke('process-mercadopago-card-payment', {
               body: {
-                token: formData.token,
-                payment_method_id: formData.paymentMethodId || formData.payment_method_id,
-                issuer_id: formData.issuerId || formData.issuer_id,
+                token: formData.card_token || formData.token,
+                payment_method_id: formData.payment_method_id || formData.paymentMethodId,
+                issuer_id: formData.issuer_id || formData.issuerId,
                 installments: formData.installments || 1,
                 amount,
                 description: `${selectedPlan === 'basic' ? 'Plan Básico' : 'Plan Avanzado'} - Mi Restaurante Online`,
