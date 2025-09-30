@@ -205,11 +205,28 @@ const Signup = () => {
             throw new Error(checkoutData?.error || 'Error creando el checkout');
           }
 
-          // Redirect to Mercado Pago payment page
-          console.log('Redirecting to Mercado Pago:', checkoutData.initPoint);
-          window.location.href = checkoutData.initPoint;
-          
-          // Removed duplicate checkout invocation and redirects to avoid multiple calls.
+          // Redirect to Mercado Pago payment page (with robust fallback for sandbox/iframes)
+          const checkoutUrl = checkoutData.initPoint as string;
+          console.log('Redirecting to Mercado Pago:', checkoutUrl);
+          toast({ title: 'Redirecting to Mercado Pago', description: 'Opening checkout. If it does not redirect, a new tab will open.' });
+          try {
+            window.location.assign(checkoutUrl);
+          } catch (navErr) {
+            console.error('Direct redirect blocked, opening new tab...', navErr);
+            window.open(checkoutUrl, '_blank', 'noopener');
+          }
+          // Fallback if running inside a sandboxed iframe
+          setTimeout(() => {
+            try {
+              if (document.visibilityState === 'visible') {
+                console.warn('Still on the same page after attempting redirect. Opening new tab as fallback.');
+                window.open(checkoutUrl, '_blank', 'noopener');
+              }
+            } catch (e) {
+              console.error('Fallback redirect error:', e);
+            }
+          }, 800);
+          return;
         } catch (paymentError: any) {
           console.error('Payment initialization error:', paymentError);
           throw new Error(paymentError.message || 'Error al iniciar el pago');
