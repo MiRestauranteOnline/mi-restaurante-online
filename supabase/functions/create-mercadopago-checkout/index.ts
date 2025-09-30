@@ -59,12 +59,17 @@ serve(async (req) => {
       payment_methods: {
         installments: 1,
         default_installments: 1,
+        excluded_payment_methods: [
+          { id: 'bcp' },
+          { id: 'bbva' },
+          { id: 'interbank' },
+          { id: 'scotiabank' },
+        ],
         excluded_payment_types: [
           { id: 'ticket' },
           { id: 'atm' },
           { id: 'bank_transfer' },
           { id: 'digital_currency' },
-          { id: 'account_money' },
         ],
       },
       metadata: {
