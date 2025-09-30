@@ -12,8 +12,6 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
-const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -47,12 +45,32 @@ serve(async (req) => {
       throw new Error('Leonardo API key is not configured');
     }
 
-    const imageGenerationPrompt = `
-${imagePrompt}
+    // Create a unique seed based on article ID to ensure different images
+    const articleSeed = articleId.split('-').reduce((acc: number, part: string) => acc + parseInt(part, 16), 0);
 
-Style: Realistic photograph, professional, high quality, restaurant industry related,
-no text overlay, clean composition, suitable for blog header, 16:9 aspect ratio,
-vibrant colors, modern restaurant setting, Peruvian context when relevant
+    const imageGenerationPrompt = `
+Professional photograph for restaurant industry blog article.
+
+Topic: ${imagePrompt}
+
+CRITICAL REQUIREMENTS - NO TEXT:
+- ABSOLUTELY NO text, letters, numbers, or words anywhere in the image
+- NO signs, menus, labels, captions, or written content of any kind
+- NO watermarks, logos, or overlays
+- Pure photographic content only
+
+Style specifications:
+- Ultra high resolution, photorealistic restaurant scene
+- Professional food service or dining environment
+- Clean, modern, inviting composition
+- 16:9 aspect ratio for blog header
+- Vibrant, natural colors with good lighting
+- Focus on atmosphere, ambiance, and visual appeal
+- Peruvian restaurant aesthetic when contextually relevant
+- Natural lighting, warm and welcoming mood
+- Professional photography quality
+
+Unique variation ID: ${articleSeed}
 `;
 
     const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
@@ -63,12 +81,14 @@ vibrant colors, modern restaurant setting, Peruvian context when relevant
       },
       body: JSON.stringify({
         prompt: imageGenerationPrompt,
-        modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3", // Leonardo Phoenix model for realistic photos
+        negative_prompt: "text, letters, words, signs, menus, labels, captions, typography, writing, numbers, watermark, logo, overlay, subtitle",
+        modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3", // Leonardo Phoenix model
         width: 1280,
         height: 720, // 16:9 aspect ratio
         num_images: 1,
-        guidance_scale: 7,
-        num_inference_steps: 18,
+        guidance_scale: 8,
+        num_inference_steps: 20,
+        seed: articleSeed % 2147483647, // Use article-based seed for uniqueness
         presetStyle: "PHOTOGRAPHY"
       }),
     });
@@ -150,7 +170,8 @@ vibrant colors, modern restaurant setting, Peruvian context when relevant
         status: 'completed',
         details: { 
           image_url: finalImageUrl,
-          model: 'google/gemini-2.5-flash-image-preview',
+          model: 'Leonardo Phoenix (6bef9f1b)',
+          seed: articleSeed,
           optimized: optimizeResponse.data?.success || false
         },
         processing_time_ms: processingTime
