@@ -69,12 +69,16 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
 
 
   const handlePay = async () => {
+    console.log('handlePay called');
     try {
+      console.log('Starting payment process');
       setCreating(true);
 
+      console.log('Validation checks...');
       if (!cardholderName.trim()) throw new Error("Ingresa el nombre del titular de la tarjeta");
       if (!idType || !idNumber.trim()) throw new Error("Completa el documento del titular");
 
+      console.log('Creating card token...');
       // Create token from mounted secure fields
       const token = await createCardToken({
         cardholderName: cardholderName.trim(),
@@ -106,6 +110,7 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
       if (error || !data?.success) throw new Error(data?.error || error?.message || "Pago rechazado");
 
       const status = (data as any)?.payment?.status;
+      console.log('Payment successful, calling onSuccess');
       if (status === "approved") {
         toast({ title: "Pago exitoso", description: "Tu suscripción ha sido activada." });
         onSuccess();
