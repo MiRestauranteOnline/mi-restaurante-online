@@ -12,7 +12,7 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
-const leonardoApiKey = Deno.env.get('leonardo');
+const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -41,99 +41,86 @@ serve(async (req) => {
       .select()
       .single();
 
-    // Generate image with Leonardo AI
-    const imageGenerationPrompt = `
-    ${imagePrompt}
+    // Generate image with Lovable AI (Nano banana model)
+    const imageGenerationPrompt = `Generate a professional, high-quality photograph for a restaurant industry blog article. 
     
-    Style: Realistic photograph, professional, high quality, restaurant industry related, 
-    no text overlay, clean composition, suitable for blog header, 16:9 aspect ratio,
-    vibrant colors, modern restaurant setting, Peruvian context when relevant
-    `;
+    Topic: ${imagePrompt}
+    
+    Style requirements:
+    - Ultra high resolution, photorealistic
+    - Professional restaurant/food industry setting
+    - Clean, modern composition suitable for blog header
+    - 16:9 aspect ratio
+    - Vibrant, appetizing colors
+    - No text overlays or watermarks
+    - Peruvian restaurant context when relevant
+    - Natural lighting, inviting atmosphere`;
 
-    const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
+    console.log('Generating image with Lovable AI...');
+    
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${leonardoApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        prompt: imageGenerationPrompt,
-        modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3", // Leonardo Phoenix model for realistic photos
-        width: 1024,
-        height: 576, // 16:9 aspect ratio
-        num_images: 1,
-        guidance_scale: 7,
-        num_inference_steps: 15,
-        presetStyle: "PHOTOGRAPHY"
+        model: 'google/gemini-2.5-flash-image-preview',
+        messages: [
+          {
+            role: 'user',
+            content: imageGenerationPrompt
+          }
+        ],
+        modalities: ['image', 'text']
       }),
     });
 
-    const leonardoData = await leonardoResponse.json();
+    if (!aiResponse.ok) {
+      const errorText = await aiResponse.text();
+      console.error('Lovable AI error:', aiResponse.status, errorText);
+      throw new Error(`Image generation failed: ${aiResponse.status} - ${errorText}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const imageBase64 = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     
-    if (!leonardoData.sdGenerationJob) {
-      throw new Error('Failed to start image generation');
+    if (!imageBase64) {
+      throw new Error('No image returned from AI');
     }
 
-    const generationId = leonardoData.sdGenerationJob.generationId;
-    console.log('Image generation started with ID:', generationId);
+    console.log('Image generated successfully with Lovable AI');
 
-    // Poll for completion (Leonardo AI is async)
-    let imageUrl = null;
-    let attempts = 0;
-    const maxAttempts = 30; // 5 minutes max
-
-    while (!imageUrl && attempts < maxAttempts) {
-      await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
-      attempts++;
-
-      const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
-        headers: {
-          'Authorization': `Bearer ${leonardoApiKey}`,
-        },
-      });
-
-      const statusData = await statusResponse.json();
-      
-      if (statusData.generations_by_pk?.status === 'COMPLETE' && statusData.generations_by_pk.generated_images?.length > 0) {
-        imageUrl = statusData.generations_by_pk.generated_images[0].url;
-        console.log('Image generation completed:', imageUrl);
-        break;
-      } else if (statusData.generations_by_pk?.status === 'FAILED') {
-        throw new Error('Image generation failed');
-      }
-    }
-
-    if (!imageUrl) {
-      throw new Error('Image generation timed out');
-    }
-
-    // Optimize the generated image
-    const optimizeResponse = await supabase.functions.invoke('optimize-leonardo-image', {
+    // Optimize the generated image (convert base64 to stored file)
+    const optimizeResponse = await supabase.functions.invoke('optimize-user-image', {
       body: {
-        imageUrl,
-        originalPrompt: imagePrompt,
+        imageUrl: imageBase64,
+        description: imagePrompt,
+        context: 'restaurant blog article',
         articleId,
-        context: 'restaurant blog'
+        storeInDatabase: false
       }
     });
 
-    let finalImageUrl = imageUrl;
+    let finalImageUrl = imageBase64;
     let finalAltText = altText || 'Professional restaurant image';
 
     if (optimizeResponse.data?.success) {
       finalImageUrl = optimizeResponse.data.optimizedUrl;
       finalAltText = optimizeResponse.data.altText;
-      console.log('Image optimized successfully:', finalImageUrl);
-    } else {
-      console.warn('Image optimization failed, using original:', optimizeResponse.error);
-      // Fall back to updating with original image
+      console.log('Image optimized and stored successfully:', finalImageUrl);
+      
+      // Update article with optimized image
       await supabase
         .from('generated_articles')
         .update({
-          featured_image_url: imageUrl,
-          featured_image_alt: altText || 'Professional restaurant image'
+          featured_image_url: finalImageUrl,
+          featured_image_alt: finalAltText
         })
         .eq('id', articleId);
+    } else {
+      console.warn('Image optimization failed:', optimizeResponse.error);
+      throw new Error('Failed to optimize and store image');
     }
 
     const processingTime = Date.now() - startTime;
@@ -145,8 +132,7 @@ serve(async (req) => {
         status: 'completed',
         details: { 
           image_url: finalImageUrl,
-          generation_id: generationId,
-          attempts: attempts,
+          model: 'google/gemini-2.5-flash-image-preview',
           optimized: optimizeResponse.data?.success || false
         },
         processing_time_ms: processingTime

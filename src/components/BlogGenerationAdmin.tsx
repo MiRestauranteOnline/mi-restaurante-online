@@ -44,6 +44,7 @@ const BlogGenerationAdmin: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
   const [isCleaningUp, setIsCleaningUp] = useState(false);
+  const [isRegeneratingImages, setIsRegeneratingImages] = useState(false);
   const [logs, setLogs] = useState<GenerationLog[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [contentGaps, setContentGaps] = useState<ContentGap[]>([]);
@@ -247,6 +248,49 @@ const BlogGenerationAdmin: React.FC = () => {
     }
   };
 
+  const handleRegenerateImages = async () => {
+    if (!confirm('This will regenerate ALL article images with improved quality using Lovable AI. This may take several minutes. Continue?')) {
+      return;
+    }
+
+    setIsRegeneratingImages(true);
+    try {
+      toast({
+        title: "Starting Image Regeneration",
+        description: "This may take a while. You can continue working...",
+      });
+      
+      const response = await supabase.functions.invoke('regenerate-article-images', {
+        body: { regenerateAll: true }
+      });
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      const result = response.data;
+      
+      if (result.success) {
+        toast({
+          title: "Image Regeneration Complete",
+          description: `Successfully regenerated ${result.successCount} images! ${result.failureCount > 0 ? `${result.failureCount} failed.` : ''}`,
+        });
+        await fetchData();
+      } else {
+        throw new Error(result.error || 'Image regeneration failed');
+      }
+    } catch (error) {
+      console.error('Error regenerating images:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : 'Failed to regenerate images',
+        variant: "destructive",
+      });
+    } finally {
+      setIsRegeneratingImages(false);
+    }
+  };
+
   const handleTestArticles = async () => {
     try {
       console.log('Testing article fetch...');
@@ -398,6 +442,19 @@ const BlogGenerationAdmin: React.FC = () => {
           onClick={handleTestBlogFetch}
         >
           🔍 Test Blog Fetch
+        </Button>
+        <Button 
+          onClick={handleRegenerateImages}
+          disabled={isRegeneratingImages}
+          variant="secondary"
+          className="flex items-center gap-2"
+        >
+          {isRegeneratingImages ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Eye className="w-4 h-4" />
+          )}
+          Regenerate All Images
         </Button>
       </div>
 
