@@ -324,6 +324,26 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                       field.onChange(e);
                       const subdomain = generateSubdomain(e.target.value);
                       form.setValue('subdomain', subdomain);
+                      
+                      // Clear any existing subdomain timeout
+                      if (subdomainCheckTimeout) {
+                        clearTimeout(subdomainCheckTimeout);
+                      }
+                      
+                      // Trigger subdomain availability check for auto-generated subdomain
+                      if (subdomain && subdomain.length >= 3) {
+                        console.log('Auto-generated subdomain, checking availability:', subdomain);
+                        setSubdomainError("");
+                        setIsCheckingSubdomain(false);
+                        
+                        const timeoutId = setTimeout(() => {
+                          checkSubdomainAvailability(subdomain);
+                        }, 500);
+                        setSubdomainCheckTimeout(timeoutId);
+                      } else {
+                        setSubdomainError("");
+                        setIsCheckingSubdomain(false);
+                      }
                     }}
                   />
                 </FormControl>
