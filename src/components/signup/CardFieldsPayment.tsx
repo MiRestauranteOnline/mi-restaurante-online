@@ -211,8 +211,8 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <Button variant="outline" onClick={onBack} disabled={creating}>Volver</Button>
-                  <Button onClick={handlePay} disabled={creating}>{creating ? "Procesando…" : "Pagar"}</Button>
+                  <Button type="button" variant="outline" onClick={onBack} disabled={creating}>Volver</Button>
+                  <Button type="button" onClick={handlePay} disabled={creating}>{creating ? "Procesando…" : "Pagar"}</Button>
                 </div>
               </div>
             )}
