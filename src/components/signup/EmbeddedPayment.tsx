@@ -90,57 +90,68 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
           setLoading(false);
         },
         onSubmit: async (cardFormData: any, additionalData?: any) => {
-          try {
-            setCreating(true);
-            console.log('Card Payment Brick submitted:', { cardFormData, additionalData });
+          // Wrap in a promise to prevent default form navigation and let the Brick manage UI state
+          return new Promise<void>(async (resolve, reject) => {
+            try {
+              setCreating(true);
+              console.log('Card Payment Brick submitted:', { cardFormData, additionalData });
 
-            const fd = cardFormData || {};
-            const token = fd.token || fd.cardToken || fd.card_token;
-            const paymentMethodId = fd.payment_method_id || fd.paymentMethodId;
-            const issuerId = fd.issuer_id || fd.issuerId;
-            const installments = fd.installments || 1;
+              const fd = cardFormData || {};
+              const token = fd.token || fd.cardToken || fd.card_token;
+              const paymentMethodId = fd.payment_method_id || fd.paymentMethodId;
+              const issuerId = fd.issuer_id || fd.issuerId;
+              const installments = fd.installments || 1;
 
-            if (!token) {
-              throw new Error('No se pudo generar el token de la tarjeta. Verifica los datos e inténtalo nuevamente.');
-            }
-            
-            // Process payment via edge function
-            const { data, error } = await supabase.functions.invoke('process-mercadopago-card-payment', {
-              body: {
-                token,
-                payment_method_id: paymentMethodId,
-                issuer_id: issuerId,
-                installments,
-                amount,
-                description: `${selectedPlan === 'basic' ? 'Plan Básico' : 'Plan Avanzado'} - Mi Restaurante Online`,
-                payer: {
-                  email: signupData.email,
-                  first_name: signupData.restaurantName,
-                  identification: fd?.payer?.identification || undefined,
-                },
-                metadata: {
-                  client_id: signupData.paymentId || null,
-                  plan_type: selectedPlan,
-                },
+              if (!token) {
+                throw new Error('No se pudo generar el token de la tarjeta. Verifica los datos e inténtalo nuevamente.');
               }
-            });
+              
+              const { data, error } = await supabase.functions.invoke('process-mercadopago-card-payment', {
+                body: {
+                  token,
+                  payment_method_id: paymentMethodId,
+                  issuer_id: issuerId,
+                  installments,
+                  amount,
+                  description: `${selectedPlan === 'basic' ? 'Plan Básico' : 'Plan Avanzado'} - Mi Restaurante Online`,
+                  payer: {
+                    email: signupData.email,
+                    first_name: signupData.restaurantName,
+                    identification: fd?.payer?.identification || undefined,
+                  },
+                  metadata: {
+                    client_id: signupData.paymentId || null,
+                    plan_type: selectedPlan,
+                  },
+                }
+              });
 
-            console.log('Payment function response:', { data, error });
+              console.log('Payment function response:', { data, error });
 
-            if (error || !data?.success) {
-              console.error('Payment failed:', { data, error });
-              throw new Error(data?.error || error?.message || 'Payment failed');
+              if (error || !data?.success) {
+                console.error('Payment failed:', { data, error });
+                throw new Error(data?.error || error?.message || 'Payment failed');
+              }
+
+              const status = data?.payment?.status;
+              console.log('Payment status:', status, 'details:', data?.payment?.status_detail);
+              if (status !== 'approved') {
+                toast({ title: 'Pago en proceso', description: 'Tu pago está siendo procesado. Te notificaremos cuando se apruebe.' });
+                resolve();
+                return;
+              }
+
+              toast({ title: 'Pago exitoso', description: 'Tu suscripción ha sido activada.' });
+              onSuccess();
+              resolve();
+            } catch (err: any) {
+              console.error('Payment error:', err);
+              toast({ title: 'Error en el pago', description: err.message || 'No se pudo procesar el pago', variant: 'destructive' });
+              reject(err);
+            } finally {
+              setCreating(false);
             }
-
-            console.log('Payment successful, calling onSuccess');
-            toast({ title: 'Pago exitoso', description: 'Tu suscripción ha sido activada.' });
-            onSuccess();
-          } catch (err: any) {
-            console.error('Payment error:', err);
-            toast({ title: 'Error en el pago', description: err.message || 'No se pudo procesar el pago', variant: 'destructive' });
-          } finally {
-            setCreating(false);
-          }
+          });
         },
         onError: (error: any) => {
           console.error('Brick error:', error);
