@@ -157,16 +157,9 @@ const Signup = () => {
 
           const isTestMode = !!paymentSettings?.test_mode;
 
-          // Guard: in test mode we require a real, reachable email to receive Mercado Pago's verification code
+          // In test mode, if no valid test payer email is configured, proceed with fallback sandbox email
           if (isTestMode && (!paymentSettings?.test_payer_email || !paymentSettings.test_payer_email.includes('@'))) {
-            console.error('Test mode enabled but test_payer_email is missing or invalid');
-            toast({
-              title: 'Test email required',
-              description: 'Set a valid Test Payer Email in Admin > Payment Settings to receive the Mercado Pago verification code. Placeholder emails will not work.',
-              variant: 'destructive',
-            });
-            setIsProcessingPayment(false);
-            return;
+            console.warn('Test mode without valid test payer email. Proceeding with sandbox fallback email.');
           }
 
           let payerEmail = (isTestMode && paymentSettings?.test_payer_email)
