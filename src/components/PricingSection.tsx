@@ -73,10 +73,10 @@ export const PricingSection = () => {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 {[
-                  "🌐 Hasta 3,000 visitas/mes (6 GB hosting)",
-                  "💬 Soporte WhatsApp básico",
-                  "📧 Soporte por email (respuesta en 48h)",
-                  "🔄 Actualizaciones auto-gestionables vía dashboard"
+                  "Hasta 3,000 visitas/mes (6 GB hosting)",
+                  "Soporte WhatsApp básico",
+                  "Soporte por email (respuesta en 48h)",
+                  "Actualizaciones auto-gestionables vía dashboard"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
@@ -131,12 +131,12 @@ export const PricingSection = () => {
               <div className="space-y-3">
                 {[
                   "Todo lo del Plan Básico",
-                  "🌐 Doble capacidad: Hasta 6,000 visitas/mes (12 GB hosting)",
-                  "⚡ 1 hora/mes soporte profesional para cambios de texto e imágenes",
-                  "🏆 Soporte prioritario (respuesta en 24h)",
-                  "💬 Soporte WhatsApp premium con PIN único",
-                  "📊 Dashboard de Analítica Básica y reportes mensuales",
-                  "🎯 Configuración de Google Analytics y Search Console incluida"
+                  "Doble capacidad: Hasta 6,000 visitas/mes (12 GB hosting)",
+                  "1 hora/mes soporte profesional para cambios de texto e imágenes",
+                  "Soporte prioritario (respuesta en 24h)",
+                  "Soporte WhatsApp premium con PIN único",
+                  "Dashboard de Analítica Básica y reportes mensuales",
+                  "Configuración de Google Analytics y Search Console incluida"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />

@@ -26,7 +26,7 @@ export const CTASection = () => {
           </h2>
           
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Únete a más de 100 restaurantes que ya están creciendo online. Tu sitio web profesional, listo en 72 horas.
+            Tu sitio web profesional, listo en 72 horas. Sin complicaciones, sin costos ocultos, sin sorpresas.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
@@ -40,7 +40,7 @@ export const CTASection = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              className="border-white text-white hover:bg-white/20 text-lg px-8 py-4"
+              className="border-white text-primary hover:bg-white/20 hover:text-primary text-lg px-8 py-4"
               onClick={handleWhatsAppClick}
             >
               Hablar por WhatsApp
