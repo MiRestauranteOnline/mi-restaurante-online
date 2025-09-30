@@ -78,19 +78,27 @@ serve(async (req) => {
       },
     };
 
-    // Include payer info; if invalid email, fallback to a sandbox email for testing
-    if (customerEmail && customerEmail.includes('@')) {
+    // Include payer info; force test buyer data in TEST mode to avoid real-account conflicts
+    if (isTestToken) {
+      const testEmail = `test.buyer.${Date.now()}@example.com`;
+      preferencePayload.payer = {
+        email: testEmail,
+        name: customerName || 'Test Buyer',
+        identification: { type: 'DNI', number: '12345678' },
+      };
+      console.log('TEST mode: using test buyer email for Checkout Pro:', testEmail);
+    } else if (customerEmail && customerEmail.includes('@')) {
       preferencePayload.payer = {
         email: customerEmail,
         name: customerName,
       };
     } else {
-      const fallbackEmail = `buyer.test.${Date.now()}@example.com`;
+      const fallbackEmail = `buyer.${Date.now()}@example.com`;
       preferencePayload.payer = {
         email: fallbackEmail,
-        name: customerName || 'Test Buyer',
+        name: customerName || 'Buyer',
       };
-      console.log('No valid payer email provided. Using fallback test email:', fallbackEmail);
+      console.log('No valid payer email provided. Using fallback email:', fallbackEmail);
     }
 
     const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
