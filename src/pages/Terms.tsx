@@ -120,6 +120,11 @@ const Terms = () => {
                 <strong>Renovación Automática:</strong> Tu suscripción se renueva automáticamente cada mes. 
                 Recibirás un recibo por email después de cada cobro exitoso.
               </p>
+              <p>
+                <strong>Autorización de Cargos Variables:</strong> Al suscribirte, también autorizas expresamente 
+                cargos variables por sobrecargos de uso excedente y complementos aprobados que puedas agregar 
+                a tu cuenta durante el período de suscripción.
+              </p>
             </CardContent>
           </Card>
 
@@ -199,6 +204,10 @@ const Terms = () => {
                 <strong>Consecuencias de Contracargos:</strong> Si se presenta un contracargo sin intentar resolver 
                 primero el problema con nosotros, nos reservamos el derecho de suspender inmediatamente el servicio 
                 y cancelar la cuenta. Los contracargos fraudulentos pueden resultar en acciones legales.
+              </p>
+              <p>
+                <strong>Tarifas de Contracargo:</strong> Podemos transferir las tarifas razonables de contracargo 
+                cobradas por las redes de pago si una disputa se resuelve en tu contra.
               </p>
             </CardContent>
           </Card>
@@ -344,6 +353,291 @@ const Terms = () => {
                 <strong>Precio de Lanzamiento Garantizado:</strong> Los clientes que se suscriban durante nuestro 
                 período promocional de lanzamiento mantienen su precio de suscripción de por vida mientras su cuenta 
                 permanezca activa sin interrupciones.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Failed Payments & Dunning */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Pagos Fallidos y Gestión de Mora</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Reintentos Automáticos:</strong> Si un pago automático falla, nuestro sistema reintentará 
+                el cobro automáticamente durante los siguientes 7 días. Se realizarán hasta 3 intentos de cobro.
+              </p>
+              <p>
+                <strong>Período de Gracia:</strong> Si después de los reintentos el pago no se procesa exitosamente, 
+                tu cuenta entrará en un período de gracia de 5 días adicionales durante el cual tu sitio web 
+                permanecerá activo pero recibirás notificaciones diarias para actualizar tu método de pago.
+              </p>
+              <p>
+                <strong>Suspensión por Impago:</strong> Si transcurridos 12 días desde el pago fallido no se ha 
+                regularizado la situación, tu sitio web será suspendido temporalmente y no estará accesible al 
+                público hasta que se resuelva el pago pendiente.
+              </p>
+              <p>
+                <strong>Terminación por Impago:</strong> Si el impago persiste por más de 30 días, nos reservamos 
+                el derecho de terminar tu cuenta y eliminar tu sitio web permanentemente.
+              </p>
+              <p>
+                <strong>Responsabilidad del Cliente:</strong> Es tu responsabilidad mantener información de pago 
+                válida y fondos suficientes para los cargos recurrentes.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Force Majeure */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Fuerza Mayor</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                No seremos responsables por demoras o incumplimientos en la prestación del servicio causados por 
+                eventos fuera de nuestro control razonable, incluyendo pero no limitado a: desastres naturales, 
+                incendios, inundaciones, terremotos, guerras, disturbios civiles, actos terroristas, pandemias, 
+                huelgas laborales, interrupciones de internet o telecomunicaciones, fallas en proveedores de 
+                servicios en la nube, ataques cibernéticos, cambios en regulaciones gubernamentales, u otros 
+                eventos de fuerza mayor.
+              </p>
+              <p>
+                En caso de fuerza mayor, haremos nuestros mejores esfuerzos para restaurar el servicio lo antes 
+                posible y notificaremos a los clientes afectados sobre la situación y el tiempo estimado de resolución.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Liability Limitation */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Limitación de Responsabilidad</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Límite Máximo de Responsabilidad:</strong> En ningún caso nuestra responsabilidad total 
+                hacia ti por todos los daños, pérdidas y causas de acción (ya sea por contrato, agravio, 
+                incluyendo negligencia, o de otro modo) excederá el monto total que hayas pagado a {businessData.company.name} 
+                durante los últimos 12 meses anteriores al evento que dio lugar al reclamo.
+              </p>
+              <p>
+                <strong>Exclusión de Daños Indirectos:</strong> En la máxima medida permitida por la ley, 
+                {businessData.company.name} no será responsable por daños indirectos, incidentales, especiales, 
+                consecuentes o punitivos, incluyendo pero no limitado a pérdida de beneficios, pérdida de datos, 
+                pérdida de oportunidad comercial, o interrupción del negocio, incluso si hemos sido advertidos 
+                de la posibilidad de tales daños.
+              </p>
+              <p>
+                <strong>Servicio "Como Está":</strong> El servicio se proporciona "como está" y "según disponibilidad". 
+                No garantizamos que el servicio será ininterrumpido, libre de errores, o completamente seguro.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Intellectual Property */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Propiedad Intelectual y Licencia</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Tu Contenido es Tuyo:</strong> Conservas todos los derechos de propiedad sobre el contenido 
+                que subas a tu sitio web (textos, imágenes, logos, menús, etc.). Al usar nuestro servicio, nos 
+                otorgas una licencia limitada, no exclusiva, para hospedar, almacenar, mostrar y procesar tu 
+                contenido únicamente con el propósito de prestarte el servicio contratado.
+              </p>
+              <p>
+                <strong>Nuestra Plataforma es Nuestra:</strong> La plataforma, el código fuente, el diseño, la 
+                arquitectura, y todos los elementos técnicos del servicio (excluyendo tu contenido) son propiedad 
+                exclusiva de {businessData.company.legalName} o sus licenciantes. Al suscribirte, recibes únicamente 
+                una licencia limitada, revocable, no transferible para usar la plataforma durante tu período de 
+                suscripción activa.
+              </p>
+              <p>
+                <strong>Sin Transferencia de Código:</strong> Como servicio administrado, no transfieres ni adquieres 
+                derechos sobre el código fuente, la infraestructura técnica, o los métodos de implementación. 
+                El servicio no incluye entrega o licenciamiento del código fuente.
+              </p>
+              <p>
+                <strong>Uso de tu Contenido para Marketing:</strong> Con tu consentimiento previo, podemos usar 
+                capturas de pantalla de tu sitio web como ejemplos en nuestro material de marketing, portfolio, 
+                o casos de estudio.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Third-Party Providers */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Proveedores de Servicios de Terceros</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Procesadores de Pago:</strong> Utilizamos proveedores externos de procesamiento de pagos, 
+                incluyendo dLocal (DLOCAL PERU SAC, RUC: 20605850821) y otros procesadores autorizados, para 
+                manejar de forma segura tus pagos con tarjeta de crédito/débito. Al proporcionar tu información 
+                de pago, aceptas también los términos y condiciones de estos proveedores.
+              </p>
+              <p>
+                <strong>Infraestructura de Hosting:</strong> Utilizamos proveedores de servicios en la nube de 
+                terceros para el alojamiento y almacenamiento de tu sitio web. Estos proveedores cumplen con 
+                estándares internacionales de seguridad.
+              </p>
+              <p>
+                <strong>Servicios de Email:</strong> Utilizamos servicios de terceros para el envío de emails 
+                transaccionales (recibos, notificaciones de servicio).
+              </p>
+              <p>
+                <strong>No Somos Responsables por Terceros:</strong> Si bien seleccionamos cuidadosamente a nuestros 
+                proveedores, no somos responsables por fallas, interrupciones, o problemas de seguridad originados 
+                directamente en los servicios de terceros, aunque haremos nuestros mejores esfuerzos para resolver 
+                cualquier inconveniente.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Taxes and Currency */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Impuestos y Moneda</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Precios Incluyen IGV:</strong> Todos los precios publicados en nuestro sitio web están 
+                expresados en Soles Peruanos (PEN / S/) e incluyen el Impuesto General a las Ventas (IGV) del 18% 
+                aplicable en Perú.
+              </p>
+              <p>
+                <strong>Moneda de Cobro:</strong> Los cobros se realizan exclusivamente en Soles Peruanos (PEN). 
+                Si tu tarjeta es de otro país o denominada en otra moneda, tu banco o procesador de pagos aplicará 
+                el tipo de cambio vigente y puede cobrar comisiones por conversión de moneda, las cuales no 
+                controlamos.
+              </p>
+              <p>
+                <strong>Comprobantes de Pago:</strong> Emitimos boletas electrónicas o facturas electrónicas 
+                según corresponda. Las facturas se emiten únicamente si proporcionas tu RUC válido al momento 
+                del registro. Los comprobantes se envían por email después de cada pago.
+              </p>
+              <p>
+                <strong>Responsabilidad Fiscal:</strong> Eres responsable de cumplir con todas las obligaciones 
+                fiscales aplicables a tu negocio relacionadas con el uso de nuestro servicio.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Service Modifications */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Modificaciones al Servicio</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Mejoras y Actualizaciones:</strong> Nos reservamos el derecho de mejorar, actualizar, 
+                modificar o agregar nuevas funcionalidades al servicio en cualquier momento. Las mejoras 
+                generalmente se implementan automáticamente y sin costo adicional para beneficiar a todos 
+                los clientes.
+              </p>
+              <p>
+                <strong>Mantenimiento Programado:</strong> Podemos realizar mantenimiento programado del sistema 
+                que puede resultar en interrupciones temporales del servicio. Te notificaremos con al menos 48 
+                horas de anticipación sobre mantenimientos programados que afecten la disponibilidad de tu sitio web.
+              </p>
+              <p>
+                <strong>Cambios en Funcionalidades:</strong> Podemos descontinuar, modificar o reemplazar ciertas 
+                funcionalidades del servicio. Si un cambio afecta significativamente tu uso del servicio, te 
+                notificaremos con anticipación razonable.
+              </p>
+              <p>
+                <strong>Mantenimiento de Emergencia:</strong> En casos de emergencia de seguridad o problemas 
+                técnicos críticos, podemos realizar mantenimiento sin previo aviso para proteger la integridad 
+                del servicio.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Electronic Communications */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Comunicaciones Electrónicas</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Consentimiento para Comunicaciones Digitales:</strong> Al suscribirte a nuestro servicio, 
+                consientes expresamente a recibir todas las comunicaciones oficiales, notificaciones, avisos, 
+                facturas, recibos, actualizaciones de servicio, y otra información relacionada con tu cuenta a 
+                través de canales electrónicos, incluyendo email y WhatsApp.
+              </p>
+              <p>
+                <strong>Email como Canal Oficial:</strong> El email es nuestro canal principal de comunicación 
+                oficial. Todos los avisos enviados a tu email registrado se consideran entregados y recibidos. 
+                Es tu responsabilidad mantener actualizada tu dirección de email y revisar regularmente tu bandeja 
+                de entrada y carpeta de spam.
+              </p>
+              <p>
+                <strong>WhatsApp para Soporte:</strong> WhatsApp es un canal complementario de soporte y 
+                comunicación rápida, pero los avisos legales y comunicaciones oficiales importantes siempre 
+                se enviarán también por email.
+              </p>
+              <p>
+                <strong>Opción de Exclusión Limitada:</strong> Mientras algunas comunicaciones de marketing pueden 
+                ser opcionales, no puedes optar por excluirte de recibir comunicaciones transaccionales esenciales 
+                (facturas, cambios en términos, avisos de seguridad) mientras mantengas una cuenta activa.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Termination by Company */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Terminación por Parte de la Empresa</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Derecho de Terminación:</strong> Nos reservamos el derecho de suspender o terminar tu cuenta 
+                y acceso al servicio de inmediato, con o sin previo aviso, en las siguientes circunstancias:
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Violación de estos Términos de Servicio o de nuestra Política de Uso Aceptable</li>
+                <li>Falta de pago después del período de gracia establecido</li>
+                <li>Actividad fraudulenta o uso del servicio para propósitos ilegales</li>
+                <li>Abuso del servicio de soporte o comportamiento abusivo hacia nuestro personal</li>
+                <li>Publicación de contenido prohibido o ilegal en tu sitio web</li>
+                <li>Uso del servicio de manera que ponga en riesgo nuestra infraestructura o a otros clientes</li>
+                <li>Contracargos fraudulentos o disputa de pagos sin causa justificada</li>
+              </ul>
+              <p>
+                <strong>Consecuencias de la Terminación:</strong> Si terminamos tu cuenta por causa justificada, 
+                no tendrás derecho a reembolso por el período restante. Tu sitio web será inmediatamente desactivado 
+                y tu contenido puede ser eliminado después de 30 días.
+              </p>
+              <p>
+                <strong>Reactivación Después de Terminación:</strong> La reactivación de una cuenta terminada queda 
+                a nuestra discreción y puede estar sujeta a condiciones adicionales.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Language Clause */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Idioma y Versiones</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Idioma Oficial:</strong> Estos Términos de Servicio se redactan originalmente en español. 
+                Esta es la versión oficial y vinculante legalmente.
+              </p>
+              <p>
+                <strong>Traducciones:</strong> Si en el futuro proporcionamos traducciones de estos términos a 
+                otros idiomas (incluyendo inglés) con fines informativos, dichas traducciones son únicamente 
+                referenciales. En caso de cualquier conflicto, inconsistencia o ambigüedad entre la versión en 
+                español y cualquier traducción, la versión en español prevalecerá y tendrá efecto legal.
+              </p>
+              <p>
+                <strong>Comunicaciones en Español:</strong> Todas las comunicaciones oficiales, avisos legales, 
+                y documentación contractual se proporcionarán en español, que es el idioma oficial para la 
+                interpretación de estos términos.
               </p>
             </CardContent>
           </Card>
