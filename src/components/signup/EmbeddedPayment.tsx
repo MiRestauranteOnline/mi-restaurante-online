@@ -77,80 +77,81 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
             <CardTitle>Pago con tarjeta</CardTitle>
           </CardHeader>
             <CardContent>
-              {loading && (
+              {loading ? (
                 <div className="py-4 text-sm text-muted-foreground">Cargando formulario de pago...</div>
-              )}
-              <CardPayment
-                initialization={{
-                  amount,
-                  payer: { email: signupData.email },
-                }}
-                customization={{
-                  paymentMethods: { maxInstallments: 1 },
-                }}
-                onReady={() => setLoading(false)}
-                onSubmit={(param: any) => {
-                  return new Promise<void>(async (resolve, reject) => {
-                    try {
-                      setCreating(true);
-                      const fd = (param && (param.formData || param)) || {};
-                      const token = fd.token || fd.cardToken || fd.card_token;
-                      const paymentMethodId = fd.payment_method_id || fd.paymentMethodId;
-                      const issuerId = fd.issuer_id || fd.issuerId;
-                      const installments = fd.installments || 1;
+              ) : (
+                <CardPayment
+                  initialization={{
+                    amount,
+                    payer: { email: signupData.email },
+                  }}
+                  customization={{
+                    paymentMethods: { maxInstallments: 1 },
+                  }}
+                  onReady={() => setLoading(false)}
+                  onSubmit={(param: any) => {
+                    return new Promise<void>(async (resolve, reject) => {
+                      try {
+                        setCreating(true);
+                        const fd = (param && param.formData) || {};
+                        const token = fd.token || fd.cardToken || fd.card_token;
+                        const paymentMethodId = fd.payment_method_id || fd.paymentMethodId;
+                        const issuerId = fd.issuer_id || fd.issuerId;
+                        const installments = fd.installments || 1;
 
-                      if (!token) {
-                        throw new Error('No se pudo generar el token de la tarjeta. Verifica los datos e inténtalo nuevamente.');
-                      }
-
-                      const { data, error } = await supabase.functions.invoke('process-mercadopago-card-payment', {
-                        body: {
-                          token,
-                          payment_method_id: paymentMethodId,
-                          issuer_id: issuerId,
-                          installments,
-                          amount,
-                          description: `${selectedPlan === 'basic' ? 'Plan Básico' : 'Plan Avanzado'} - Mi Restaurante Online`,
-                          payer: {
-                            email: signupData.email,
-                            first_name: signupData.restaurantName,
-                            identification: fd?.payer?.identification || undefined,
-                          },
-                          metadata: {
-                            client_id: signupData.paymentId || null,
-                            plan_type: selectedPlan,
-                          },
+                        if (!token) {
+                          throw new Error('No se pudo generar el token de la tarjeta. Verifica los datos e inténtalo nuevamente.');
                         }
-                      });
 
-                      if (error || !data?.success) {
-                        throw new Error(data?.error || error?.message || 'Payment failed');
-                      }
+                        const { data, error } = await supabase.functions.invoke('process-mercadopago-card-payment', {
+                          body: {
+                            token,
+                            payment_method_id: paymentMethodId,
+                            issuer_id: issuerId,
+                            installments,
+                            amount,
+                            description: `${selectedPlan === 'basic' ? 'Plan Básico' : 'Plan Avanzado'} - Mi Restaurante Online`,
+                            payer: {
+                              email: signupData.email,
+                              first_name: signupData.restaurantName,
+                              identification: fd?.payer?.identification || undefined,
+                            },
+                            metadata: {
+                              client_id: signupData.paymentId || null,
+                              plan_type: selectedPlan,
+                            },
+                          }
+                        });
 
-                      const status = data?.payment?.status;
-                      if (status !== 'approved') {
-                        toast({ title: 'Pago en proceso', description: 'Tu pago está siendo procesado. Te notificaremos cuando se apruebe.' });
+                        if (error || !data?.success) {
+                          throw new Error(data?.error || error?.message || 'Payment failed');
+                        }
+
+                        const status = data?.payment?.status;
+                        if (status !== 'approved') {
+                          toast({ title: 'Pago en proceso', description: 'Tu pago está siendo procesado. Te notificaremos cuando se apruebe.' });
+                          resolve();
+                          return;
+                        }
+
+                        toast({ title: 'Pago exitoso', description: 'Tu suscripción ha sido activada.' });
+                        onSuccess();
                         resolve();
-                        return;
+                      } catch (err: any) {
+                        console.error('Payment error:', err);
+                        toast({ title: 'Error en el pago', description: err.message || 'No se pudo procesar el pago', variant: 'destructive' });
+                        reject(err);
+                      } finally {
+                        setCreating(false);
                       }
-
-                      toast({ title: 'Pago exitoso', description: 'Tu suscripción ha sido activada.' });
-                      onSuccess();
-                      resolve();
-                    } catch (err: any) {
-                      console.error('Payment error:', err);
-                      toast({ title: 'Error en el pago', description: err.message || 'No se pudo procesar el pago', variant: 'destructive' });
-                      reject(err);
-                    } finally {
-                      setCreating(false);
-                    }
-                  });
-                }}
-                onError={(error: any) => {
-                  console.error('Brick error:', error);
-                  toast({ title: 'Error', description: 'Ocurrió un error con el formulario de pago', variant: 'destructive' });
-                }}
-              />
+                    });
+                  }}
+                  onError={(error: any) => {
+                    console.error('Brick error:', error);
+                    toast({ title: 'Error', description: 'Ocurrió un error con el formulario de pago', variant: 'destructive' });
+                  }}
+                />
+              )}
             </CardContent>
         </Card>
       </div>
