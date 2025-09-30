@@ -401,6 +401,13 @@ export type Database = {
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "admin_content_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients_public_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       analytics_events: {
@@ -581,6 +588,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: true
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_settings_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients_public_view"
             referencedColumns: ["id"]
           },
         ]
@@ -1020,6 +1034,13 @@ export type Database = {
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "menu_items_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients_public_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       payment_settings: {
@@ -1092,6 +1113,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: true
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "premium_features_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients_public_view"
             referencedColumns: ["id"]
           },
         ]
@@ -1196,6 +1224,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_tickets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients_public_view"
             referencedColumns: ["id"]
           },
         ]
@@ -1357,6 +1392,13 @@ export type Database = {
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_clients_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients_public_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_roles: {
@@ -1382,7 +1424,69 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      clients_public_view: {
+        Row: {
+          address: string | null
+          brand_colors: Json | null
+          coordinates: Json | null
+          created_at: string | null
+          delivery: Json | null
+          id: string | null
+          opening_hours: Json | null
+          opening_hours_ordered: Json | null
+          other_customizations: Json | null
+          phone: string | null
+          phone_country_code: string | null
+          restaurant_name: string | null
+          social_media_links: Json | null
+          subdomain: string | null
+          theme: string | null
+          updated_at: string | null
+          whatsapp: string | null
+          whatsapp_country_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          brand_colors?: Json | null
+          coordinates?: Json | null
+          created_at?: string | null
+          delivery?: Json | null
+          id?: string | null
+          opening_hours?: Json | null
+          opening_hours_ordered?: Json | null
+          other_customizations?: Json | null
+          phone?: string | null
+          phone_country_code?: string | null
+          restaurant_name?: string | null
+          social_media_links?: Json | null
+          subdomain?: string | null
+          theme?: string | null
+          updated_at?: string | null
+          whatsapp?: string | null
+          whatsapp_country_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          brand_colors?: Json | null
+          coordinates?: Json | null
+          created_at?: string | null
+          delivery?: Json | null
+          id?: string | null
+          opening_hours?: Json | null
+          opening_hours_ordered?: Json | null
+          other_customizations?: Json | null
+          phone?: string | null
+          phone_country_code?: string | null
+          restaurant_name?: string | null
+          social_media_links?: Json | null
+          subdomain?: string | null
+          theme?: string | null
+          updated_at?: string | null
+          whatsapp?: string | null
+          whatsapp_country_code?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       calculate_subscription_end_date: {
