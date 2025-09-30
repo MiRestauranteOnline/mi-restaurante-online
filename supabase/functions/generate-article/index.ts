@@ -143,81 +143,176 @@ CRITICAL FACT-CHECKING REQUIREMENTS:
 6. Generic advice that applies broadly
 7. Conceptual explanations and how-to guides
 
-FACT-CHECKING APPROACH:
-- If you're about to write a specific statistic, STOP and ask: "Am I 100% certain this is accurate?"
-- If uncertain, rephrase to be more general or omit entirely
-- Use phrases like "según estudios recientes", "se estima que", "aproximadamente" when discussing trends
-- Never fabricate numbers, dates, or specific claims
-- When in doubt, focus on actionable advice rather than statistics
+CREDIBLE STATISTICS & REFERENCES:
+- When including stats, cite source type (e.g., "según estudios de la industria", "datos del sector gastronómico")
+- Use phrases like "se estima que", "aproximadamente", "en promedio" for estimated data
+- If uncertain, omit specific numbers and focus on trends instead
+- Reference authoritative sources when discussing industry standards
 
-INTERNAL LINKING REQUIREMENTS (MANDATORY):
-1. HOMEPAGE LINK: Include exactly 1 link to "/" with keyword-rich anchor text related to restaurant websites (e.g., "crear página web para restaurante", "diseño web restaurante Lima", "sitio web restaurante profesional")
+PRICING & COST GUIDELINES:
+- ALWAYS clarify that costs are estimates: "los costos pueden variar", "presupuestos típicos oscilan entre"
+- Provide context on factors affecting price: complexity, features, customization level, ongoing maintenance
+- Mention our subscription model: "nuestros planes mensuales incluyen", "suscripción con beneficios continuos"
+- Emphasize ongoing value: "actualizaciones constantes", "soporte técnico incluido", "optimización continua"
+- Include price ranges in Soles (S/): e.g., "entre S/800 y S/2,500 mensuales dependiendo del plan"
 
-2. ARTICLE LINKS: Include 2-3 internal links to existing articles when contextually relevant:
+LOCATION-SPECIFIC INSIGHTS (CRITICAL):
+- Reference specific Lima districts: Miraflores, San Isidro, Barranco, Surco, La Molina
+- Mention Peruvian cuisine types: cevicherías, pollerías, chifas, picanterías
+- Include local context: "competencia en el Circuito de Playas", "zona gastronómica de Miraflores"
+- Reference Peruvian business culture and customer expectations
+- Mention local delivery platforms: Rappi, PedidosYa, Uber Eats (when relevant)
+
+STORYTELLING & CASE STUDIES:
+- Include 1-2 short case study examples (anonymized or generic)
+- Format: "Un restaurante en Barranco incrementó sus reservas en 40% después de implementar..."
+- Use before/after scenarios to illustrate points
+- Share real problems and solutions from your experience
+- Make examples relatable to target audience's challenges
+
+VISUAL PLACEHOLDERS & DESCRIPTIONS:
+- Include image placeholders with detailed descriptions in comments
+- Example: <!-- IMAGEN: Screenshot mostrando menú digital QR en tablet, restaurante moderno de fondo -->
+- Suggest infographic topics: "Infografía: 5 pasos para optimizar tu sitio web"
+- Recommend visual elements for key sections
+
+ENGAGEMENT TECHNIQUES:
+- Ask 2-3 rhetorical questions throughout: "¿Tu restaurante está preparado para la competencia digital?"
+- Use "tú" form to create connection: "Imagina que tu cliente busca..."
+- Include engaging transitions between sections
+- Address reader's pain points directly
+
+CULTURAL & INDUSTRY INSIGHTS:
+- Highlight Peruvian gastronomy's global recognition
+- Mention local holidays/events affecting restaurant business: Fiestas Patrias, Día de la Canción Criolla
+- Reference local food trends: fusión nikkei, comida novoandina, food trucks gourmet
+- Discuss Peruvian customer behaviors and preferences
+
+FORMATTING FOR READABILITY:
+- Keep paragraphs to 2-4 sentences maximum
+- Use subheadings (H2, H3) every 200-300 words
+- Add bullet points and numbered lists extensively
+- Use bold for key terms and important points
+- Include white space between sections
+
+SEO & KEYWORD OPTIMIZATION:
+- Use target keywords naturally in first paragraph, headings, and throughout
+- Include related/semantic keywords: if main is "diseño web", use "página web", "sitio web", "desarrollo web"
+- Add long-tail keyword variations in subheadings
+- Optimize URL slug with primary keyword
+- Use keywords in image alt texts and table headers
+
+INTERNAL LINKING STRATEGY (MANDATORY):
+1. HOMEPAGE LINK (1x): Link to "/" with anchor like "crear sitio web para restaurante", "diseño web restaurante profesional"
+2. SERVICE PAGES (2-3x): Link to "/signup" with "solicita tu página web", "comienza tu proyecto", "crea tu sitio web"
+3. PRICING PAGE (1x): Link to "/" with "planes y precios", "ver nuestros planes"
+4. ABOUT PAGE (1x): Link to "/acerca-de" with "conoce nuestro equipo", "sobre Mi Restaurante Online"
+5. CONTACT (1x): Link to "/contacto" with "contacta con nuestros especialistas", "agenda una consulta"
+6. BLOG ARTICLES (2-3x): Link to related articles from the available list below:
 ${availableArticles}
 
-3. CONTACT LINK: Include 1 link to "/contacto" with relevant anchor text (e.g., "contacta con nuestros especialistas", "solicita una consulta gratuita")
-
-CRITICAL LINK FORMATTING REQUIREMENTS:
-- ⚠️ ONLY use RELATIVE paths: /guia/category/slug, /, /contacto, /acerca-de
+CRITICAL LINK FORMATTING:
+- ⚠️ ONLY use RELATIVE paths: /guia/category/slug, /, /contacto, /acerca-de, /signup
 - ❌ NEVER use full domain URLs like https://mirestaurante.lovable.app/...
-- ❌ NEVER hardcode any domain names in links
-- ✅ CORRECT: <a href="/guia/diseno-web/precios-web">precios de diseño web</a>
-- ❌ INCORRECT: <a href="https://mirestaurante.lovable.app/guia/diseno-web/precios-web">precios de diseño web</a>
-- All links must have descriptive anchor text with target keywords
-- Add proper aria-labels for accessibility
-- Natural integration within the content flow
-- No external competitor links
+- ✅ CORRECT: <a href="/signup">solicita tu página web profesional</a>
+- ❌ INCORRECT: <a href="https://mirestaurante.lovable.app/signup">solicita</a>
 
-ARTICLE STRUCTURE REQUIREMENTS:
-1. ONE H1 title (engaging, includes main keyword)
-2. Multiple H2 and H3 headings for structure
-3. Use bullet points and numbered lists extensively
-4. Include at least one data table with relevant information
-5. Add the required internal links naturally throughout content
-6. Include 2-3 high-quality external links (authoritative sources, no competitors, use rel="nofollow")
-7. Word count: 2000-3000 words
-8. Include practical examples from Peruvian restaurant market
+CALL-TO-ACTION STRATEGY (MULTIPLE CTAs):
+- Include CTAs in multiple sections, not just at end
+- After introducing a problem: "¿Necesitas ayuda con esto? [CTA]"
+- Mid-article after key benefit: "Comienza a mejorar tu presencia digital hoy [CTA]"
+- Before FAQ section: "¿Listo para dar el siguiente paso? [CTA]"
+- End of article: Strong final CTA with urgency
+- Vary CTA text: "Solicita tu consulta gratuita", "Crea tu página web hoy", "Habla con un especialista"
 
-CONTENT REQUIREMENTS:
-- Write in Spanish for Peruvian audience from Kevin van Geffen's perspective
-- Include actionable tips and step-by-step guides
-- Use local examples (restaurants in Lima districts, Peruvian cuisine types) but keep them general
-- Mention cost ranges in Soles when relevant (use ranges, not exact amounts)
-- Reference ${currentYear} trends and current technologies
-- Add FAQ section at the end
-- Write as an expert sharing knowledge, not making unverifiable claims
-- Focus on practical, actionable advice over statistics
+EMPHASIS ON ONGOING BENEFITS:
+- Highlight subscription advantages: "actualizaciones automáticas incluidas"
+- Mention continuous optimization: "mejoras constantes de SEO", "integración con nuevas tecnologías"
+- Reference AI integration: "sistema con inteligencia artificial", "optimización automática de contenido"
+- Emphasize support: "soporte técnico permanente", "asistencia cuando la necesites"
+
+SCHEMA MARKUP PREPARATION:
+- Structure FAQ section with clear Q&A format for FAQ schema
+- Include business information consistently for Local Business schema
+- Format article with clear headline, author, date structure for Article schema
+
+FAQ SECTION (EXPANDED):
+- Include 5-7 questions minimum
+- Use long-tail, intent-based questions: "¿Cuánto cuesta crear una página web para restaurante en Lima en ${currentYear}?"
+- Answer questions thoroughly (3-5 sentences each)
+- Include keywords naturally in questions and answers
+- Cover different user intents: informational, transactional, comparison
+- Add "¿Cómo...", "¿Por qué...", "¿Cuándo...", "¿Qué...", "¿Dónde..." question types
+
+META DESCRIPTION OPTIMIZATION:
+- 150-160 characters exactly
+- Include primary keyword in first 50 characters
+- Add compelling benefit or value proposition
+- Include clear call to action
+- Use action verbs: "Descubre", "Aprende", "Mejora", "Aumenta"
+- Example: "Aprende cómo diseñar una página web para restaurante que aumenta reservas. Guía completa con precios y ejemplos. Solicita tu consulta gratis."
 
 OPENING PARAGRAPH REQUIREMENTS (CRITICAL):
-- ❌ NEVER start articles with "Descubre" - it's overused and generic
-- ❌ Avoid other generic openers like "En este artículo", "Bienvenido a", "¿Sabías que?"
-- ✅ Start with a compelling hook: surprising fact, relatable question, bold statement, or scenario
-- ✅ Make each opening unique and engaging, directly addressing the reader's pain point
-- Examples of good openers:
+- ❌ NEVER start with "Descubre", "En este artículo", "Bienvenido a", "¿Sabías que?"
+- ✅ Start with compelling hook: surprising fact, relatable scenario, bold statement, or direct question
+- Address reader's pain point immediately
+- Include main keyword naturally in first 2 sentences
+- Examples:
   * "El 73% de los clientes potenciales abandonan un sitio web de restaurante que tarda más de 3 segundos en cargar."
-  * "¿Tu restaurante está perdiendo clientes porque tu sitio web no aparece en Google?"
-  * "Imagina que un cliente busca 'mejor cevichería en Miraflores' y tu restaurante no aparece en los primeros resultados."
-  * "La competencia en el sector gastronómico limeño es feroz, y tu presencia digital puede ser el factor decisivo."
+  * "Tu competidor en Miraflores acaba de duplicar sus reservas con un sitio web optimizado. ¿Qué estás esperando?"
+  * "Mientras lees esto, tu restaurante está perdiendo clientes porque tu presencia digital no está a la altura."
+
+ARTICLE STRUCTURE REQUIREMENTS:
+1. ONE H1 title (engaging, includes main keyword, under 60 characters)
+2. Multiple H2 sections (5-8 major sections with keywords in headings)
+3. H3 subsections for detailed breakdowns
+4. Introduction paragraph (compelling hook)
+5. Multiple content sections with CTAs interspersed
+6. At least one data table with relevant comparisons or information
+7. Visual placeholders with descriptions
+8. Case study/example boxes
+9. FAQ section (5-7 questions)
+10. Strong conclusion with final CTA
+11. Word count: 2500-3500 words
+12. Internal links distributed throughout (8-10 total links)
+
+CONTENT QUALITY CHECKLIST:
+✓ Grammar and wording reviewed for accuracy
+✓ Stats include source references or disclaimers
+✓ Cost estimates clearly marked as approximate with context
+✓ Location-specific insights included (Lima districts, Peruvian context)
+✓ At least 1 storytelling example or case study
+✓ Visual placeholders with descriptions
+✓ 2-3 engaging/rhetorical questions
+✓ Cultural/industry-specific aspects highlighted
+✓ Short paragraphs (2-4 sentences) with frequent subheadings
+✓ Related keywords used naturally throughout
+✓ 8-10 internal links to various pages
+✓ Multiple CTAs in different sections
+✓ Subscription model mentioned when discussing pricing
+✓ Ongoing benefits emphasized (AI, optimization, support)
+✓ FAQ section with 5-7 long-tail questions
+✓ Meta description optimized with keyword and CTA
 
 TECHNICAL REQUIREMENTS:
-- Use proper HTML markup with semantic tags
-- Images should have descriptive alt text
-- Meta description (150-160 characters)
+- Use proper semantic HTML5 markup
+- Images have descriptive alt text with keywords
+- Tables with proper headers and accessible markup
+- Meta description (150-160 characters, keyword-rich, with CTA)
 - Excerpt (150-200 characters)
 - Estimated reading time
-- Keywords array for SEO
+- Keywords array (8-12 keywords including long-tail variations)
 
 Return ONLY a JSON object with this structure:
 {
-  "title": "Article title with main keyword",
-  "slug": "url-friendly-slug",
-  "excerpt": "Brief description 150-200 chars",
-  "content": "Full HTML article content with proper markup",
-  "metaDescription": "SEO meta description 150-160 chars",
-  "keywords": ["keyword1", "keyword2", "keyword3"],
+  "title": "Article title with main keyword (under 60 chars)",
+  "slug": "url-friendly-slug-with-main-keyword",
+  "excerpt": "Brief compelling description 150-200 chars",
+  "content": "Full HTML article content with proper markup, internal links, CTAs, and visual placeholders",
+  "metaDescription": "SEO meta description 150-160 chars with keyword in first 50 chars and clear CTA",
+  "keywords": ["primary-keyword", "secondary-keyword", "long-tail-variation-1", "semantic-keyword-1", "related-term-1", "location-keyword", "intent-keyword", "comparison-keyword"],
   "readingTime": estimated_minutes,
-  "featuredImageAlt": "Descriptive alt text for featured image"
+  "featuredImageAlt": "Descriptive alt text for featured image with main keyword"
 }
 `;
 
