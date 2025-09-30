@@ -39,6 +39,7 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
   const [cardholderName, setCardholderName] = useState<string>("");
   const [paymentMethodId, setPaymentMethodId] = useState<string>("");
   const [issuerId, setIssuerId] = useState<string>("");
+  const [mpMode, setMpMode] = useState<'test' | 'live' | null>(null);
   const [cardNumberInstance, setCardNumberInstance] = useState<any>(null);
 
   const amount = selectedPlan === "basic" ? 297 : 497;
@@ -50,6 +51,7 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
         if (error || !data?.success) throw new Error(data?.error || error?.message || "No se pudo obtener la clave pública");
 
         initMercadoPago(data.publicKey, { locale: "es-PE" });
+        setMpMode(data.mode || null);
 
         // Load identification types for the region (e.g., DNI, C.E, RUC)
         try {
@@ -191,6 +193,9 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
               <div className="py-4 text-sm text-muted-foreground">Cargando campos seguros…</div>
             ) : (
               <div className="space-y-4">
+                {mpMode === 'test' && (
+                  <div className="text-xs text-muted-foreground">Modo prueba: usa tarjetas de prueba de Mercado Pago.</div>
+                )}
                 <div className="space-y-2">
                   <Label>Nombre del titular</Label>
                   <Input
@@ -205,10 +210,6 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
                     <CardNumber 
                       placeholder="1234 1234 1234 1234" 
                       onBinChange={(data: any) => handleBinChange(data?.bin)}
-                      onChange={(data: any) => {
-                        const bin = data?.bin || data?.data?.bin;
-                        if (bin && bin.length >= 6) handleBinChange(bin);
-                      }}
                     />
                   </div>
                   {paymentMethodId && (

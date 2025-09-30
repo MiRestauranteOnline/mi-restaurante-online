@@ -31,6 +31,8 @@ serve(async (req) => {
     if (!accessToken) {
       throw new Error('MERCADOPAGO_ACCESS_TOKEN not configured');
     }
+    const isTest = accessToken.startsWith('TEST-');
+    console.log('process-mercadopago-card-payment mode:', isTest ? 'test' : 'live');
 
     const body: PaymentRequest = await req.json();
 
