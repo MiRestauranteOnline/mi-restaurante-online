@@ -1013,30 +1013,6 @@ export type Database = {
           },
         ]
       }
-      payment_settings: {
-        Row: {
-          created_at: string
-          id: string
-          test_mode: boolean
-          test_payer_email: string | null
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          test_mode?: boolean
-          test_payer_email?: string | null
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          test_mode?: boolean
-          test_payer_email?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
       premium_features: {
         Row: {
           analytics_enabled: boolean | null

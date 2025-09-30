@@ -105,15 +105,7 @@ const Signup = () => {
     setIsProcessingPayment(true);
     
     try {
-      console.log('Creating account and initiating payment for:', formData, 'with plan:', plan);
-      
-      // Fetch payment settings to check test mode
-      const { data: paymentSettings } = await supabase
-        .from('payment_settings')
-        .select('test_mode, test_payer_email')
-        .single();
-
-      console.log('Payment settings:', paymentSettings);
+      console.log('Creating account for:', formData, 'with plan:', plan);
 
       // Create account using public signup function
       const { data, error } = await supabase.functions.invoke('signup-client', {
