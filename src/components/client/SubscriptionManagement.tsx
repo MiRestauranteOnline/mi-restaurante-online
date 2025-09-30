@@ -72,24 +72,24 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   };
 
   const handleUpgrade = () => {
-    // Redirect to Rebill checkout for advanced plan
+    // Placeholder for future subscription upgrade
     toast({
       title: "Próximamente",
-      description: "La funcionalidad de upgrade estará disponible cuando Rebill apruebe nuestra cuenta.",
+      description: "La funcionalidad de upgrade estará disponible próximamente.",
     });
   };
 
   const handleDowngrade = () => {
     toast({
       title: "Próximamente", 
-      description: "La funcionalidad de downgrade estará disponible cuando Rebill apruebe nuestra cuenta.",
+      description: "La funcionalidad de downgrade estará disponible próximamente.",
     });
   };
 
   const handleCancel = () => {
     toast({
       title: "Próximamente",
-      description: "La funcionalidad de cancelación estará disponible cuando Rebill apruebe nuestra cuenta.",
+      description: "La funcionalidad de cancelación estará disponible próximamente.",
     });
   };
 

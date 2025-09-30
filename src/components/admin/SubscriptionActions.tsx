@@ -27,7 +27,7 @@ export function SubscriptionActions({ clientId, subscription, onUpdate }: Subscr
   const handlePlanChange = async (newPlan: 'basic' | 'advanced') => {
     setLoading(true);
     try {
-      // In real implementation, call Rebill API to change plan
+      // Placeholder for future plan change implementation
       const { error } = await supabase
         .from('clients')
         .update({ plan_type: newPlan })

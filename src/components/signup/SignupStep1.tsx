@@ -40,11 +40,6 @@ interface SignupStep1Props {
   isProcessingPayment?: boolean;
 }
 
-declare global {
-  interface Window {
-    Rebill: any;
-  }
-}
 
 export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = false }: SignupStep1Props) => {
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
@@ -260,41 +255,6 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
     }
   };
 
-  const initiateMercadoPagoPayment = async (data: SignupFormData, clientId: string) => {
-    try {
-      // First, create or get the plan
-      const { data: planData, error: planError } = await supabase.functions.invoke('create-mercadopago-plan', {
-        body: {
-          planType: selectedPlan,
-        },
-      });
-
-      if (planError || !planData?.success) {
-        throw new Error('Error creating payment plan');
-      }
-
-      // Then create the subscription
-      const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('create-mercadopago-subscription', {
-        body: {
-          planId: planData.plan.id,
-          customerEmail: data.email,
-          customerName: data.restaurantName,
-          clientId: clientId,
-          planType: selectedPlan,
-        },
-      });
-
-      if (subscriptionError || !subscriptionData?.success) {
-        throw new Error('Error creating subscription');
-      }
-
-      // Redirect to Mercado Pago payment page
-      window.location.href = subscriptionData.initPoint;
-    } catch (error) {
-      console.error('Payment initiation error:', error);
-      throw error;
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -703,9 +663,9 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   <CreditCard className="w-5 h-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold">Pago Seguro con Mercado Pago</h4>
+                  <h4 className="font-semibold">Pago Seguro</h4>
                   <p className="text-sm text-muted-foreground">
-                    Procesamos tu pago de forma segura con Mercado Pago
+                    Procesamos tu pago de forma segura
                   </p>
                 </div>
               </div>
@@ -731,7 +691,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             {isProcessingPayment ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Redirigiendo a Mercado Pago...
+                Procesando registro...
               </>
             ) : (
               <>

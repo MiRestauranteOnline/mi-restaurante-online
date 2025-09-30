@@ -603,13 +603,10 @@ export type Database = {
           opening_hours_ordered: Json | null
           other_customizations: Json | null
           payment_failures_count: number | null
-          payment_id: string | null
           payment_status: string | null
           phone: string | null
           phone_country_code: string | null
           plan_type: string | null
-          rebill_customer_id: string | null
-          rebill_subscription_id: string | null
           referral_source: string | null
           restaurant_name: string
           social_media_links: Json | null
@@ -643,13 +640,10 @@ export type Database = {
           opening_hours_ordered?: Json | null
           other_customizations?: Json | null
           payment_failures_count?: number | null
-          payment_id?: string | null
           payment_status?: string | null
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
-          rebill_customer_id?: string | null
-          rebill_subscription_id?: string | null
           referral_source?: string | null
           restaurant_name: string
           social_media_links?: Json | null
@@ -683,13 +677,10 @@ export type Database = {
           opening_hours_ordered?: Json | null
           other_customizations?: Json | null
           payment_failures_count?: number | null
-          payment_id?: string | null
           payment_status?: string | null
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
-          rebill_customer_id?: string | null
-          rebill_subscription_id?: string | null
           referral_source?: string | null
           restaurant_name?: string
           social_media_links?: Json | null

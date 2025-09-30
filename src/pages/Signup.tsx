@@ -8,7 +8,7 @@ import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/sig
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
-import { EmbeddedPayment } from "@/components/signup/EmbeddedPayment";
+
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -126,7 +126,7 @@ const Signup = () => {
           phone_country_code: formData.phone_country_code,
           whatsapp_country_code: formData.whatsapp_country_code,
           address: formData.address,
-          paymentId: 'pending-mercadopago',
+          paymentId: 'pending',
           customDomain: formData.customDomain,
           referralSource: formData.referralSource,
           plan_type: plan,
@@ -151,11 +151,11 @@ const Signup = () => {
       
       if (data?.success && data?.client?.id) {
         console.log('Account created successfully:', data);
-        // Save client id to use during payment
+        // Save client id
         setSignupData({ ...updatedData, paymentId: data.client.id });
         setIsProcessingPayment(false);
-        // Go to embedded payment step
-        // setCurrentStep(2); // Payment shown within Step 1
+        // Move to next step (requirements)
+        setCurrentStep(3);
       } else {
         throw new Error('Respuesta inesperada del servidor');
       }
@@ -245,30 +245,6 @@ const Signup = () => {
     setCurrentStep(7); // Move to success step
   };
 
-  const startCheckout = async () => {
-    try {
-      setIsProcessingPayment(true);
-      const { data, error } = await supabase.functions.invoke('create-mercadopago-checkout', {
-        body: {
-          customerEmail: signupData.email,
-          customerName: signupData.restaurantName,
-          clientId: signupData.paymentId,
-          planType: selectedPlan,
-        },
-      });
-      if (error || !data?.success) {
-        throw new Error((data as any)?.error || (error as any)?.message || 'No se pudo iniciar el pago');
-      }
-      const url = (data as any).initPoint || (data as any).sandbox_init_point;
-      if (!url) throw new Error('URL de pago no recibida');
-      window.location.href = url;
-    } catch (err: any) {
-      console.error('Checkout redirect error:', err);
-      toast({ title: 'Error al iniciar pago', description: err.message || 'Inténtalo nuevamente', variant: 'destructive' });
-    } finally {
-      setIsProcessingPayment(false);
-    }
-  };
 
   const handleBackToStep1 = () => {
     setCurrentStep(1);
@@ -386,20 +362,6 @@ const Signup = () => {
                     initialData={signupData}
                     isProcessingPayment={isProcessingPayment}
                   />
-                  {(signupData.paymentId || signupData.email) && (
-                    <DebugErrorBoundary>
-                      <EmbeddedPayment
-                        signupData={{
-                          email: signupData.email,
-                          restaurantName: signupData.restaurantName,
-                          paymentId: signupData.paymentId,
-                        }}
-                        selectedPlan={selectedPlan}
-                        onSuccess={() => setCurrentStep(3)}
-                        onBack={() => { /* stay on step 1 */ }}
-                      />
-                    </DebugErrorBoundary>
-                  )}
                 </>
               )}
               
