@@ -28,7 +28,7 @@ serve(async (req) => {
       // Get all published articles
       const { data, error } = await supabase
         .from('generated_articles')
-        .select('id, title, meta_description, target_keyword, featured_image_url')
+        .select('id, title, meta_description, keywords, featured_image_url')
         .eq('status', 'published')
         .order('published_at', { ascending: false });
       
@@ -38,7 +38,7 @@ serve(async (req) => {
       // Get specific article
       const { data, error } = await supabase
         .from('generated_articles')
-        .select('id, title, meta_description, target_keyword, featured_image_url')
+        .select('id, title, meta_description, keywords, featured_image_url')
         .eq('id', articleId)
         .single();
       
@@ -59,7 +59,8 @@ serve(async (req) => {
         console.log(`Regenerating image for article: ${article.title}`);
         
         // Create image prompt from article data
-        const imagePrompt = `${article.title}. ${article.meta_description || ''}. Keywords: ${article.target_keyword || ''}`.slice(0, 500);
+        const keywords = Array.isArray(article.keywords) ? article.keywords.join(', ') : '';
+        const imagePrompt = `${article.title}. ${article.meta_description || ''}. Keywords: ${keywords}`.slice(0, 500);
         
         // Call generate-featured-image function
         const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-featured-image', {
