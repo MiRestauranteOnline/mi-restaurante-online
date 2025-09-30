@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.regenerate-article-images]
 verify_jwt = false
+
+[functions.fix-article-content]
+verify_jwt = false

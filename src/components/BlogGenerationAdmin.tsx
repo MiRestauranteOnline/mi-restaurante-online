@@ -45,6 +45,7 @@ const BlogGenerationAdmin: React.FC = () => {
   const [isSeeding, setIsSeeding] = useState(false);
   const [isCleaningUp, setIsCleaningUp] = useState(false);
   const [isRegeneratingImages, setIsRegeneratingImages] = useState(false);
+  const [isFixingContent, setIsFixingContent] = useState(false);
   const [logs, setLogs] = useState<GenerationLog[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [contentGaps, setContentGaps] = useState<ContentGap[]>([]);
@@ -291,6 +292,47 @@ const BlogGenerationAdmin: React.FC = () => {
     }
   };
 
+  const handleFixArticleContent = async () => {
+    if (!confirm('This will update all published articles to fix year references (2024→2025) and convert hardcoded domain URLs to relative paths. Continue?')) {
+      return;
+    }
+
+    setIsFixingContent(true);
+    try {
+      toast({
+        title: "Fixing Article Content",
+        description: "Updating year references and fixing links...",
+      });
+      
+      const response = await supabase.functions.invoke('fix-article-content');
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      const result = response.data;
+      
+      if (result.success) {
+        toast({
+          title: "Content Fixes Complete",
+          description: `Successfully fixed ${result.updatedCount} of ${result.totalArticles} articles`,
+        });
+        await fetchData();
+      } else {
+        throw new Error(result.error || 'Content fixing failed');
+      }
+    } catch (error) {
+      console.error('Error fixing content:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : 'Failed to fix article content',
+        variant: "destructive",
+      });
+    } finally {
+      setIsFixingContent(false);
+    }
+  };
+
   const handleTestArticles = async () => {
     try {
       console.log('Testing article fetch...');
@@ -455,6 +497,19 @@ const BlogGenerationAdmin: React.FC = () => {
             <Eye className="w-4 h-4" />
           )}
           Regenerate All Images
+        </Button>
+        <Button 
+          onClick={handleFixArticleContent}
+          disabled={isFixingContent}
+          variant="outline"
+          className="flex items-center gap-2"
+        >
+          {isFixingContent ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <AlertCircle className="w-4 h-4" />
+          )}
+          Fix Article Content (2024→2025 & Links)
         </Button>
       </div>
 

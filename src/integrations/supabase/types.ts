@@ -436,6 +436,51 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_profile: {
+        Row: {
+          brand_values: string[]
+          company_description: string
+          company_name: string
+          created_at: string
+          founder_bio: string | null
+          geographic_focus: string[]
+          id: string
+          key_differentiators: string[]
+          primary_services: string[]
+          target_audience: string
+          tone_of_voice: string
+          updated_at: string
+        }
+        Insert: {
+          brand_values?: string[]
+          company_description: string
+          company_name?: string
+          created_at?: string
+          founder_bio?: string | null
+          geographic_focus?: string[]
+          id?: string
+          key_differentiators?: string[]
+          primary_services?: string[]
+          target_audience: string
+          tone_of_voice?: string
+          updated_at?: string
+        }
+        Update: {
+          brand_values?: string[]
+          company_description?: string
+          company_name?: string
+          created_at?: string
+          founder_bio?: string | null
+          geographic_focus?: string[]
+          id?: string
+          key_differentiators?: string[]
+          primary_services?: string[]
+          target_audience?: string
+          tone_of_voice?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       carousel_images: {
         Row: {
           alt_text: string | null
