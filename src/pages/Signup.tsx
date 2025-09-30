@@ -8,6 +8,7 @@ import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/sig
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
+import { EmbeddedPayment } from "@/components/signup/EmbeddedPayment";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -146,85 +147,12 @@ const Signup = () => {
       }
       
       if (data?.success && data?.client?.id) {
-        console.log('Account created successfully, initiating payment:', data);
-        
-        try {
-          // Fetch payment settings to check test mode
-          const { data: paymentSettings } = await supabase
-            .from('payment_settings')
-            .select('test_mode, test_payer_email')
-            .single();
-
-          const isTestMode = !!paymentSettings?.test_mode;
-
-          // In test mode, if no valid test payer email is configured, proceed with fallback sandbox email
-          if (isTestMode && (!paymentSettings?.test_payer_email || !paymentSettings.test_payer_email.includes('@'))) {
-            console.warn('Test mode without valid test payer email. Proceeding with sandbox fallback email.');
-          }
-
-          let payerEmail = (isTestMode && paymentSettings?.test_payer_email)
-            ? paymentSettings.test_payer_email
-            : formData.email;
-
-          if (!payerEmail || !payerEmail.includes('@')) {
-            console.warn('Invalid payer email detected. Falling back to sandbox test email.');
-            payerEmail = `buyer.test.${Date.now()}@example.com`;
-          }
-
-          console.log('Creating Mercado Pago checkout with:', {
-            payerEmail,
-            customerName: formData.restaurantName,
-            clientId: data.client.id,
-            planType: plan,
-            isTestMode
-          });
-          const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-mercadopago-checkout', {
-            body: {
-              customerEmail: payerEmail,
-              customerName: formData.restaurantName,
-              clientId: data.client.id,
-              planType: plan,
-            },
-          });
-
-          console.log('Checkout response:', { checkoutData, checkoutError });
-
-          if (checkoutError) {
-            console.error('Checkout creation error:', checkoutError);
-            throw new Error(`Error creando el checkout: ${checkoutError.message}`);
-          }
-          
-          if (!checkoutData?.success) {
-            console.error('Checkout creation failed:', checkoutData);
-            throw new Error(checkoutData?.error || 'Error creando el checkout');
-          }
-
-          // Redirect to Mercado Pago payment page (with robust fallback for sandbox/iframes)
-          const checkoutUrl = checkoutData.initPoint as string;
-          console.log('Redirecting to Mercado Pago:', checkoutUrl);
-          toast({ title: 'Redirecting to Mercado Pago', description: 'Opening checkout. If it does not redirect, a new tab will open.' });
-          try {
-            window.location.assign(checkoutUrl);
-          } catch (navErr) {
-            console.error('Direct redirect blocked, opening new tab...', navErr);
-            window.open(checkoutUrl, '_blank', 'noopener');
-          }
-          // Fallback if running inside a sandboxed iframe
-          setTimeout(() => {
-            try {
-              if (document.visibilityState === 'visible') {
-                console.warn('Still on the same page after attempting redirect. Opening new tab as fallback.');
-                window.open(checkoutUrl, '_blank', 'noopener');
-              }
-            } catch (e) {
-              console.error('Fallback redirect error:', e);
-            }
-          }, 800);
-          return;
-        } catch (paymentError: any) {
-          console.error('Payment initialization error:', paymentError);
-          throw new Error(paymentError.message || 'Error al iniciar el pago');
-        }
+        console.log('Account created successfully:', data);
+        // Save client id to use during payment
+        setSignupData({ ...updatedData, paymentId: data.client.id });
+        setIsProcessingPayment(false);
+        // Go to embedded payment step
+        setCurrentStep(2);
       } else {
         throw new Error('Respuesta inesperada del servidor');
       }
@@ -232,7 +160,7 @@ const Signup = () => {
       console.error('Account creation/payment error:', error);
       setIsProcessingPayment(false);
       
-      const errorMessage = error.message || 'Error al procesar el registro. Por favor contacta soporte.';
+          const errorMessage = error.message || 'Error al procesar el registro. Por favor contacta soporte.';
       alert(errorMessage);
     }
   };
@@ -433,22 +361,16 @@ const Signup = () => {
               )}
               
               {currentStep === 2 && (
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold text-foreground mb-4">
-                    Procesando Pago
-                  </h2>
-                  <p className="text-muted-foreground mb-6">
-                    Tu cuenta ha sido creada. Continúa con la configuración.
-                  </p>
-                  <div className="flex gap-4 justify-center">
-                    <Button onClick={handleBackToStep1} variant="outline">
-                      Volver
-                    </Button>
-                    <Button onClick={() => setCurrentStep(3)}>
-                      Continuar
-                    </Button>
-                  </div>
-                </div>
+                <EmbeddedPayment
+                  signupData={{
+                    email: signupData.email,
+                    restaurantName: signupData.restaurantName,
+                    paymentId: signupData.paymentId,
+                  }}
+                  selectedPlan={selectedPlan}
+                  onSuccess={() => setCurrentStep(3)}
+                  onBack={handleBackToStep1}
+                />
               )}
               
               {currentStep === 3 && (
