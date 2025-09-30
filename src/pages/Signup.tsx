@@ -8,7 +8,7 @@ import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/sig
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
-import { EmbeddedPayment } from "@/components/signup/EmbeddedPayment";
+// import { EmbeddedPayment } from "@/components/signup/EmbeddedPayment";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -244,6 +244,31 @@ const Signup = () => {
     setCurrentStep(7); // Move to success step
   };
 
+  const startCheckout = async () => {
+    try {
+      setIsProcessingPayment(true);
+      const { data, error } = await supabase.functions.invoke('create-mercadopago-checkout', {
+        body: {
+          customerEmail: signupData.email,
+          customerName: signupData.restaurantName,
+          clientId: signupData.paymentId,
+          planType: selectedPlan,
+        },
+      });
+      if (error || !data?.success) {
+        throw new Error((data as any)?.error || (error as any)?.message || 'No se pudo iniciar el pago');
+      }
+      const url = (data as any).initPoint || (data as any).sandbox_init_point;
+      if (!url) throw new Error('URL de pago no recibida');
+      window.location.href = url;
+    } catch (err: any) {
+      console.error('Checkout redirect error:', err);
+      toast({ title: 'Error al iniciar pago', description: err.message || 'Inténtalo nuevamente', variant: 'destructive' });
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
   const handleBackToStep1 = () => {
     setCurrentStep(1);
     window.scrollTo(0, 0);
@@ -361,34 +386,24 @@ const Signup = () => {
                     isProcessingPayment={isProcessingPayment}
                   />
                   {signupData.paymentId && (
-                    <div className="mt-8">
-                      <EmbeddedPayment
-                        signupData={{
-                          email: signupData.email,
-                          restaurantName: signupData.restaurantName,
-                          paymentId: signupData.paymentId,
-                        }}
-                        selectedPlan={selectedPlan}
-                        onSuccess={() => setCurrentStep(3)}
-                        onBack={() => { /* stay on step 1 */ }}
-                      />
+                    <div className="mt-8 flex items-center justify-between border rounded-lg p-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Plan seleccionado</p>
+                        <p className="text-lg font-semibold">{selectedPlan === 'basic' ? 'Básico' : 'Avanzado'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total</p>
+                        <p className="text-lg font-semibold">S/ {selectedPlan === 'basic' ? 297 : 497} / mes</p>
+                      </div>
+                      <Button onClick={startCheckout} disabled={isProcessingPayment}>
+                        {isProcessingPayment ? 'Redirigiendo…' : 'Pagar con tarjeta'}
+                      </Button>
                     </div>
                   )}
                 </>
               )}
               
-              {currentStep === 2 && (
-                <EmbeddedPayment
-                  signupData={{
-                    email: signupData.email,
-                    restaurantName: signupData.restaurantName,
-                    paymentId: signupData.paymentId,
-                  }}
-                  selectedPlan={selectedPlan}
-                  onSuccess={() => setCurrentStep(3)}
-                  onBack={handleBackToStep1}
-                />
-              )}
+              {currentStep === 2 && null}
               
               {currentStep === 3 && (
                 <SignupStep2 

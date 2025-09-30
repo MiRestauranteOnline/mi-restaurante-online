@@ -49,13 +49,24 @@ serve(async (req) => {
         }
       ],
       back_urls: {
-        success: `${origin}/signup/success?client_id=${clientId}`,
-        failure: `${origin}/signup?error=payment_failed`,
-        pending: `${origin}/signup?status=pending`,
+        success: `${origin}/registro?payment=success&client_id=${clientId}`,
+        failure: `${origin}/registro?payment=failure&client_id=${clientId}`,
+        pending: `${origin}/registro?payment=pending&client_id=${clientId}`,
       },
       auto_return: 'approved',
       external_reference: clientId,
       statement_descriptor: 'MiRestauranteOnline',
+      payment_methods: {
+        installments: 1,
+        default_installments: 1,
+        excluded_payment_types: [
+          { id: 'ticket' },
+          { id: 'atm' },
+          { id: 'bank_transfer' },
+          { id: 'digital_currency' },
+          { id: 'account_money' },
+        ],
+      },
       metadata: {
         client_id: clientId,
         plan_type: planType,
