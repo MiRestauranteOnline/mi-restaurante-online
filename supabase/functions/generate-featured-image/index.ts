@@ -45,33 +45,7 @@ serve(async (req) => {
       throw new Error('Leonardo API key is not configured');
     }
 
-    // Create a unique seed based on article ID to ensure different images
-    const articleSeed = articleId.split('-').reduce((acc: number, part: string) => acc + parseInt(part, 16), 0);
-
-    const imageGenerationPrompt = `
-Professional photograph for restaurant industry blog article.
-
-Topic: ${imagePrompt}
-
-CRITICAL REQUIREMENTS - NO TEXT:
-- ABSOLUTELY NO text, letters, numbers, or words anywhere in the image
-- NO signs, menus, labels, captions, or written content of any kind
-- NO watermarks, logos, or overlays
-- Pure photographic content only
-
-Style specifications:
-- Ultra high resolution, photorealistic restaurant scene
-- Professional food service or dining environment
-- Clean, modern, inviting composition
-- 16:9 aspect ratio for blog header
-- Vibrant, natural colors with good lighting
-- Focus on atmosphere, ambiance, and visual appeal
-- Peruvian restaurant aesthetic when contextually relevant
-- Natural lighting, warm and welcoming mood
-- Professional photography quality
-
-Unique variation ID: ${articleSeed}
-`;
+    const imageGenerationPrompt = `${imagePrompt}, ultra-realistic professional restaurant photography, single composition, single scene, no collage, no grid, no split-panel, no montage, no multi-image, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, blog header quality, no text overlay, photojournalistic quality, commercial food photography, Peruvian restaurant context`;
 
     const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
       method: 'POST',
@@ -81,15 +55,16 @@ Unique variation ID: ${articleSeed}
       },
       body: JSON.stringify({
         prompt: imageGenerationPrompt,
-        negative_prompt: "text, letters, words, signs, menus, labels, captions, typography, writing, numbers, watermark, logo, overlay, subtitle",
-        modelId: "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3", // Leonardo Phoenix model
+        modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3", // Leonardo Phoenix 1.0 - latest foundational model
+        styleUUID: "7c3f932b-a572-47cb-9b9b-f20211e63b5b", // Pro color photography style
         width: 1280,
-        height: 720, // 16:9 aspect ratio
+        height: 720, // 16:9 aspect ratio for blog header
         num_images: 1,
-        guidance_scale: 8,
-        num_inference_steps: 20,
-        seed: articleSeed % 2147483647, // Use article-based seed for uniqueness
-        presetStyle: "PHOTOGRAPHY"
+        contrast: 4, // High contrast for sharp, professional look
+        enhancePrompt: true, // AI prompt enhancement for better results
+        alchemy: true, // Quality mode enabled
+        num_inference_steps: 25, // Higher steps for better quality
+        guidance_scale: 8 // Higher guidance for better prompt adherence
       }),
     });
 
@@ -170,8 +145,7 @@ Unique variation ID: ${articleSeed}
         status: 'completed',
         details: { 
           image_url: finalImageUrl,
-          model: 'Leonardo Phoenix (6bef9f1b)',
-          seed: articleSeed,
+          model: 'Leonardo Phoenix 1.0 (de7d3faf)',
           optimized: optimizeResponse.data?.success || false
         },
         processing_time_ms: processingTime
