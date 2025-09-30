@@ -30,6 +30,20 @@ export const EmbeddedPayment: React.FC<EmbeddedPaymentProps> = ({ signupData, se
 
   const amount = selectedPlan === 'basic' ? 297 : 497;
 
+  // Prevent any form submissions inside the Brick from reloading the page
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const preventSubmit = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    el.addEventListener('submit', preventSubmit, true);
+    return () => {
+      el.removeEventListener('submit', preventSubmit, true);
+    };
+  }, [containerRef, loading]);
+
   useEffect(() => {
     const init = async () => {
       try {
