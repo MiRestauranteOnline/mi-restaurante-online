@@ -385,7 +385,7 @@ const Signup = () => {
                     initialData={signupData}
                     isProcessingPayment={isProcessingPayment}
                   />
-                  {signupData.paymentId && (
+                  {(signupData.paymentId || signupData.email) && (
                     <EmbeddedPayment
                       signupData={{
                         email: signupData.email,
