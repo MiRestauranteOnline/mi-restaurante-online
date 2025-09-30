@@ -9,6 +9,7 @@ import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupSt
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export interface SignupData {
   email: string;
@@ -92,6 +93,7 @@ const Signup = () => {
   });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isProcessingFinalStep, setIsProcessingFinalStep] = useState(false);
+  const { toast } = useToast();
 
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
     const updatedData = { ...formData, plan_type: plan };
@@ -153,6 +155,19 @@ const Signup = () => {
             .single();
 
           const isTestMode = !!paymentSettings?.test_mode;
+
+          // Guard: in test mode we require a real, reachable email to receive Mercado Pago's verification code
+          if (isTestMode && (!paymentSettings?.test_payer_email || !paymentSettings.test_payer_email.includes('@'))) {
+            console.error('Test mode enabled but test_payer_email is missing or invalid');
+            toast({
+              title: 'Test email required',
+              description: 'Set a valid Test Payer Email in Admin > Payment Settings to receive the Mercado Pago verification code. Placeholder emails will not work.',
+              variant: 'destructive',
+            });
+            setIsProcessingPayment(false);
+            return;
+          }
+
           let payerEmail = (isTestMode && paymentSettings?.test_payer_email)
             ? paymentSettings.test_payer_email
             : formData.email;
@@ -169,8 +184,6 @@ const Signup = () => {
             planType: plan,
             isTestMode
           });
-
-          
           const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-mercadopago-checkout', {
             body: {
               customerEmail: payerEmail,
