@@ -8,7 +8,7 @@ import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/sig
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { Card, CardContent } from "@/components/ui/card";
-import { CardFieldsPayment } from "@/components/signup/CardFieldsPayment";
+import { EmbeddedPayment } from "@/components/signup/EmbeddedPayment";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -386,7 +386,7 @@ const Signup = () => {
                     isProcessingPayment={isProcessingPayment}
                   />
                   {signupData.paymentId && (
-                    <CardFieldsPayment
+                    <EmbeddedPayment
                       signupData={{
                         email: signupData.email,
                         restaurantName: signupData.restaurantName,
