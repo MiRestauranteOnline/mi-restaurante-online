@@ -131,8 +131,8 @@ export const CardFieldsPayment: React.FC<CardFieldsPaymentProps> = ({
           amount,
           installments: 1,
           description: `${selectedPlan === "basic" ? "Plan Básico" : "Plan Avanzado"} - Mi Restaurante Online`,
-          payment_method_id: paymentMethodId,
-          issuer_id: issuerId || undefined,
+          // MP will infer payment_method_id and issuer_id from the token
+
           payer: {
             email: signupData.email,
             first_name: signupData.restaurantName,
