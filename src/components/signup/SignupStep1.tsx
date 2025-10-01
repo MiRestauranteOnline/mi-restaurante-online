@@ -212,14 +212,21 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       if (data.hasCustomDomain && data.customDomain) {
         const cleanedDomain = cleanDomain(data.customDomain);
         
-        // Check if custom domain is already taken
-        const { data: existingDomain } = await supabase
-          .from('clients')
-          .select('id, domain')
-          .eq('domain', cleanedDomain)
-          .maybeSingle();
+        // Check if custom domain is already taken using edge function
+        const { data: domainCheck, error: domainCheckError } = await supabase.functions.invoke('check-domain-availability', {
+          body: { domain: cleanedDomain },
+        });
 
-        if (existingDomain) {
+        if (domainCheckError) {
+          toast({
+            title: "Error verificando dominio",
+            description: "No pudimos verificar la disponibilidad del dominio. Intenta de nuevo.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (domainCheck?.exists) {
           toast({
             title: "Dominio no disponible",
             description: "Este dominio ya está en uso. Por favor elige otro.",

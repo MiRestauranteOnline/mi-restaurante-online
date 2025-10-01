@@ -27,7 +27,10 @@ Deno.serve(async (req) => {
     const { domain } = await req.json().catch(() => ({ domain: '' }));
     const cleaned = cleanDomain(domain);
 
+    console.log('[check-domain-availability] Input:', domain, '→ Cleaned:', cleaned);
+
     if (!cleaned || !cleaned.includes('.')) {
+      console.log('[check-domain-availability] Invalid domain (too short or no dot)');
       return new Response(
         JSON.stringify({ error: 'Invalid domain', exists: false }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -38,14 +41,16 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    // Use head+count to avoid returning any row data
+    console.log('[check-domain-availability] Querying DB for domain:', cleaned);
+
+    // Use head+count to avoid returning any row data - only checks existence
     const { count, error } = await supabase
       .from('clients')
       .select('id', { count: 'exact', head: true })
       .eq('domain', cleaned);
 
     if (error) {
-      console.error('[check-domain-availability] DB error:', error.message);
+      console.error('[check-domain-availability] DB error:', error.message, error.code);
       return new Response(
         JSON.stringify({ error: 'db_error', exists: false }),
         { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -53,6 +58,7 @@ Deno.serve(async (req) => {
     }
 
     const exists = (count ?? 0) > 0;
+    console.log('[check-domain-availability] Result: count =', count, '→ exists =', exists);
 
     return new Response(
       JSON.stringify({ exists, domain: cleaned }),
