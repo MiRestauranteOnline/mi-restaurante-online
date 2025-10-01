@@ -27,6 +27,7 @@ interface SubscriptionManagementProps {
 
 export function SubscriptionManagement({ clientId }: SubscriptionManagementProps) {
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -71,26 +72,94 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     }
   };
 
-  const handleUpgrade = () => {
-    // Placeholder for future subscription upgrade
-    toast({
-      title: "Próximamente",
-      description: "La funcionalidad de upgrade estará disponible próximamente.",
-    });
+  const handleUpgrade = async () => {
+    setActionLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('update-mercadopago-subscription', {
+        body: { 
+          clientId,
+          newPlanType: 'advanced'
+        }
+      });
+
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Failed to upgrade');
+
+      toast({
+        title: "Plan actualizado",
+        description: data.message || "Plan actualizado a Avanzado exitosamente",
+      });
+
+      fetchSubscriptionData();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo actualizar el plan",
+        variant: "destructive"
+      });
+    } finally {
+      setActionLoading(false);
+    }
   };
 
-  const handleDowngrade = () => {
-    toast({
-      title: "Próximamente", 
-      description: "La funcionalidad de downgrade estará disponible próximamente.",
-    });
+  const handleDowngrade = async () => {
+    setActionLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('update-mercadopago-subscription', {
+        body: { 
+          clientId,
+          newPlanType: 'basic'
+        }
+      });
+
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Failed to downgrade');
+
+      toast({
+        title: "Plan actualizado",
+        description: data.message || "Plan actualizado a Básico exitosamente",
+      });
+
+      fetchSubscriptionData();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo actualizar el plan",
+        variant: "destructive"
+      });
+    } finally {
+      setActionLoading(false);
+    }
   };
 
-  const handleCancel = () => {
-    toast({
-      title: "Próximamente",
-      description: "La funcionalidad de cancelación estará disponible próximamente.",
-    });
+  const handleCancel = async () => {
+    setActionLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('cancel-mercadopago-subscription', {
+        body: { 
+          clientId,
+          reason: 'user_request'
+        }
+      });
+
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Failed to cancel');
+
+      toast({
+        title: "Suscripción cancelada",
+        description: data.message || "Tu suscripción ha sido cancelada",
+      });
+
+      fetchSubscriptionData();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo cancelar la suscripción",
+        variant: "destructive"
+      });
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   if (loading) {
@@ -248,7 +317,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               <li>• Hasta 3,000 visitas/mes o 6 GB</li>
             </ul>
             {subscription.plan_type === 'advanced' && canChangePlan(subscription.subscription_status) && (
-              <Button className="w-full mt-4" variant="outline" onClick={handleDowngrade}>
+              <Button className="w-full mt-4" variant="outline" onClick={handleDowngrade} disabled={actionLoading}>
                 Cambiar a Básico
               </Button>
             )}
@@ -275,7 +344,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               <li>• Soporte prioritario</li>
             </ul>
             {subscription.plan_type === 'basic' && canChangePlan(subscription.subscription_status) && (
-              <Button className="w-full mt-4" onClick={handleUpgrade}>
+              <Button className="w-full mt-4" onClick={handleUpgrade} disabled={actionLoading}>
                 <ArrowUp className="h-4 w-4 mr-2" />
                 Actualizar a Avanzado
               </Button>
@@ -297,7 +366,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             <p className="text-red-700">
               Tu suscripción ha sido suspendida debido a problemas de pago. Actualiza tu método de pago para continuar con el servicio.
             </p>
-            <Button variant="default">
+            <Button variant="default" disabled={actionLoading}>
               Actualizar Método de Pago
             </Button>
           </CardContent>
@@ -317,7 +386,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             <p className="text-yellow-700">
               Tu suscripción está inactiva. Reactívala para continuar usando todos los servicios.
             </p>
-            <Button variant="default">
+            <Button variant="default" disabled={actionLoading}>
               Reactivar Suscripción
             </Button>
           </CardContent>
@@ -353,7 +422,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" className="w-full">
+                <Button variant="destructive" className="w-full" disabled={actionLoading}>
                   <AlertTriangle className="h-4 w-4 mr-2" />
                   Cancelar Suscripción
                 </Button>

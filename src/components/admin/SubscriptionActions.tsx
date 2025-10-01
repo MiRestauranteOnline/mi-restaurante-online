@@ -27,24 +27,26 @@ export function SubscriptionActions({ clientId, subscription, onUpdate }: Subscr
   const handlePlanChange = async (newPlan: 'basic' | 'advanced') => {
     setLoading(true);
     try {
-      // Placeholder for future plan change implementation
-      const { error } = await supabase
-        .from('clients')
-        .update({ plan_type: newPlan })
-        .eq('id', clientId);
+      const { data, error } = await supabase.functions.invoke('update-mercadopago-subscription', {
+        body: { 
+          clientId,
+          newPlanType: newPlan
+        }
+      });
 
       if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Failed to update plan');
 
       toast({
         title: "Plan actualizado",
-        description: `Plan cambiado a ${newPlan === 'basic' ? 'Básico' : 'Avanzado'}`,
+        description: data.message || `Plan cambiado a ${newPlan === 'basic' ? 'Básico' : 'Avanzado'}`,
       });
       
       onUpdate();
     } catch (error: any) {
       toast({
         title: "Error",
-        description: "No se pudo actualizar el plan",
+        description: error.message || "No se pudo actualizar el plan",
         variant: "destructive"
       });
     } finally {
@@ -55,34 +57,50 @@ export function SubscriptionActions({ clientId, subscription, onUpdate }: Subscr
   const handleStatusChange = async (newStatus: string) => {
     setLoading(true);
     try {
-      const updateData: any = { subscription_status: newStatus };
-      
       if (newStatus === 'cancelled') {
-        updateData.cancellation_date = new Date().toISOString();
-        updateData.cancellation_reason = 'admin_action';
-      } else if (newStatus === 'active') {
-        updateData.cancellation_date = null;
-        updateData.cancellation_reason = null;
-        updateData.payment_failures_count = 0;
+        // Call cancel edge function
+        const { data, error } = await supabase.functions.invoke('cancel-mercadopago-subscription', {
+          body: { 
+            clientId,
+            reason: 'admin_action'
+          }
+        });
+
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || 'Failed to cancel subscription');
+
+        toast({
+          title: "Suscripción cancelada",
+          description: data.message || "Suscripción cancelada correctamente",
+        });
+      } else {
+        // Reactivate or other status changes
+        const updateData: any = { subscription_status: newStatus };
+        
+        if (newStatus === 'active') {
+          updateData.cancellation_date = null;
+          updateData.cancellation_reason = null;
+          updateData.payment_failures_count = 0;
+        }
+
+        const { error } = await supabase
+          .from('clients')
+          .update(updateData)
+          .eq('id', clientId);
+
+        if (error) throw error;
+
+        toast({
+          title: "Estado actualizado",
+          description: `Estado cambiado a ${newStatus}`,
+        });
       }
-
-      const { error } = await supabase
-        .from('clients')
-        .update(updateData)
-        .eq('id', clientId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Estado actualizado",
-        description: `Estado cambiado a ${newStatus}`,
-      });
       
       onUpdate();
     } catch (error: any) {
       toast({
         title: "Error",
-        description: "No se pudo actualizar el estado",
+        description: error.message || "No se pudo actualizar el estado",
         variant: "destructive"
       });
     } finally {
