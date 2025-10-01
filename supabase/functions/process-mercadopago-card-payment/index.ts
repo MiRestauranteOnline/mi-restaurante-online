@@ -123,11 +123,15 @@ Deno.serve(async (req) => {
 
     console.log('Sending payment to MercadoPago:', paymentData);
 
+    // Generate unique idempotency key
+    const idempotencyKey = `${clientId}-${paymentRecord.id}-${Date.now()}`;
+
     const mercadoPagoResponse = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,
+        'X-Idempotency-Key': idempotencyKey,
       },
       body: JSON.stringify(paymentData),
     });
