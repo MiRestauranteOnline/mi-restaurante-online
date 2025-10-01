@@ -577,8 +577,8 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                     </div>
                   </div>
                   <CardTitle className="text-lg">Plan Básico</CardTitle>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-primary">S/49</span>
+                   <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold text-primary">S/297</span>
                     <span className="text-sm text-muted-foreground">/mes</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -624,7 +624,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   </div>
                   <CardTitle className="text-lg">Plan Avanzado</CardTitle>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-accent">S/99</span>
+                    <span className="text-2xl font-bold text-accent">S/497</span>
                     <span className="text-sm text-muted-foreground">/mes</span>
                   </div>
                   <div className="flex items-center gap-2">

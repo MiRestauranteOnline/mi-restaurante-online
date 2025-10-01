@@ -140,6 +140,7 @@ export default function AdminDashboardLayout() {
     { href: '/admin/project-config', label: t('projectConfig'), icon: Settings },
     { href: '/admin/subscription-management', label: t('subscriptions'), icon: CreditCard },
     { href: '/admin/coupon-management', label: 'Cupones', icon: Tag },
+    { href: '/admin/plan-management', label: 'Planes', icon: Store },
   ];
 
   if (loading) {

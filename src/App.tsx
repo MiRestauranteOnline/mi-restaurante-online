@@ -30,6 +30,7 @@ import AdminDashboardLayout from "./components/admin/AdminDashboardLayout";
 import ClientImages from "./pages/admin/ClientImages";
 import TicketManagement from "./pages/admin/TicketManagement";
 import MarketingAnalytics from "./pages/admin/MarketingAnalytics";
+import PlanManagement from "./pages/admin/PlanManagement";
 import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
 import ClientDashboard from "./pages/client/ClientDashboard";
 // import ClientSettingsPage from "./pages/client/ClientSettings";
@@ -87,6 +88,7 @@ const App = () => (
               <Route path="project-config" element={<ProjectConfiguration />} />
               <Route path="subscription-management" element={<SubscriptionManagement />} />
               <Route path="coupon-management" element={<CouponManagement />} />
+              <Route path="plan-management" element={<PlanManagement />} />
             </Route>
             <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<ClientDashboard />} />
