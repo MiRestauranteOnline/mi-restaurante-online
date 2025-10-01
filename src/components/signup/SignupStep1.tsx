@@ -43,6 +43,8 @@ interface SignupStep1Props {
 
 export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = false }: SignupStep1Props) => {
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
+  const [plans, setPlans] = useState<any[]>([]);
+  const [isLoadingPlans, setIsLoadingPlans] = useState(true);
   const [isCheckingSubdomain, setIsCheckingSubdomain] = useState(false);
   const [subdomainError, setSubdomainError] = useState<string>("");
   const [subdomainCheckTimeout, setSubdomainCheckTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -53,6 +55,33 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  const fetchPlans = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+
+      if (error) throw error;
+
+      setPlans(data || []);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar los planes",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingPlans(false);
+    }
+  };
 
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
@@ -564,9 +593,77 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
               <p className="text-sm text-muted-foreground">Precio fijo de por vida</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            {isLoadingPlans ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-4">
+                {plans.map((plan) => {
+                  const planKey = plan.plan_key;
+                  const isSelected = selectedPlan === planKey;
+                  const isPrimary = planKey === 'basic';
+                  const colorClass = isPrimary ? 'primary' : 'accent';
+                  
+                  return (
+                    <Card 
+                      key={plan.id}
+                      className={`cursor-pointer transition-all ${
+                        isSelected 
+                          ? `border-${colorClass} shadow-${colorClass} ring-2 ring-${colorClass}/20` 
+                          : `border-muted hover:border-${colorClass}/50`
+                      }`}
+                      onClick={() => setSelectedPlan(planKey as 'basic' | 'advanced')}
+                    >
+                      <CardHeader className="pb-3">
+                        <div className={`flex items-center ${plan.is_popular ? 'justify-between' : 'justify-end'}`}>
+                          {plan.is_popular && (
+                            <Badge className={`bg-${colorClass} text-${colorClass}-foreground`}>Más Popular</Badge>
+                          )}
+                          <div className={`w-4 h-4 rounded-full border-2 border-${colorClass} bg-${colorClass} flex items-center justify-center`}>
+                            {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+                          </div>
+                        </div>
+                        <CardTitle className="text-lg">{plan.name}</CardTitle>
+                        <div className="flex items-baseline gap-1">
+                          <span className={`text-2xl font-bold text-${colorClass}`}>
+                            {plan.currency === 'USD' ? '$' : 'S/'}{plan.monthly_price}
+                          </span>
+                          <span className="text-sm text-muted-foreground">/mes</span>
+                        </div>
+                        {plan.original_price && plan.discount_percentage ? (
+                          <div className="flex items-center gap-2">
+                            <span className="line-through text-muted-foreground text-xs">
+                              {plan.currency === 'USD' ? '$' : 'S/'}{plan.original_price}
+                            </span>
+                            <Badge variant="destructive" className="text-xs">-{plan.discount_percentage}%</Badge>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">Precio de Lanzamiento</Badge>
+                          </div>
+                        )}
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <ul className="space-y-1 text-xs">
+                          {plan.features.map((feature: string, index: number) => (
+                            <li key={index} className="flex items-center gap-2">
+                              <CheckCircle className={`w-3 h-3 text-${colorClass}`} />
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Removed old hardcoded plan cards */}
+            <div style={{display: 'none'}}>
               {/* Plan Básico */}
-              <Card 
+              <Card
                 className={`cursor-pointer transition-all ${
                   selectedPlan === 'basic' 
                     ? 'border-primary shadow-primary ring-2 ring-primary/20' 
@@ -658,8 +755,6 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                 </CardContent>
               </Card>
             </div>
-
-            {/* Payment Method Info */}
             <div className="space-y-3 bg-muted/30 p-4 rounded-lg border">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -699,7 +794,13 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             ) : (
               <>
                 <CreditCard className="w-4 h-4 mr-2" />
-                Continuar al Pago - {selectedPlan === 'basic' ? 'S/297' : 'S/497'}/mes
+                Continuar al Pago
+                {plans.length > 0 && (
+                  <span className="ml-1">
+                    - {plans.find(p => p.plan_key === selectedPlan)?.currency === 'USD' ? '$' : 'S/'}
+                    {plans.find(p => p.plan_key === selectedPlan)?.monthly_price}/mes
+                  </span>
+                )}
               </>
             )}
           </Button>

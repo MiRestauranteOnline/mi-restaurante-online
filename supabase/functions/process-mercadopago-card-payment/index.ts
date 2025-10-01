@@ -55,14 +55,20 @@ Deno.serve(async (req) => {
     const periodEnd = new Date(periodStart);
     periodEnd.setMonth(periodEnd.getMonth() + 1);
 
-    // Define plan prices
-    const planPrices = {
-      basic: country === 'PE' ? 49 : 15, // PEN or USD
-      advanced: country === 'PE' ? 99 : 30,
-    };
+    // Fetch plan price from database
+    const { data: planData, error: planError } = await supabase
+      .from('subscription_plans')
+      .select('monthly_price, currency')
+      .eq('plan_key', planType)
+      .eq('is_active', true)
+      .single();
 
-    const currency = country === 'PE' ? 'PEN' : 'USD';
-    let finalAmount = planPrices[planType];
+    if (planError || !planData) {
+      throw new Error('Plan not found');
+    }
+
+    const currency = planData.currency || 'PEN';
+    let finalAmount = planData.monthly_price;
     let originalAmount = finalAmount;
     let discountAmount = 0;
 

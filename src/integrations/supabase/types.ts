@@ -1329,6 +1329,54 @@ export type Database = {
           },
         ]
       }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          currency: string
+          discount_percentage: number | null
+          display_order: number
+          features: string[]
+          id: string
+          is_active: boolean
+          is_popular: boolean
+          monthly_price: number
+          name: string
+          original_price: number | null
+          plan_key: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          discount_percentage?: number | null
+          display_order?: number
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          monthly_price: number
+          name: string
+          original_price?: number | null
+          plan_key: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          discount_percentage?: number | null
+          display_order?: number
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          monthly_price?: number
+          name?: string
+          original_price?: number | null
+          plan_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null

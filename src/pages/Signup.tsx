@@ -110,10 +110,26 @@ const Signup = () => {
     setSelectedPlan(plan);
     setIsProcessingPayment(true);
     
-    // Calculate payment amount based on plan
-    const amount = plan === 'basic' ? 49 : 99;
-    setOriginalAmount(amount);
-    setPaymentAmount(amount);
+    // Fetch plan pricing from database
+    try {
+      const { data: planData, error } = await supabase
+        .from('subscription_plans')
+        .select('monthly_price')
+        .eq('plan_key', plan)
+        .eq('is_active', true)
+        .single();
+
+      if (error) throw error;
+
+      const amount = planData?.monthly_price || (plan === 'basic' ? 49 : 99);
+      setOriginalAmount(amount);
+      setPaymentAmount(amount);
+    } catch (error) {
+      console.error('Error fetching plan price:', error);
+      const amount = plan === 'basic' ? 49 : 99;
+      setOriginalAmount(amount);
+      setPaymentAmount(amount);
+    }
     
     try {
       console.log('Creating account for:', formData, 'with plan:', plan);

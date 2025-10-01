@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,58 +6,54 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle, Edit, Save, X } from "lucide-react";
+import { CheckCircle, Edit, Save, X, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Plan {
   id: string;
+  plan_key: string;
   name: string;
-  price: number;
-  originalPrice?: number;
-  discount?: number;
+  monthly_price: number;
+  original_price?: number;
+  discount_percentage?: number;
   features: string[];
-  popular?: boolean;
+  is_popular: boolean;
+  currency: string;
 }
 
 const PlanManagement = () => {
   const { toast } = useToast();
   const [editingPlan, setEditingPlan] = useState<string | null>(null);
-
-  // Initial plans based on current homepage pricing
-  const [plans, setPlans] = useState<Plan[]>([
-    {
-      id: "basic",
-      name: "Plan Básico",
-      price: 297,
-      originalPrice: 500,
-      discount: 41,
-      popular: true,
-      features: [
-        "Hasta 3,000 visitas/mes (6 GB hosting)",
-        "Soporte WhatsApp básico",
-        "Soporte por email (respuesta en 48h)",
-        "Actualizaciones auto-gestionables vía dashboard"
-      ]
-    },
-    {
-      id: "advanced",
-      name: "Plan Avanzado",
-      price: 497,
-      originalPrice: 1000,
-      discount: 50,
-      popular: false,
-      features: [
-        "Todo lo del Plan Básico",
-        "Doble capacidad: Hasta 6,000 visitas/mes (12 GB hosting)",
-        "1 hora/mes soporte profesional para cambios de texto e imágenes",
-        "Soporte prioritario (respuesta en 24h)",
-        "Soporte WhatsApp premium con PIN único",
-        "Dashboard de Analítica Básica y reportes mensuales",
-        "Configuración de Google Analytics y Search Console incluida"
-      ]
-    }
-  ]);
-
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [editForm, setEditForm] = useState<Plan | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  const fetchPlans = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+
+      if (error) throw error;
+
+      setPlans(data || []);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar los planes",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleEdit = (plan: Plan) => {
     setEditingPlan(plan.id);
@@ -69,18 +65,41 @@ const PlanManagement = () => {
     setEditForm(null);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editForm) return;
 
-    setPlans(plans.map(p => p.id === editForm.id ? editForm : p));
-    
-    toast({
-      title: "Plan actualizado",
-      description: `Los cambios en ${editForm.name} se han guardado correctamente.`,
-    });
+    try {
+      const { error } = await supabase
+        .from('subscription_plans')
+        .update({
+          name: editForm.name,
+          monthly_price: editForm.monthly_price,
+          original_price: editForm.original_price,
+          discount_percentage: editForm.discount_percentage,
+          features: editForm.features,
+          is_popular: editForm.is_popular,
+        })
+        .eq('id', editForm.id);
 
-    setEditingPlan(null);
-    setEditForm(null);
+      if (error) throw error;
+
+      await fetchPlans();
+      
+      toast({
+        title: "Plan actualizado",
+        description: `Los cambios en ${editForm.name} se han guardado correctamente.`,
+      });
+
+      setEditingPlan(null);
+      setEditForm(null);
+    } catch (error) {
+      console.error('Error updating plan:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar el plan",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleFeatureChange = (index: number, value: string) => {
@@ -110,6 +129,11 @@ const PlanManagement = () => {
         </p>
       </div>
 
+      {isLoading ? (
+        <div className="flex justify-center py-8">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      ) : (
         <div className="grid md:grid-cols-2 gap-6">
           {plans.map((plan) => (
             <Card key={plan.id} className={editingPlan === plan.id ? "border-primary" : ""}>
@@ -126,7 +150,7 @@ const PlanManagement = () => {
                       ) : (
                         <>
                           {plan.name}
-                          {plan.popular && (
+                          {plan.is_popular && (
                             <Badge className="bg-primary text-primary-foreground">
                               Más Popular
                             </Badge>
@@ -162,12 +186,12 @@ const PlanManagement = () => {
                   {editingPlan === plan.id ? (
                     <Input
                       type="number"
-                      value={editForm?.price || 0}
-                      onChange={(e) => setEditForm(editForm ? { ...editForm, price: parseFloat(e.target.value) } : null)}
+                      value={editForm?.monthly_price || 0}
+                      onChange={(e) => setEditForm(editForm ? { ...editForm, monthly_price: parseFloat(e.target.value) } : null)}
                     />
                   ) : (
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold">S/{plan.price}</span>
+                      <span className="text-3xl font-bold">{plan.currency === 'USD' ? '$' : 'S/'}{plan.monthly_price}</span>
                       <span className="text-muted-foreground">/mes</span>
                     </div>
                   )}
@@ -177,27 +201,27 @@ const PlanManagement = () => {
                 {editingPlan === plan.id ? (
                   <>
                     <div className="space-y-2">
-                      <Label>Precio original (S/)</Label>
+                      <Label>Precio original ({plan.currency === 'USD' ? '$' : 'S/'})</Label>
                       <Input
                         type="number"
-                        value={editForm?.originalPrice || 0}
-                        onChange={(e) => setEditForm(editForm ? { ...editForm, originalPrice: parseFloat(e.target.value) } : null)}
+                        value={editForm?.original_price || 0}
+                        onChange={(e) => setEditForm(editForm ? { ...editForm, original_price: parseFloat(e.target.value) } : null)}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label>Descuento (%)</Label>
                       <Input
                         type="number"
-                        value={editForm?.discount || 0}
-                        onChange={(e) => setEditForm(editForm ? { ...editForm, discount: parseFloat(e.target.value) } : null)}
+                        value={editForm?.discount_percentage || 0}
+                        onChange={(e) => setEditForm(editForm ? { ...editForm, discount_percentage: parseFloat(e.target.value) } : null)}
                       />
                     </div>
                   </>
                 ) : (
-                  plan.originalPrice && plan.discount && (
+                  plan.original_price && plan.discount_percentage && (
                     <div className="flex items-center gap-2">
-                      <span className="line-through text-muted-foreground">S/{plan.originalPrice}</span>
-                      <Badge variant="destructive">-{plan.discount}%</Badge>
+                      <span className="line-through text-muted-foreground">{plan.currency === 'USD' ? '$' : 'S/'}{plan.original_price}</span>
+                      <Badge variant="destructive">-{plan.discount_percentage}%</Badge>
                     </div>
                   )
                 )}
@@ -241,8 +265,9 @@ const PlanManagement = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            ))}
         </div>
+      )}
 
         <Card>
           <CardHeader>
