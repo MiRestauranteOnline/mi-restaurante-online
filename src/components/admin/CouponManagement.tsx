@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { ClientDiscountsSection } from "./ClientDiscountsSection";
+import { Separator } from "@/components/ui/separator";
 
 interface Coupon {
   id: string;
@@ -177,7 +179,12 @@ export const CouponManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-bold mb-2">Cupones de Descuento</h2>
+        <p className="text-muted-foreground">Cupones de uso general aplicables durante el registro</p>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>Crear Nuevo Cupón</CardTitle>
@@ -356,6 +363,15 @@ export const CouponManagement = () => {
           </Table>
         </CardContent>
       </Card>
+
+      <Separator className="my-8" />
+
+      <div>
+        <h2 className="text-2xl font-bold mb-2">Descuentos para Clientes</h2>
+        <p className="text-muted-foreground">Descuentos asignables a clientes específicos como recompensa</p>
+      </div>
+
+      <ClientDiscountsSection />
     </div>
   );
 };

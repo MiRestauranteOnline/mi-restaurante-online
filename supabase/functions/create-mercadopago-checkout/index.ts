@@ -154,11 +154,23 @@ serve(async (req) => {
 
     // Increment coupon usage if applied
     if (appliedCoupon) {
-      await supabase.rpc('increment', {
-        table_name: 'coupons',
-        column_name: 'uses_count',
-        row_id: appliedCoupon,
-      }).catch(err => console.error('Failed to increment coupon usage:', err));
+      // Fetch current usage
+      const { data: couponData } = await supabase
+        .from('coupons')
+        .select('uses_count, code')
+        .eq('code', appliedCoupon)
+        .single();
+      
+      if (couponData) {
+        const { error: couponError } = await supabase
+          .from('coupons')
+          .update({ uses_count: (couponData.uses_count || 0) + 1 })
+          .eq('code', appliedCoupon);
+        
+        if (couponError) {
+          console.error('Failed to increment coupon usage:', couponError);
+        }
+      }
     }
 
     return new Response(
@@ -175,7 +187,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error creating checkout:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,

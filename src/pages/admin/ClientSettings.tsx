@@ -45,6 +45,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
+import { ClientDiscountAssignments } from '@/components/admin/ClientDiscountAssignments';
 
 interface Client {
   id: string;
@@ -2663,6 +2664,7 @@ setReviewForm({
           {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
           {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
           {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
+          {userRole === 'admin' && <TabsTrigger value="discounts">Descuentos</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="advanced">Avanzado</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="setup-prompt">{t('nav.setupPrompt')}</TabsTrigger>}
         </TabsList>
@@ -5353,6 +5355,11 @@ setReviewForm({
             </div>
           </CardContent>
         </Card>
+      </TabsContent>
+
+      {/* Discounts Tab */}
+      <TabsContent value="discounts">
+        <ClientDiscountAssignments clientId={effectiveClientId} />
       </TabsContent>
 
       {/* Advanced Tab */}

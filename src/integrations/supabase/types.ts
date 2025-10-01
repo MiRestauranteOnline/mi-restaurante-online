@@ -514,6 +514,81 @@ export type Database = {
         }
         Relationships: []
       }
+      client_discount_assignments: {
+        Row: {
+          applied_at: string | null
+          client_id: string
+          created_at: string
+          discount_id: string
+          id: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          applied_at?: string | null
+          client_id: string
+          created_at?: string
+          discount_id: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          applied_at?: string | null
+          client_id?: string
+          created_at?: string
+          discount_id?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_discount_assignments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_discount_assignments_discount_id_fkey"
+            columns: ["discount_id"]
+            isOneToOne: false
+            referencedRelation: "client_discounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_discounts: {
+        Row: {
+          created_at: string
+          discount_type: string
+          id: string
+          is_active: boolean
+          name: string
+          percentage: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          discount_type: string
+          id?: string
+          is_active?: boolean
+          name: string
+          percentage: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          discount_type?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          percentage?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       client_images: {
         Row: {
           alt_text: string | null
