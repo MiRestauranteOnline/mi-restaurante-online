@@ -119,7 +119,96 @@ Deno.serve(async (req) => {
     console.log('Subscription result:', subscriptionResult);
 
     if (!subscriptionResponse.ok) {
-      throw new Error(subscriptionResult.message || 'Subscription creation failed');
+      console.error('Subscription creation failed:', subscriptionResult);
+
+      // Fallback: process initial one-time payment so signup can continue
+      const idempotencyKey = `sub-init-${clientId}-${Date.now()}`;
+      const paymentData = {
+        token,
+        issuer_id,
+        payment_method_id,
+        transaction_amount: finalAmount,
+        installments: 1,
+        description: `Primera cuota - Suscripción ${planType} - ${client.restaurant_name}`,
+        payer,
+        statement_descriptor: 'MI RESTAURANTE',
+        metadata: {
+          client_id: clientId,
+          plan_type: planType,
+          subscription_type: 'initial_payment_fallback',
+        },
+      };
+
+      console.log('Processing initial payment (fallback)...');
+      const paymentResponse = await fetch('https://api.mercadopago.com/v1/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'X-Idempotency-Key': idempotencyKey,
+        },
+        body: JSON.stringify(paymentData),
+      });
+
+      const paymentResult = await paymentResponse.json();
+      console.log('Fallback payment result:', paymentResult);
+
+      if (!paymentResponse.ok || paymentResult.status !== 'approved') {
+        throw new Error(paymentResult.message || paymentResult.status_detail || 'Payment failed');
+      }
+
+      // Record payment without subscription id
+      await supabase
+        .from('subscription_payments')
+        .insert({
+          client_id: clientId,
+          amount: finalAmount,
+          original_amount: originalAmount,
+          discount_amount: discountAmount,
+          currency: currency,
+          status: 'approved',
+          period_start: periodStart.toISOString(),
+          period_end: periodEnd.toISOString(),
+          coupon_code: couponCode || null,
+          mercadopago_payment_id: paymentResult.id?.toString() || null,
+          mercadopago_subscription_id: null,
+          payment_method: paymentResult.payment_method_id || payment_method_id,
+          paid_at: new Date().toISOString(),
+        });
+
+      // Activate client without auto-recurring (manual billing)
+      await supabase
+        .from('clients')
+        .update({
+          subscription_status: 'active',
+          subscription_start_date: periodStart.toISOString(),
+          subscription_end_date: periodEnd.toISOString(),
+          next_billing_date: periodEnd.toISOString(),
+          payment_status: 'paid',
+          plan_type: planType,
+          mercadopago_subscription_id: null,
+          mercadopago_preapproval_id: null,
+          subscription_auto_recurring: false,
+        })
+        .eq('id', clientId);
+
+      if (couponCode) {
+        await supabase.rpc('increment_coupon_usage', { coupon_code: couponCode });
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          payment: paymentResult,
+          subscription: null,
+          status: 'approved',
+          status_detail: 'Initial payment approved; recurring billing not configured. We will contact you to finalize subscription.',
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        },
+      );
     }
 
     // Wait a moment for MercadoPago to process the initial payment
