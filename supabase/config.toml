@@ -59,3 +59,11 @@ verify_jwt = false
 # New function: process-expired-discounts (public for cron job)
 [functions.process-expired-discounts]
 verify_jwt = false
+
+# New function: cancel-mercadopago-subscription
+[functions.cancel-mercadopago-subscription]
+verify_jwt = false
+
+# New function: update-client-subscription-price
+[functions.update-client-subscription-price]
+verify_jwt = false

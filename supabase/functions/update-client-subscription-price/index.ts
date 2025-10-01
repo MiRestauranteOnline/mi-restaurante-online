@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
     // Get client data
     const { data: client, error: clientError } = await supabase
       .from('clients')
-      .select('*, subscription_plans!inner(monthly_price)')
+      .select('id, plan_type, mercadopago_subscription_id, subscription_auto_recurring')
       .eq('id', clientId)
       .single();
 
@@ -37,21 +37,49 @@ Deno.serve(async (req) => {
       throw new Error('Client not found');
     }
 
-    if (!client.mercadopago_subscription_id) {
-      throw new Error('Client does not have an active MercadoPago subscription');
+    // Fetch plan price by plan_key
+    const { data: plan, error: planError } = await supabase
+      .from('subscription_plans')
+      .select('monthly_price, currency')
+      .eq('plan_key', client.plan_type)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (planError || !plan) {
+      throw new Error('Plan not found');
     }
 
     // Get current plan price
-    const basePlanPrice = client.subscription_plans.monthly_price;
+    const basePlanPrice = plan.monthly_price;
     
     // Calculate new price
     let newPrice = basePlanPrice;
-    if (discountPercentage) {
+    if (typeof discountPercentage === 'number' && discountPercentage > 0) {
       const discountAmount = (basePlanPrice * discountPercentage) / 100;
-      newPrice = basePlanPrice - discountAmount;
+      newPrice = Math.max(0, basePlanPrice - discountAmount);
     }
 
     console.log('Price calculation:', { basePlanPrice, discountPercentage, newPrice });
+
+    // If client doesn't have auto-recurring subscription in MP, skip MP update and return success
+    if (!client.mercadopago_subscription_id || client.subscription_auto_recurring === false) {
+      console.log('No auto-recurring MP subscription. Skipping MercadoPago update.');
+      await supabase
+        .from('clients')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', clientId);
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          old_price: basePlanPrice,
+          new_price: newPrice,
+          discount_percentage: discountPercentage ?? 0,
+          note: 'Manual billing: price adjustment will be reflected on next cycle.'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      );
+    }
 
     // Update MercadoPago subscription
     const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN_SUBSCRIPTION')!;
