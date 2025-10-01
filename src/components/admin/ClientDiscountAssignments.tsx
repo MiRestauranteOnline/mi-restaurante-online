@@ -30,6 +30,7 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
   const [discounts, setDiscounts] = useState<ClientDiscount[]>([]);
   const [assignments, setAssignments] = useState<Map<string, DiscountAssignment>>(new Map());
   const [loading, setLoading] = useState(true);
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -38,6 +39,18 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
 
   const fetchData = async () => {
     try {
+      // Check if client has an active subscription
+      const { data: clientData, error: clientError } = await supabase
+        .from('clients')
+        .select('mercadopago_subscription_id, subscription_status')
+        .eq('id', clientId)
+        .single();
+
+      if (clientError) throw clientError;
+
+      const hasSubscription = !!(clientData?.mercadopago_subscription_id && clientData?.subscription_status === 'active');
+      setHasActiveSubscription(hasSubscription);
+
       // Fetch all active client discounts
       const { data: discountsData, error: discountsError } = await supabase
         .from('client_discounts')
@@ -172,6 +185,15 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
         <CardDescription>Gestiona los descuentos aplicables a este cliente</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {!hasActiveSubscription && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-sm text-yellow-800">
+              <strong>Nota:</strong> Este cliente aún no tiene una suscripción activa en MercadoPago. 
+              Los descuentos solo pueden aplicarse después de que el cliente complete el pago inicial y 
+              la suscripción esté activa.
+            </p>
+          </div>
+        )}
         {discounts.map((discount) => {
           const assignment = assignments.get(discount.id);
           const isActive = assignment?.is_active || false;
@@ -195,6 +217,7 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
                   id={`discount-${discount.id}`}
                   checked={isActive}
                   onCheckedChange={() => toggleAssignment(discount.id, isActive)}
+                  disabled={!hasActiveSubscription}
                 />
               </div>
               {appliedAt && (
