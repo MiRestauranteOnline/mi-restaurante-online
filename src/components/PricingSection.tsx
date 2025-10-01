@@ -25,7 +25,7 @@ export const PricingSection = () => {
         {/* Promo Banner */}
         <div className="bg-accent text-accent-foreground p-4 rounded-xl mb-12 text-center shadow-accent animate-pulse-accent">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Star className="w-5 h-5 fill-current" />
+            <Star className="w-5 h-5 fill-current" aria-hidden="true" />
             <span className="font-bold text-lg">¡PRECIO DE LANZAMIENTO!</span>
           </div>
           <p className="text-sm">
@@ -51,7 +51,7 @@ export const PricingSection = () => {
               
               <div className="py-6">
                 <div className="flex items-baseline justify-center gap-2">
-                  <span className="text-5xl font-bold text-primary">S/297</span>
+                  <span className="text-5xl font-bold text-primary" role="heading" aria-level={3}>S/297</span>
                   <span className="text-lg text-muted-foreground">/mes</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 mt-2">
@@ -73,7 +73,7 @@ export const PricingSection = () => {
                   "Actualizaciones auto-gestionables vía dashboard"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" aria-hidden="true" />
                     <span className="text-sm">{feature}</span>
                   </div>
                 ))}
@@ -84,7 +84,7 @@ export const PricingSection = () => {
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary"
                   onClick={() => window.location.href = '/registro'}
                 >
-                  <CheckCircle className="w-4 h-4 mr-2" />
+                  <CheckCircle className="w-4 h-4 mr-2" aria-hidden="true" />
                   Registrarse con Plan Básico
                 </Button>
               </div>
@@ -101,7 +101,7 @@ export const PricingSection = () => {
               
               <div className="py-6">
                 <div className="flex items-baseline justify-center gap-2">
-                  <span className="text-5xl font-bold text-accent">S/497</span>
+                  <span className="text-5xl font-bold text-accent" role="heading" aria-level={3}>S/497</span>
                   <span className="text-lg text-muted-foreground">/mes</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 mt-2">
@@ -126,7 +126,7 @@ export const PricingSection = () => {
                   "Configuración de Google Analytics y Search Console incluida"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
+                    <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" aria-hidden="true" />
                     <span className="text-sm">{feature}</span>
                   </div>
                 ))}
@@ -137,7 +137,7 @@ export const PricingSection = () => {
                   className="w-full bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent"
                   onClick={() => window.location.href = '/registro'}
                 >
-                  <CheckCircle className="w-4 h-4 mr-2" />
+                  <CheckCircle className="w-4 h-4 mr-2" aria-hidden="true" />
                   Registrarse con Plan Avanzado
                 </Button>
               </div>

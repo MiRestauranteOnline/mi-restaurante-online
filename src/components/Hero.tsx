@@ -33,7 +33,7 @@ export const Hero = () => {
           <div className="space-y-8 animate-fade-up">
             {/* Credibility Badge */}
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full border border-primary/20">
-              <Star className="w-4 h-4 fill-current" />
+              <Star className="w-4 h-4 fill-current" aria-hidden="true" />
               <span className="text-sm font-medium">Fundado por diseñador con 100+ proyectos internacionales</span>
             </div>
 
@@ -53,11 +53,11 @@ export const Hero = () => {
             {/* Pricing Highlight */}
             <div className="bg-card border-2 border-accent p-6 rounded-xl shadow-accent">
               <div className="flex items-center gap-3 mb-3">
-                <CheckCircle className="w-6 h-6 text-accent" />
+                <CheckCircle className="w-6 h-6 text-accent" aria-hidden="true" />
                 <span className="font-semibold text-lg">Precio especial por lanzamiento</span>
               </div>
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-bold text-primary">S/297</span>
+                <span className="text-3xl font-bold text-primary" role="heading" aria-level={3}>S/297</span>
                 <span className="text-lg text-muted-foreground">/mes</span>
                 <span className="text-lg line-through text-destructive ml-2">S/500</span>
               </div>
@@ -73,7 +73,7 @@ export const Hero = () => {
                 className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary transition-smooth flex items-center gap-2"
                 onClick={handleSignupClick}
               >
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 Registrarse Ahora
               </Button>
               <Button 
@@ -82,7 +82,7 @@ export const Hero = () => {
                 className="border-primary text-primary hover:bg-primary/5 flex items-center gap-2"
                 onClick={handleWhatsAppClick}
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-4 h-4" aria-hidden="true" />
                 WhatsApp
               </Button>
             </div>
@@ -90,27 +90,27 @@ export const Hero = () => {
             {/* Trust Badges */}
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary" />
+                <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
                 Website Listo en 72 Horas
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary" />
+                <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
                 Hosting & SSL Incluido
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary" />
+                <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
                 CDN para Mayor Velocidad
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary" />
+                <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
                 Dashboard de Control Total
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary" />
+                <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
                 Sin Costo Inicial
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary" />
+                <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
                 Cancela Cuando Quieras
               </div>
             </div>

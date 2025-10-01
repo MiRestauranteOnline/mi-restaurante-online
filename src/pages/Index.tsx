@@ -15,36 +15,38 @@ const Index = () => {
       {/* Navigation */}
       <Navigation />
       
-      {/* Hero Section */}
-      <section id="hero">
-        <Hero />
-      </section>
-      
-      {/* Problem/Solution Section */}
-      <ProblemSolutionSection />
-      
-      {/* Benefits Grid */}
-      <section id="benefits">
-        <BenefitsSection />
-      </section>
-      
-      {/* How It Works Process */}
-      <section id="how-it-works">
-        <HowItWorksSection />
-      </section>
-      
-      {/* CTA Section with Parallax */}
-      <CTASection />
-      
-      {/* Pricing Plans */}
-      <section id="pricing">
-        <PricingSection />
-      </section>
-      
-      {/* FAQ Section */}
-      <section id="faq">
-        <FAQSection />
-      </section>
+      <main id="main-content">
+        {/* Hero Section */}
+        <section id="hero">
+          <Hero />
+        </section>
+        
+        {/* Problem/Solution Section */}
+        <ProblemSolutionSection />
+        
+        {/* Benefits Grid */}
+        <section id="benefits">
+          <BenefitsSection />
+        </section>
+        
+        {/* How It Works Process */}
+        <section id="how-it-works">
+          <HowItWorksSection />
+        </section>
+        
+        {/* CTA Section with Parallax */}
+        <CTASection />
+        
+        {/* Pricing Plans */}
+        <section id="pricing">
+          <PricingSection />
+        </section>
+        
+        {/* FAQ Section */}
+        <section id="faq">
+          <FAQSection />
+        </section>
+      </main>
       
       {/* Footer */}
       <Footer />
