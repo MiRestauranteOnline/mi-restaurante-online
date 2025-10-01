@@ -85,53 +85,16 @@ Deno.serve(async (req) => {
     const periodEnd = new Date(periodStart);
     periodEnd.setMonth(periodEnd.getMonth() + 1);
 
-    // Step 1: Create initial payment with tokenized card
     const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN_SUBSCRIPTION')!;
-    
-    const paymentData = {
-      token,
-      issuer_id,
-      payment_method_id,
-      transaction_amount: finalAmount,
-      installments: 1,
-      description: `Primera cuota - Suscripción ${planType} - ${client.restaurant_name}`,
-      payer,
-      statement_descriptor: 'MI RESTAURANTE',
-      metadata: {
-        client_id: clientId,
-        plan_type: planType,
-        subscription_type: 'initial_payment',
-      },
-    };
 
-    console.log('Processing initial payment...');
-
-    const idempotencyKey = `sub-init-${clientId}-${Date.now()}`;
-
-    const paymentResponse = await fetch('https://api.mercadopago.com/v1/payments', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-        'X-Idempotency-Key': idempotencyKey,
-      },
-      body: JSON.stringify(paymentData),
-    });
-
-    const paymentResult = await paymentResponse.json();
-    console.log('Initial payment result:', paymentResult);
-
-    if (!paymentResponse.ok || paymentResult.status !== 'approved') {
-      throw new Error(paymentResult.message || paymentResult.status_detail || 'Payment failed');
-    }
-
-    // Step 2: Create subscription (preapproval) for recurring billing
-    const autoRecurringData = {
+    // Create subscription (preapproval) - MercadoPago will automatically charge the first payment
+    const subscriptionData = {
       auto_recurring: {
         frequency: 1,
         frequency_type: 'months',
         transaction_amount: finalAmount,
         currency_id: currency,
+        start_date: periodStart.toISOString(),
       },
       back_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/subscription-callback`,
       payer_email: payer.email,
@@ -141,23 +104,48 @@ Deno.serve(async (req) => {
       card_token_id: token,
     };
 
-    console.log('Creating preapproval subscription...');
+    console.log('Creating subscription with initial payment...');
 
-    const preapprovalResponse = await fetch('https://api.mercadopago.com/preapproval', {
+    const subscriptionResponse = await fetch('https://api.mercadopago.com/preapproval', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,
       },
-      body: JSON.stringify(autoRecurringData),
+      body: JSON.stringify(subscriptionData),
     });
 
-    const preapprovalResult = await preapprovalResponse.json();
-    console.log('Preapproval result:', preapprovalResult);
+    const subscriptionResult = await subscriptionResponse.json();
+    console.log('Subscription result:', subscriptionResult);
 
-    if (!preapprovalResponse.ok) {
-      console.error('Preapproval creation failed, but initial payment succeeded');
-      // Continue anyway - we'll handle manually if needed
+    if (!subscriptionResponse.ok) {
+      throw new Error(subscriptionResult.message || 'Subscription creation failed');
+    }
+
+    // Wait a moment for MercadoPago to process the initial payment
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Fetch the first payment details from the subscription
+    let firstPaymentId = null;
+    try {
+      const paymentsResponse = await fetch(
+        `https://api.mercadopago.com/preapproval/${subscriptionResult.id}/authorized_payments`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
+        }
+      );
+      
+      if (paymentsResponse.ok) {
+        const paymentsData = await paymentsResponse.json();
+        if (paymentsData.results && paymentsData.results.length > 0) {
+          firstPaymentId = paymentsData.results[0].id;
+          console.log('First payment ID:', firstPaymentId);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching payment details:', error);
     }
 
     // Create payment record
@@ -173,9 +161,9 @@ Deno.serve(async (req) => {
         period_start: periodStart.toISOString(),
         period_end: periodEnd.toISOString(),
         coupon_code: couponCode || null,
-        mercadopago_payment_id: paymentResult.id.toString(),
-        mercadopago_subscription_id: preapprovalResult.id || null,
-        payment_method: paymentResult.payment_method_id,
+        mercadopago_payment_id: firstPaymentId || subscriptionResult.id.toString(),
+        mercadopago_subscription_id: subscriptionResult.id || null,
+        payment_method: payment_method_id,
         paid_at: new Date().toISOString(),
       })
       .select()
@@ -195,8 +183,8 @@ Deno.serve(async (req) => {
         next_billing_date: periodEnd.toISOString(),
         payment_status: 'paid',
         plan_type: planType,
-        mercadopago_subscription_id: preapprovalResult.id || null,
-        mercadopago_preapproval_id: preapprovalResult.id || null,
+        mercadopago_subscription_id: subscriptionResult.id || null,
+        mercadopago_preapproval_id: subscriptionResult.id || null,
         subscription_auto_recurring: true,
       })
       .eq('id', clientId);
@@ -215,10 +203,10 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        payment: paymentResult,
-        subscription: preapprovalResult,
+        payment: { id: firstPaymentId, status: 'approved' },
+        subscription: subscriptionResult,
         status: 'approved',
-        status_detail: 'Payment successful and subscription created',
+        status_detail: 'Subscription created successfully with initial payment',
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
