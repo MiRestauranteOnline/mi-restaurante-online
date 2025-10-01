@@ -138,6 +138,7 @@ Deno.serve(async (req) => {
       reason: `Suscripción mensual ${planType} - ${client.restaurant_name}`,
       external_reference: clientId,
       status: 'authorized',
+      card_token_id: token,
     };
 
     console.log('Creating preapproval subscription...');
