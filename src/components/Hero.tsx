@@ -146,7 +146,7 @@ export const Hero = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <div className="hidden md:flex absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div className="flex flex-col items-center text-muted-foreground">
           <span className="text-sm mb-2">Scroll</span>
           <div className="w-6 h-10 border-2 border-current rounded-full flex justify-center">
