@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,14 +15,40 @@ interface SubscriptionActionsProps {
     subscription_status: string;
     payment_status: string;
     next_billing_date: string;
+    subscription_end_date?: string;
     payment_failures_count: number;
+    subscription_auto_recurring?: boolean;
   };
   onUpdate: () => void;
 }
 
 export function SubscriptionActions({ clientId, subscription, onUpdate }: SubscriptionActionsProps) {
   const [loading, setLoading] = useState(false);
+  const [planPrices, setPlanPrices] = useState<Record<string, number>>({});
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchPlanPrices();
+  }, []);
+
+  const fetchPlanPrices = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('plan_key, monthly_price')
+        .eq('is_active', true);
+
+      if (error) throw error;
+      
+      const prices: Record<string, number> = {};
+      data?.forEach(plan => {
+        prices[plan.plan_key] = plan.monthly_price;
+      });
+      setPlanPrices(prices);
+    } catch (error: any) {
+      console.error('Error fetching plan prices:', error);
+    }
+  };
 
   const handlePlanChange = async (newPlan: 'basic' | 'advanced') => {
     setLoading(true);
@@ -152,8 +178,8 @@ export function SubscriptionActions({ clientId, subscription, onUpdate }: Subscr
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="basic">Plan Básico - S/ 297</SelectItem>
-                <SelectItem value="advanced">Plan Avanzado - S/ 497</SelectItem>
+                <SelectItem value="basic">Plan Básico - S/ {planPrices['basic'] || 297}</SelectItem>
+                <SelectItem value="advanced">Plan Avanzado - S/ {planPrices['advanced'] || 497}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -172,11 +198,26 @@ export function SubscriptionActions({ clientId, subscription, onUpdate }: Subscr
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <CalendarDays className="h-4 w-4" />
-          <span>
-            Próxima facturación: {new Date(subscription.next_billing_date).toLocaleDateString('es-PE')}
-          </span>
+        <div className="space-y-1 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <CalendarDays className="h-4 w-4" />
+            <span>
+              Próxima facturación: {new Date(subscription.next_billing_date).toLocaleDateString('es-PE')}
+            </span>
+          </div>
+          {subscription.subscription_end_date && (
+            <div className="flex items-center gap-2">
+              <CalendarDays className="h-4 w-4" />
+              <span>
+                Fin del período actual: {new Date(subscription.subscription_end_date).toLocaleDateString('es-PE')}
+              </span>
+            </div>
+          )}
+          {!subscription.subscription_auto_recurring && (
+            <div className="p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800 text-xs">
+              ⚠️ Facturación Manual - Cambios de plan efectivos próximo ciclo
+            </div>
+          )}
         </div>
 
         {subscription.payment_failures_count > 0 && (

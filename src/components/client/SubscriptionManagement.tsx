@@ -19,6 +19,12 @@ interface SubscriptionData {
   payment_failures_count: number;
   cancellation_date?: string;
   cancellation_reason?: string;
+  subscription_auto_recurring?: boolean;
+}
+
+interface PlanPrice {
+  monthly_price: number;
+  currency: string;
 }
 
 interface SubscriptionManagementProps {
@@ -29,12 +35,33 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
+  const [planPrices, setPlanPrices] = useState<Record<string, number>>({});
   const { toast } = useToast();
   const { t } = useLanguage();
 
   useEffect(() => {
+    fetchPlanPrices();
     fetchSubscriptionData();
   }, [clientId]);
+
+  const fetchPlanPrices = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('plan_key, monthly_price')
+        .eq('is_active', true);
+
+      if (error) throw error;
+      
+      const prices: Record<string, number> = {};
+      data?.forEach(plan => {
+        prices[plan.plan_key] = plan.monthly_price;
+      });
+      setPlanPrices(prices);
+    } catch (error: any) {
+      console.error('Error fetching plan prices:', error);
+    }
+  };
 
   const fetchSubscriptionData = async () => {
     try {
@@ -49,7 +76,8 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
           next_billing_date,
           payment_failures_count,
           cancellation_date,
-          cancellation_reason
+          cancellation_reason,
+          subscription_auto_recurring
         `)
         .eq('id', clientId)
         .single();
@@ -66,6 +94,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
         subscription_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         payment_failures_count: 0,
+        subscription_auto_recurring: true,
       });
     } finally {
       setLoading(false);
@@ -207,7 +236,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   };
 
   const getPlanPrice = (plan: string) => {
-    return plan === 'basic' ? 297 : 497;
+    return planPrices[plan] || (plan === 'basic' ? 297 : 497);
   };
 
   const isValidDate = (dateString?: string) => {
@@ -258,11 +287,26 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" />
-            <span>
-              Próxima Facturación: {isValidDate(subscription.next_billing_date) ? formatDateEs(subscription.next_billing_date) : 'Por confirmar'}
-            </span>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              <span>
+                Próxima Facturación: {isValidDate(subscription.next_billing_date) ? formatDateEs(subscription.next_billing_date) : 'Por confirmar'}
+              </span>
+            </div>
+            {isValidDate(subscription.subscription_end_date) && (
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span>
+                  Fin del Período Actual: {formatDateEs(subscription.subscription_end_date)}
+                </span>
+              </div>
+            )}
+            {!subscription.subscription_auto_recurring && (
+              <div className="p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">
+                ⚠️ Facturación Manual - Los cambios de plan se reflejarán en el próximo ciclo
+              </div>
+            )}
           </div>
 
           {subscription.subscription_status === 'payment_failed' && subscription.payment_failures_count > 0 && (
@@ -304,7 +348,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                 <Badge>Plan Actual</Badge>
               )}
             </CardTitle>
-            <CardDescription>S/ 297/mes</CardDescription>
+            <CardDescription>S/ {getPlanPrice('basic')}/mes</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <ul className="space-y-1 text-sm">
@@ -319,6 +363,9 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             {subscription.plan_type === 'advanced' && canChangePlan(subscription.subscription_status) && (
               <Button className="w-full mt-4" variant="outline" onClick={handleDowngrade} disabled={actionLoading}>
                 Cambiar a Básico
+                {!subscription.subscription_auto_recurring && (
+                  <span className="text-xs block mt-1">(Cambio efectivo próximo ciclo)</span>
+                )}
               </Button>
             )}
           </CardContent>
@@ -333,7 +380,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                 <Badge>Plan Actual</Badge>
               )}
             </CardTitle>
-            <CardDescription>S/ 497/mes</CardDescription>
+            <CardDescription>S/ {getPlanPrice('advanced')}/mes</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <ul className="space-y-1 text-sm">
@@ -347,6 +394,9 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               <Button className="w-full mt-4" onClick={handleUpgrade} disabled={actionLoading}>
                 <ArrowUp className="h-4 w-4 mr-2" />
                 Actualizar a Avanzado
+                {!subscription.subscription_auto_recurring && (
+                  <span className="text-xs block mt-1">(Cambio efectivo próximo ciclo)</span>
+                )}
               </Button>
             )}
           </CardContent>
