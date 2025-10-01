@@ -18,7 +18,7 @@
     --secondary-foreground: 0 0% 100%;
 
     /* Warm Accent for Promotions */
-    --accent: 45 90% 55%; /* Brighter Gold/Amber for better visibility */
+    --accent: 45 90% 48%; /* Darker Gold/Amber for better readability */
     --accent-foreground: 0 0% 100%;
 
     /* Muted/Supporting Colors */
