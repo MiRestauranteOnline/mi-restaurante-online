@@ -42,20 +42,12 @@ verify_jwt = false
 [functions.create-mercadopago-plan]
 verify_jwt = false
 
-[functions.create-mercadopago-checkout]
-verify_jwt = false
-
-[functions.mercadopago-webhook]
-verify_jwt = false
-
-[functions.get-mercadopago-public-key]
-verify_jwt = false
-
-[functions.process-mercadopago-card-payment]
-verify_jwt = false
-
 [functions.regenerate-article-images]
 verify_jwt = false
 
 [functions.fix-article-content]
+verify_jwt = false
+
+# New function: check-domain-availability (public)
+[functions.check-domain-availability]
 verify_jwt = false

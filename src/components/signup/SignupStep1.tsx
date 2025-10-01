@@ -121,29 +121,27 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
 
     try {
       const cleaned = cleanDomain(domain);
-      const { data, error } = await supabase
-        .from('clients')
-        .select('id, domain')
-        .eq('domain', cleaned)
-        .maybeSingle();
+      const { data, error } = await supabase.functions.invoke('check-domain-availability', {
+        body: { domain: cleaned },
+      });
 
-      console.log('📊 Domain check result:', { searchedFor: cleaned, data, error: error?.message || 'no error', errorCode: error?.code });
+      console.log('📊 Domain check via edge result:', { searchedFor: cleaned, data, error: error?.message || 'no error' });
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('❌ Error checking domain:', error);
+      if (error) {
+        console.error('❌ Error checking domain (edge):', error);
         setDomainError("Error al verificar dominio");
         return;
       }
 
-      if (data) {
-        console.log('🚫 Domain is taken:', data.domain);
+      if (data?.exists) {
+        console.log('🚫 Domain is taken:', cleaned);
         setDomainError("Este dominio ya está en uso. Por favor elige otro.");
       } else {
         console.log('✅ Domain is available');
         setDomainError("");
       }
     } catch (error) {
-      console.error('💥 Exception checking domain:', error);
+      console.error('💥 Exception checking domain (edge):', error);
       setDomainError("Error al verificar dominio");
     } finally {
       setIsCheckingDomain(false);
