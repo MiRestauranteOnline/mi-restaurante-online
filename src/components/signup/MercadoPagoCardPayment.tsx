@@ -107,7 +107,7 @@ export const MercadoPagoCardPayment = ({
           },
           installments: {
             id: "form-checkout__installments",
-            placeholder: "Cuotas",
+            placeholder: "Pago único",
           },
           identificationType: {
             id: "form-checkout__identificationType",
@@ -121,6 +121,10 @@ export const MercadoPagoCardPayment = ({
             id: "form-checkout__cardholderEmail",
             placeholder: "E-mail",
           },
+        },
+        installments: {
+          minInstallments: 1,
+          maxInstallments: 1,
         },
         callbacks: {
           onFormMounted: (error: any) => {
