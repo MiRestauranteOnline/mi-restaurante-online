@@ -7,6 +7,7 @@ import { SignupStep3Combined, type CombinedData } from "@/components/signup/Sign
 import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/signup/SignupStep4OpeningHours";
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
+import { MercadoPagoCardPayment } from "@/components/signup/MercadoPagoCardPayment";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
@@ -96,6 +97,8 @@ const Signup = () => {
   });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isProcessingFinalStep, setIsProcessingFinalStep] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState(0);
+  const [createdClientId, setCreatedClientId] = useState<string>("");
   const { toast } = useToast();
 
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
@@ -103,6 +106,10 @@ const Signup = () => {
     setSignupData(updatedData);
     setSelectedPlan(plan);
     setIsProcessingPayment(true);
+    
+    // Calculate payment amount based on plan
+    const amount = plan === 'basic' ? 49 : 99;
+    setPaymentAmount(amount);
     
     try {
       console.log('Creating account for:', formData, 'with plan:', plan);
@@ -131,7 +138,6 @@ const Signup = () => {
 
       if (error) {
         console.error('Edge function error:', error, 'response data:', data);
-        // Try to surface backend error (we return 200 on handled errors)
         const backendMsg = data && (data as any).error ? (data as any).error : error.message;
         throw new Error(backendMsg || 'Error en el servidor');
       }
@@ -143,20 +149,37 @@ const Signup = () => {
       
       if (data?.success && data?.client?.id) {
         console.log('Account created successfully:', data);
-        // Save client id
+        setCreatedClientId(data.client.id);
         setSignupData({ ...updatedData, paymentId: data.client.id });
         setIsProcessingPayment(false);
-        // Move to next step (requirements)
-        setCurrentStep(3);
+        // Move to payment step
+        setCurrentStep(2);
       } else {
         throw new Error('Respuesta inesperada del servidor');
       }
     } catch (error: any) {
-      console.error('Account creation/payment error:', error);
+      console.error('Account creation error:', error);
       setIsProcessingPayment(false);
       const errorMessage = (error && error.message) || 'Error al procesar el registro. Por favor contacta soporte.';
       toast({ title: 'No pudimos crear tu cuenta', description: errorMessage, variant: 'destructive' });
     }
+  };
+
+  const handlePaymentSuccess = () => {
+    // Move to requirements step after successful payment
+    setCurrentStep(3);
+  };
+
+  const handlePaymentError = (error: string) => {
+    toast({
+      title: "Error en el pago",
+      description: error,
+      variant: "destructive",
+    });
+  };
+
+  const handlePaymentCancel = () => {
+    setCurrentStep(1);
   };
 
   const handleStep2Complete = async (requirements: WebsiteRequirements) => {
@@ -357,7 +380,17 @@ const Signup = () => {
                 </>
               )}
               
-              {currentStep === 2 && null}
+              {currentStep === 2 && (
+                <MercadoPagoCardPayment
+                  amount={paymentAmount}
+                  planType={selectedPlan}
+                  clientId={createdClientId}
+                  clientEmail={signupData.email}
+                  onPaymentSuccess={handlePaymentSuccess}
+                  onPaymentError={handlePaymentError}
+                  onCancel={handlePaymentCancel}
+                />
+              )}
               
               {currentStep === 3 && (
                 <SignupStep2 
