@@ -3,6 +3,12 @@ project_id = "ptzcetvcccnojdbzzlyt"
 [functions.signup-client]
 verify_jwt = false
 
+[functions.create-mercadopago-checkout]
+verify_jwt = false
+
+[functions.mercadopago-webhook]
+verify_jwt = false
+
 [functions.create-rebill-payment]
 verify_jwt = false
 

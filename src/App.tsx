@@ -24,6 +24,7 @@ import ClientManagement from "./pages/admin/ClientManagement";
 import ClientSettings from "./pages/admin/ClientSettings";
 import ProjectConfiguration from "./pages/admin/ProjectConfiguration";
 import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
+import CouponManagement from "./pages/admin/CouponManagement";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDashboardLayout from "./components/admin/AdminDashboardLayout";
 import ClientImages from "./pages/admin/ClientImages";
@@ -85,6 +86,7 @@ const App = () => (
               <Route path="client-settings/:clientId" element={<ClientSettings />} />
               <Route path="project-config" element={<ProjectConfiguration />} />
               <Route path="subscription-management" element={<SubscriptionManagement />} />
+              <Route path="coupon-management" element={<CouponManagement />} />
             </Route>
             <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<ClientDashboard />} />

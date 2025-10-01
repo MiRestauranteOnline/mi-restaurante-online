@@ -791,6 +791,51 @@ export type Database = {
           },
         ]
       }
+      coupons: {
+        Row: {
+          applicable_plans: string[]
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          updated_at: string
+          uses_count: number
+          valid_from: string
+          valid_until: string | null
+        }
+        Insert: {
+          applicable_plans?: string[]
+          code: string
+          created_at?: string
+          discount_type: string
+          discount_value: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Update: {
+          applicable_plans?: string[]
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       daily_analytics: {
         Row: {
           avg_time_on_page: number
@@ -1147,6 +1192,68 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_payments: {
+        Row: {
+          amount: number
+          client_id: string
+          coupon_code: string | null
+          created_at: string
+          currency: string
+          discount_amount: number | null
+          id: string
+          mercadopago_payment_id: string | null
+          mercadopago_preference_id: string | null
+          original_amount: number | null
+          paid_at: string | null
+          payment_method: string | null
+          period_end: string
+          period_start: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          client_id: string
+          coupon_code?: string | null
+          created_at?: string
+          currency?: string
+          discount_amount?: number | null
+          id?: string
+          mercadopago_payment_id?: string | null
+          mercadopago_preference_id?: string | null
+          original_amount?: number | null
+          paid_at?: string | null
+          payment_method?: string | null
+          period_end: string
+          period_start: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          client_id?: string
+          coupon_code?: string | null
+          created_at?: string
+          currency?: string
+          discount_amount?: number | null
+          id?: string
+          mercadopago_payment_id?: string | null
+          mercadopago_preference_id?: string | null
+          original_amount?: number | null
+          paid_at?: string | null
+          payment_method?: string | null
+          period_end?: string
+          period_start?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_payments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
@@ -1435,6 +1542,10 @@ export type Database = {
       link_user_to_client: {
         Args: { client_uuid: string; user_email: string; user_role?: string }
         Returns: string
+      }
+      validate_coupon: {
+        Args: { amount: number; coupon_code: string; plan_type: string }
+        Returns: Json
       }
     }
     Enums: {

@@ -19,7 +19,8 @@ import {
   Star,
   Images,
   TrendingUp,
-  MessageSquare
+  MessageSquare,
+  Tag
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -138,6 +139,7 @@ export default function AdminDashboardLayout() {
     { href: '/admin/marketing-analytics', label: 'Marketing Analytics', icon: TrendingUp },
     { href: '/admin/project-config', label: t('projectConfig'), icon: Settings },
     { href: '/admin/subscription-management', label: t('subscriptions'), icon: CreditCard },
+    { href: '/admin/coupon-management', label: 'Cupones', icon: Tag },
   ];
 
   if (loading) {
