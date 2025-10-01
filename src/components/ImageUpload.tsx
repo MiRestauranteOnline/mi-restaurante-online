@@ -6,7 +6,6 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, X, Link, Image as ImageIcon } from "lucide-react";
-import { useDashboardLanguage } from "@/contexts/DashboardLanguageContext";
 
 interface ImageUploadProps {
   label: string;
@@ -19,13 +18,30 @@ interface ImageUploadProps {
   onProcessingChange?: (processing: boolean) => void; // Notify parent about processing state
 }
 
+const defaultTranslations = {
+  uploading: "Subiendo...",
+  optimizingMessage: "Optimizando imagen...",
+  optimizing: "Optimizando...",
+  uploadImage: "Subir Imagen",
+  url: "URL",
+  enterImageUrl: "Ingrese URL de imagen"
+};
+
 export function ImageUpload({ label, value, onChange, clientId, context = 'restaurant content', description, storeInDatabase = false, onProcessingChange }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const { t } = useDashboardLanguage();
+
+  // Helper function to get translation with fallback
+  const t = (key: string): string => {
+    const keys = key.split('.');
+    if (keys[0] === 'imageUpload' && keys[1] in defaultTranslations) {
+      return defaultTranslations[keys[1] as keyof typeof defaultTranslations];
+    }
+    return key;
+  };
 
   const handleFileUpload = async (file: File) => {
     setUploading(true);
