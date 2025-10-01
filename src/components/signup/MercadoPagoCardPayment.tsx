@@ -280,7 +280,7 @@ export const MercadoPagoCardPayment = ({
           ></select>
           <select 
             id="form-checkout__installments"
-            className="w-full px-3 py-2 border rounded-md"
+            className="hidden"
           ></select>
 
           <div className="flex gap-2 pt-4">
