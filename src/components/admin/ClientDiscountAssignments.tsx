@@ -48,7 +48,8 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
 
       if (clientError) throw clientError;
 
-      const hasSubscription = !!(clientData?.mercadopago_subscription_id && clientData?.subscription_status === 'active');
+      // Check if subscription is active (regardless of whether it's auto-recurring or manual)
+      const hasSubscription = clientData?.subscription_status === 'active';
       setHasActiveSubscription(hasSubscription);
 
       // Fetch all active client discounts
