@@ -96,30 +96,19 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
       
       if (!discount) return;
 
-      if (assignment) {
-        // Update existing assignment
-        const { error } = await supabase
-          .from('client_discount_assignments')
-          .update({ 
-            is_active: !currentValue,
-            applied_at: !currentValue ? new Date().toISOString() : assignment.applied_at
-          })
-          .eq('id', assignment.id);
+      // Use upsert to avoid duplicate key errors
+      const { error } = await supabase
+        .from('client_discount_assignments')
+        .upsert({
+          client_id: clientId,
+          discount_id: discountId,
+          is_active: !currentValue,
+          applied_at: !currentValue ? new Date().toISOString() : (assignment?.applied_at || new Date().toISOString())
+        }, {
+          onConflict: 'client_id,discount_id'
+        });
 
-        if (error) throw error;
-      } else {
-        // Create new assignment
-        const { error } = await supabase
-          .from('client_discount_assignments')
-          .insert({
-            client_id: clientId,
-            discount_id: discountId,
-            is_active: true,
-            applied_at: new Date().toISOString()
-          });
-
-        if (error) throw error;
-      }
+      if (error) throw error;
 
       // Update MercadoPago subscription price
       const discountPercentage = !currentValue ? discount.percentage : 0;
