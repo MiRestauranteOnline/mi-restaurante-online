@@ -16,20 +16,15 @@ interface Client {
   restaurant_name: string;
   subdomain: string;
   email?: string;
-}
-
-interface Subscription {
-  id: string;
-  client_id: string;
-  plan: 'basic' | 'advanced';
-  status: 'active' | 'cancelled' | 'expired';
-  next_billing: string;
-  amount: number;
-  currency: string;
+  plan_type: string;
+  subscription_status: string;
+  next_billing_date: string | null;
+  subscription_end_date: string | null;
 }
 
 export default function SubscriptionManagement() {
   const [clients, setClients] = useState<Client[]>([]);
+  const [planPrices, setPlanPrices] = useState<Record<string, number>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -38,13 +33,33 @@ export default function SubscriptionManagement() {
 
   useEffect(() => {
     fetchClients();
+    fetchPlanPrices();
   }, []);
+
+  const fetchPlanPrices = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('plan_key, monthly_price')
+        .eq('is_active', true);
+
+      if (error) throw error;
+      
+      const prices: Record<string, number> = {};
+      data?.forEach(plan => {
+        prices[plan.plan_key] = plan.monthly_price;
+      });
+      setPlanPrices(prices);
+    } catch (error: any) {
+      console.error('Error fetching plan prices:', error);
+    }
+  };
 
   const fetchClients = async () => {
     try {
       const { data, error } = await supabase
         .from('clients')
-        .select('id, restaurant_name, subdomain, email')
+        .select('id, restaurant_name, subdomain, email, plan_type, subscription_status, next_billing_date, subscription_end_date')
         .order('restaurant_name');
 
       if (error) throw error;
@@ -81,19 +96,13 @@ export default function SubscriptionManagement() {
     client.subdomain.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Mock subscription data - in real implementation, fetch from Rebill API
-  const mockSubscriptions: Record<string, Subscription> = {};
-  clients.forEach(client => {
-    mockSubscriptions[client.id] = {
-      id: `sub_${client.id}`,
-      client_id: client.id,
-      plan: Math.random() > 0.5 ? 'basic' : 'advanced',
-      status: 'active',
-      next_billing: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      amount: Math.random() > 0.5 ? 297 : 497,
-      currency: 'PEN'
-    };
-  });
+  const getPlanAmount = (planType: string) => {
+    return planPrices[planType] || 0;
+  };
+
+  const totalRevenue = clients.reduce((sum, client) => sum + getPlanAmount(client.plan_type), 0);
+  const basicCount = clients.filter(c => c.plan_type === 'basic').length;
+  const advancedCount = clients.filter(c => c.plan_type === 'advanced').length;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -144,7 +153,7 @@ export default function SubscriptionManagement() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  S/ {Object.values(mockSubscriptions).reduce((sum, sub) => sum + sub.amount, 0).toLocaleString()}
+                  S/ {totalRevenue.toLocaleString()}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   per month
@@ -159,7 +168,7 @@ export default function SubscriptionManagement() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {Object.values(mockSubscriptions).filter(s => s.plan === 'basic').length} / {Object.values(mockSubscriptions).filter(s => s.plan === 'advanced').length}
+                  {basicCount} / {advancedCount}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   basic / advanced
@@ -177,7 +186,7 @@ export default function SubscriptionManagement() {
             <CardContent>
               <div className="space-y-4">
                 {clients.map((client) => {
-                  const subscription = mockSubscriptions[client.id];
+                  const planAmount = getPlanAmount(client.plan_type);
                   return (
                     <div key={client.id} className="flex items-center justify-between p-3 border rounded">
                       <div className="flex items-center gap-3">
@@ -187,14 +196,16 @@ export default function SubscriptionManagement() {
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Badge className={getStatusColor(subscription.status)}>
-                          {subscription.status}
+                        <Badge className={getStatusColor(client.subscription_status)}>
+                          {client.subscription_status}
                         </Badge>
                         <Badge variant="outline">
-                          {subscription.plan} - S/ {subscription.amount}
+                          {client.plan_type} - S/ {planAmount}
                         </Badge>
                         <p className="text-sm text-muted-foreground">
-                          Next: {new Date(subscription.next_billing).toLocaleDateString()}
+                          {client.next_billing_date 
+                            ? `Next: ${new Date(client.next_billing_date).toLocaleDateString()}`
+                            : 'No billing date'}
                         </p>
                       </div>
                     </div>
@@ -240,7 +251,7 @@ export default function SubscriptionManagement() {
           </Card>
 
           {/* Individual Client Management */}
-          {selectedClient && mockSubscriptions[selectedClient] && (
+          {selectedClient && clients.find(c => c.id === selectedClient) && (
             <Card>
               <CardHeader>
                 <CardTitle>{t('admin.subscriptionManagement')}</CardTitle>
@@ -249,46 +260,56 @@ export default function SubscriptionManagement() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Current Plan</Label>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge>
-                        {mockSubscriptions[selectedClient].plan} - S/ {mockSubscriptions[selectedClient].amount}
-                      </Badge>
-                    </div>
-                  </div>
-                  <div>
-                    <Label>Status</Label>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge className={getStatusColor(mockSubscriptions[selectedClient].status)}>
-                        {mockSubscriptions[selectedClient].status}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
+                {(() => {
+                  const client = clients.find(c => c.id === selectedClient);
+                  if (!client) return null;
+                  const planAmount = getPlanAmount(client.plan_type);
+                  
+                  return (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Current Plan</Label>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge>
+                              {client.plan_type} - S/ {planAmount}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div>
+                          <Label>Status</Label>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge className={getStatusColor(client.subscription_status)}>
+                              {client.subscription_status}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => handleUpgradeDowngrade(selectedClient, 'advanced')}
-                    disabled={mockSubscriptions[selectedClient].plan === 'advanced'}
-                  >
-                    Upgrade to Advanced
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => handleUpgradeDowngrade(selectedClient, 'basic')}
-                    disabled={mockSubscriptions[selectedClient].plan === 'basic'}
-                  >
-                    Downgrade to Basic
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => handleCancelSubscription(selectedClient)}
-                  >
-                    Cancel Subscription
-                  </Button>
-                </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => handleUpgradeDowngrade(selectedClient, 'advanced')}
+                          disabled={client.plan_type === 'advanced'}
+                        >
+                          Upgrade to Advanced
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => handleUpgradeDowngrade(selectedClient, 'basic')}
+                          disabled={client.plan_type === 'basic'}
+                        >
+                          Downgrade to Basic
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => handleCancelSubscription(selectedClient)}
+                        >
+                          Cancel Subscription
+                        </Button>
+                      </div>
+                    </>
+                  );
+                })()}
               </CardContent>
             </Card>
           )}
