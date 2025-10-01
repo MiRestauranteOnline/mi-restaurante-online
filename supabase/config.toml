@@ -51,3 +51,11 @@ verify_jwt = false
 # New function: check-domain-availability (public)
 [functions.check-domain-availability]
 verify_jwt = false
+
+# New function: create-mercadopago-subscription (public for signup)
+[functions.create-mercadopago-subscription]
+verify_jwt = false
+
+# New function: process-expired-discounts (public for cron job)
+[functions.process-expired-discounts]
+verify_jwt = false
