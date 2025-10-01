@@ -8,6 +8,7 @@ import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/sig
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { MercadoPagoCardPayment } from "@/components/signup/MercadoPagoCardPayment";
+import { CouponInput } from "@/components/signup/CouponInput";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
@@ -98,7 +99,9 @@ const Signup = () => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isProcessingFinalStep, setIsProcessingFinalStep] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
+  const [originalAmount, setOriginalAmount] = useState(0);
   const [createdClientId, setCreatedClientId] = useState<string>("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
   const { toast } = useToast();
 
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
@@ -109,6 +112,7 @@ const Signup = () => {
     
     // Calculate payment amount based on plan
     const amount = plan === 'basic' ? 49 : 99;
+    setOriginalAmount(amount);
     setPaymentAmount(amount);
     
     try {
@@ -162,6 +166,15 @@ const Signup = () => {
       setIsProcessingPayment(false);
       const errorMessage = (error && error.message) || 'Error al procesar el registro. Por favor contacta soporte.';
       toast({ title: 'No pudimos crear tu cuenta', description: errorMessage, variant: 'destructive' });
+    }
+  };
+
+  const handleCouponApplied = (coupon: { code: string; discountAmount: number; finalAmount: number } | null) => {
+    setAppliedCoupon(coupon);
+    if (coupon) {
+      setPaymentAmount(coupon.finalAmount);
+    } else {
+      setPaymentAmount(originalAmount);
     }
   };
 
@@ -381,15 +394,31 @@ const Signup = () => {
               )}
               
               {currentStep === 2 && (
-                <MercadoPagoCardPayment
-                  amount={paymentAmount}
-                  planType={selectedPlan}
-                  clientId={createdClientId}
-                  clientEmail={signupData.email}
-                  onPaymentSuccess={handlePaymentSuccess}
-                  onPaymentError={handlePaymentError}
-                  onCancel={handlePaymentCancel}
-                />
+                <div className="space-y-6">
+                  <div className="text-center space-y-2">
+                    <h2 className="text-2xl font-bold">Información de Pago</h2>
+                    <p className="text-muted-foreground">
+                      Completa tu pago para activar tu suscripción {selectedPlan === 'basic' ? 'Básica' : 'Avanzada'}
+                    </p>
+                  </div>
+
+                  <CouponInput
+                    planType={selectedPlan}
+                    amount={originalAmount}
+                    onCouponApplied={handleCouponApplied}
+                  />
+
+                  <MercadoPagoCardPayment
+                    amount={paymentAmount}
+                    planType={selectedPlan}
+                    clientId={createdClientId}
+                    clientEmail={signupData.email}
+                    couponCode={appliedCoupon?.code}
+                    onPaymentSuccess={handlePaymentSuccess}
+                    onPaymentError={handlePaymentError}
+                    onCancel={handlePaymentCancel}
+                  />
+                </div>
               )}
               
               {currentStep === 3 && (

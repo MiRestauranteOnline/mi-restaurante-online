@@ -578,12 +578,11 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   </div>
                   <CardTitle className="text-lg">Plan Básico</CardTitle>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-primary">S/297</span>
+                    <span className="text-2xl font-bold text-primary">S/49</span>
                     <span className="text-sm text-muted-foreground">/mes</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm line-through text-muted-foreground">S/500</span>
-                    <Badge variant="destructive" className="text-xs">-41%</Badge>
+                    <Badge variant="outline" className="text-xs">Precio de Lanzamiento</Badge>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
@@ -625,12 +624,11 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   </div>
                   <CardTitle className="text-lg">Plan Avanzado</CardTitle>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-accent">S/497</span>
+                    <span className="text-2xl font-bold text-accent">S/99</span>
                     <span className="text-sm text-muted-foreground">/mes</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm line-through text-muted-foreground">S/1000</span>
-                    <Badge variant="destructive" className="text-xs">-50%</Badge>
+                    <Badge variant="outline" className="text-xs">Precio de Lanzamiento</Badge>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
