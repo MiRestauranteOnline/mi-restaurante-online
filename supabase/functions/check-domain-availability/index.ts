@@ -43,10 +43,10 @@ Deno.serve(async (req) => {
 
     console.log('[check-domain-availability] Querying DB for domain:', cleaned);
 
-    // Use head+count to avoid returning any row data - only checks existence
-    const { count, error } = await supabase
+    // Query with select to actually get the data
+    const { data: existingDomains, error } = await supabase
       .from('clients')
-      .select('id', { count: 'exact', head: true })
+      .select('id, domain')
       .eq('domain', cleaned);
 
     if (error) {
@@ -57,8 +57,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    const exists = (count ?? 0) > 0;
-    console.log('[check-domain-availability] Result: count =', count, '→ exists =', exists);
+    const exists = existingDomains && existingDomains.length > 0;
+    console.log('[check-domain-availability] Result: data =', existingDomains, '→ exists =', exists);
 
     return new Response(
       JSON.stringify({ exists, domain: cleaned }),
