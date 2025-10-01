@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Clock, Calendar, User, Home, ChevronRight, Loader2 } from "lucide-react";
 import { getArticleBySlug, getRelatedArticles, categoryLabels, type Article } from "@/data/articles";
 import { TableOfContents } from "@/components/TableOfContents";
+import kevinBioImage from "@/assets/kevin-van-geffen-bio.webp";
 import "../blog.css";
 
 const BlogPost = () => {
@@ -348,7 +349,7 @@ const BlogPost = () => {
               <div className="flex flex-col md:flex-row items-start gap-6">
                 <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
                   <img 
-                    src="/src/assets/kevin-van-geffen-bio.webp" 
+                    src={kevinBioImage} 
                     alt="Kevin van Geffen" 
                     className="w-full h-full object-cover"
                   />
@@ -357,13 +358,8 @@ const BlogPost = () => {
                   <h3 className="text-xl font-semibold mb-2">Acerca del Autor</h3>
                   <h4 className="text-lg font-medium text-primary mb-2">Kevin van Geffen</h4>
                   <p className="text-sm text-muted-foreground mb-3">Fundador & CEO de Mi Restaurante Online</p>
-                  <p className="text-muted-foreground mb-4">
-                    Kevin es especialista en desarrollo web para restaurantes con más de 8 años de experiencia 
-                    ayudando a restaurantes en Lima, Arequipa y Cusco a crear su presencia digital exitosa.
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Ha trabajado con más de 200 restaurantes en Perú, desde pequeños negocios familiares hasta cadenas reconocidas, 
-                    implementando soluciones web que aumentan las ventas y mejoran la experiencia del cliente.
+                  <p className="text-muted-foreground">
+                    Kevin is a web development and SEO specialist with over eight years of experience helping international businesses with over 100 built websites.
                   </p>
                 </div>
               </div>
