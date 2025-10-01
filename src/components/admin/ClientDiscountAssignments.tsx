@@ -78,6 +78,9 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
   const toggleAssignment = async (discountId: string, currentValue: boolean) => {
     try {
       const assignment = assignments.get(discountId);
+      const discount = discounts.find(d => d.id === discountId);
+      
+      if (!discount) return;
 
       if (assignment) {
         // Update existing assignment
@@ -104,17 +107,40 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
         if (error) throw error;
       }
 
+      // Update MercadoPago subscription price
+      const discountPercentage = !currentValue ? discount.percentage : 0;
+      const months = discount.discount_type === 'one_time' ? 1 : undefined;
+
+      const { data: updateResult, error: updateError } = await supabase.functions.invoke(
+        'update-client-subscription-price',
+        {
+          body: {
+            clientId,
+            discountPercentage,
+            months,
+          },
+        }
+      );
+
+      if (updateError) {
+        throw new Error(updateError.message || 'Failed to update subscription price');
+      }
+
+      console.log('Subscription price updated:', updateResult);
+
       toast({
         title: "Descuento actualizado",
-        description: `El descuento ha sido ${!currentValue ? 'activado' : 'desactivado'}`,
+        description: !currentValue
+          ? `Descuento del ${discount.percentage}% aplicado. Precio actualizado en MercadoPago.`
+          : `Descuento removido. Precio revertido al original.`,
       });
 
       fetchData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error toggling assignment:', error);
       toast({
         title: "Error",
-        description: "No se pudo actualizar el descuento",
+        description: error.message || "No se pudo actualizar el descuento",
         variant: "destructive",
       });
     }
