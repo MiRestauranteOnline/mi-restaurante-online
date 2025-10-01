@@ -132,6 +132,7 @@ Deno.serve(async (req) => {
         description: `Primera cuota - Suscripción ${planType} - ${client.restaurant_name}`,
         payer,
         statement_descriptor: 'MI RESTAURANTE',
+        external_reference: clientId, // CRITICAL: Link payment to client
         metadata: {
           client_id: clientId,
           plan_type: planType,

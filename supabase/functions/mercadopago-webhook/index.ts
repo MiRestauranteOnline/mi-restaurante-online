@@ -62,12 +62,12 @@ async function handlePaymentEvent(body: any) {
   const payment = await mpResponse.json();
   console.log('Payment details:', JSON.stringify(payment, null, 2));
 
-  const externalReference = payment.external_reference;
+  const externalReference = payment.external_reference || payment.metadata?.client_id;
   const status = payment.status; // approved, rejected, cancelled, etc.
   const paymentMethod = payment.payment_type_id;
 
   if (!externalReference) {
-    console.error('No external reference in payment');
+    console.error('No external reference or client_id in payment metadata');
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
@@ -78,29 +78,91 @@ async function handlePaymentEvent(body: any) {
   const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  // Update payment record
-  const { data: paymentRecord, error: paymentError } = await supabase
+  // Check if externalReference is a payment record ID (UUID) or client ID
+  let paymentRecord;
+  let clientId = externalReference;
+  
+  // Try to find payment record by ID first
+  const { data: paymentById, error: paymentByIdError } = await supabase
     .from('subscription_payments')
-    .update({
-      status: status,
-      mercadopago_payment_id: paymentId,
-      payment_method: paymentMethod,
-      paid_at: status === 'approved' ? new Date().toISOString() : null,
-    })
-    .eq('id', externalReference)
     .select('*, clients(*)')
-    .single();
+    .eq('id', externalReference)
+    .maybeSingle();
 
-  if (paymentError) {
-    console.error('Failed to update payment record:', paymentError);
-    throw paymentError;
+  if (!paymentByIdError && paymentById) {
+    // Found by payment ID
+    paymentRecord = paymentById;
+    clientId = paymentById.client_id;
+    
+    // Update payment record
+    await supabase
+      .from('subscription_payments')
+      .update({
+        status: status,
+        mercadopago_payment_id: paymentId,
+        payment_method: paymentMethod,
+        paid_at: status === 'approved' ? new Date().toISOString() : null,
+      })
+      .eq('id', externalReference);
+  } else {
+    // Assume externalReference is a client_id (from fallback payment)
+    // Find or create payment record
+    const { data: existingPayment } = await supabase
+      .from('subscription_payments')
+      .select('*, clients(*)')
+      .eq('client_id', clientId)
+      .eq('mercadopago_payment_id', paymentId)
+      .maybeSingle();
+
+    if (existingPayment) {
+      paymentRecord = existingPayment;
+    } else {
+      // Create new payment record for fallback payment
+      const periodStart = new Date();
+      const periodEnd = new Date(periodStart);
+      periodEnd.setMonth(periodEnd.getMonth() + 1);
+
+      const { data: clientData } = await supabase
+        .from('clients')
+        .select('plan_type')
+        .eq('id', clientId)
+        .single();
+
+      const { data: planData } = await supabase
+        .from('subscription_plans')
+        .select('monthly_price, currency')
+        .eq('plan_key', clientData?.plan_type || 'basic')
+        .eq('is_active', true)
+        .single();
+
+      const { data: newPayment, error: createError } = await supabase
+        .from('subscription_payments')
+        .insert({
+          client_id: clientId,
+          amount: payment.transaction_amount,
+          original_amount: planData?.monthly_price || payment.transaction_amount,
+          discount_amount: 0,
+          currency: planData?.currency || 'PEN',
+          status: status,
+          period_start: periodStart.toISOString(),
+          period_end: periodEnd.toISOString(),
+          mercadopago_payment_id: paymentId,
+          payment_method: paymentMethod,
+          paid_at: status === 'approved' ? new Date().toISOString() : null,
+        })
+        .select('*, clients(*)')
+        .single();
+
+      if (!createError && newPayment) {
+        paymentRecord = newPayment;
+      }
+    }
   }
 
-  console.log('Updated payment record:', paymentRecord);
+  console.log('Payment record:', paymentRecord);
 
   // If payment approved, activate subscription
   if (status === 'approved' && paymentRecord) {
-    const clientId = paymentRecord.client_id;
     const periodEnd = new Date(paymentRecord.period_end);
 
     await supabase
@@ -111,7 +173,7 @@ async function handlePaymentEvent(body: any) {
         subscription_start_date: paymentRecord.period_start,
         subscription_end_date: paymentRecord.period_end,
         next_billing_date: periodEnd.toISOString(),
-        plan_type: paymentRecord.clients.plan_type || 'basic',
+        plan_type: paymentRecord.clients?.plan_type || 'basic',
         payment_failures_count: 0,
       })
       .eq('id', clientId);
@@ -119,8 +181,6 @@ async function handlePaymentEvent(body: any) {
     console.log(`Activated subscription for client ${clientId}`);
   } else if (status === 'rejected' || status === 'cancelled') {
     // Handle failed payment
-    const clientId = paymentRecord.client_id;
-    
     await supabase
       .from('clients')
       .update({
