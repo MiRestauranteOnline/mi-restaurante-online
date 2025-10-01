@@ -359,7 +359,7 @@ const BlogPost = () => {
                   <h4 className="text-lg font-medium text-primary mb-2">Kevin van Geffen</h4>
                   <p className="text-sm text-muted-foreground mb-3">Fundador & CEO de Mi Restaurante Online</p>
                   <p className="text-muted-foreground">
-                    Kevin is a web development and SEO specialist with over eight years of experience helping international businesses with over 100 built websites.
+                    Kevin es especialista en desarrollo web y SEO con más de ocho años de experiencia ayudando a negocios internacionales con más de 100 sitios web construidos.
                   </p>
                 </div>
               </div>
