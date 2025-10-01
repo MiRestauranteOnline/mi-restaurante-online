@@ -33,7 +33,7 @@ export const CTASection = () => {
             <Button 
               size="lg" 
               className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary transition-smooth text-lg px-8 py-4"
-              onClick={() => window.location.href = '/signup'}
+              onClick={() => window.location.href = '/registro'}
             >
               Registrarse Ahora
             </Button>

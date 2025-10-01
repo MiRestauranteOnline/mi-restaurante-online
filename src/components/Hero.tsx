@@ -13,7 +13,7 @@ export const Hero = () => {
   };
 
   const handleSignupClick = () => {
-    navigate('/signup');
+    navigate('/registro');
   };
 
   return (

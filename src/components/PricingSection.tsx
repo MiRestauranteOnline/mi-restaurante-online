@@ -96,7 +96,7 @@ export const PricingSection = () => {
                 <Button 
                   variant="outline" 
                   className="w-full border-primary text-primary hover:bg-primary/5"
-                  onClick={() => window.location.href = '/signup'}
+                  onClick={() => window.location.href = '/registro'}
                 >
                   Registrarse Ahora
                 </Button>
@@ -156,7 +156,7 @@ export const PricingSection = () => {
                 <Button 
                   variant="outline" 
                   className="w-full border-accent text-accent hover:bg-accent/5"
-                  onClick={() => window.location.href = '/signup'}
+                  onClick={() => window.location.href = '/registro'}
                 >
                   Registrarse Ahora
                 </Button>
