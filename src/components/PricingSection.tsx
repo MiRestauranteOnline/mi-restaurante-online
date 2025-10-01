@@ -1,15 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Star, MessageCircle } from "lucide-react";
-import { businessData } from "@/config/businessData";
+import { CheckCircle, Star } from "lucide-react";
 
 export const PricingSection = () => {
-  const handleWhatsAppClick = (plan: string) => {
-    const message = `Hola, quiero información sobre el plan ${plan}`;
-    window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(message)}`, "_blank");
-  };
-
   return (
     <section id="pricing" className="py-20 bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -85,20 +79,13 @@ export const PricingSection = () => {
                 ))}
               </div>
 
-              <div className="pt-6 space-y-3">
+              <div className="pt-6">
                 <Button 
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary"
-                  onClick={() => handleWhatsAppClick('Básico')}
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Contratar Plan Básico
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full border-primary text-primary hover:bg-primary/5"
                   onClick={() => window.location.href = '/registro'}
                 >
-                  Registrarse Ahora
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Registrarse con Plan Básico
                 </Button>
               </div>
             </CardContent>
@@ -145,20 +132,13 @@ export const PricingSection = () => {
                 ))}
               </div>
 
-              <div className="pt-6 space-y-3">
+              <div className="pt-6">
                 <Button 
                   className="w-full bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent"
-                  onClick={() => handleWhatsAppClick('Avanzado')}
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Contratar Plan Avanzado
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full border-accent text-accent hover:bg-accent/5"
                   onClick={() => window.location.href = '/registro'}
                 >
-                  Registrarse Ahora
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Registrarse con Plan Avanzado
                 </Button>
               </div>
             </CardContent>
