@@ -22,7 +22,7 @@ export interface ImagesData {
 }
 
 const carouselImageSchema = z.object({
-  imageUrl: z.string().min(1, "La imagen es requerida"),
+  imageUrl: z.string().optional(),
   altText: z.string().optional(),
 });
 
@@ -72,11 +72,17 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
   };
   const isProcessingImages = processingCount > 0;
   const onSubmit = (data: ImagesFormData) => {
+    // Filter out empty images and ensure valid imageUrl
+    const validCarouselImages = (data.carousel_images?.filter(img => img.imageUrl && img.imageUrl.trim() !== '') || [])
+      .map(img => ({ imageUrl: img.imageUrl!, altText: img.altText }));
+    const validCustomImages = (data.custom_images?.filter(img => img.imageUrl && img.imageUrl.trim() !== '') || [])
+      .map(img => ({ imageUrl: img.imageUrl!, altText: img.altText }));
+    
     onComplete({
       carousel_enabled: data.carousel_enabled,
-      carousel_images: data.carousel_enabled ? (data.carousel_images || []) : [],
+      carousel_images: data.carousel_enabled ? validCarouselImages : [],
       custom_images_enabled: data.custom_images_enabled,
-      custom_images: data.custom_images_enabled ? (data.custom_images || []) : [],
+      custom_images: data.custom_images_enabled ? validCustomImages : [],
     });
   };
 
