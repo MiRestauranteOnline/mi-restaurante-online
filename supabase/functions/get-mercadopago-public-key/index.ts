@@ -10,8 +10,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Return the test public key for now
-    const publicKey = Deno.env.get('MERCADOPAGO_PUBLIC_KEY_TEST');
+    // Return the subscription public key
+    const publicKey = Deno.env.get('MERCADOPAGO_PUBLIC_KEY_SUBSCRIPTION');
     
     if (!publicKey) {
       throw new Error('MercadoPago public key not configured');

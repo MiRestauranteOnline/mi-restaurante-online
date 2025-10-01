@@ -153,9 +153,9 @@ export const MercadoPagoCardPayment = ({
                 identificationType,
               } = cardForm.getCardFormData();
 
-              // Process payment through our backend
+              // Create subscription through our backend
               const { data, error: paymentError } = await supabase.functions.invoke(
-                'process-mercadopago-card-payment',
+                'create-mercadopago-subscription',
                 {
                   body: {
                     token,

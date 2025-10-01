@@ -718,6 +718,8 @@ export type Database = {
           email: string | null
           id: string
           last_payment_attempt: string | null
+          mercadopago_preapproval_id: string | null
+          mercadopago_subscription_id: string | null
           next_billing_date: string | null
           opening_hours: Json | null
           opening_hours_ordered: Json | null
@@ -731,6 +733,7 @@ export type Database = {
           restaurant_name: string
           social_media_links: Json | null
           subdomain: string
+          subscription_auto_recurring: boolean | null
           subscription_end_date: string | null
           subscription_start_date: string | null
           subscription_status: string | null
@@ -755,6 +758,8 @@ export type Database = {
           email?: string | null
           id?: string
           last_payment_attempt?: string | null
+          mercadopago_preapproval_id?: string | null
+          mercadopago_subscription_id?: string | null
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
@@ -768,6 +773,7 @@ export type Database = {
           restaurant_name: string
           social_media_links?: Json | null
           subdomain: string
+          subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
@@ -792,6 +798,8 @@ export type Database = {
           email?: string | null
           id?: string
           last_payment_attempt?: string | null
+          mercadopago_preapproval_id?: string | null
+          mercadopago_subscription_id?: string | null
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
@@ -805,6 +813,7 @@ export type Database = {
           restaurant_name?: string
           social_media_links?: Json | null
           subdomain?: string
+          subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
@@ -1278,6 +1287,7 @@ export type Database = {
           id: string
           mercadopago_payment_id: string | null
           mercadopago_preference_id: string | null
+          mercadopago_subscription_id: string | null
           original_amount: number | null
           paid_at: string | null
           payment_method: string | null
@@ -1295,6 +1305,7 @@ export type Database = {
           id?: string
           mercadopago_payment_id?: string | null
           mercadopago_preference_id?: string | null
+          mercadopago_subscription_id?: string | null
           original_amount?: number | null
           paid_at?: string | null
           payment_method?: string | null
@@ -1312,6 +1323,7 @@ export type Database = {
           id?: string
           mercadopago_payment_id?: string | null
           mercadopago_preference_id?: string | null
+          mercadopago_subscription_id?: string | null
           original_amount?: number | null
           paid_at?: string | null
           payment_method?: string | null
