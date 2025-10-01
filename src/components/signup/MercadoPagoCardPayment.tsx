@@ -246,14 +246,38 @@ export const MercadoPagoCardPayment = ({
             <div id="form-checkout__expirationDate" className="min-h-[40px]"></div>
             <div id="form-checkout__securityCode" className="min-h-[40px]"></div>
           </div>
-          <div id="form-checkout__cardholderName" className="min-h-[40px]"></div>
-          <div id="form-checkout__cardholderEmail" className="min-h-[40px]"></div>
+          <input 
+            type="text" 
+            id="form-checkout__cardholderName" 
+            placeholder="Titular de la tarjeta"
+            className="w-full px-3 py-2 border rounded-md"
+          />
+          <input 
+            type="email" 
+            id="form-checkout__cardholderEmail" 
+            placeholder="E-mail"
+            className="w-full px-3 py-2 border rounded-md"
+          />
           <div className="grid grid-cols-2 gap-4">
-            <div id="form-checkout__identificationType" className="min-h-[40px]"></div>
-            <div id="form-checkout__identificationNumber" className="min-h-[40px]"></div>
+            <select 
+              id="form-checkout__identificationType"
+              className="w-full px-3 py-2 border rounded-md"
+            ></select>
+            <input 
+              type="text" 
+              id="form-checkout__identificationNumber" 
+              placeholder="Número de documento"
+              className="w-full px-3 py-2 border rounded-md"
+            />
           </div>
-          <div id="form-checkout__issuer" className="min-h-[40px]"></div>
-          <div id="form-checkout__installments" className="min-h-[40px]"></div>
+          <select 
+            id="form-checkout__issuer"
+            className="w-full px-3 py-2 border rounded-md"
+          ></select>
+          <select 
+            id="form-checkout__installments"
+            className="w-full px-3 py-2 border rounded-md"
+          ></select>
 
           <div className="flex gap-2 pt-4">
             <Button
