@@ -76,19 +76,55 @@ export default function SubscriptionManagement() {
   };
 
   const handleCancelSubscription = async (clientId: string) => {
-    // In real implementation, call Rebill API to cancel subscription
-    toast({
-      title: "Subscription Cancelled",
-      description: "The subscription has been cancelled successfully.",
-    });
+    try {
+      setLoading(true);
+      const { error } = await supabase.functions.invoke('cancel-mercadopago-subscription', {
+        body: { clientId }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Subscription Cancelled",
+        description: "The subscription has been cancelled successfully.",
+      });
+
+      await fetchClients();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to cancel subscription",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleUpgradeDowngrade = async (clientId: string, newPlan: 'basic' | 'advanced') => {
-    // In real implementation, call Rebill API to change plan
-    toast({
-      title: "Plan Updated",
-      description: `Plan has been updated to ${newPlan}.`,
-    });
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.functions.invoke('update-mercadopago-subscription', {
+        body: { clientId, newPlanType: newPlan }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Plan Updated",
+        description: `Plan has been updated to ${newPlan}.`,
+      });
+
+      await fetchClients();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update plan",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const filteredClients = clients.filter(client =>
