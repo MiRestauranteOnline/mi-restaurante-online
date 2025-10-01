@@ -27,12 +27,12 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pt-16 pb-8">
+      <div className="container mx-auto px-4 pt-24 md:pt-16 pb-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8 animate-fade-up">
             {/* Credibility Badge */}
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full border border-primary/20 pt-20 md:pt-0">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full border border-primary/20">
               <Star className="w-4 h-4 fill-current" />
               <span className="text-sm font-medium">Fundado por diseñador con 100+ proyectos internacionales</span>
             </div>
