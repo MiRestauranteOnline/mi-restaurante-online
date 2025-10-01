@@ -4,9 +4,39 @@ import { MessageCircle, Star, CheckCircle, ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero-restaurant-websites.jpg";
 import { businessData } from "@/config/businessData";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Hero = () => {
   const navigate = useNavigate();
+  const [basicPlanPrice, setBasicPlanPrice] = useState<number>(297);
+  const [originalPrice, setOriginalPrice] = useState<number>(500);
+  const [currency, setCurrency] = useState<string>('PEN');
+
+  useEffect(() => {
+    const fetchBasicPlan = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('subscription_plans')
+          .select('monthly_price, original_price, currency')
+          .eq('plan_key', 'basic')
+          .eq('is_active', true)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          setBasicPlanPrice(data.monthly_price);
+          setOriginalPrice(data.original_price || data.monthly_price);
+          setCurrency(data.currency);
+        }
+      } catch (error) {
+        console.error('Error fetching basic plan:', error);
+      }
+    };
+
+    fetchBasicPlan();
+  }, []);
   
   const handleWhatsAppClick = () => {
     window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(businessData.contact.whatsapp.message)}`, "_blank");
@@ -57,9 +87,13 @@ export const Hero = () => {
                 <span className="font-semibold text-lg">Precio especial por lanzamiento</span>
               </div>
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-bold text-primary" role="heading" aria-level={3}>S/297</span>
+                <span className="text-3xl font-bold text-primary" role="heading" aria-level={3}>
+                  {currency === 'USD' ? '$' : 'S/'}{basicPlanPrice}
+                </span>
                 <span className="text-lg text-muted-foreground">/mes</span>
-                <span className="text-lg line-through text-destructive ml-2">S/500</span>
+                <span className="text-lg line-through text-destructive ml-2">
+                  {currency === 'USD' ? '$' : 'S/'}{originalPrice}
+                </span>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
                 🎯 Sin costo inicial • Precio garantizado de por vida • Oferta por tiempo limitado

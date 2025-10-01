@@ -120,13 +120,79 @@ const PlanManagement = () => {
     setEditForm({ ...editForm, features: newFeatures });
   };
 
+  const handleAddPlan = async () => {
+    try {
+      const { error } = await supabase
+        .from('subscription_plans')
+        .insert({
+          plan_key: `plan_${Date.now()}`,
+          name: 'Nuevo Plan',
+          monthly_price: 0,
+          features: ['Nueva característica'],
+          is_popular: false,
+          is_active: true,
+          display_order: plans.length + 1,
+        });
+
+      if (error) throw error;
+
+      await fetchPlans();
+      
+      toast({
+        title: "Plan creado",
+        description: "El nuevo plan ha sido creado. Edítalo para configurarlo.",
+      });
+    } catch (error) {
+      console.error('Error creating plan:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo crear el plan",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeletePlan = async (planId: string, planName: string) => {
+    if (!confirm(`¿Estás seguro de que deseas eliminar el plan "${planName}"?`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('subscription_plans')
+        .delete()
+        .eq('id', planId);
+
+      if (error) throw error;
+
+      await fetchPlans();
+      
+      toast({
+        title: "Plan eliminado",
+        description: `El plan ${planName} ha sido eliminado correctamente.`,
+      });
+    } catch (error) {
+      console.error('Error deleting plan:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el plan",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Gestión de Planes</h1>
-        <p className="text-muted-foreground">
-          Administra los planes de suscripción y sus características
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Gestión de Planes</h1>
+          <p className="text-muted-foreground">
+            Administra los planes de suscripción y sus características
+          </p>
+        </div>
+        <Button onClick={handleAddPlan}>
+          Agregar Plan
+        </Button>
       </div>
 
       {isLoading ? (
@@ -172,9 +238,18 @@ const PlanManagement = () => {
                       </Button>
                     </div>
                   ) : (
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(plan)}>
-                      <Edit className="w-4 h-4" />
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => handleEdit(plan)}>
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="destructive" 
+                        onClick={() => handleDeletePlan(plan.id, plan.name)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
                   )}
                 </div>
               </CardHeader>

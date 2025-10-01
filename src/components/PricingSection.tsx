@@ -1,9 +1,47 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Star } from "lucide-react";
+import { CheckCircle, Star, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Plan {
+  id: string;
+  plan_key: string;
+  name: string;
+  monthly_price: number;
+  original_price?: number;
+  discount_percentage?: number;
+  features: string[];
+  is_popular: boolean;
+  currency: string;
+}
 
 export const PricingSection = () => {
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('subscription_plans')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
+
+        if (error) throw error;
+
+        setPlans(data || []);
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
   return (
     <section id="pricing" className="py-20 bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -34,116 +72,76 @@ export const PricingSection = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Plan Básico */}
-          <Card className="relative border-2 hover:shadow-primary transition-smooth">
-            <div className="absolute -top-3 left-6">
-              <Badge className="bg-primary text-primary-foreground">
-                Más Popular
-              </Badge>
-            </div>
-            
-            <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl font-bold">Plan Básico</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Perfecto para comenzar online
-              </CardDescription>
-              
-              <div className="py-6">
-                <div className="flex items-baseline justify-center gap-2">
-                  <span className="text-5xl font-bold text-primary" role="heading" aria-level={3}>S/297</span>
-                  <span className="text-lg text-muted-foreground">/mes</span>
-                </div>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <span className="text-lg line-through text-destructive">S/500</span>
-                  <Badge variant="destructive" className="text-xs">-41%</Badge>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Precio fijo de por vida
-                </p>
-              </div>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                {[
-                  "Hasta 3,000 visitas/mes (6 GB hosting)",
-                  "Soporte WhatsApp básico",
-                  "Soporte por email (respuesta en 48h)",
-                  "Actualizaciones auto-gestionables vía dashboard"
-                ].map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" aria-hidden="true" />
-                    <span className="text-sm">{feature}</span>
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {plans.map((plan) => (
+              <Card 
+                key={plan.id} 
+                className={`relative border-2 ${plan.is_popular ? 'hover:shadow-primary' : 'border-accent hover:shadow-accent'} transition-smooth`}
+              >
+                {plan.is_popular && (
+                  <div className="absolute -top-3 left-6">
+                    <Badge className="bg-primary text-primary-foreground">
+                      Más Popular
+                    </Badge>
                   </div>
-                ))}
-              </div>
-
-              <div className="pt-6">
-                <Button 
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary"
-                  onClick={() => window.location.href = '/registro'}
-                >
-                  <CheckCircle className="w-4 h-4 mr-2" aria-hidden="true" />
-                  Registrarse con Plan Básico
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Plan Avanzado */}
-          <Card className="border-2 border-accent hover:shadow-accent transition-smooth">            
-            <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl font-bold">Plan Avanzado</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Para restaurantes en crecimiento
-              </CardDescription>
-              
-              <div className="py-6">
-                <div className="flex items-baseline justify-center gap-2">
-                  <span className="text-5xl font-bold text-accent" role="heading" aria-level={3}>S/497</span>
-                  <span className="text-lg text-muted-foreground">/mes</span>
-                </div>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <span className="text-lg line-through text-destructive">S/1000</span>
-                  <Badge variant="destructive" className="text-xs">-50%</Badge>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Incluye todo del Plan Básico +
-                </p>
-              </div>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                {[
-                  "Todo lo del Plan Básico",
-                  "Doble capacidad: Hasta 6,000 visitas/mes (12 GB hosting)",
-                  "1 hora/mes soporte profesional para cambios de texto e imágenes",
-                  "Soporte prioritario (respuesta en 24h)",
-                  "Soporte WhatsApp premium con PIN único",
-                  "Dashboard de Analítica Básica y reportes mensuales",
-                  "Configuración de Google Analytics y Search Console incluida"
-                ].map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" aria-hidden="true" />
-                    <span className="text-sm">{feature}</span>
+                )}
+                
+                <CardHeader className="text-center pb-4">
+                  <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    {plan.plan_key === 'basic' ? 'Perfecto para comenzar online' : 'Para restaurantes en crecimiento'}
+                  </CardDescription>
+                  
+                  <div className="py-6">
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className={`text-5xl font-bold ${plan.is_popular ? 'text-primary' : 'text-accent'}`} role="heading" aria-level={3}>
+                        {plan.currency === 'USD' ? '$' : 'S/'}{plan.monthly_price}
+                      </span>
+                      <span className="text-lg text-muted-foreground">/mes</span>
+                    </div>
+                    {plan.original_price && plan.discount_percentage && (
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <span className="text-lg line-through text-destructive">
+                          {plan.currency === 'USD' ? '$' : 'S/'}{plan.original_price}
+                        </span>
+                        <Badge variant="destructive" className="text-xs">-{plan.discount_percentage}%</Badge>
+                      </div>
+                    )}
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {plan.plan_key === 'advanced' ? 'Incluye todo del Plan Básico +' : 'Precio fijo de por vida'}
+                    </p>
                   </div>
-                ))}
-              </div>
+                </CardHeader>
 
-              <div className="pt-6">
-                <Button 
-                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent"
-                  onClick={() => window.location.href = '/registro'}
-                >
-                  <CheckCircle className="w-4 h-4 mr-2" aria-hidden="true" />
-                  Registrarse con Plan Avanzado
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    {plan.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                        <CheckCircle className={`w-5 h-5 ${plan.is_popular ? 'text-primary' : 'text-accent'} flex-shrink-0`} aria-hidden="true" />
+                        <span className="text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-6">
+                    <Button 
+                      className={`w-full ${plan.is_popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary' : 'bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent'}`}
+                      onClick={() => window.location.href = '/registro'}
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" aria-hidden="true" />
+                      Registrarse con {plan.name}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
         {/* Additional Info */}
         <div className="mt-12 text-center space-y-4">
