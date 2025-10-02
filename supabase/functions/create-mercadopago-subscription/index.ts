@@ -142,7 +142,7 @@ Deno.serve(async (req) => {
         const errorMsg = preferenceResult.message || preferenceResult.error || 'Failed to create checkout preference';
         return new Response(
           JSON.stringify({ success: false, error: errorMsg, details: preferenceResult }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         );
       }
 
@@ -208,7 +208,10 @@ Deno.serve(async (req) => {
         console.error('Error message:', subscriptionResult.message);
       }
       const errorMsg = subscriptionResult.message || subscriptionResult.code || 'Subscription creation failed';
-      throw new Error(errorMsg);
+      return new Response(
+        JSON.stringify({ success: false, error: errorMsg, details: subscriptionResult }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      );
     }
 
     // Wait a moment for MercadoPago to process the initial payment
@@ -312,7 +315,7 @@ Deno.serve(async (req) => {
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400 
+        status: 200 
       }
     );
   }
