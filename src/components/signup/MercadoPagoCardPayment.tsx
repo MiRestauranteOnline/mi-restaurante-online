@@ -52,33 +52,45 @@ export const MercadoPagoCardPayment = ({
         throw new Error('Failed to load payment configuration');
       }
 
-      // Load MercadoPago SDK if not already loaded
-      if (!document.querySelector('script[src="https://sdk.mercadopago.com/js/v2"]')) {
-        const script = document.createElement('script');
-        script.src = 'https://sdk.mercadopago.com/js/v2';
-        script.async = true;
-        
-        script.onload = () => {
-          const mercadopago = new window.MercadoPago(data.publicKey, {
-            locale: 'es-PE'
-          });
-          
-          setMp(mercadopago);
-          initializeCardForm(mercadopago);
-        };
-
-        script.onerror = () => {
-          throw new Error('Failed to load payment system');
-        };
-
-        document.body.appendChild(script);
-      } else {
-        // SDK already loaded, just initialize
-        const mercadopago = new window.MercadoPago(data.publicKey, {
-          locale: 'es-PE'
-        });
+      // Prefer checking for the global to avoid race conditions
+      if (window.MercadoPago) {
+        const mercadopago = new window.MercadoPago(data.publicKey, { locale: 'es-PE' });
         setMp(mercadopago);
         initializeCardForm(mercadopago);
+        return;
+      }
+
+      const sdkSrc = 'https://sdk.mercadopago.com/js/v2';
+      const existing = document.querySelector(`script[src="${sdkSrc}"]`) as HTMLScriptElement | null;
+
+      const initWithMP = () => {
+        if (!window.MercadoPago) return false;
+        const mercadopago = new window.MercadoPago(data.publicKey, { locale: 'es-PE' });
+        setMp(mercadopago);
+        initializeCardForm(mercadopago);
+        return true;
+      };
+
+      if (!existing) {
+        const script = document.createElement('script');
+        script.src = sdkSrc;
+        script.async = true;
+        script.onload = () => { initWithMP(); };
+        script.onerror = () => { throw new Error('Failed to load payment system'); };
+        document.body.appendChild(script);
+      } else {
+        // If script tag exists but SDK isn't ready yet, wait for it
+        let tries = 0;
+        const maxTries = 50; // ~5s
+        const interval = setInterval(() => {
+          if (initWithMP()) {
+            clearInterval(interval);
+          } else if (++tries >= maxTries) {
+            clearInterval(interval);
+            setError('Failed to initialize payment system');
+            setIsLoading(false);
+          }
+        }, 100);
       }
     } catch (err: any) {
       console.error('SDK loading error:', err);
