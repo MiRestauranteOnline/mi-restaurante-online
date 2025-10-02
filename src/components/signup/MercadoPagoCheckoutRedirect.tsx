@@ -47,12 +47,14 @@ export const MercadoPagoCheckoutRedirect = ({
       );
 
       if (error) {
-        console.error("Checkout creation error:", error);
-        throw error;
+        console.error("Checkout creation error:", error, "response data:", data);
+        const serverMsg = (data as any)?.error || (error as any)?.message || "Checkout failed";
+        throw new Error(serverMsg);
       }
 
-      if (!data.success || !data.checkoutUrl) {
-        throw new Error(data.error || "No se pudo crear el checkout");
+      if (!data?.success || !data?.checkoutUrl) {
+        const serverMsg = (data as any)?.error || "Failed to create checkout";
+        throw new Error(serverMsg);
       }
 
       console.log("Redirecting to MercadoPago checkout:", data.checkoutUrl);

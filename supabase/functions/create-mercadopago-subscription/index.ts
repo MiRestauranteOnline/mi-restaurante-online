@@ -139,7 +139,11 @@ Deno.serve(async (req) => {
 
       if (!preferenceResponse.ok) {
         console.error('Preference creation failed:', preferenceResult);
-        throw new Error(preferenceResult.message || 'Failed to create checkout preference');
+        const errorMsg = preferenceResult.message || preferenceResult.error || 'Failed to create checkout preference';
+        return new Response(
+          JSON.stringify({ success: false, error: errorMsg, details: preferenceResult }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+        );
       }
 
       // Return the checkout URL for redirect
