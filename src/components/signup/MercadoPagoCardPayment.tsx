@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, CreditCard, AlertCircle } from "lucide-react";
@@ -35,6 +35,7 @@ export const MercadoPagoCardPayment = ({
 }: MercadoPagoCardPaymentProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
+  const processingRef = useRef(false);
   const [error, setError] = useState<string>("");
   const [mp, setMp] = useState<any>(null);
   const { toast } = useToast();
@@ -159,6 +160,8 @@ export const MercadoPagoCardPayment = ({
           },
           onSubmit: async (event: Event) => {
             event.preventDefault();
+            if (processingRef.current) return;
+            processingRef.current = true;
             setIsProcessing(true);
             setError("");
 
@@ -226,9 +229,9 @@ export const MercadoPagoCardPayment = ({
                 console.error('Payment error:', err);
                 const errorMsg = err.message || 'Error processing payment';
                 // Map common MercadoPago errors to user-friendly messages
-                const isTokenError = /invalid card_token_id/i.test(errorMsg);
+                const isTokenError = /invalid card_token_id/i.test(errorMsg) || /token was used/i.test(errorMsg);
                 const friendly = isTokenError
-                  ? 'El token de tu tarjeta expiró. Por favor, verifica los datos y vuelve a intentar.'
+                  ? 'El token de tu tarjeta expiró o ya fue usado. Por favor, vuelve a ingresar los datos.'
                   : errorMsg;
                 setError(friendly);
                 onPaymentError(friendly);
@@ -243,6 +246,7 @@ export const MercadoPagoCardPayment = ({
               });
             } finally {
               setIsProcessing(false);
+              processingRef.current = false;
             }
           },
         },
