@@ -108,9 +108,10 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   const calculateAvailability = () => {
     const availabilityMap: TimeSlotAvailability[] = [];
     const today = new Date();
-    const daysToShow = 14; // Show next 2 weeks
+    const daysToShow = 28; // Show next 4 weeks
+    const slotInterval = 30; // Show slots every 30 minutes
 
-    // For each of the next 14 days
+    // For each of the next 28 days
     for (let dayOffset = 0; dayOffset < daysToShow; dayOffset++) {
       const currentDate = new Date(today);
       currentDate.setDate(today.getDate() + dayOffset);
@@ -121,7 +122,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
       const daySchedules = schedules.filter(s => s.day_of_week === dayOfWeek);
 
       daySchedules.forEach((schedule) => {
-        // Generate all time slots for this schedule based on duration
+        // Generate all time slots at regular intervals
         const startHour = parseInt(schedule.start_time.substring(0, 2));
         const startMin = parseInt(schedule.start_time.substring(3, 5));
         const endHour = parseInt(schedule.end_time.substring(0, 2));
@@ -130,8 +131,8 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         const startMinutes = startHour * 60 + startMin;
         const endMinutes = endHour * 60 + endMin;
         
-        // Create slots based on duration
-        for (let slotStart = startMinutes; slotStart < endMinutes; slotStart += schedule.duration_minutes) {
+        // Create slots every 30 minutes
+        for (let slotStart = startMinutes; slotStart < endMinutes; slotStart += slotInterval) {
           const slotHour = Math.floor(slotStart / 60);
           const slotMin = slotStart % 60;
           const timeStr = `${slotHour.toString().padStart(2, '0')}:${slotMin.toString().padStart(2, '0')}`;
@@ -146,7 +147,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             const resEndMinutes = resStartMinutes + schedule.duration_minutes;
             
             // Check if this slot overlaps with the reservation
-            const slotEndMinutes = slotStart + schedule.duration_minutes;
+            const slotEndMinutes = slotStart + slotInterval;
             return (slotStart < resEndMinutes && slotEndMinutes > resStartMinutes);
           });
 
