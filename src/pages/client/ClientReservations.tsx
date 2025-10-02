@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import ReservationSchedules from "@/components/client/ReservationSchedules";
 import ReservationsList from "@/components/client/ReservationsList";
 
+
 const ClientReservations = () => {
   const { clientId } = useParams<{ clientId: string }>();
 
