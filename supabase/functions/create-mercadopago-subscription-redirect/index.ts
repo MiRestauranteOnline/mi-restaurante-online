@@ -84,36 +84,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    // 2) Create Preapproval (redirect) using the plan
-    const preapprovalBody = {
-      preapproval_plan_id: planResult.id,
-      payer_email: payer.email,
-      external_reference: clientId,
-      back_url: 'https://mirestauranteonline.com/registro?payment=success',
-    };
-
-    console.log('→ Creating preapproval (redirect) with body:', JSON.stringify(preapprovalBody));
-    const preapprovalResp = await fetch('https://api.mercadopago.com/preapproval', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(preapprovalBody),
-    });
-    const preapprovalResult = await preapprovalResp.json().catch(() => ({}));
-    console.log('← preapproval (redirect) result:', JSON.stringify(preapprovalResult));
-
-    if (!preapprovalResp.ok || !preapprovalResult?.init_point) {
-      const msg = preapprovalResult?.message || preapprovalResult?.error || 'Failed to create preapproval redirect';
-      return new Response(JSON.stringify({ success: false, error: msg, details: preapprovalResult }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      });
+    // 2) Redirect-based subscription: use plan init_point directly (no preapproval creation needed)
+    if (planResult?.init_point) {
+      console.log('✓ Using preapproval_plan init_point for redirect:', planResult.init_point);
+      return new Response(
+        JSON.stringify({ success: true, checkoutUrl: planResult.init_point, preapprovalPlanId: planResult.id }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      );
     }
 
     return new Response(
-      JSON.stringify({ success: true, checkoutUrl: preapprovalResult.init_point, preapprovalId: preapprovalResult.id }),
+      JSON.stringify({ success: false, error: 'Plan created but init_point missing', details: planResult }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     );
   } catch (error: any) {
