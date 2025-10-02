@@ -19,6 +19,12 @@ interface ReservationSchedule {
   end_time: string;
   capacity: number;
   is_active: boolean;
+  duration_minutes: number;
+  min_party_size: number;
+  max_party_size: number;
+  special_groups_enabled: boolean;
+  special_groups_condition: string | null;
+  special_groups_contact_method: string | null;
 }
 
 interface ReservationSchedulesProps {
@@ -49,6 +55,12 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
     end_time: "22:00",
     capacity: 20,
     is_active: true,
+    duration_minutes: 120,
+    min_party_size: 1,
+    max_party_size: 10,
+    special_groups_enabled: false,
+    special_groups_condition: "both",
+    special_groups_contact_method: "whatsapp",
   });
 
   useEffect(() => {
@@ -86,6 +98,12 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
             end_time: formData.end_time,
             capacity: formData.capacity,
             is_active: formData.is_active,
+            duration_minutes: formData.duration_minutes,
+            min_party_size: formData.min_party_size,
+            max_party_size: formData.max_party_size,
+            special_groups_enabled: formData.special_groups_enabled,
+            special_groups_condition: formData.special_groups_enabled ? formData.special_groups_condition : null,
+            special_groups_contact_method: formData.special_groups_enabled ? formData.special_groups_contact_method : null,
           })
           .eq("id", editingSchedule.id);
 
@@ -101,6 +119,12 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
             end_time: formData.end_time,
             capacity: formData.capacity,
             is_active: formData.is_active,
+            duration_minutes: formData.duration_minutes,
+            min_party_size: formData.min_party_size,
+            max_party_size: formData.max_party_size,
+            special_groups_enabled: formData.special_groups_enabled,
+            special_groups_condition: formData.special_groups_enabled ? formData.special_groups_condition : null,
+            special_groups_contact_method: formData.special_groups_enabled ? formData.special_groups_contact_method : null,
           });
 
         if (error) throw error;
@@ -162,6 +186,12 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
       end_time: schedule.end_time,
       capacity: schedule.capacity,
       is_active: schedule.is_active,
+      duration_minutes: schedule.duration_minutes,
+      min_party_size: schedule.min_party_size,
+      max_party_size: schedule.max_party_size,
+      special_groups_enabled: schedule.special_groups_enabled,
+      special_groups_condition: schedule.special_groups_condition || "both",
+      special_groups_contact_method: schedule.special_groups_contact_method || "whatsapp",
     });
     setDialogOpen(true);
   };
@@ -173,6 +203,12 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
       end_time: "22:00",
       capacity: 20,
       is_active: true,
+      duration_minutes: 120,
+      min_party_size: 1,
+      max_party_size: 10,
+      special_groups_enabled: false,
+      special_groups_condition: "both",
+      special_groups_contact_method: "whatsapp",
     });
   };
 
@@ -248,16 +284,106 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="capacity">Capacidad (personas)</Label>
-                  <Input
-                    id="capacity"
-                    type="number"
-                    min="1"
-                    value={formData.capacity}
-                    onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
-                    required
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="duration_minutes">Duración por Reserva (minutos)</Label>
+                    <Input
+                      id="duration_minutes"
+                      type="number"
+                      min="15"
+                      step="15"
+                      value={formData.duration_minutes}
+                      onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Ej: 120 = 2 horas, 180 = 3 horas
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="capacity">Capacidad (mesas disponibles)</Label>
+                    <Input
+                      id="capacity"
+                      type="number"
+                      min="1"
+                      value={formData.capacity}
+                      onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="min_party_size">Mínimo de Personas</Label>
+                    <Input
+                      id="min_party_size"
+                      type="number"
+                      min="1"
+                      value={formData.min_party_size}
+                      onChange={(e) => setFormData({ ...formData, min_party_size: parseInt(e.target.value) })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="max_party_size">Máximo de Personas</Label>
+                    <Input
+                      id="max_party_size"
+                      type="number"
+                      min="1"
+                      value={formData.max_party_size}
+                      onChange={(e) => setFormData({ ...formData, max_party_size: parseInt(e.target.value) })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4 p-4 border rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="special_groups_enabled"
+                      checked={formData.special_groups_enabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, special_groups_enabled: checked })}
+                    />
+                    <Label htmlFor="special_groups_enabled">Mensaje para grupos especiales</Label>
+                  </div>
+
+                  {formData.special_groups_enabled && (
+                    <div className="grid grid-cols-2 gap-4 pl-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="special_groups_condition">Para grupos</Label>
+                        <Select
+                          value={formData.special_groups_condition}
+                          onValueChange={(value) => setFormData({ ...formData, special_groups_condition: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="bigger">Más grandes</SelectItem>
+                            <SelectItem value="smaller">Más pequeños</SelectItem>
+                            <SelectItem value="both">Más grandes y más pequeños</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="special_groups_contact_method">Contactar por</Label>
+                        <Select
+                          value={formData.special_groups_contact_method}
+                          onValueChange={(value) => setFormData({ ...formData, special_groups_contact_method: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="phone">Teléfono</SelectItem>
+                            <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                            <SelectItem value="both">Teléfono o WhatsApp</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -292,7 +418,9 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
               <TableRow>
                 <TableHead>Día</TableHead>
                 <TableHead>Horario</TableHead>
+                <TableHead>Duración</TableHead>
                 <TableHead>Capacidad</TableHead>
+                <TableHead>Personas</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
@@ -304,7 +432,14 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                   <TableCell>
                     {schedule.start_time} - {schedule.end_time}
                   </TableCell>
-                  <TableCell>{schedule.capacity} personas</TableCell>
+                  <TableCell>
+                    {schedule.duration_minutes >= 60 
+                      ? `${Math.floor(schedule.duration_minutes / 60)}h ${schedule.duration_minutes % 60 > 0 ? `${schedule.duration_minutes % 60}m` : ''}`.trim()
+                      : `${schedule.duration_minutes}m`
+                    }
+                  </TableCell>
+                  <TableCell>{schedule.capacity} mesas</TableCell>
+                  <TableCell>{schedule.min_party_size} - {schedule.max_party_size}</TableCell>
                   <TableCell>
                     <Badge variant={schedule.is_active ? "default" : "secondary"}>
                       {schedule.is_active ? "Activo" : "Inactivo"}

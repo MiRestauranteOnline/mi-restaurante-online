@@ -1237,6 +1237,121 @@ export type Database = {
           },
         ]
       }
+      reservation_schedules: {
+        Row: {
+          capacity: number
+          client_id: string
+          created_at: string
+          day_of_week: number
+          duration_minutes: number
+          end_time: string
+          id: string
+          is_active: boolean
+          max_party_size: number
+          min_party_size: number
+          special_groups_condition: string | null
+          special_groups_contact_method: string | null
+          special_groups_enabled: boolean
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          capacity: number
+          client_id: string
+          created_at?: string
+          day_of_week: number
+          duration_minutes?: number
+          end_time: string
+          id?: string
+          is_active?: boolean
+          max_party_size?: number
+          min_party_size?: number
+          special_groups_condition?: string | null
+          special_groups_contact_method?: string | null
+          special_groups_enabled?: boolean
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number
+          client_id?: string
+          created_at?: string
+          day_of_week?: number
+          duration_minutes?: number
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          max_party_size?: number
+          min_party_size?: number
+          special_groups_condition?: string | null
+          special_groups_contact_method?: string | null
+          special_groups_enabled?: boolean
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_schedules_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservations: {
+        Row: {
+          client_id: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          party_size: number
+          reservation_date: string
+          reservation_time: string
+          special_requests: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id?: string
+          party_size: number
+          reservation_date: string
+          reservation_time: string
+          special_requests?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          party_size?: number
+          reservation_date?: string
+          reservation_time?: string
+          special_requests?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           client_id: string
