@@ -105,11 +105,24 @@ const Signup = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
   const { toast } = useToast();
 
+  // Reset processing states on mount to prevent stuck loading states
+  React.useEffect(() => {
+    console.log('🔄 Resetting processing states on mount');
+    setIsProcessingPayment(false);
+    setIsProcessingFinalStep(false);
+  }, []);
+
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
     const updatedData = { ...formData, plan_type: plan };
     setSignupData(updatedData);
     setSelectedPlan(plan);
     setIsProcessingPayment(true);
+
+    // Safety timeout to reset loading state if step transition fails
+    const safetyTimeout = setTimeout(() => {
+      console.warn('⚠️ Safety timeout triggered - resetting loading state');
+      setIsProcessingPayment(false);
+    }, 10000); // 10 seconds
     
     // Fetch plan pricing from database
     try {
@@ -170,6 +183,7 @@ const Signup = () => {
       
         if (data?.success && data?.client?.id) {
           console.log('Account created successfully:', data);
+          clearTimeout(safetyTimeout); // Clear safety timeout on success
           setCreatedClientId(data.client.id);
           setSignupData({ ...updatedData, paymentId: data.client.id });
           setIsProcessingPayment(false);
@@ -180,6 +194,7 @@ const Signup = () => {
         }
     } catch (error: any) {
       console.error('Account creation error:', error);
+      clearTimeout(safetyTimeout); // Clear safety timeout on error
       setIsProcessingPayment(false);
       const errorMessage = (error && error.message) || 'Error al procesar el registro. Por favor contacta soporte.';
       toast({ title: 'No pudimos crear tu cuenta', description: errorMessage, variant: 'destructive' });
