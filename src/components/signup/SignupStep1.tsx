@@ -274,13 +274,10 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
         whatsapp_country_code: countryCode,
       };
       
+      // Call onComplete - it handles its own success/error states and toasts
       await onComplete(cleanedData, selectedPlan);
-      
-      toast({
-        title: "Información guardada",
-        description: "Desplázate hacia abajo para completar el pago.",
-      });
     } catch (error: any) {
+      // Catch validation errors that occur before onComplete
       toast({
         title: "Error en el proceso",
         description: error.message || "Hubo un problema. Inténtalo de nuevo.",

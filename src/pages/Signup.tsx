@@ -176,22 +176,28 @@ const Signup = () => {
         throw new Error(backendMsg || 'Error en el servidor');
       }
       
-      if ((data as any)?.error) {
+      // Check if response contains an error (success: false cases)
+      if ((data as any)?.error || (data as any)?.success === false) {
         console.error('Response contains error:', (data as any).error);
-        throw new Error((data as any).error);
+        throw new Error((data as any).error || 'Error desconocido del servidor');
       }
       
-        if (data?.success && data?.client?.id) {
-          console.log('Account created successfully:', data);
-          clearTimeout(safetyTimeout); // Clear safety timeout on success
-          setCreatedClientId(data.client.id);
-          setSignupData({ ...updatedData, paymentId: data.client.id });
-          setIsProcessingPayment(false);
-          // Move to payment step
-          setCurrentStep(2);
-        } else {
-          throw new Error('Respuesta inesperada del servidor');
-        }
+      if (data?.success && data?.client?.id) {
+        console.log('✅ Account created successfully, moving to step 2:', data);
+        clearTimeout(safetyTimeout);
+        setCreatedClientId(data.client.id);
+        setSignupData({ ...updatedData, paymentId: data.client.id });
+        setIsProcessingPayment(false);
+        console.log('🔄 Setting currentStep to 2');
+        setCurrentStep(2);
+        toast({
+          title: "Cuenta creada",
+          description: "Ahora completa el pago para activar tu suscripción.",
+        });
+      } else {
+        console.error('❌ Unexpected server response format:', data);
+        throw new Error('Respuesta inesperada del servidor');
+      }
     } catch (error: any) {
       console.error('Account creation error:', error);
       clearTimeout(safetyTimeout); // Clear safety timeout on error
