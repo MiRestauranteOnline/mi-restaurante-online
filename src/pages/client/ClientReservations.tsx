@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import ReservationSchedules from "@/components/client/ReservationSchedules";
 import ReservationsList from "@/components/client/ReservationsList";
+import ReservationAvailability from "@/components/client/ReservationAvailability";
 
 
 const ClientReservations = () => {
@@ -25,11 +26,26 @@ const ClientReservations = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="schedules" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="schedules">Horarios Disponibles</TabsTrigger>
-          <TabsTrigger value="reservations">Reservas Recibidas</TabsTrigger>
+      <Tabs defaultValue="availability" className="w-full">
+        <TabsList className="grid w-full max-w-2xl grid-cols-3">
+          <TabsTrigger value="availability">Disponibilidad</TabsTrigger>
+          <TabsTrigger value="schedules">Horarios</TabsTrigger>
+          <TabsTrigger value="reservations">Reservas</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="availability" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Disponibilidad en Tiempo Real</CardTitle>
+              <CardDescription>
+                Vista rápida de la capacidad disponible y agregar reservas manualmente.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ReservationAvailability clientId={clientId} />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="schedules" className="mt-6">
           <Card>
