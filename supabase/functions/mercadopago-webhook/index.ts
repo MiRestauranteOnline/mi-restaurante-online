@@ -12,7 +12,84 @@ serve(async (req) => {
   }
 
   try {
+    // Verify webhook signature for security
+    const signature = req.headers.get('x-signature');
+    const requestId = req.headers.get('x-request-id');
+    
+    if (!signature || !requestId) {
+      console.error('Missing signature or request-id headers');
+      return new Response(JSON.stringify({ error: 'Missing security headers' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
+    }
+
+    const webhookSecret = Deno.env.get('MERCADOPAGO_WEBHOOK_SECRET');
+    if (!webhookSecret) {
+      console.error('MERCADOPAGO_WEBHOOK_SECRET not configured');
+      return new Response(JSON.stringify({ error: 'Webhook secret not configured' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      });
+    }
+
     const body = await req.json();
+    const bodyString = JSON.stringify(body);
+    
+    // Extract signature parts (format: "ts=timestamp,v1=hash")
+    const signatureParts = signature.split(',').reduce((acc, part) => {
+      const [key, value] = part.split('=');
+      acc[key] = value;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const timestamp = signatureParts['ts'];
+    const receivedHash = signatureParts['v1'];
+
+    if (!timestamp || !receivedHash) {
+      console.error('Invalid signature format');
+      return new Response(JSON.stringify({ error: 'Invalid signature format' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
+    }
+
+    // Create the signature string: id + request-id + timestamp
+    const dataId = body.data?.id || '';
+    const signatureString = `id:${dataId};request-id:${requestId};ts:${timestamp};`;
+    
+    // Generate HMAC-SHA256 hash
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(webhookSecret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    
+    const signatureBytes = await crypto.subtle.sign(
+      'HMAC',
+      key,
+      encoder.encode(signatureString)
+    );
+    
+    const expectedHash = Array.from(new Uint8Array(signatureBytes))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    // Verify signature
+    if (expectedHash !== receivedHash) {
+      console.error('Invalid webhook signature');
+      console.error('Expected:', expectedHash);
+      console.error('Received:', receivedHash);
+      return new Response(JSON.stringify({ error: 'Invalid signature' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
+    }
+
+    console.log('✓ Webhook signature verified');
     console.log('MercadoPago webhook received:', JSON.stringify(body, null, 2));
 
     // MercadoPago sends notifications for various events
