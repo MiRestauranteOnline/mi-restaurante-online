@@ -209,11 +209,16 @@ export const MercadoPagoCardPayment = ({
                 console.error('Payment error:', err);
                 const errorMsg = err.message || 'Error processing payment';
                 // Map common MercadoPago errors to user-friendly messages
-                const friendly = /invalid card_token_id/i.test(errorMsg)
+                const isTokenError = /invalid card_token_id/i.test(errorMsg);
+                const friendly = isTokenError
                   ? 'El token de tu tarjeta expiró. Por favor, verifica los datos y vuelve a intentar.'
                   : errorMsg;
                 setError(friendly);
                 onPaymentError(friendly);
+                // Reinitialize form to force a fresh token on token errors
+                if (isTokenError && mp) {
+                  initializeCardForm(mp);
+                }
                 toast({
                 title: "Error en el pago",
                 description: errorMsg,
