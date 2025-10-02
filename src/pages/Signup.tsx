@@ -8,6 +8,7 @@ import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/sig
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { MercadoPagoCardPayment } from "@/components/signup/MercadoPagoCardPayment";
+import { MercadoPagoCheckoutRedirect } from "@/components/signup/MercadoPagoCheckoutRedirect";
 import { CouponInput } from "@/components/signup/CouponInput";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -424,16 +425,31 @@ const Signup = () => {
                     onCouponApplied={handleCouponApplied}
                   />
 
-                  <MercadoPagoCardPayment
-                    amount={paymentAmount}
-                    planType={selectedPlan}
-                    clientId={createdClientId}
-                    clientEmail={signupData.email}
-                    couponCode={appliedCoupon?.code}
-                    onPaymentSuccess={handlePaymentSuccess}
-                    onPaymentError={handlePaymentError}
-                    onCancel={handlePaymentCancel}
-                  />
+                  <DebugErrorBoundary>
+                    {/* Using Checkout Pro (redirect) by default for better approval rates */}
+                    <MercadoPagoCheckoutRedirect
+                      amount={paymentAmount}
+                      planType={selectedPlan}
+                      clientId={createdClientId}
+                      userEmail={signupData.email}
+                      onSuccess={handlePaymentSuccess}
+                      onError={handlePaymentError}
+                      onCancel={handlePaymentCancel}
+                    />
+                    
+                    {/* Card payment component kept for later use when account is established
+                    <MercadoPagoCardPayment
+                      amount={paymentAmount}
+                      planType={selectedPlan}
+                      clientId={createdClientId}
+                      clientEmail={signupData.email}
+                      couponCode={appliedCoupon?.code}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onPaymentError={handlePaymentError}
+                      onCancel={handlePaymentCancel}
+                    />
+                    */}
+                  </DebugErrorBoundary>
                 </div>
               )}
               

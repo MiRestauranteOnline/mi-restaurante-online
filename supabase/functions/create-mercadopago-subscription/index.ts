@@ -6,13 +6,13 @@ const corsHeaders = {
 };
 
 interface SubscriptionRequest {
-  token: string;
-  issuer_id: string;
-  payment_method_id: string;
+  token?: string;
+  issuer_id?: string;
+  payment_method_id?: string;
   transaction_amount: number;
   payer: {
     email: string;
-    identification: {
+    identification?: {
       type: string;
       number: string;
     };
@@ -20,6 +20,7 @@ interface SubscriptionRequest {
   clientId: string;
   planType: 'basic' | 'advanced';
   couponCode?: string;
+  useCheckoutPro?: boolean; // Flag to switch between card payment and redirect
 }
 
 Deno.serve(async (req) => {
@@ -28,9 +29,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { token, issuer_id, payment_method_id, transaction_amount, payer, clientId, planType, couponCode }: SubscriptionRequest = await req.json();
+    const { token, issuer_id, payment_method_id, transaction_amount, payer, clientId, planType, couponCode, useCheckoutPro }: SubscriptionRequest = await req.json();
 
-    console.log('Creating subscription:', { clientId, planType, amount: transaction_amount, couponCode });
+    console.log('Creating subscription:', { clientId, planType, amount: transaction_amount, couponCode, useCheckoutPro });
 
     // Initialize Supabase
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -98,10 +99,71 @@ Deno.serve(async (req) => {
     periodEnd.setMonth(periodEnd.getMonth() + 1);
     const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN_SUBSCRIPTION')!;
 
+    // Check if we should use Checkout Pro (redirect) or card payment
+    const shouldUseCheckoutPro = useCheckoutPro !== false; // Default to true for better approval rates
+    
+    console.log(`Using ${shouldUseCheckoutPro ? 'Checkout Pro (redirect)' : 'card payment'} flow`);
+    
+    if (shouldUseCheckoutPro) {
+      // ===== CHECKOUT PRO (REDIRECT) FLOW =====
+      console.log('Creating Checkout Pro preference for redirect...');
+      console.log('✓ Access token prefix:', accessToken?.substring(0, 30));
+      
+      const preferenceBody = {
+        reason: `Suscripción ${planType} - ${client.restaurant_name}`,
+        auto_recurring: {
+          frequency: 1,
+          frequency_type: 'months',
+          transaction_amount: amount,
+          currency_id: currency,
+          start_date: periodStart.toISOString(),
+        },
+        back_url: `https://${client.subdomain}.mirestauranteonline.com/registro?payment=success`,
+        payer_email: payer.email,
+        external_reference: clientId,
+        status: 'pending', // Will become authorized after user completes payment
+      };
+
+      console.log('Preference body:', JSON.stringify(preferenceBody, null, 2));
+
+      const preferenceResponse = await fetch('https://api.mercadopago.com/preapproval', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(preferenceBody),
+      });
+
+      const preferenceResult = await preferenceResponse.json();
+      console.log('Preference created:', preferenceResult);
+
+      if (!preferenceResponse.ok) {
+        console.error('Preference creation failed:', preferenceResult);
+        throw new Error(preferenceResult.message || 'Failed to create checkout preference');
+      }
+
+      // Return the checkout URL for redirect
+      return new Response(
+        JSON.stringify({
+          success: true,
+          checkoutUrl: preferenceResult.init_point,
+          preapprovalId: preferenceResult.id,
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      );
+    }
+
+    // ===== CARD PAYMENT FLOW (ORIGINAL) =====
+    if (!token || !payment_method_id || !issuer_id) {
+      throw new Error('Card token, payment method, and issuer are required for card payment flow');
+    }
+
     // DIAGNOSTIC: Log credential details (partial)
-    console.log('✓ Access token prefix:', accessToken?.substring(0, 20) || 'MISSING');
-    console.log('✓ Token received from SDK:', token?.substring(0, 20) || 'MISSING');
-    console.log('✓ Token length:', token?.length || 0);
+    console.log('Creating subscription with card payment...');
+    console.log('✓ Access token prefix:', accessToken?.substring(0, 30));
+    console.log('✓ Token received from SDK:', token?.substring(0, 20));
+    console.log('✓ Token length:', token?.length);
     console.log('✓ Payment method:', payment_method_id, 'Issuer:', issuer_id);
 
     // Create subscription (preapproval) - MercadoPago will automatically charge the first payment
@@ -109,7 +171,7 @@ Deno.serve(async (req) => {
       auto_recurring: {
         frequency: 1,
         frequency_type: 'months',
-         transaction_amount: amount,
+        transaction_amount: amount,
         currency_id: currency,
         start_date: periodStart.toISOString(),
       },
@@ -120,8 +182,6 @@ Deno.serve(async (req) => {
       status: 'authorized',
       card_token_id: token,
     };
-
-    console.log('Creating subscription with initial payment...');
 
     const subscriptionResponse = await fetch('https://api.mercadopago.com/preapproval', {
       method: 'POST',
