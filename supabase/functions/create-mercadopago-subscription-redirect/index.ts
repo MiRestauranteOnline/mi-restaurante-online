@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
       preapproval_plan_id: planResult.id,
       payer_email: payer.email,
       external_reference: clientId,
-      back_url: `${supabaseUrl}`,
+      back_url: 'https://mirestauranteonline.com/registro?payment=success',
     };
 
     console.log('→ Creating preapproval (redirect) with body:', JSON.stringify(preapprovalBody));
