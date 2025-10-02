@@ -89,11 +89,13 @@ Deno.serve(async (req) => {
     const originalAmountNumber = Math.round(Number(originalAmount) * 100) / 100;
     const discountAmountNumber = Math.round(Number(discountAmount) * 100) / 100;
 
-    // Calculate subscription dates
-    const periodStart = new Date();
+    // Calculate subscription dates (ensure start_date is safely in the future for any timezone)
+    const bufferMinutes = 5; // avoid "past date" due to processing delays/timezones
+    const periodStart = new Date(Date.now() + bufferMinutes * 60 * 1000);
+    // Normalize seconds/millis to avoid precision issues
+    periodStart.setSeconds(0, 0);
     const periodEnd = new Date(periodStart);
     periodEnd.setMonth(periodEnd.getMonth() + 1);
-
     const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN_SUBSCRIPTION')!;
 
     // Create subscription (preapproval) - MercadoPago will automatically charge the first payment
