@@ -199,7 +199,12 @@ export const MercadoPagoCardPayment = ({
               );
 
               if (paymentError || !data?.success) {
-                throw new Error(data?.error || paymentError?.message || 'Payment failed');
+                // Try to extract server error message
+                const serverMsg = (paymentError as any)?.context?.response ?
+                  await (paymentError as any).context.response.text() : undefined;
+                const parsedServer = (() => { try { return serverMsg ? JSON.parse(serverMsg) : null; } catch { return null; } })();
+                const msg = parsedServer?.error || (paymentError as any)?.message || 'Payment failed';
+                throw new Error(msg);
               }
 
               if (data.status === 'approved') {
