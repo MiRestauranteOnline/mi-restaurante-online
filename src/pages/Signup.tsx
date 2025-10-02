@@ -426,14 +426,15 @@ const Signup = () => {
                   />
 
                   <DebugErrorBoundary>
-                    {/* Using Checkout Pro (redirect) by default for better approval rates */}
-                    <MercadoPagoCheckoutRedirect
+                    {/* Using Card Payment for direct processing */}
+                    <MercadoPagoCardPayment
                       amount={paymentAmount}
                       planType={selectedPlan}
                       clientId={createdClientId}
-                      userEmail={signupData.email}
-                      onSuccess={handlePaymentSuccess}
-                      onError={handlePaymentError}
+                      clientEmail={signupData.email}
+                      couponCode={appliedCoupon?.code}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onPaymentError={handlePaymentError}
                       onCancel={handlePaymentCancel}
                     />
                     
