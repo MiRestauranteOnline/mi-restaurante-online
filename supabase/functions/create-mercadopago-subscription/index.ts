@@ -137,7 +137,15 @@ Deno.serve(async (req) => {
 
     if (!subscriptionResponse.ok) {
       console.error('Subscription creation failed:', subscriptionResult);
-      throw new Error(subscriptionResult.message || subscriptionResult.code || 'Subscription creation failed');
+      // Log full error details for debugging
+      if (subscriptionResult.cause && Array.isArray(subscriptionResult.cause)) {
+        console.error('Error causes:', JSON.stringify(subscriptionResult.cause, null, 2));
+      }
+      if (subscriptionResult.message) {
+        console.error('Error message:', subscriptionResult.message);
+      }
+      const errorMsg = subscriptionResult.message || subscriptionResult.code || 'Subscription creation failed';
+      throw new Error(errorMsg);
     }
 
     // Wait a moment for MercadoPago to process the initial payment
