@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
       const { data: couponResult, error: couponError } = await supabase.rpc('validate_coupon', {
         coupon_code: couponCode,
         plan_type: planType,
-        amount: finalAmount
+        amount: Number(finalAmount)
       });
 
       if (!couponError && couponResult?.valid) {
@@ -79,6 +79,15 @@ Deno.serve(async (req) => {
         console.log('Coupon applied:', { original: originalAmount, discount: discountAmount, final: finalAmount });
       }
     }
+
+    // Normalize amounts to valid numbers (2 decimals)
+    const amountNumberRaw = typeof finalAmount === 'string' ? parseFloat(finalAmount) : Number(finalAmount);
+    if (!Number.isFinite(amountNumberRaw) || amountNumberRaw <= 0) {
+      throw new Error('Invalid amount computed for transaction_amount');
+    }
+    const amount = Math.round(amountNumberRaw * 100) / 100;
+    const originalAmountNumber = Math.round(Number(originalAmount) * 100) / 100;
+    const discountAmountNumber = Math.round(Number(discountAmount) * 100) / 100;
 
     // Calculate subscription dates
     const periodStart = new Date();
@@ -92,7 +101,7 @@ Deno.serve(async (req) => {
       auto_recurring: {
         frequency: 1,
         frequency_type: 'months',
-        transaction_amount: finalAmount,
+         transaction_amount: amount,
         currency_id: currency,
         start_date: periodStart.toISOString(),
       },
@@ -127,7 +136,7 @@ Deno.serve(async (req) => {
         token,
         issuer_id,
         payment_method_id,
-        transaction_amount: finalAmount,
+        transaction_amount: amount,
         installments: 1,
         description: `Primera cuota - Suscripción ${planType} - ${client.restaurant_name}`,
         payer,
@@ -163,9 +172,9 @@ Deno.serve(async (req) => {
         .from('subscription_payments')
         .insert({
           client_id: clientId,
-          amount: finalAmount,
-          original_amount: originalAmount,
-          discount_amount: discountAmount,
+          amount: amount,
+          original_amount: originalAmountNumber,
+          discount_amount: discountAmountNumber,
           currency: currency,
           status: 'approved',
           period_start: periodStart.toISOString(),
@@ -243,9 +252,9 @@ Deno.serve(async (req) => {
       .from('subscription_payments')
       .insert({
         client_id: clientId,
-        amount: finalAmount,
-        original_amount: originalAmount,
-        discount_amount: discountAmount,
+        amount: amount,
+        original_amount: originalAmountNumber,
+        discount_amount: discountAmountNumber,
         currency: currency,
         status: 'approved',
         period_start: periodStart.toISOString(),
