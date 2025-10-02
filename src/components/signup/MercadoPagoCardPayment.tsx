@@ -39,6 +39,7 @@ export const MercadoPagoCardPayment = ({
   const [error, setError] = useState<string>("");
   const [mp, setMp] = useState<any>(null);
   const { toast } = useToast();
+  const lastPaymentMethodRef = useRef<string | null>(null);
 
   useEffect(() => {
     loadMercadoPagoSDK();
@@ -177,6 +178,9 @@ export const MercadoPagoCardPayment = ({
                 identificationType,
               } = cardForm.getCardFormData();
 
+              // Store last payment method id for better error messages
+              lastPaymentMethodRef.current = payment_method_id || null;
+
               // Create subscription through our backend
               const { data, error: paymentError } = await supabase.functions.invoke(
                 'create-mercadopago-subscription',
@@ -228,10 +232,16 @@ export const MercadoPagoCardPayment = ({
               } catch (err: any) {
                 console.error('Payment error:', err);
                 const errorMsg = err.message || 'Error processing payment';
-                // Map common MercadoPago errors to user-friendly messages
+                // Map common errors
                 const isTokenError = /invalid card_token_id/i.test(errorMsg) || /token was used/i.test(errorMsg);
+                const isCcVal433 = /CC_VAL_433/i.test(errorMsg) || /validation has failed/i.test(errorMsg);
+                const isDebit = typeof lastPaymentMethodRef.current === 'string' && lastPaymentMethodRef.current.startsWith('deb');
                 const friendly = isTokenError
                   ? 'El token de tu tarjeta expiró o ya fue usado. Por favor, vuelve a ingresar los datos.'
+                  : isCcVal433 && isDebit
+                  ? 'Tu tarjeta de débito no puede usarse para suscripciones. Intenta con una tarjeta de crédito.'
+                  : isCcVal433
+                  ? 'Tu banco rechazó la validación de la tarjeta. Intenta con otra tarjeta o contacta a tu banco.'
                   : errorMsg;
                 setError(friendly);
                 onPaymentError(friendly);
@@ -241,7 +251,7 @@ export const MercadoPagoCardPayment = ({
                 }
                 toast({
                 title: "Error en el pago",
-                description: errorMsg,
+                description: friendly,
                 variant: "destructive",
               });
             } finally {
