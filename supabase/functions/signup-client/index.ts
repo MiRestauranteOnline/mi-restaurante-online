@@ -109,7 +109,8 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log('User created successfully:', newUser.user.id);
-
+    // Set 7-day trial period
+    const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     // Create client record
     const { data: client, error: clientError } = await supabaseAdmin
       .from('clients')
@@ -123,6 +124,10 @@ const handler = async (req: Request): Promise<Response> => {
         email: email,
         domain: customDomain || null,
         address: address || null,
+        subscription_status: 'trial',
+        payment_status: 'trial',
+        trial_end_date: trialEnd,
+        plan_type: 'basic',
         other_customizations: {
           paymentId: paymentId || 'temp-payment-id',
           referralSource: referralSource || null,

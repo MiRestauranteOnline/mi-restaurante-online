@@ -168,16 +168,16 @@ const Signup = () => {
         throw new Error((data as any).error);
       }
       
-      if (data?.success && data?.client?.id) {
-        console.log('Account created successfully:', data);
-        setCreatedClientId(data.client.id);
-        setSignupData({ ...updatedData, paymentId: data.client.id });
-        setIsProcessingPayment(false);
-        // Move to payment step
-        setCurrentStep(2);
-      } else {
-        throw new Error('Respuesta inesperada del servidor');
-      }
+        if (data?.success && data?.client?.id) {
+          console.log('Account created successfully:', data);
+          setCreatedClientId(data.client.id);
+          setSignupData({ ...updatedData, paymentId: data.client.id });
+          setIsProcessingPayment(false);
+          // Skip payment: start 7-day trial and move to requirements step
+          setCurrentStep(3);
+        } else {
+          throw new Error('Respuesta inesperada del servidor');
+        }
     } catch (error: any) {
       console.error('Account creation error:', error);
       setIsProcessingPayment(false);
