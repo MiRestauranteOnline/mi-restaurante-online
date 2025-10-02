@@ -781,7 +781,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             type="submit" 
             className="w-full" 
             size="lg"
-            disabled={isProcessingPayment || !!subdomainError || isCheckingSubdomain}
+            disabled={isProcessingPayment || !!subdomainError || isCheckingSubdomain || !!domainError || isCheckingDomain}
           >
             {isProcessingPayment ? (
               <>
