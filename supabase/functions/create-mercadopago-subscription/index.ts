@@ -122,43 +122,10 @@ Deno.serve(async (req) => {
     console.log(`Using ${shouldUseCheckoutPro ? 'Checkout Pro (redirect)' : 'card payment'} flow`);
     
     if (shouldUseCheckoutPro) {
-      // ===== CHECKOUT PRO (REDIRECT) FLOW WITH PLAN =====
-      console.log('Creating Preapproval Plan for redirect...');
+      // ===== CHECKOUT PRO (REDIRECT) FLOW WITHOUT PLAN =====
+      console.log('Creating Preapproval (redirect) without plan...');
       console.log('✓ Access token prefix:', accessToken?.substring(0, 30));
 
-      const planBody = {
-        reason: `Suscripción ${planType} - ${client.restaurant_name}`,
-        auto_recurring: {
-          frequency: 1,
-          frequency_type: 'months',
-          transaction_amount: amount,
-          currency_id: currency,
-        },
-        // You can limit payment methods if needed via payment_methods: {...}
-      };
-
-      const planResp = await fetch('https://api.mercadopago.com/preapproval_plan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(planBody),
-      });
-
-      const planResult = await planResp.json();
-      console.log('Preapproval plan result:', planResult);
-
-      if (!planResp.ok || !planResult?.id) {
-        const msg = planResult?.message || planResult?.error || 'Failed to create preapproval plan';
-        return new Response(
-          JSON.stringify({ success: false, error: msg, details: planResult }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-        );
-      }
-
-      console.log('Creating Preapproval (redirect) using plan...');
-      
       // Determine return URL priority: explicit returnUrl from client, then Origin header, fallback to preview URL
       const originHeader = req.headers.get('origin') || '';
       const fallbackBase = 'https://f193867f-f433-4926-b97a-9e3dacd83d9c.lovableproject.com/registro';
@@ -166,11 +133,20 @@ Deno.serve(async (req) => {
         ? returnUrl
         : (originHeader ? `${originHeader}/registro` : fallbackBase);
 
+      // Create a preapproval directly for redirect (no plan). This endpoint requires back_url.
       const preapprovalBody = {
-        preapproval_plan_id: planResult.id,
+        reason: `Suscripción ${planType} - ${client.restaurant_name}`,
+        auto_recurring: {
+          frequency: 1,
+          frequency_type: 'months',
+          transaction_amount: amount,
+          currency_id: currency,
+          start_date: periodStart.toISOString(),
+        },
         back_url: baseReturnUrl,
         payer_email: payer.email,
         external_reference: clientId,
+        // Do NOT include card_token_id for redirect flow
       };
 
       const preapprovalResp = await fetch('https://api.mercadopago.com/preapproval', {
