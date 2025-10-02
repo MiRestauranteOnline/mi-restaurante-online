@@ -120,54 +120,72 @@ Deno.serve(async (req) => {
     console.log(`Using ${shouldUseCheckoutPro ? 'Checkout Pro (redirect)' : 'card payment'} flow`);
     
     if (shouldUseCheckoutPro) {
-      // ===== CHECKOUT PRO (REDIRECT) FLOW =====
-      console.log('Creating Checkout Pro preference for redirect...');
+      // ===== CHECKOUT PRO (REDIRECT) FLOW WITH PLAN =====
+      console.log('Creating Preapproval Plan for redirect...');
       console.log('✓ Access token prefix:', accessToken?.substring(0, 30));
-      
-      const preferenceBody = {
+
+      const planBody = {
         reason: `Suscripción ${planType} - ${client.restaurant_name}`,
         auto_recurring: {
           frequency: 1,
           frequency_type: 'months',
           transaction_amount: amount,
           currency_id: currency,
-          start_date: periodStart.toISOString(),
         },
-        back_url: `https://${client.subdomain}.mirestauranteonline.com/registro?payment=success`,
-        payer_email: payer.email,
-        external_reference: clientId
+        // You can limit payment methods if needed via payment_methods: {...}
       };
 
-      console.log('Preference body:', JSON.stringify(preferenceBody, null, 2));
-
-      const preferenceResponse = await fetch('https://api.mercadopago.com/preapproval', {
+      const planResp = await fetch('https://api.mercadopago.com/preapproval_plan', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(preferenceBody),
+        body: JSON.stringify(planBody),
       });
 
-      const preferenceResult = await preferenceResponse.json();
-      console.log('Preference created:', preferenceResult);
+      const planResult = await planResp.json();
+      console.log('Preapproval plan result:', planResult);
 
-      if (!preferenceResponse.ok) {
-        console.error('Preference creation failed:', preferenceResult);
-        const errorMsg = preferenceResult.message || preferenceResult.error || 'Failed to create checkout preference';
+      if (!planResp.ok || !planResult?.id) {
+        const msg = planResult?.message || planResult?.error || 'Failed to create preapproval plan';
         return new Response(
-          JSON.stringify({ success: false, error: errorMsg, details: preferenceResult }),
+          JSON.stringify({ success: false, error: msg, details: planResult }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
+
+      console.log('Creating Preapproval (redirect) using plan...');
+      const preapprovalBody = {
+        preapproval_plan_id: planResult.id,
+        back_url: `https://${client.subdomain}.mirestauranteonline.com/registro?payment=success`,
+        payer_email: payer.email,
+        external_reference: clientId,
+      };
+
+      const preapprovalResp = await fetch('https://api.mercadopago.com/preapproval', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(preapprovalBody),
+      });
+
+      const preapprovalResult = await preapprovalResp.json();
+      console.log('Preapproval (redirect) result:', preapprovalResult);
+
+      if (!preapprovalResp.ok || !preapprovalResult?.init_point) {
+        const msg = preapprovalResult?.message || preapprovalResult?.error || 'Failed to create preapproval redirect';
+        return new Response(
+          JSON.stringify({ success: false, error: msg, details: preapprovalResult }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         );
       }
 
       // Return the checkout URL for redirect
       return new Response(
-        JSON.stringify({
-          success: true,
-          checkoutUrl: preferenceResult.init_point,
-          preapprovalId: preferenceResult.id,
-        }),
+        JSON.stringify({ success: true, checkoutUrl: preapprovalResult.init_point, preapprovalId: preapprovalResult.id }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
       );
     }
