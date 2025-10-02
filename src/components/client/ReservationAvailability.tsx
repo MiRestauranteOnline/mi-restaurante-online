@@ -29,10 +29,11 @@ interface Reservation {
 }
 
 interface TimeSlotAvailability {
-  day: number;
+  date: string;
   time: string;
   capacity: number;
   available: number;
+  dayOfWeek: number;
 }
 
 interface ReservationAvailabilityProps {
@@ -106,29 +107,62 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
 
   const calculateAvailability = () => {
     const availabilityMap: TimeSlotAvailability[] = [];
+    const today = new Date();
+    const daysToShow = 14; // Show next 2 weeks
 
-    schedules.forEach((schedule) => {
-      const startTime = schedule.start_time.substring(0, 5);
-      
-      // Count reservations for this day/time
-      const dayReservations = reservations.filter((res) => {
-        const resDate = new Date(res.reservation_date);
-        const resDayOfWeek = resDate.getDay();
-        const resTime = res.reservation_time.substring(0, 5);
+    // For each of the next 14 days
+    for (let dayOffset = 0; dayOffset < daysToShow; dayOffset++) {
+      const currentDate = new Date(today);
+      currentDate.setDate(today.getDate() + dayOffset);
+      const dayOfWeek = currentDate.getDay();
+      const dateStr = currentDate.toISOString().split('T')[0];
+
+      // Find schedules for this day of week
+      const daySchedules = schedules.filter(s => s.day_of_week === dayOfWeek);
+
+      daySchedules.forEach((schedule) => {
+        // Generate all time slots for this schedule based on duration
+        const startHour = parseInt(schedule.start_time.substring(0, 2));
+        const startMin = parseInt(schedule.start_time.substring(3, 5));
+        const endHour = parseInt(schedule.end_time.substring(0, 2));
+        const endMin = parseInt(schedule.end_time.substring(3, 5));
         
-        return resDayOfWeek === schedule.day_of_week && resTime === startTime;
-      });
+        const startMinutes = startHour * 60 + startMin;
+        const endMinutes = endHour * 60 + endMin;
+        
+        // Create slots based on duration
+        for (let slotStart = startMinutes; slotStart < endMinutes; slotStart += schedule.duration_minutes) {
+          const slotHour = Math.floor(slotStart / 60);
+          const slotMin = slotStart % 60;
+          const timeStr = `${slotHour.toString().padStart(2, '0')}:${slotMin.toString().padStart(2, '0')}`;
+          
+          // Count reservations that overlap with this time slot
+          const overlappingReservations = reservations.filter((res) => {
+            if (res.reservation_date !== dateStr) return false;
+            
+            const resHour = parseInt(res.reservation_time.substring(0, 2));
+            const resMin = parseInt(res.reservation_time.substring(3, 5));
+            const resStartMinutes = resHour * 60 + resMin;
+            const resEndMinutes = resStartMinutes + schedule.duration_minutes;
+            
+            // Check if this slot overlaps with the reservation
+            const slotEndMinutes = slotStart + schedule.duration_minutes;
+            return (slotStart < resEndMinutes && slotEndMinutes > resStartMinutes);
+          });
 
-      const bookedCapacity = dayReservations.reduce((sum, res) => sum + res.party_size, 0);
-      const available = Math.max(0, schedule.capacity - bookedCapacity);
+          const bookedCapacity = overlappingReservations.reduce((sum, res) => sum + res.party_size, 0);
+          const available = Math.max(0, schedule.capacity - bookedCapacity);
 
-      availabilityMap.push({
-        day: schedule.day_of_week,
-        time: startTime,
-        capacity: schedule.capacity,
-        available,
+          availabilityMap.push({
+            date: dateStr,
+            time: timeStr,
+            capacity: schedule.capacity,
+            available,
+            dayOfWeek,
+          });
+        }
       });
-    });
+    }
 
     setAvailability(availabilityMap);
   };
@@ -186,11 +220,19 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
     );
   }
 
-  const groupedByDay = availability.reduce((acc, slot) => {
-    if (!acc[slot.day]) acc[slot.day] = [];
-    acc[slot.day].push(slot);
+  const groupedByDate = availability.reduce((acc, slot) => {
+    if (!acc[slot.date]) acc[slot.date] = [];
+    acc[slot.date].push(slot);
     return acc;
-  }, {} as Record<number, TimeSlotAvailability[]>);
+  }, {} as Record<string, TimeSlotAvailability[]>);
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr + 'T00:00:00');
+    const dayName = DAYS[date.getDay()];
+    const day = date.getDate();
+    const month = date.toLocaleDateString('es-ES', { month: 'short' });
+    return `${dayName} ${day} ${month}`;
+  };
 
   return (
     <div className="space-y-6">
@@ -287,7 +329,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         </Dialog>
       </div>
 
-      {Object.keys(groupedByDay).length === 0 ? (
+      {Object.keys(groupedByDate).length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
             No hay horarios configurados. Configure horarios disponibles primero.
@@ -295,15 +337,15 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         </Card>
       ) : (
         <div className="grid gap-4">
-          {Object.entries(groupedByDay)
-            .sort(([a], [b]) => parseInt(a) - parseInt(b))
-            .map(([day, slots]) => (
-              <Card key={day}>
+          {Object.entries(groupedByDate)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([date, slots]) => (
+              <Card key={date}>
                 <CardHeader>
-                  <CardTitle className="text-base">{DAYS[parseInt(day)]}</CardTitle>
+                  <CardTitle className="text-base">{formatDate(date)}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                     {slots.map((slot, idx) => (
                       <div
                         key={idx}
