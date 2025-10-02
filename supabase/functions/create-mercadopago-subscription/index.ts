@@ -120,8 +120,7 @@ Deno.serve(async (req) => {
         },
         back_url: `https://${client.subdomain}.mirestauranteonline.com/registro?payment=success`,
         payer_email: payer.email,
-        external_reference: clientId,
-        status: 'pending', // Will become authorized after user completes payment
+        external_reference: clientId
       };
 
       console.log('Preference body:', JSON.stringify(preferenceBody, null, 2));
