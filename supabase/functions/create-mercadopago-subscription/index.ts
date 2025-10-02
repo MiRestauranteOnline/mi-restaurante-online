@@ -29,7 +29,22 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { token, issuer_id, payment_method_id, transaction_amount, payer, clientId, planType, couponCode, useCheckoutPro }: SubscriptionRequest = await req.json();
+    const body = await req.json();
+    console.log('Raw request body received:', JSON.stringify(body, null, 2));
+    
+    const { token, issuer_id, payment_method_id, transaction_amount, payer, clientId, planType, couponCode, useCheckoutPro } = body;
+    
+    // Validate required fields
+    if (!clientId || !planType || !transaction_amount || !payer?.email) {
+      console.error('Missing required fields:', { clientId, planType, transaction_amount, payer });
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Missing required fields: clientId, planType, transaction_amount, and payer.email are required' 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      );
+    }
 
     console.log('Creating subscription:', { clientId, planType, amount: transaction_amount, couponCode, useCheckoutPro });
 
