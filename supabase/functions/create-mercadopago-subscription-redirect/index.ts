@@ -61,6 +61,7 @@ Deno.serve(async (req) => {
         transaction_amount: amount,
         currency_id: currency,
       },
+      back_url: `https://mirestauranteonline.com/registro?payment=success`,
     };
 
     console.log('→ Creating preapproval_plan with body:', JSON.stringify(planBody));
