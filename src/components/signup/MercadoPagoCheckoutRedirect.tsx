@@ -43,6 +43,7 @@ export const MercadoPagoCheckoutRedirect = ({
             payer: { email: userEmail },
             couponCode,
             useCheckoutPro: true,
+            returnUrl: `${window.location.origin}/registro`,
           },
         }
       );

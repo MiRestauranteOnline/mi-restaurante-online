@@ -21,6 +21,7 @@ interface SubscriptionRequest {
   planType: 'basic' | 'advanced';
   couponCode?: string;
   useCheckoutPro?: boolean; // Flag to switch between card payment and redirect
+  returnUrl?: string; // Optional return URL for redirect flow
 }
 
 Deno.serve(async (req) => {
@@ -32,7 +33,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     console.log('Raw request body received:', JSON.stringify(body, null, 2));
     
-    const { token, issuer_id, payment_method_id, transaction_amount, payer, clientId, planType, couponCode, useCheckoutPro } = body;
+    const { token, issuer_id, payment_method_id, transaction_amount, payer, clientId, planType, couponCode, useCheckoutPro, returnUrl } = body;
     
     // Validate required fields
     if (!clientId || !planType || !transaction_amount || !payer?.email) {
@@ -158,16 +159,16 @@ Deno.serve(async (req) => {
 
       console.log('Creating Preapproval (redirect) using plan...');
       
-      // MercadoPago requires back_urls for all payment states
-      const baseUrl = `https://f193867f-f433-4926-b97a-9e3dacd83d9c.lovableproject.com`;
-      
+      // Determine return URL priority: explicit returnUrl from client, then Origin header, fallback to preview URL
+      const originHeader = req.headers.get('origin') || '';
+      const fallbackBase = 'https://f193867f-f433-4926-b97a-9e3dacd83d9c.lovableproject.com/registro';
+      const baseReturnUrl = (returnUrl && typeof returnUrl === 'string')
+        ? returnUrl
+        : (originHeader ? `${originHeader}/registro` : fallbackBase);
+
       const preapprovalBody = {
         preapproval_plan_id: planResult.id,
-        back_urls: {
-          success: `${baseUrl}/registro?payment=success`,
-          failure: `${baseUrl}/registro?payment=failure`,
-          pending: `${baseUrl}/registro?payment=pending`
-        },
+        back_url: baseReturnUrl,
         payer_email: payer.email,
         external_reference: clientId,
       };
