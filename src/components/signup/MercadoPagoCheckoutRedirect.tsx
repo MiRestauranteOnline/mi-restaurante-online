@@ -31,34 +31,27 @@ export const MercadoPagoCheckoutRedirect = ({
     try {
       console.log("Creating MercadoPago checkout redirect...");
 
-      // Call edge function via direct HTTP to capture error body even on non-2xx
-      const res = await fetch(
-        "https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/create-mercadopago-subscription",
+      const { data, error } = await supabase.functions.invoke(
+        "create-mercadopago-subscription-redirect",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // Publishable anon key – safe to send from client
-            apikey:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8",
-          },
-          body: JSON.stringify({
+          body: {
             clientId,
             planType,
             transaction_amount: amount,
             payer: { email: userEmail },
-            useCheckoutPro: true,
-          }),
+          },
         }
       );
 
-      const data = await res.json().catch(() => ({}));
+      if (error) {
+        console.error("Checkout creation error:", error, "response data:", data);
+        const serverMsg = (data as any)?.error || (error as any)?.message || "Checkout failed";
+        throw new Error(serverMsg);
+      }
 
-      if (!res.ok || !data?.success || !data?.checkoutUrl) {
-        const serverMsg = data?.error || data?.details?.message || `${res.status} ${res.statusText}`;
-        throw new Error(serverMsg || "Checkout failed");
+      if (!data?.success || !data?.checkoutUrl) {
+        const serverMsg = (data as any)?.error || "Failed to create checkout";
+        throw new Error(serverMsg);
       }
 
       console.log("Redirecting to MercadoPago checkout:", data.checkoutUrl);

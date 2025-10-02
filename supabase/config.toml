@@ -67,3 +67,7 @@ verify_jwt = false
 # New function: update-client-subscription-price
 [functions.update-client-subscription-price]
 verify_jwt = false
+
+# New function: create-mercadopago-subscription-redirect (public)
+[functions.create-mercadopago-subscription-redirect]
+verify_jwt = false
