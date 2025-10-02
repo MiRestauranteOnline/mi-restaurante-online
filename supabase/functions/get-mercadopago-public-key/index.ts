@@ -17,6 +17,10 @@ Deno.serve(async (req) => {
       throw new Error('MercadoPago public key not configured');
     }
 
+    // DIAGNOSTIC: Log public key details (safe to log, it's public)
+    console.log('✓ Returning public key:', publicKey);
+    console.log('✓ Key prefix:', publicKey.substring(0, 20));
+
     return new Response(
       JSON.stringify({ publicKey }),
       { 

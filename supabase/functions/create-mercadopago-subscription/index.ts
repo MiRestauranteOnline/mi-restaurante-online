@@ -98,6 +98,12 @@ Deno.serve(async (req) => {
     periodEnd.setMonth(periodEnd.getMonth() + 1);
     const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN_SUBSCRIPTION')!;
 
+    // DIAGNOSTIC: Log credential details (partial)
+    console.log('✓ Access token prefix:', accessToken?.substring(0, 20) || 'MISSING');
+    console.log('✓ Token received from SDK:', token?.substring(0, 20) || 'MISSING');
+    console.log('✓ Token length:', token?.length || 0);
+    console.log('✓ Payment method:', payment_method_id, 'Issuer:', issuer_id);
+
     // Create subscription (preapproval) - MercadoPago will automatically charge the first payment
     const subscriptionData = {
       auto_recurring: {
