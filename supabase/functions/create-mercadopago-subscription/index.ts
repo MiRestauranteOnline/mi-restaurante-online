@@ -157,9 +157,17 @@ Deno.serve(async (req) => {
       }
 
       console.log('Creating Preapproval (redirect) using plan...');
+      
+      // MercadoPago requires back_urls for all payment states
+      const baseUrl = `https://f193867f-f433-4926-b97a-9e3dacd83d9c.lovableproject.com`;
+      
       const preapprovalBody = {
         preapproval_plan_id: planResult.id,
-        back_url: `https://${client.subdomain}.mirestauranteonline.com/registro?payment=success`,
+        back_urls: {
+          success: `${baseUrl}/registro?payment=success`,
+          failure: `${baseUrl}/registro?payment=failure`,
+          pending: `${baseUrl}/registro?payment=pending`
+        },
         payer_email: payer.email,
         external_reference: clientId,
       };
