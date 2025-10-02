@@ -322,6 +322,49 @@ export default function SubscriptionManagement() {
                         </div>
                       </div>
 
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Next Billing Date</Label>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {client.next_billing_date 
+                              ? new Date(client.next_billing_date).toLocaleDateString('es-PE', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })
+                              : 'No billing date set'}
+                          </p>
+                        </div>
+                        <div>
+                          <Label>Subscription End Date</Label>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {client.subscription_end_date 
+                              ? new Date(client.subscription_end_date).toLocaleDateString('es-PE', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })
+                              : 'No end date'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {client.subscription_status === 'cancelled' && (
+                        <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded">
+                          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                            <strong>Cancellation Active:</strong> Service continues until {
+                              client.subscription_end_date 
+                                ? new Date(client.subscription_end_date).toLocaleDateString('es-PE', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                  })
+                                : 'end of billing period'
+                            }
+                          </p>
+                        </div>
+                      )}
+
                       <div className="flex gap-2">
                         <Button
                           onClick={() => handleUpgradeDowngrade(selectedClient, 'advanced')}
