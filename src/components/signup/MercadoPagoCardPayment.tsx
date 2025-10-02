@@ -234,14 +234,47 @@ export const MercadoPagoCardPayment = ({
                 const errorMsg = err.message || 'Error processing payment';
                 // Map common errors
                 const isTokenError = /invalid card_token_id/i.test(errorMsg) || /token was used/i.test(errorMsg);
-                const isCcVal433 = /CC_VAL_433/i.test(errorMsg) || /validation has failed/i.test(errorMsg);
+                const isCcVal433 = /CC_VAL_433/i.test(errorMsg) || /validation has failed/i.test(errorMsg) || /cc_rejected_high_risk/i.test(errorMsg);
                 const isDebit = typeof lastPaymentMethodRef.current === 'string' && lastPaymentMethodRef.current.startsWith('deb');
+
+                // Fallback to Checkout Pro (redirect) when card is rejected by risk engine
+                if (isCcVal433) {
+                  try {
+                    const { data: redirectData, error: redirectError } = await supabase.functions.invoke(
+                      'create-mercadopago-subscription',
+                      {
+                        body: {
+                          useCheckoutPro: true,
+                          transaction_amount: Number(amount),
+                          payer: {
+                            email: clientEmail,
+                          },
+                          clientId,
+                          planType,
+                          couponCode,
+                        },
+                      }
+                    );
+
+                    if (!redirectError && redirectData?.success && redirectData.checkoutUrl) {
+                      toast({
+                        title: 'Redirigiendo a pago seguro',
+                        description: 'Te llevamos a MercadoPago para completar la suscripción.',
+                      });
+                      window.location.href = redirectData.checkoutUrl;
+                      return; // Stop further error handling since we're redirecting
+                    }
+                  } catch (fallbackErr) {
+                    console.error('Checkout Pro fallback failed:', fallbackErr);
+                  }
+                }
+
                 const friendly = isTokenError
                   ? 'El token de tu tarjeta expiró o ya fue usado. Por favor, vuelve a ingresar los datos.'
                   : isCcVal433 && isDebit
                   ? 'Tu tarjeta de débito no puede usarse para suscripciones. Intenta con una tarjeta de crédito.'
                   : isCcVal433
-                  ? 'Tu banco rechazó la validación de la tarjeta. Intenta con otra tarjeta o contacta a tu banco.'
+                  ? 'Tu banco rechazó la validación de la tarjeta. Te redirigimos a un flujo seguro para completarlo.'
                   : errorMsg;
                 setError(friendly);
                 onPaymentError(friendly);
@@ -250,11 +283,11 @@ export const MercadoPagoCardPayment = ({
                   initializeCardForm(mp);
                 }
                 toast({
-                title: "Error en el pago",
-                description: friendly,
-                variant: "destructive",
-              });
-            } finally {
+                  title: 'Error en el pago',
+                  description: friendly,
+                  variant: 'destructive',
+                });
+              } finally {
               setIsProcessing(false);
               processingRef.current = false;
             }
