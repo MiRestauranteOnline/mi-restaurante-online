@@ -26,6 +26,7 @@ const translations = {
     'nav.briefing': 'Briefing',
     'nav.setupPrompt': 'Configuración Inicial',
     'nav.subscription': 'Suscripción',
+    'nav.reservations': 'Reservas',
     
     // Admin Navigation
     'admin.clientManagement': 'Gestión de Clientes',

@@ -38,6 +38,7 @@ import ClientSubscription from "./pages/client/ClientSubscription";
 import ClientSupport from "./pages/client/ClientSupport";
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 import ClientAnalytics from "./pages/client/ClientAnalytics";
+import ClientReservations from "./pages/client/ClientReservations";
 
 const queryClient = new QueryClient();
 
@@ -93,6 +94,7 @@ const App = () => (
             <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<ClientDashboard />} />
               <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","carousel","custom-images"]} />} />
+              <Route path="reservations/:clientId" element={<ClientReservations />} />
               <Route path="analytics/:clientId" element={<ClientAnalytics />} />
               <Route path="support/:clientId" element={<ClientSupport />} />
               <Route path="subscription" element={<ClientSubscription />} />
