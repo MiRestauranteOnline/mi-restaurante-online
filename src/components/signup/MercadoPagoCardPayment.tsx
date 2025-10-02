@@ -52,35 +52,34 @@ export const MercadoPagoCardPayment = ({
         throw new Error('Failed to load payment configuration');
       }
 
-      // If SDK already loaded, reuse it
-      if (window.MercadoPago) {
-        const mercadopago = new window.MercadoPago(data.publicKey, {
-          locale: 'es-PE'
-        });
-        setMp(mercadopago);
-        initializeCardForm(mercadopago);
-        return;
-      }
-
-      // Load MercadoPago SDK
-      const script = document.createElement('script');
-      script.src = 'https://sdk.mercadopago.com/js/v2';
-      script.async = true;
-      
-      script.onload = () => {
-        const mercadopago = new window.MercadoPago(data.publicKey, {
-          locale: 'es-PE'
-        });
+      // Load MercadoPago SDK if not already loaded
+      if (!document.querySelector('script[src="https://sdk.mercadopago.com/js/v2"]')) {
+        const script = document.createElement('script');
+        script.src = 'https://sdk.mercadopago.com/js/v2';
+        script.async = true;
         
+        script.onload = () => {
+          const mercadopago = new window.MercadoPago(data.publicKey, {
+            locale: 'es-PE'
+          });
+          
+          setMp(mercadopago);
+          initializeCardForm(mercadopago);
+        };
+
+        script.onerror = () => {
+          throw new Error('Failed to load payment system');
+        };
+
+        document.body.appendChild(script);
+      } else {
+        // SDK already loaded, just initialize
+        const mercadopago = new window.MercadoPago(data.publicKey, {
+          locale: 'es-PE'
+        });
         setMp(mercadopago);
         initializeCardForm(mercadopago);
-      };
-
-      script.onerror = () => {
-        throw new Error('Failed to load payment system');
-      };
-
-      document.body.appendChild(script);
+      }
     } catch (err: any) {
       console.error('SDK loading error:', err);
       setError(err.message || 'Error loading payment system');
@@ -209,16 +208,12 @@ export const MercadoPagoCardPayment = ({
               } catch (err: any) {
                 console.error('Payment error:', err);
                 const errorMsg = err.message || 'Error processing payment';
-                // Map common MercadoPago errors
+                // Map common MercadoPago errors to user-friendly messages
                 const friendly = /invalid card_token_id/i.test(errorMsg)
-                  ? 'El token de tu tarjeta expiró o no es válido. Vuelve a ingresar los datos y reintenta.'
+                  ? 'El token de tu tarjeta expiró. Por favor, verifica los datos y vuelve a intentar.'
                   : errorMsg;
                 setError(friendly);
                 onPaymentError(friendly);
-                // Reinitialize form to force a fresh token on token errors
-                if (/invalid card_token_id/i.test(errorMsg) && mp) {
-                  initializeCardForm(mp);
-                }
                 toast({
                 title: "Error en el pago",
                 description: errorMsg,
