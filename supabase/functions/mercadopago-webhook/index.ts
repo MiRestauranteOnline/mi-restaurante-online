@@ -301,11 +301,22 @@ async function handleSubscriptionEvent(body: any) {
   const subscription = await mpResponse.json();
   console.log('Subscription details:', JSON.stringify(subscription, null, 2));
 
-  const clientId = subscription.external_reference;
+  // Extract client_id from external_reference or from reason field
+  let clientId = subscription.external_reference;
+  
+  if (!clientId && subscription.reason) {
+    // Extract client ID from reason field (format: "Suscripción {plan} - {clientId}")
+    const match = subscription.reason.match(/- ([a-f0-9-]+)$/);
+    if (match) {
+      clientId = match[1];
+      console.log('Extracted client_id from reason field:', clientId);
+    }
+  }
+
   const status = subscription.status; // authorized, paused, cancelled
 
   if (!clientId) {
-    console.error('No external reference in subscription');
+    console.error('No client ID found in subscription (external_reference or reason)');
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
