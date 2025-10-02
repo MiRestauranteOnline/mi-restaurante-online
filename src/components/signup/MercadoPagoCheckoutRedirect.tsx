@@ -10,6 +10,7 @@ interface MercadoPagoCheckoutRedirectProps {
   planType: string;
   clientId: string;
   userEmail: string;
+  couponCode?: string;
   onSuccess: () => void;
   onError: (error: string) => void;
   onCancel: () => void;
@@ -20,6 +21,7 @@ export const MercadoPagoCheckoutRedirect = ({
   planType,
   clientId,
   userEmail,
+  couponCode,
   onSuccess,
   onError,
   onCancel,
@@ -32,13 +34,15 @@ export const MercadoPagoCheckoutRedirect = ({
       console.log("Creating MercadoPago checkout redirect...");
 
       const { data, error } = await supabase.functions.invoke(
-        "create-mercadopago-subscription-redirect",
+        "create-mercadopago-subscription",
         {
           body: {
             clientId,
             planType,
             transaction_amount: amount,
             payer: { email: userEmail },
+            couponCode,
+            useCheckoutPro: true,
           },
         }
       );
