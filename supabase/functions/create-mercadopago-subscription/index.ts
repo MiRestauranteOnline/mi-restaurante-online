@@ -115,7 +115,8 @@ Deno.serve(async (req) => {
     const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN_SUBSCRIPTION')!;
 
     // Check if we should use Checkout Pro (redirect) or card payment
-    const shouldUseCheckoutPro = useCheckoutPro !== false; // Default to true for better approval rates
+    // If a token is provided, always use card payment flow
+    const shouldUseCheckoutPro = !token && (useCheckoutPro !== false);
     
     console.log(`Using ${shouldUseCheckoutPro ? 'Checkout Pro (redirect)' : 'card payment'} flow`);
     
