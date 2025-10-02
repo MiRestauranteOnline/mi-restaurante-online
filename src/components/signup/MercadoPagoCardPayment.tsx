@@ -154,6 +154,7 @@ export const MercadoPagoCardPayment = ({
             if (error) {
               console.error('Form mount error:', error);
               setError('Error initializing payment form');
+              setIsLoading(false); // ensure we stop the spinner on error
             } else {
               console.log('Form mounted successfully');
               setIsLoading(false);
