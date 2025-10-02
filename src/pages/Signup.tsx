@@ -173,8 +173,8 @@ const Signup = () => {
           setCreatedClientId(data.client.id);
           setSignupData({ ...updatedData, paymentId: data.client.id });
           setIsProcessingPayment(false);
-          // Skip payment: start 7-day trial and move to requirements step
-          setCurrentStep(3);
+          // Move to payment step
+          setCurrentStep(2);
         } else {
           throw new Error('Respuesta inesperada del servidor');
         }
