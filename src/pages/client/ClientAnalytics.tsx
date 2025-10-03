@@ -1,9 +1,26 @@
 import { useParams } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
+import { UsageWidget } from '@/components/client/UsageWidget';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function ClientAnalytics() {
   const { clientId } = useParams<{ clientId: string }>();
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
+
+  useEffect(() => {
+    if (clientId) {
+      supabase
+        .from('premium_features')
+        .select('analytics_enabled')
+        .eq('client_id', clientId)
+        .single()
+        .then(({ data }) => {
+          setAnalyticsEnabled(data?.analytics_enabled || false);
+        });
+    }
+  }, [clientId]);
 
   if (!clientId) {
     return (
@@ -18,11 +35,14 @@ export default function ClientAnalytics() {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
+    <div className="p-6 space-y-6">
+      <div>
         <h1 className="text-3xl font-bold">Analíticas</h1>
         <p className="text-muted-foreground">Resumen de métricas clave de tu sitio web</p>
       </div>
+      
+      <UsageWidget clientId={clientId} analyticsEnabled={analyticsEnabled} />
+      
       <AnalyticsOverview clientId={clientId} />
     </div>
   );
