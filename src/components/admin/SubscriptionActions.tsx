@@ -53,19 +53,17 @@ export function SubscriptionActions({ clientId, subscription, onUpdate }: Subscr
   const handlePlanChange = async (newPlan: 'basic' | 'advanced') => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('update-mercadopago-subscription', {
-        body: { 
-          clientId,
-          newPlanType: newPlan
-        }
-      });
+      // Direct database update for plan change
+      const { error } = await supabase
+        .from('clients')
+        .update({ plan_type: newPlan })
+        .eq('id', clientId);
 
       if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || 'Failed to update plan');
 
       toast({
         title: "Plan actualizado",
-        description: data.message || `Plan cambiado a ${newPlan === 'basic' ? 'Básico' : 'Avanzado'}`,
+        description: `Plan cambiado a ${newPlan === 'basic' ? 'Básico' : 'Avanzado'}`,
       });
       
       onUpdate();
@@ -84,20 +82,21 @@ export function SubscriptionActions({ clientId, subscription, onUpdate }: Subscr
     setLoading(true);
     try {
       if (newStatus === 'cancelled') {
-        // Call cancel edge function
-        const { data, error } = await supabase.functions.invoke('cancel-mercadopago-subscription', {
-          body: { 
-            clientId,
-            reason: 'admin_action'
-          }
-        });
+        // Direct database update for cancellation
+        const { error } = await supabase
+          .from('clients')
+          .update({
+            subscription_status: 'cancelled',
+            cancellation_date: new Date().toISOString(),
+            cancellation_reason: 'admin_action'
+          })
+          .eq('id', clientId);
 
         if (error) throw error;
-        if (!data?.success) throw new Error(data?.error || 'Failed to cancel subscription');
 
         toast({
           title: "Suscripción cancelada",
-          description: data.message || "Suscripción cancelada correctamente",
+          description: "Suscripción cancelada correctamente",
         });
       } else {
         // Reactivate or other status changes

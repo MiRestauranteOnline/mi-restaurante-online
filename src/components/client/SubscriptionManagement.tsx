@@ -164,19 +164,21 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const handleCancel = async () => {
     setActionLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('cancel-mercadopago-subscription', {
-        body: { 
-          clientId,
-          reason: 'user_request'
-        }
-      });
+      // Direct database update for cancellation
+      const { error } = await supabase
+        .from('clients')
+        .update({
+          subscription_status: 'cancelled',
+          cancellation_date: new Date().toISOString(),
+          cancellation_reason: 'user_request'
+        })
+        .eq('id', clientId);
 
       if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || 'Failed to cancel');
 
       toast({
         title: "Suscripción cancelada",
-        description: data.message || "Tu suscripción ha sido cancelada",
+        description: "Tu suscripción ha sido cancelada",
       });
 
       fetchSubscriptionData();

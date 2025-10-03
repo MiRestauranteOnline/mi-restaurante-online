@@ -42,7 +42,7 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
       // Check if client has an active subscription
       const { data: clientData, error: clientError } = await supabase
         .from('clients')
-        .select('mercadopago_subscription_id, subscription_status')
+        .select('subscription_status')
         .eq('id', clientId)
         .single();
 

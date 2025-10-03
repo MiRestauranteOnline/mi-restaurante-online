@@ -7,8 +7,6 @@ import { SignupStep3Combined, type CombinedData } from "@/components/signup/Sign
 import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/signup/SignupStep4OpeningHours";
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
-import { MercadoPagoCardPayment } from "@/components/signup/MercadoPagoCardPayment";
-import { MercadoPagoCheckoutRedirect } from "@/components/signup/MercadoPagoCheckoutRedirect";
 import { CouponInput } from "@/components/signup/CouponInput";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -447,29 +445,16 @@ const Signup = () => {
                   />
 
                   <DebugErrorBoundary>
-                    {/* Using Checkout Pro redirect - allows users to log into MercadoPago account */}
-                    <MercadoPagoCheckoutRedirect
-                      amount={paymentAmount}
-                      planType={selectedPlan}
-                      clientId={createdClientId}
-                      userEmail={signupData.email}
-                      couponCode={appliedCoupon?.code}
-                      onSuccess={handlePaymentSuccess}
-                      onError={handlePaymentError}
-                      onCancel={handlePaymentCancel}
-                    />
+                    {/* Payment component will be added here after Culqi integration */}
+                    <Card className="border-primary/20">
+                      <CardContent className="pt-6">
+                        <p className="text-center text-muted-foreground">
+                          Sistema de pago en proceso de actualización a Culqi.
+                        </p>
+                      </CardContent>
+                    </Card>
                     
-                    {/* Card payment component kept for later use when account is established
-                    <MercadoPagoCardPayment
-                      amount={paymentAmount}
-                      planType={selectedPlan}
-                      clientId={createdClientId}
-                      clientEmail={signupData.email}
-                      couponCode={appliedCoupon?.code}
-                      onPaymentSuccess={handlePaymentSuccess}
-                      onPaymentError={handlePaymentError}
-                      onCancel={handlePaymentCancel}
-                    />
+                    {/* Culqi payment component will replace this placeholder
                     */}
                   </DebugErrorBoundary>
                 </div>
