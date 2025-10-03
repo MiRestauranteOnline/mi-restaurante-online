@@ -2869,11 +2869,13 @@ setReviewForm({
               </CardContent>
             </Card>
 
-            {/* Custom Domain Management with Cloudflare */}
-            <div className="pt-4 border-t">
-              <h2 className="text-xl font-semibold mb-4">Dominio Personalizado (Cloudflare)</h2>
-              <DomainManagementTab clientId={effectiveClientId!} />
-            </div>
+            {/* Custom Domain Management with Cloudflare - Admin Only */}
+            {userRole === 'admin' && (
+              <div className="pt-4 border-t">
+                <h2 className="text-xl font-semibold mb-4">Dominio Personalizado (Cloudflare)</h2>
+                <DomainManagementTab clientId={effectiveClientId!} />
+              </div>
+            )}
           </div>
         </TabsContent>
 
