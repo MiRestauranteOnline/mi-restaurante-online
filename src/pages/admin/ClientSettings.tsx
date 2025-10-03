@@ -2798,7 +2798,83 @@ setReviewForm({
         </TabsContent>
 
         <TabsContent value="domain">
-          <DomainManagementTab clientId={effectiveClientId!} />
+          <div className="space-y-6">
+            {/* Subdomain and Vercel Configuration */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Configuración de Subdominio</CardTitle>
+                <CardDescription>
+                  Gestiona el subdominio y la configuración de hosting para este cliente
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="subdomain">{t('general.subdomain')}</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="subdomain"
+                      value={formData.subdomain}
+                      onChange={(e) => setFormData({...formData, subdomain: e.target.value})}
+                      placeholder={t('general.subdomainPlaceholder')}
+                    />
+                    <span className="text-sm text-muted-foreground">.mirestaurante.online</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Usado para hosting en nuestro subdominio: clientname.mirestaurante.online
+                  </p>
+                </div>
+
+                <div className="space-y-4 pt-4 border-t">
+                  <h3 className="text-lg font-semibold">Hosting (Vercel)</h3>
+                  
+                  <div>
+                    <Label htmlFor="vercel_team">Vercel Team</Label>
+                    <Input
+                      id="vercel_team"
+                      value={formData.vercel_team}
+                      onChange={(e) => setFormData({...formData, vercel_team: e.target.value})}
+                      placeholder="team-name"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Nombre del equipo de Vercel para hosting del sitio de este cliente.
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="vercel_project">Vercel Project</Label>
+                    <Input
+                      id="vercel_project"
+                      value={formData.vercel_project}
+                      onChange={(e) => setFormData({...formData, vercel_project: e.target.value})}
+                      placeholder="project-name"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Nombre del proyecto de Vercel para este cliente.
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="vercel_dashboard_url">Vercel Dashboard URL</Label>
+                    <Input
+                      id="vercel_dashboard_url"
+                      value={formData.vercel_dashboard_url}
+                      onChange={(e) => setFormData({...formData, vercel_dashboard_url: e.target.value})}
+                      placeholder="https://vercel.com/team/project"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enlace directo al dashboard del proyecto de este cliente en Vercel.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Custom Domain Management with Cloudflare */}
+            <div className="pt-4 border-t">
+              <h2 className="text-xl font-semibold mb-4">Dominio Personalizado (Cloudflare)</h2>
+              <DomainManagementTab clientId={effectiveClientId!} />
+            </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="hours">
