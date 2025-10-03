@@ -104,19 +104,16 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const handleUpgrade = async () => {
     setActionLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('update-mercadopago-subscription', {
-        body: { 
-          clientId,
-          newPlanType: 'advanced'
-        }
-      });
+      const { error } = await supabase
+        .from('clients')
+        .update({ plan_type: 'advanced' })
+        .eq('id', clientId);
 
       if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || 'Failed to upgrade');
 
       toast({
         title: "Plan actualizado",
-        description: data.message || "Plan actualizado a Avanzado exitosamente",
+        description: "Plan actualizado a Avanzado exitosamente",
       });
 
       fetchSubscriptionData();
@@ -134,19 +131,16 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const handleDowngrade = async () => {
     setActionLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('update-mercadopago-subscription', {
-        body: { 
-          clientId,
-          newPlanType: 'basic'
-        }
-      });
+      const { error } = await supabase
+        .from('clients')
+        .update({ plan_type: 'basic' })
+        .eq('id', clientId);
 
       if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || 'Failed to downgrade');
 
       toast({
         title: "Plan actualizado",
-        description: data.message || "Plan actualizado a Básico exitosamente",
+        description: "Plan actualizado a Básico exitosamente",
       });
 
       fetchSubscriptionData();

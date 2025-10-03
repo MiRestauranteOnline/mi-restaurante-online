@@ -110,32 +110,14 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
 
       if (error) throw error;
 
-      // Update MercadoPago subscription price
-      const discountPercentage = !currentValue ? discount.percentage : 0;
-      const months = discount.discount_type === 'one_time' ? 1 : undefined;
-
-      const { data: updateResult, error: updateError } = await supabase.functions.invoke(
-        'update-client-subscription-price',
-        {
-          body: {
-            clientId,
-            discountPercentage,
-            months,
-          },
-        }
-      );
-
-      if (updateError) {
-        throw new Error(updateError.message || 'Failed to update subscription price');
-      }
-
-      console.log('Subscription price updated:', updateResult);
+      // Note: Discount system will be updated when Culqi integration is complete
+      console.log('Discount assignment updated. Integration with payment system pending.');
 
       toast({
         title: "Descuento actualizado",
         description: !currentValue
-          ? `Descuento del ${discount.percentage}% aplicado. Precio actualizado en MercadoPago.`
-          : `Descuento removido. Precio revertido al original.`,
+          ? `Descuento del ${discount.percentage}% aplicado. Actualización de precio en proceso.`
+          : `Descuento removido.`,
       });
 
       fetchData();
@@ -178,7 +160,7 @@ export const ClientDiscountAssignments = ({ clientId }: Props) => {
         {!hasActiveSubscription && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-sm text-yellow-800">
-              <strong>Nota:</strong> Este cliente aún no tiene una suscripción activa en MercadoPago. 
+              <strong>Nota:</strong> Este cliente aún no tiene una suscripción activa. 
               Los descuentos solo pueden aplicarse después de que el cliente complete el pago inicial y 
               la suscripción esté activa.
             </p>

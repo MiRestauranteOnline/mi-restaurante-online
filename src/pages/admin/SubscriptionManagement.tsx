@@ -78,9 +78,14 @@ export default function SubscriptionManagement() {
   const handleCancelSubscription = async (clientId: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.functions.invoke('cancel-mercadopago-subscription', {
-        body: { clientId }
-      });
+      const { error } = await supabase
+        .from('clients')
+        .update({
+          subscription_status: 'cancelled',
+          cancellation_date: new Date().toISOString(),
+          cancellation_reason: 'admin_action'
+        })
+        .eq('id', clientId);
 
       if (error) throw error;
 
@@ -104,9 +109,10 @@ export default function SubscriptionManagement() {
   const handleUpgradeDowngrade = async (clientId: string, newPlan: 'basic' | 'advanced') => {
     try {
       setLoading(true);
-      const { data, error } = await supabase.functions.invoke('update-mercadopago-subscription', {
-        body: { clientId, newPlanType: newPlan }
-      });
+      const { error } = await supabase
+        .from('clients')
+        .update({ plan_type: newPlan })
+        .eq('id', clientId);
 
       if (error) throw error;
 

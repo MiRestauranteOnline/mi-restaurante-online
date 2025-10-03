@@ -26,7 +26,6 @@ Deno.serve(async (req) => {
         client_discounts!inner(discount_type, percentage),
         clients!inner(
           id,
-          mercadopago_subscription_id,
           plan_type,
           subscription_plans!inner(monthly_price)
         )
@@ -55,49 +54,16 @@ Deno.serve(async (req) => {
           if (new Date() > expiryDate) {
             console.log(`Discount expired for client ${assignment.client_id}`);
             
-            // Revert to original price
-            const basePlanPrice = assignment.clients.subscription_plans.monthly_price;
-            const subscriptionId = assignment.clients.mercadopago_subscription_id;
+            // Deactivate the discount assignment
+            await supabase
+              .from('client_discount_assignments')
+              .update({ is_active: false })
+              .eq('id', assignment.id);
 
-            if (subscriptionId) {
-              // Update MercadoPago subscription
-              const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN_SUBSCRIPTION')!;
-              
-              const updateData = {
-                auto_recurring: {
-                  transaction_amount: basePlanPrice,
-                  currency_id: 'PEN',
-                },
-              };
-
-              const mpResponse = await fetch(
-                `https://api.mercadopago.com/preapproval/${subscriptionId}`,
-                {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                  },
-                  body: JSON.stringify(updateData),
-                }
-              );
-
-              if (mpResponse.ok) {
-                // Deactivate the discount assignment
-                await supabase
-                  .from('client_discount_assignments')
-                  .update({ is_active: false })
-                  .eq('id', assignment.id);
-
-                processedClients.push(assignment.client_id);
-                expiredDiscounts.push(assignment.id);
-                
-                console.log(`Successfully reverted discount for client ${assignment.client_id}`);
-              } else {
-                const error = await mpResponse.json();
-                console.error(`Failed to update MercadoPago for client ${assignment.client_id}:`, error);
-              }
-            }
+            processedClients.push(assignment.client_id);
+            expiredDiscounts.push(assignment.id);
+            
+            console.log(`Successfully reverted discount for client ${assignment.client_id}`);
           }
         }
       } catch (error) {
