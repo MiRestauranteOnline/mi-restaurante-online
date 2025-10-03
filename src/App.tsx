@@ -32,6 +32,7 @@ import TicketManagement from "./pages/admin/TicketManagement";
 import MarketingAnalytics from "./pages/admin/MarketingAnalytics";
 import PlanManagement from "./pages/admin/PlanManagement";
 import TemplatesManagement from "./pages/admin/TemplatesManagement";
+import CustomDomainPage from "./pages/admin/CustomDomainPage";
 import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
 import ClientDashboard from "./pages/client/ClientDashboard";
 // import ClientSettingsPage from "./pages/client/ClientSettings";
@@ -83,6 +84,7 @@ const App = () => (
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="client-management" element={<ClientManagement />} />
+              <Route path="custom-domains" element={<CustomDomainPage />} />
               <Route path="tickets" element={<TicketManagement />} />
               <Route path="client-images" element={<ClientImages />} />
               <Route path="marketing-analytics" element={<MarketingAnalytics />} />

@@ -20,7 +20,8 @@ import {
   Images,
   TrendingUp,
   MessageSquare,
-  Tag
+  Tag,
+  Globe
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -135,6 +136,7 @@ export default function AdminDashboardLayout() {
   const adminSidebarItems = [
     { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
     { href: '/admin/client-management', label: t('clientManagement'), icon: Users },
+    { href: '/admin/custom-domains', label: 'Custom Domains', icon: Globe },
     { href: '/admin/tickets', label: 'Tickets de Soporte', icon: MessageSquare },
     { href: '/admin/marketing-analytics', label: 'Marketing Analytics', icon: TrendingUp },
     { href: '/admin/templates-management', label: 'Plantillas', icon: LayoutDashboard },
