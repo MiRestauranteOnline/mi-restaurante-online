@@ -74,6 +74,7 @@ interface Client {
   custom_cta_button_text?: string;
   custom_cta_button_link?: string;
   show_whatsapp_popup?: boolean;
+  template_id?: string;
 }
 
 interface ClientSettings {
@@ -685,6 +686,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [carouselImages, setCarouselImages] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showCategoryDialog, setShowCategoryDialog] = useState(false);
@@ -860,6 +862,7 @@ const [reviewForm, setReviewForm] = useState({
     title_font: 'Cormorant Garamond',
     body_font: 'Inter',
     title_font_weight: '400',
+    template_id: '',
     // Admin content fields - Two-part titles
     homepage_hero_title_first_line: '',
     homepage_hero_title_second_line: '',
@@ -1004,6 +1007,7 @@ const [reviewForm, setReviewForm] = useState({
       fetchCarouselImages();
       fetchPremiumFeatures();
       fetchUserRole();
+      fetchTemplates();
     } else {
       console.log('No effectiveClientId found');
     }
@@ -1066,6 +1070,7 @@ const [reviewForm, setReviewForm] = useState({
         custom_cta_button_text: (data as any).custom_cta_button_text || '',
         custom_cta_button_link: (data as any).custom_cta_button_link || '',
         show_whatsapp_popup: (data as any).show_whatsapp_popup || false,
+        template_id: (data as any).template_id || '',
         opening_hours: normalizedOpeningHours,
         social_media_links: {
           facebook: '',
@@ -1192,6 +1197,21 @@ const [reviewForm, setReviewForm] = useState({
     } catch (error: any) {
       console.error('Failed to load premium features:', error.message);
       // Don't show error toast for premium features as they might not exist yet
+    }
+  };
+
+  const fetchTemplates = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('templates' as any)
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+
+      if (error) throw error;
+      setTemplates((data as any) || []);
+    } catch (error: any) {
+      console.error('Failed to load templates:', error.message);
     }
   };
 
@@ -1600,6 +1620,7 @@ const [reviewForm, setReviewForm] = useState({
           delivery: formData.delivery,
           brand_colors: formData.brand_colors,
           other_customizations: formData.other_customizations,
+          template_id: formData.template_id || null,
           updated_at: new Date().toISOString()
         })
         .eq('id', clientId)
@@ -3200,6 +3221,33 @@ setReviewForm({
                   </Select>
                 </div>
               )}
+
+              {/* Template Selection */}
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="text-lg font-medium">Plantilla del Sitio</h4>
+                <div>
+                  <Label htmlFor="template_id">Plantilla Actual</Label>
+                  <Select 
+                    value={formData.template_id || ''} 
+                    onValueChange={(value) => setFormData({...formData, template_id: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar plantilla" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Sin plantilla</SelectItem>
+                      {templates.map((template) => (
+                        <SelectItem key={template.id} value={template.id}>
+                          {template.name} ({template.slug})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    La plantilla controla el diseño y estructura del sitio web del cliente
+                  </p>
+                </div>
+              </div>
 
               <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">{t('branding.logoSettings')}</h4>
