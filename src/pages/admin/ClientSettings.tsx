@@ -5414,7 +5414,6 @@ setReviewForm({
               </ul>
             </div>
           </CardContent>
-            </DebugErrorBoundary>
         </Card>
       </TabsContent>
 
