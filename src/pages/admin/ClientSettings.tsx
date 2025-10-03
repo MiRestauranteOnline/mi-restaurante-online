@@ -1208,10 +1208,16 @@ const [reviewForm, setReviewForm] = useState({
         .eq('is_active', true)
         .order('name');
 
-      if (error) throw error;
+      if (error) {
+        // If templates table doesn't exist, silently fail and keep empty array
+        console.log('Templates table not available:', error.message);
+        setTemplates([]);
+        return;
+      }
       setTemplates((data as any) || []);
     } catch (error: any) {
       console.error('Failed to load templates:', error.message);
+      setTemplates([]); // Ensure templates is always an array
     }
   };
 
@@ -3222,32 +3228,34 @@ setReviewForm({
                 </div>
               )}
 
-              {/* Template Selection */}
-              <div className="space-y-4 border-t pt-4">
-                <h4 className="text-lg font-medium">Plantilla del Sitio</h4>
-                <div>
-                  <Label htmlFor="template_id">Plantilla Actual</Label>
-                  <Select 
-                    value={formData.template_id || ''} 
-                    onValueChange={(value) => setFormData({...formData, template_id: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar plantilla" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Sin plantilla</SelectItem>
-                      {templates.map((template) => (
-                        <SelectItem key={template.id} value={template.id}>
-                          {template.name} ({template.slug})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    La plantilla controla el diseño y estructura del sitio web del cliente
-                  </p>
+              {/* Template Selection - Only show if templates table exists and has data */}
+              {templates.length > 0 && (
+                <div className="space-y-4 border-t pt-4">
+                  <h4 className="text-lg font-medium">Plantilla del Sitio</h4>
+                  <div>
+                    <Label htmlFor="template_id">Plantilla Actual</Label>
+                    <Select 
+                      value={formData.template_id || ''} 
+                      onValueChange={(value) => setFormData({...formData, template_id: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar plantilla" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Sin plantilla</SelectItem>
+                        {templates.map((template) => (
+                          <SelectItem key={template.id} value={template.id}>
+                            {template.name} ({template.slug})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      La plantilla controla el diseño y estructura del sitio web del cliente
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">{t('branding.logoSettings')}</h4>
