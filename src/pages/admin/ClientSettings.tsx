@@ -1202,6 +1202,7 @@ const [reviewForm, setReviewForm] = useState({
 
   const fetchTemplates = async () => {
     try {
+      console.log('Fetching templates...');
       const { data, error } = await supabase
         .from('templates' as any)
         .select('*')
@@ -1214,6 +1215,7 @@ const [reviewForm, setReviewForm] = useState({
         setTemplates([]);
         return;
       }
+      console.log('Templates fetched successfully:', data);
       setTemplates((data as any) || []);
     } catch (error: any) {
       console.error('Failed to load templates:', error.message);
@@ -3183,7 +3185,7 @@ setReviewForm({
                   <div className="flex items-center space-x-2 mt-3">
                     <Switch
                       id="header_background_enabled"
-                      checked={formData.header_background_enabled}
+                      checked={formData.header_background_enabled || false}
                       onCheckedChange={(checked) => setFormData({
                         ...formData,
                         header_background_enabled: checked
@@ -3198,7 +3200,7 @@ setReviewForm({
                 <h4 className="text-lg font-medium">{t('branding.themeSettings')}</h4>
                 <div>
                   <Label htmlFor="theme">{t('branding.theme')}</Label>
-                  <Select value={formData.theme} onValueChange={(value) => setFormData({...formData, theme: value})}>
+                  <Select value={formData.theme || 'dark'} onValueChange={(value) => setFormData({...formData, theme: value})}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -3214,7 +3216,7 @@ setReviewForm({
                 <div className="border-t pt-4">
                   <Label htmlFor="header_background_style">Estilo del Fondo del Header</Label>
                   <Select 
-                    value={formData.header_background_style} 
+                    value={formData.header_background_style || 'dark'} 
                     onValueChange={(value) => setFormData({...formData, header_background_style: value})}
                   >
                     <SelectTrigger>
@@ -3229,21 +3231,21 @@ setReviewForm({
               )}
 
               {/* Template Selection - Only show if templates table exists and has data */}
-              {templates.length > 0 && (
+              {Array.isArray(templates) && templates.length > 0 && (
                 <div className="space-y-4 border-t pt-4">
                   <h4 className="text-lg font-medium">Plantilla del Sitio</h4>
                   <div>
                     <Label htmlFor="template_id">Plantilla Actual</Label>
                     <Select 
                       value={formData.template_id || ''} 
-                      onValueChange={(value) => setFormData({...formData, template_id: value})}
+                      onValueChange={(value) => setFormData({...formData, template_id: value || ''})}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Seleccionar plantilla" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="">Sin plantilla</SelectItem>
-                        {templates.map((template) => (
+                        {templates.map((template: any) => (
                           <SelectItem key={template.id} value={template.id}>
                             {template.name} ({template.slug})
                           </SelectItem>
