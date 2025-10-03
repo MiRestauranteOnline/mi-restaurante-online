@@ -3240,14 +3240,14 @@ setReviewForm({
                   <div>
                     <Label htmlFor="template_id">Plantilla Actual</Label>
                     <Select 
-                      value={formData.template_id || ''} 
-                      onValueChange={(value) => setFormData({...formData, template_id: value || ''})}
+                      value={formData.template_id ? String(formData.template_id) : 'none'} 
+                      onValueChange={(value) => setFormData({...formData, template_id: value === 'none' ? '' : value})}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Seleccionar plantilla" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Sin plantilla</SelectItem>
+                        <SelectItem value="none">Sin plantilla</SelectItem>
                         {templates.map((template: any) => (
                           <SelectItem key={template.id} value={template.id}>
                             {template.name} ({template.slug})
