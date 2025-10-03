@@ -18,6 +18,7 @@ import { ImageUpload } from "@/components/ImageUpload";
 import { CustomImagesManager } from "@/components/client/CustomImagesManager";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { UserWarningOverlay } from "@/components/UserWarningOverlay";
+
 import {
   DndContext,
   closestCenter,
@@ -3147,6 +3148,7 @@ setReviewForm({
         </TabsContent>
 
         <TabsContent value="branding" className="relative">
+          
           {userRole !== 'admin' && showWarningOverlay && warningTabName === 'configuración de marca' && (
             <UserWarningOverlay
               isOpen={true}
@@ -3158,6 +3160,7 @@ setReviewForm({
             <CardHeader>
               <CardTitle>{t('branding.title')}</CardTitle>
             </CardHeader>
+            
             <CardContent className="space-y-6">
               {/* Primary Color and Header Background side by side */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -5411,6 +5414,7 @@ setReviewForm({
               </ul>
             </div>
           </CardContent>
+            </DebugErrorBoundary>
         </Card>
       </TabsContent>
 
