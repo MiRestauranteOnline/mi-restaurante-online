@@ -3241,7 +3241,7 @@ setReviewForm({
                     <Label htmlFor="template_id">Plantilla Actual</Label>
                     <Select 
                       value={formData.template_id ? String(formData.template_id) : 'none'} 
-                      onValueChange={(value) => setFormData({...formData, template_id: value === 'none' ? '' : value})}
+                      onValueChange={(value) => setFormData({...formData, template_id: value === 'none' ? null : value})}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Seleccionar plantilla" />
