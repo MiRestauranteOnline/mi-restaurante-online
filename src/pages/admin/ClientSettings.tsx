@@ -46,6 +46,7 @@ import { cn } from "@/lib/utils";
 import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
 import { ClientDiscountAssignments } from '@/components/admin/ClientDiscountAssignments';
+import { DomainManagementTab } from '@/components/admin/DomainManagementTab';
 
 interface Client {
   id: string;
@@ -2797,87 +2798,7 @@ setReviewForm({
         </TabsContent>
 
         <TabsContent value="domain">
-          <Card>
-            <CardHeader>
-              <CardTitle>Domain Configuration</CardTitle>
-              <CardDescription>
-                Manage hosting settings for this client's website.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="subdomain">{t('general.subdomain')}</Label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="subdomain"
-                    value={formData.subdomain}
-                    onChange={(e) => setFormData({...formData, subdomain: e.target.value})}
-                    placeholder={t('general.subdomainPlaceholder')}
-                  />
-                  <span className="text-sm text-muted-foreground">.mirestaurante.online</span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Used for hosting on our subdomain: clientname.mirestaurante.online
-                </p>
-              </div>
-              
-              <div>
-                <Label htmlFor="domain">{t('general.customDomain')}</Label>
-                <Input
-                  id="domain"
-                  value={formData.domain}
-                  onChange={(e) => setFormData({...formData, domain: e.target.value})}
-                  placeholder={t('general.customDomainPlaceholder')}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Client's custom domain. Client must configure DNS to point to our hosting.
-                </p>
-              </div>
-
-              <div className="space-y-4 pt-6 border-t">
-                <h3 className="text-lg font-semibold">Hosting</h3>
-                
-                <div>
-                  <Label htmlFor="vercel_team">Vercel Team</Label>
-                  <Input
-                    id="vercel_team"
-                    value={formData.vercel_team}
-                    onChange={(e) => setFormData({...formData, vercel_team: e.target.value})}
-                    placeholder="team-name"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Vercel team name for hosting this client's website.
-                  </p>
-                </div>
-
-                <div>
-                  <Label htmlFor="vercel_project">Vercel Project</Label>
-                  <Input
-                    id="vercel_project"
-                    value={formData.vercel_project}
-                    onChange={(e) => setFormData({...formData, vercel_project: e.target.value})}
-                    placeholder="project-name"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Vercel project name for this client's deployment.
-                  </p>
-                </div>
-
-                <div>
-                  <Label htmlFor="vercel_dashboard_url">Vercel Dashboard URL</Label>
-                  <Input
-                    id="vercel_dashboard_url"
-                    value={formData.vercel_dashboard_url}
-                    onChange={(e) => setFormData({...formData, vercel_dashboard_url: e.target.value})}
-                    placeholder="https://vercel.com/team/project"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Direct link to this client's project dashboard on Vercel.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <DomainManagementTab clientId={effectiveClientId!} />
         </TabsContent>
 
         <TabsContent value="hours">
