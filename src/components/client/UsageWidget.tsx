@@ -38,8 +38,17 @@ export function UsageWidget({ clientId, analyticsEnabled }: UsageWidgetProps) {
     );
   }
 
-  const visitsPercentage = (stats.current_visits / stats.visits_limit) * 100;
-  const bandwidthPercentage = (stats.current_bandwidth_gb / stats.bandwidth_limit_gb) * 100;
+  // Provide default values to prevent undefined errors
+  const currentVisits = stats.current_visits ?? 0;
+  const visitsLimit = stats.visits_limit ?? 3000;
+  const currentBandwidth = stats.current_bandwidth_gb ?? 0;
+  const bandwidthLimit = stats.bandwidth_limit_gb ?? 6;
+  const overageCharge = stats.overage_charge ?? 0;
+  const daysRemaining = stats.days_remaining ?? 0;
+  const planType = stats.plan_type ?? 'basic';
+
+  const visitsPercentage = visitsLimit > 0 ? (currentVisits / visitsLimit) * 100 : 0;
+  const bandwidthPercentage = bandwidthLimit > 0 ? (currentBandwidth / bandwidthLimit) * 100 : 0;
 
   const getStatusColor = (percentage: number) => {
     if (percentage < 80) return 'text-green-600';
@@ -53,9 +62,9 @@ export function UsageWidget({ clientId, analyticsEnabled }: UsageWidgetProps) {
     return 'bg-red-600';
   };
 
-  const showUpgradeCTA = stats.plan_type === 'basic' || visitsPercentage > 80 || bandwidthPercentage > 80;
+  const showUpgradeCTA = planType === 'basic' || visitsPercentage > 80 || bandwidthPercentage > 80;
   const isNearLimit = visitsPercentage >= 80 || bandwidthPercentage >= 80;
-  const isOverLimit = stats.overage_charge > 0;
+  const isOverLimit = overageCharge > 0;
 
   return (
     <div className="space-y-4">
@@ -84,7 +93,7 @@ export function UsageWidget({ clientId, analyticsEnabled }: UsageWidgetProps) {
                 <span className="text-sm font-medium">Visitas</span>
               </div>
               <span className={`text-sm font-semibold ${getStatusColor(visitsPercentage)}`}>
-                {stats.current_visits.toLocaleString()} / {stats.visits_limit.toLocaleString()}
+                {currentVisits.toLocaleString()} / {visitsLimit.toLocaleString()}
               </span>
             </div>
             <Progress value={Math.min(visitsPercentage, 100)} className="h-2">
@@ -106,7 +115,7 @@ export function UsageWidget({ clientId, analyticsEnabled }: UsageWidgetProps) {
                 <span className="text-sm font-medium">Ancho de Banda</span>
               </div>
               <span className={`text-sm font-semibold ${getStatusColor(bandwidthPercentage)}`}>
-                {stats.current_bandwidth_gb.toFixed(2)} GB / {stats.bandwidth_limit_gb} GB
+                {currentBandwidth.toFixed(2)} GB / {bandwidthLimit} GB
               </span>
             </div>
             <Progress value={Math.min(bandwidthPercentage, 100)} className="h-2">
@@ -126,7 +135,7 @@ export function UsageWidget({ clientId, analyticsEnabled }: UsageWidgetProps) {
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  <div className="font-semibold">Cargo por exceso: S/ {stats.overage_charge.toFixed(2)}</div>
+                  <div className="font-semibold">Cargo por exceso: S/ {overageCharge.toFixed(2)}</div>
                   <div className="text-sm mt-1">
                     Se aplicará en tu próxima factura
                   </div>
@@ -136,13 +145,13 @@ export function UsageWidget({ clientId, analyticsEnabled }: UsageWidgetProps) {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Estás cerca de alcanzar tus límites. {stats.days_remaining} días restantes en este período.
+                  Estás cerca de alcanzar tus límites. {daysRemaining} días restantes en este período.
                 </AlertDescription>
               </Alert>
             ) : (
               <div className="text-sm text-muted-foreground">
                 <span className="text-green-600 font-semibold">✓ Dentro de los límites</span>
-                <p className="mt-1">{stats.days_remaining} días restantes en este período</p>
+                <p className="mt-1">{daysRemaining} días restantes en este período</p>
               </div>
             )}
           </div>
@@ -154,7 +163,7 @@ export function UsageWidget({ clientId, analyticsEnabled }: UsageWidgetProps) {
               className="w-full"
               variant={isNearLimit ? 'default' : 'outline'}
             >
-              {stats.plan_type === 'basic' ? 'Actualizar Plan' : 'Ver Opciones de Plan'}
+              {planType === 'basic' ? 'Actualizar Plan' : 'Ver Opciones de Plan'}
             </Button>
           )}
         </CardContent>
