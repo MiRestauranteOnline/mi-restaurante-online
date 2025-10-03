@@ -21,7 +21,10 @@ import {
   TrendingUp,
   MessageSquare,
   Tag,
-  Globe
+  Globe,
+  BarChart3,
+  Receipt,
+  Monitor
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -137,6 +140,9 @@ export default function AdminDashboardLayout() {
     { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
     { href: '/admin/client-management', label: t('clientManagement'), icon: Users },
     { href: '/admin/custom-domains', label: 'Custom Domains', icon: Globe },
+    { href: '/admin/usage', label: 'Usage Monitoring', icon: BarChart3 },
+    { href: '/admin/billing', label: 'Billing & Invoices', icon: Receipt },
+    { href: '/admin/monitoring', label: 'Admin Monitoring', icon: Monitor, adminOnly: true },
     { href: '/admin/tickets', label: 'Tickets de Soporte', icon: MessageSquare },
     { href: '/admin/marketing-analytics', label: 'Marketing Analytics', icon: TrendingUp },
     { href: '/admin/templates-management', label: 'Plantillas', icon: LayoutDashboard },
@@ -213,21 +219,23 @@ export default function AdminDashboardLayout() {
           {/* Navigation */}
           <nav className="flex-1 p-2">
             <div className="space-y-1">
-              {adminSidebarItems.map((item) => (
-                <NavLink
-                  key={item.href}
-                  to={item.href}
-                  className={({ isActive }) => cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-                    isActive 
-                      ? "bg-primary text-primary-foreground" 
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                  )}
-                >
-                  <item.icon className="h-4 w-4" />
-                  {sidebarOpen && <span>{item.label}</span>}
-                </NavLink>
-              ))}
+              {adminSidebarItems
+                .filter((item: any) => !item.adminOnly || isAdmin)
+                .map((item) => (
+                  <NavLink
+                    key={item.href}
+                    to={item.href}
+                    className={({ isActive }) => cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                      isActive 
+                        ? "bg-primary text-primary-foreground" 
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {sidebarOpen && <span>{item.label}</span>}
+                  </NavLink>
+                ))}
             </div>
           </nav>
         </div>

@@ -41,6 +41,10 @@ import ClientSupport from "./pages/client/ClientSupport";
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 import ClientAnalytics from "./pages/client/ClientAnalytics";
 import ClientReservations from "./pages/client/ClientReservations";
+import UsageMonitoring from "./pages/admin/UsageMonitoring";
+import BillingInvoicing from "./pages/admin/BillingInvoicing";
+import AdminMonitoring from "./pages/admin/AdminMonitoring";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +89,9 @@ const App = () => (
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="client-management" element={<ClientManagement />} />
               <Route path="custom-domains" element={<CustomDomainPage />} />
+              <Route path="usage" element={<UsageMonitoring />} />
+              <Route path="billing" element={<BillingInvoicing />} />
+              <Route path="monitoring" element={<ProtectedRoute requireAdmin><AdminMonitoring /></ProtectedRoute>} />
               <Route path="tickets" element={<TicketManagement />} />
               <Route path="client-images" element={<ClientImages />} />
               <Route path="marketing-analytics" element={<MarketingAnalytics />} />
