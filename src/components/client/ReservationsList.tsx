@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Search, Filter, Phone, Mail, MessageSquare, Trash2 } from "lucide-react";
+import { Calendar as CalendarIcon, Search, Filter, Phone, Mail, MessageSquare, Trash2, ArrowUp } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -72,11 +72,22 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const [declineReason, setDeclineReason] = useState("");
   const [customDeclineReason, setCustomDeclineReason] = useState("");
   const [clientTimezone, setClientTimezone] = useState<string>("America/Lima");
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
     fetchClientTimezone();
     fetchReservations();
     cleanupPastReservations();
+
+    // Handle scroll for back-to-top button
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [clientId]);
 
   useEffect(() => {
@@ -231,6 +242,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   };
 
   const pendingCount = reservations.filter((r) => r.status === "pending").length;
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (loading) {
     return <div className="p-4 text-center">Cargando reservas...</div>;
@@ -497,6 +512,16 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {showBackToTop && (
+        <Button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 rounded-full w-12 h-12 shadow-lg"
+          size="icon"
+        >
+          <ArrowUp className="h-5 w-5" />
+        </Button>
+      )}
     </div>
   );
 };

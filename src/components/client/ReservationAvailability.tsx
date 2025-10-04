@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, ArrowUp } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { getCurrentDateInTimezone, combineDateTimeToUtc, extractDateTimeFromUtc } from "@/lib/timezone";
 
@@ -77,6 +77,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [clientTimezone, setClientTimezone] = useState<string>("America/Lima");
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -109,8 +110,15 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
       )
       .subscribe();
 
+    // Handle scroll for back-to-top button
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+
     return () => {
       supabase.removeChannel(channel);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [clientId]);
 
@@ -224,9 +232,18 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           });
 
           const tableAvailability: TableAvailability[] = activeTableConfigs.map((config) => {
-            const reservationsUsingThisTable = overlappingReservations.filter(
-              (res) => res.table_config_id === config.id
-            );
+            // Match reservations by table characteristics (name + seats) not just ID
+            // This handles both global configs and custom schedule-specific configs
+            const reservationsUsingThisTable = overlappingReservations.filter((res) => {
+              // First try direct ID match (for global configs)
+              if (res.table_config_id === config.id) return true;
+              
+              // Then try matching by table characteristics (for custom configs)
+              const resTableConfig = tableConfigs.find(tc => tc.id === res.table_config_id);
+              return resTableConfig && 
+                     resTableConfig.table_name === config.table_name && 
+                     resTableConfig.seats === config.seats;
+            });
             const usedTables = reservationsUsingThisTable.length;
             const available = Math.max(0, config.quantity - usedTables);
 
@@ -362,6 +379,10 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   };
 
   const dateLabels = Object.keys(groupedByDate).sort();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="space-y-6">
@@ -538,6 +559,16 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             })}
           </div>
         </div>
+      )}
+      
+      {showBackToTop && (
+        <Button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 rounded-full w-12 h-12 shadow-lg"
+          size="icon"
+        >
+          <ArrowUp className="h-5 w-5" />
+        </Button>
       )}
     </div>
   );
