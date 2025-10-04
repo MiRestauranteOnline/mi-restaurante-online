@@ -8,6 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
+interface CustomTableConfig {
+  table_name: string;
+  seats: number;
+  quantity: number;
+  min_party_size: number;
+  max_party_size: number;
+}
+
 interface ReservationSchedule {
   id: string;
   day_of_week: number;
@@ -15,6 +23,7 @@ interface ReservationSchedule {
   end_time: string;
   duration_minutes: number;
   is_active: boolean;
+  custom_table_configs: CustomTableConfig[] | null;
 }
 
 interface TableConfiguration {
@@ -116,7 +125,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
       if (tableConfigsRes.error) throw tableConfigsRes.error;
       if (reservationsRes.error) throw reservationsRes.error;
 
-      setSchedules(schedulesRes.data || []);
+      setSchedules((schedulesRes.data as any) || []);
       setTableConfigs(tableConfigsRes.data || []);
       setReservations(reservationsRes.data || []);
     } catch (error: any) {
@@ -153,6 +162,19 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         const startMinutes = startHour * 60 + startMin;
         const endMinutes = endHour * 60 + endMin;
         
+        // Use custom configs if available, otherwise use global configs
+        const activeTableConfigs = schedule.custom_table_configs && schedule.custom_table_configs.length > 0
+          ? schedule.custom_table_configs.map((ct, index) => ({
+              id: `custom-${schedule.id}-${index}`,
+              table_name: ct.table_name,
+              seats: ct.seats,
+              quantity: ct.quantity,
+              min_party_size: ct.min_party_size,
+              max_party_size: ct.max_party_size,
+              is_active: true,
+            }))
+          : tableConfigs;
+        
         for (let slotStart = startMinutes; slotStart < endMinutes; slotStart += slotInterval) {
           const slotHour = Math.floor(slotStart / 60);
           const slotMin = slotStart % 60;
@@ -170,7 +192,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             return (slotStart < resEndMinutes && slotEndMinutes > resStartMinutes);
           });
 
-          const tableAvailability: TableAvailability[] = tableConfigs.map((config) => {
+          const tableAvailability: TableAvailability[] = activeTableConfigs.map((config) => {
             const reservationsUsingThisTable = overlappingReservations.filter(
               (res) => res.table_config_id === config.id
             );

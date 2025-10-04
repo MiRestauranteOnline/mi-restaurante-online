@@ -1330,6 +1330,7 @@ export type Database = {
           capacity: number
           client_id: string
           created_at: string
+          custom_table_configs: Json | null
           day_of_week: number
           duration_minutes: number
           end_time: string
@@ -1347,6 +1348,7 @@ export type Database = {
           capacity: number
           client_id: string
           created_at?: string
+          custom_table_configs?: Json | null
           day_of_week: number
           duration_minutes?: number
           end_time: string
@@ -1364,6 +1366,7 @@ export type Database = {
           capacity?: number
           client_id?: string
           created_at?: string
+          custom_table_configs?: Json | null
           day_of_week?: number
           duration_minutes?: number
           end_time?: string

@@ -12,6 +12,14 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
+interface TableConfig {
+  table_name: string;
+  seats: number;
+  quantity: number;
+  min_party_size: number;
+  max_party_size: number;
+}
+
 interface ReservationSchedule {
   id: string;
   day_of_week: number;
@@ -25,6 +33,7 @@ interface ReservationSchedule {
   special_groups_enabled: boolean;
   special_groups_condition: string | null;
   special_groups_contact_method: string | null;
+  custom_table_configs: TableConfig[] | null;
 }
 
 interface ReservationSchedulesProps {
@@ -43,11 +52,14 @@ const DAYS_OF_WEEK = [
 
 const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
   const [schedules, setSchedules] = useState<ReservationSchedule[]>([]);
+  const [globalTableConfigs, setGlobalTableConfigs] = useState<TableConfig[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<ReservationSchedule | null>(null);
   const [scheduleToDelete, setScheduleToDelete] = useState<string | null>(null);
+  const [useCustomCapacity, setUseCustomCapacity] = useState(false);
+  const [customTables, setCustomTables] = useState<TableConfig[]>([]);
 
   const [formData, setFormData] = useState({
     day_of_week: 1,
@@ -65,7 +77,24 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
 
   useEffect(() => {
     fetchSchedules();
+    fetchGlobalTableConfigs();
   }, [clientId]);
+
+  const fetchGlobalTableConfigs = async () => {
+    try {
+      const { data, error } = await (supabase as any)
+        .from("table_configurations")
+        .select("*")
+        .eq("client_id", clientId)
+        .eq("is_active", true)
+        .order("seats", { ascending: true });
+
+      if (error) throw error;
+      setGlobalTableConfigs((data as any) || []);
+    } catch (error) {
+      console.error("Error fetching table configs:", error);
+    }
+  };
 
   const fetchSchedules = async () => {
     try {
@@ -89,22 +118,25 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
     e.preventDefault();
 
     try {
+      const scheduleData = {
+        day_of_week: formData.day_of_week,
+        start_time: formData.start_time,
+        end_time: formData.end_time,
+        capacity: formData.capacity,
+        is_active: formData.is_active,
+        duration_minutes: formData.duration_minutes,
+        min_party_size: formData.min_party_size,
+        max_party_size: formData.max_party_size,
+        special_groups_enabled: formData.special_groups_enabled,
+        special_groups_condition: formData.special_groups_enabled ? formData.special_groups_condition : null,
+        special_groups_contact_method: formData.special_groups_enabled ? formData.special_groups_contact_method : null,
+        custom_table_configs: useCustomCapacity ? customTables : null,
+      };
+
       if (editingSchedule) {
         const { error } = await (supabase as any)
           .from("reservation_schedules")
-          .update({
-            day_of_week: formData.day_of_week,
-            start_time: formData.start_time,
-            end_time: formData.end_time,
-            capacity: formData.capacity,
-            is_active: formData.is_active,
-            duration_minutes: formData.duration_minutes,
-            min_party_size: formData.min_party_size,
-            max_party_size: formData.max_party_size,
-            special_groups_enabled: formData.special_groups_enabled,
-            special_groups_condition: formData.special_groups_enabled ? formData.special_groups_condition : null,
-            special_groups_contact_method: formData.special_groups_enabled ? formData.special_groups_contact_method : null,
-          })
+          .update(scheduleData)
           .eq("id", editingSchedule.id);
 
         if (error) throw error;
@@ -114,17 +146,7 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
           .from("reservation_schedules")
           .insert({
             client_id: clientId,
-            day_of_week: formData.day_of_week,
-            start_time: formData.start_time,
-            end_time: formData.end_time,
-            capacity: formData.capacity,
-            is_active: formData.is_active,
-            duration_minutes: formData.duration_minutes,
-            min_party_size: formData.min_party_size,
-            max_party_size: formData.max_party_size,
-            special_groups_enabled: formData.special_groups_enabled,
-            special_groups_condition: formData.special_groups_enabled ? formData.special_groups_condition : null,
-            special_groups_contact_method: formData.special_groups_enabled ? formData.special_groups_contact_method : null,
+            ...scheduleData,
           });
 
         if (error) throw error;
@@ -193,6 +215,9 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
       special_groups_condition: schedule.special_groups_condition || "both",
       special_groups_contact_method: schedule.special_groups_contact_method || "whatsapp",
     });
+    const hasCustomConfigs = schedule.custom_table_configs && schedule.custom_table_configs.length > 0;
+    setUseCustomCapacity(hasCustomConfigs);
+    setCustomTables(hasCustomConfigs ? schedule.custom_table_configs! : []);
     setDialogOpen(true);
   };
 
@@ -210,6 +235,35 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
       special_groups_condition: "both",
       special_groups_contact_method: "whatsapp",
     });
+    setUseCustomCapacity(false);
+    setCustomTables([]);
+  };
+
+  const calculateTotalCapacity = (configs: TableConfig[] | null): number => {
+    if (!configs || configs.length === 0) {
+      return globalTableConfigs.reduce((sum, config) => sum + config.quantity, 0);
+    }
+    return configs.reduce((sum, config) => sum + config.quantity, 0);
+  };
+
+  const addCustomTable = () => {
+    setCustomTables([...customTables, {
+      table_name: `Mesas ${customTables.length + 1}`,
+      seats: 2,
+      quantity: 1,
+      min_party_size: 1,
+      max_party_size: 2,
+    }]);
+  };
+
+  const updateCustomTable = (index: number, field: keyof TableConfig, value: any) => {
+    const updated = [...customTables];
+    updated[index] = { ...updated[index], [field]: value };
+    setCustomTables(updated);
+  };
+
+  const removeCustomTable = (index: number) => {
+    setCustomTables(customTables.filter((_, i) => i !== index));
   };
 
   const getDayName = (dayOfWeek: number) => {
@@ -284,33 +338,142 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="duration_minutes">Duración por Reserva (minutos)</Label>
-                    <Input
-                      id="duration_minutes"
-                      type="number"
-                      min="15"
-                      step="15"
-                      value={formData.duration_minutes}
-                      onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
-                      required
+                <div className="space-y-2">
+                  <Label htmlFor="duration_minutes">Duración por Reserva (minutos)</Label>
+                  <Input
+                    id="duration_minutes"
+                    type="number"
+                    min="15"
+                    step="15"
+                    value={formData.duration_minutes}
+                    onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Ej: 120 = 2 horas, 180 = 3 horas
+                  </p>
+                </div>
+
+                {/* Capacity Configuration */}
+                <div className="space-y-4 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <Label>Configuración de Capacidad</Label>
+                      <p className="text-sm text-muted-foreground">
+                        {useCustomCapacity ? "Configuración personalizada para este horario" : "Usando capacidad estándar global"}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={useCustomCapacity}
+                      onCheckedChange={(checked) => {
+                        setUseCustomCapacity(checked);
+                        if (checked && customTables.length === 0) {
+                          setCustomTables([...globalTableConfigs]);
+                        }
+                      }}
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Ej: 120 = 2 horas, 180 = 3 horas
-                    </p>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="capacity">Capacidad (mesas disponibles)</Label>
-                    <Input
-                      id="capacity"
-                      type="number"
-                      min="1"
-                      value={formData.capacity}
-                      onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
-                      required
-                    />
-                  </div>
+
+                  {useCustomCapacity && (
+                    <div className="space-y-3 pl-4 border-l-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium">Tipos de Mesa</p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={addCustomTable}
+                        >
+                          <Plus className="w-3 h-3 mr-1" />
+                          Agregar
+                        </Button>
+                      </div>
+
+                      {customTables.map((table, index) => (
+                        <div key={index} className="grid grid-cols-5 gap-2 p-3 border rounded-lg bg-muted/50">
+                          <div className="col-span-5 sm:col-span-1">
+                            <Input
+                              placeholder="Nombre"
+                              value={table.table_name}
+                              onChange={(e) => updateCustomTable(index, "table_name", e.target.value)}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              placeholder="Asientos"
+                              min="1"
+                              value={table.seats}
+                              onChange={(e) => updateCustomTable(index, "seats", parseInt(e.target.value))}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              placeholder="Cantidad"
+                              min="1"
+                              value={table.quantity}
+                              onChange={(e) => updateCustomTable(index, "quantity", parseInt(e.target.value))}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              placeholder="Mín"
+                              min="1"
+                              value={table.min_party_size}
+                              onChange={(e) => updateCustomTable(index, "min_party_size", parseInt(e.target.value))}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              placeholder="Máx"
+                              min="1"
+                              value={table.max_party_size}
+                              onChange={(e) => updateCustomTable(index, "max_party_size", parseInt(e.target.value))}
+                            />
+                          </div>
+                          <div className="col-span-5 flex justify-end">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeCustomTable(index)}
+                            >
+                              <Trash2 className="w-3 h-3 mr-1" />
+                              Eliminar
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {customTables.length === 0 && (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                          No hay mesas configuradas. Haz clic en "Agregar" para empezar.
+                        </p>
+                      )}
+
+                      <div className="bg-primary/10 p-3 rounded-lg">
+                        <p className="text-sm font-medium">
+                          Capacidad Total: {calculateTotalCapacity(customTables)} mesas
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {!useCustomCapacity && (
+                    <div className="bg-muted p-3 rounded-lg">
+                      <p className="text-sm text-muted-foreground">
+                        Capacidad estándar: {calculateTotalCapacity(null)} mesas
+                        {globalTableConfigs.length === 0 && (
+                          <span className="text-destructive block mt-1">
+                            ⚠️ No hay configuración de mesas global. Por favor, configúrala en la pestaña "Capacidad".
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -438,7 +601,23 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                       : `${schedule.duration_minutes}m`
                     }
                   </TableCell>
-                  <TableCell>{schedule.capacity} mesas</TableCell>
+                  <TableCell>
+                    {schedule.custom_table_configs ? (
+                      <div className="flex flex-col">
+                        <Badge variant="secondary">Personalizada</Badge>
+                        <span className="text-xs text-muted-foreground mt-1">
+                          {calculateTotalCapacity(schedule.custom_table_configs)} mesas
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col">
+                        <Badge variant="outline">Estándar</Badge>
+                        <span className="text-xs text-muted-foreground mt-1">
+                          {calculateTotalCapacity(null)} mesas
+                        </span>
+                      </div>
+                    )}
+                  </TableCell>
                   <TableCell>{schedule.min_party_size} - {schedule.max_party_size}</TableCell>
                   <TableCell>
                     <Badge variant={schedule.is_active ? "default" : "secondary"}>
