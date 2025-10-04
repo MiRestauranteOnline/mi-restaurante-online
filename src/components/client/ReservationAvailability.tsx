@@ -373,7 +373,10 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   const dateLabels = Object.keys(groupedByDate).sort();
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      mainElement.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (

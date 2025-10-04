@@ -233,7 +233,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const pendingCount = reservations.filter((r) => r.status === "pending").length;
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      mainElement.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   if (loading) {
