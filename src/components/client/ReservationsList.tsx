@@ -504,7 +504,7 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
 
       <Button
         onClick={scrollToTop}
-        className="fixed bottom-8 right-8 rounded-full w-12 h-12 shadow-lg z-50"
+        className="fixed bottom-8 right-24 rounded-full w-12 h-12 shadow-lg z-50"
         size="icon"
       >
         <ArrowUp className="h-5 w-5" />
