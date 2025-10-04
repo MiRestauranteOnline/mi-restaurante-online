@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import ReservationSchedules from "@/components/client/ReservationSchedules";
 import ReservationsList from "@/components/client/ReservationsList";
 import ReservationAvailability from "@/components/client/ReservationAvailability";
+import TableConfigurationManager from "@/components/client/TableConfigurationManager";
 
 
 const ClientReservations = () => {
@@ -27,8 +28,9 @@ const ClientReservations = () => {
       </div>
 
       <Tabs defaultValue="availability" className="w-full">
-        <TabsList className="grid w-full max-w-2xl grid-cols-3">
+        <TabsList className="grid w-full max-w-2xl grid-cols-4">
           <TabsTrigger value="availability">Disponibilidad</TabsTrigger>
+          <TabsTrigger value="tables">Capacidad</TabsTrigger>
           <TabsTrigger value="schedules">Horarios</TabsTrigger>
           <TabsTrigger value="reservations">Reservas</TabsTrigger>
         </TabsList>
@@ -43,6 +45,20 @@ const ClientReservations = () => {
             </CardHeader>
             <CardContent>
               <ReservationAvailability clientId={clientId} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="tables" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Configuración de Mesas</CardTitle>
+              <CardDescription>
+                Define los tipos de mesas y su capacidad para gestionar reservas de forma precisa.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TableConfigurationManager clientId={clientId} />
             </CardContent>
           </Card>
         </TabsContent>

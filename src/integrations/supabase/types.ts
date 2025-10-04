@@ -97,6 +97,7 @@ export type Database = {
           reviews_page_hero_title: string | null
           reviews_page_hero_title_first_line: string | null
           reviews_page_hero_title_second_line: string | null
+          reviews_section_description: string | null
           reviews_section_title_first_line: string | null
           reviews_section_title_second_line: string | null
           services_card1_button_link: string | null
@@ -223,6 +224,7 @@ export type Database = {
           reviews_page_hero_title?: string | null
           reviews_page_hero_title_first_line?: string | null
           reviews_page_hero_title_second_line?: string | null
+          reviews_section_description?: string | null
           reviews_section_title_first_line?: string | null
           reviews_section_title_second_line?: string | null
           services_card1_button_link?: string | null
@@ -349,6 +351,7 @@ export type Database = {
           reviews_page_hero_title?: string | null
           reviews_page_hero_title_first_line?: string | null
           reviews_page_hero_title_second_line?: string | null
+          reviews_section_description?: string | null
           reviews_section_title_first_line?: string | null
           reviews_section_title_second_line?: string | null
           services_card1_button_link?: string | null
@@ -628,6 +631,59 @@ export type Database = {
         }
         Relationships: []
       }
+      client_monthly_usage: {
+        Row: {
+          billed: boolean | null
+          billing_date: string | null
+          client_id: string
+          created_at: string | null
+          id: string
+          month: string
+          overage_bandwidth_gb: number | null
+          overage_charge: number | null
+          overage_visits: number | null
+          total_bandwidth_gb: number | null
+          total_visits: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          billed?: boolean | null
+          billing_date?: string | null
+          client_id: string
+          created_at?: string | null
+          id?: string
+          month: string
+          overage_bandwidth_gb?: number | null
+          overage_charge?: number | null
+          overage_visits?: number | null
+          total_bandwidth_gb?: number | null
+          total_visits?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          billed?: boolean | null
+          billing_date?: string | null
+          client_id?: string
+          created_at?: string | null
+          id?: string
+          month?: string
+          overage_bandwidth_gb?: number | null
+          overage_charge?: number | null
+          overage_visits?: number | null
+          total_bandwidth_gb?: number | null
+          total_visits?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_monthly_usage_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_settings: {
         Row: {
           body_font: string | null
@@ -713,11 +769,18 @@ export type Database = {
           cancellation_reason: string | null
           coordinates: Json | null
           created_at: string
+          custom_domain: string | null
           delivery: Json | null
+          dns_records_status: Json | null
           domain: string | null
+          domain_verification_date: string | null
+          domain_verified: boolean | null
           email: string | null
           id: string
+          last_domain_check: string | null
           last_payment_attempt: string | null
+          monthly_bandwidth_limit_gb: number | null
+          monthly_visits_limit: number | null
           next_billing_date: string | null
           opening_hours: Json | null
           opening_hours_ordered: Json | null
@@ -730,11 +793,14 @@ export type Database = {
           referral_source: string | null
           restaurant_name: string
           social_media_links: Json | null
+          ssl_issued_date: string | null
+          ssl_status: string | null
           subdomain: string
           subscription_auto_recurring: boolean | null
           subscription_end_date: string | null
           subscription_start_date: string | null
           subscription_status: string | null
+          template_id: string | null
           theme: string | null
           trial_end_date: string | null
           updated_at: string
@@ -751,11 +817,18 @@ export type Database = {
           cancellation_reason?: string | null
           coordinates?: Json | null
           created_at?: string
+          custom_domain?: string | null
           delivery?: Json | null
+          dns_records_status?: Json | null
           domain?: string | null
+          domain_verification_date?: string | null
+          domain_verified?: boolean | null
           email?: string | null
           id?: string
+          last_domain_check?: string | null
           last_payment_attempt?: string | null
+          monthly_bandwidth_limit_gb?: number | null
+          monthly_visits_limit?: number | null
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
@@ -768,11 +841,14 @@ export type Database = {
           referral_source?: string | null
           restaurant_name: string
           social_media_links?: Json | null
+          ssl_issued_date?: string | null
+          ssl_status?: string | null
           subdomain: string
           subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
+          template_id?: string | null
           theme?: string | null
           trial_end_date?: string | null
           updated_at?: string
@@ -789,11 +865,18 @@ export type Database = {
           cancellation_reason?: string | null
           coordinates?: Json | null
           created_at?: string
+          custom_domain?: string | null
           delivery?: Json | null
+          dns_records_status?: Json | null
           domain?: string | null
+          domain_verification_date?: string | null
+          domain_verified?: boolean | null
           email?: string | null
           id?: string
+          last_domain_check?: string | null
           last_payment_attempt?: string | null
+          monthly_bandwidth_limit_gb?: number | null
+          monthly_visits_limit?: number | null
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
@@ -806,11 +889,14 @@ export type Database = {
           referral_source?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
+          ssl_issued_date?: string | null
+          ssl_status?: string | null
           subdomain?: string
           subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
+          template_id?: string | null
           theme?: string | null
           trial_end_date?: string | null
           updated_at?: string
@@ -820,7 +906,15 @@ export type Database = {
           whatsapp?: string | null
           whatsapp_country_code?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "clients_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       content_gaps: {
         Row: {
@@ -1306,6 +1400,7 @@ export type Database = {
           reservation_time: string
           special_requests: string | null
           status: string
+          table_config_id: string | null
           updated_at: string
         }
         Insert: {
@@ -1320,6 +1415,7 @@ export type Database = {
           reservation_time: string
           special_requests?: string | null
           status?: string
+          table_config_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -1334,6 +1430,7 @@ export type Database = {
           reservation_time?: string
           special_requests?: string | null
           status?: string
+          table_config_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1342,6 +1439,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservations_table_config_id_fkey"
+            columns: ["table_config_id"]
+            isOneToOne: false
+            referencedRelation: "table_configurations"
             referencedColumns: ["id"]
           },
         ]
@@ -1554,6 +1658,53 @@ export type Database = {
           },
         ]
       }
+      table_configurations: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          max_party_size: number
+          min_party_size: number
+          quantity: number
+          seats: number
+          table_name: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_party_size: number
+          min_party_size: number
+          quantity: number
+          seats: number
+          table_name: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_party_size?: number
+          min_party_size?: number
+          quantity?: number
+          seats?: number
+          table_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_configurations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       target_keywords: {
         Row: {
           category: string
@@ -1637,6 +1788,45 @@ export type Database = {
           name?: string
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      templates: {
+        Row: {
+          client_count: number | null
+          created_at: string | null
+          description: string | null
+          folder_path: string
+          id: string
+          is_active: boolean | null
+          name: string
+          slug: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          client_count?: number | null
+          created_at?: string | null
+          description?: string | null
+          folder_path: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          slug: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          client_count?: number | null
+          created_at?: string | null
+          description?: string | null
+          folder_path?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          slug?: string
+          status?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1769,6 +1959,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_client_usage: {
+        Args: { p_bandwidth_gb?: number; p_client_id: string }
+        Returns: undefined
       }
       increment_coupon_usage: {
         Args: { coupon_code: string }

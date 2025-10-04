@@ -13,8 +13,15 @@ interface ReservationSchedule {
   day_of_week: number;
   start_time: string;
   end_time: string;
-  capacity: number;
   duration_minutes: number;
+  is_active: boolean;
+}
+
+interface TableConfiguration {
+  id: string;
+  table_name: string;
+  seats: number;
+  quantity: number;
   min_party_size: number;
   max_party_size: number;
   is_active: boolean;
@@ -26,14 +33,23 @@ interface Reservation {
   reservation_time: string;
   party_size: number;
   status: string;
+  table_config_id: string | null;
+}
+
+interface TableAvailability {
+  config_id: string;
+  table_name: string;
+  seats: number;
+  total: number;
+  available: number;
 }
 
 interface TimeSlotAvailability {
   date: string;
   time: string;
-  capacity: number;
-  available: number;
   dayOfWeek: number;
+  tables: TableAvailability[];
+  totalAvailable: number;
 }
 
 interface ReservationAvailabilityProps {
@@ -44,6 +60,7 @@ const DAYS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "
 
 const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => {
   const [schedules, setSchedules] = useState<ReservationSchedule[]>([]);
+  const [tableConfigs, setTableConfigs] = useState<TableConfiguration[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [availability, setAvailability] = useState<TimeSlotAvailability[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,15 +82,15 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   }, [clientId]);
 
   useEffect(() => {
-    if (schedules.length > 0 && reservations.length >= 0) {
+    if (schedules.length > 0 && tableConfigs.length > 0) {
       calculateAvailability();
     }
-  }, [schedules, reservations]);
+  }, [schedules, tableConfigs, reservations]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [schedulesRes, reservationsRes] = await Promise.all([
+      const [schedulesRes, tableConfigsRes, reservationsRes] = await Promise.all([
         supabase
           .from("reservation_schedules")
           .select("*")
@@ -81,6 +98,12 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           .eq("is_active", true)
           .order("day_of_week", { ascending: true })
           .order("start_time", { ascending: true }),
+        supabase
+          .from("table_configurations")
+          .select("*")
+          .eq("client_id", clientId)
+          .eq("is_active", true)
+          .order("seats", { ascending: true }),
         supabase
           .from("reservations")
           .select("*")
@@ -90,9 +113,11 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
       ]);
 
       if (schedulesRes.error) throw schedulesRes.error;
+      if (tableConfigsRes.error) throw tableConfigsRes.error;
       if (reservationsRes.error) throw reservationsRes.error;
 
       setSchedules(schedulesRes.data || []);
+      setTableConfigs(tableConfigsRes.data || []);
       setReservations(reservationsRes.data || []);
     } catch (error: any) {
       toast({
@@ -108,21 +133,18 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   const calculateAvailability = () => {
     const availabilityMap: TimeSlotAvailability[] = [];
     const today = new Date();
-    const daysToShow = 28; // Show next 4 weeks
-    const slotInterval = 30; // Show slots every 30 minutes
+    const daysToShow = 28;
+    const slotInterval = 30;
 
-    // For each of the next 28 days
     for (let dayOffset = 0; dayOffset < daysToShow; dayOffset++) {
       const currentDate = new Date(today);
       currentDate.setDate(today.getDate() + dayOffset);
       const dayOfWeek = currentDate.getDay();
       const dateStr = currentDate.toISOString().split('T')[0];
 
-      // Find schedules for this day of week
       const daySchedules = schedules.filter(s => s.day_of_week === dayOfWeek);
 
       daySchedules.forEach((schedule) => {
-        // Generate all time slots at regular intervals
         const startHour = parseInt(schedule.start_time.substring(0, 2));
         const startMin = parseInt(schedule.start_time.substring(3, 5));
         const endHour = parseInt(schedule.end_time.substring(0, 2));
@@ -131,13 +153,11 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         const startMinutes = startHour * 60 + startMin;
         const endMinutes = endHour * 60 + endMin;
         
-        // Create slots every 30 minutes
         for (let slotStart = startMinutes; slotStart < endMinutes; slotStart += slotInterval) {
           const slotHour = Math.floor(slotStart / 60);
           const slotMin = slotStart % 60;
           const timeStr = `${slotHour.toString().padStart(2, '0')}:${slotMin.toString().padStart(2, '0')}`;
           
-          // Count reservations that overlap with this time slot
           const overlappingReservations = reservations.filter((res) => {
             if (res.reservation_date !== dateStr) return false;
             
@@ -146,20 +166,34 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             const resStartMinutes = resHour * 60 + resMin;
             const resEndMinutes = resStartMinutes + schedule.duration_minutes;
             
-            // Check if this slot overlaps with the reservation
             const slotEndMinutes = slotStart + slotInterval;
             return (slotStart < resEndMinutes && slotEndMinutes > resStartMinutes);
           });
 
-          const bookedCapacity = overlappingReservations.reduce((sum, res) => sum + res.party_size, 0);
-          const available = Math.max(0, schedule.capacity - bookedCapacity);
+          const tableAvailability: TableAvailability[] = tableConfigs.map((config) => {
+            const reservationsUsingThisTable = overlappingReservations.filter(
+              (res) => res.table_config_id === config.id
+            );
+            const usedTables = reservationsUsingThisTable.length;
+            const available = Math.max(0, config.quantity - usedTables);
+
+            return {
+              config_id: config.id,
+              table_name: config.table_name,
+              seats: config.seats,
+              total: config.quantity,
+              available,
+            };
+          });
+
+          const totalAvailable = tableAvailability.reduce((sum, t) => sum + t.available, 0);
 
           availabilityMap.push({
             date: dateStr,
             time: timeStr,
-            capacity: schedule.capacity,
-            available,
             dayOfWeek,
+            tables: tableAvailability,
+            totalAvailable,
           });
         }
       });
@@ -168,11 +202,47 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
     setAvailability(availabilityMap);
   };
 
+  const findBestTableForPartySize = (partySize: number, date: string, time: string) => {
+    const slot = availability.find(s => s.date === date && s.time === time);
+    if (!slot) return null;
+
+    const suitableTables = slot.tables.filter((table) => {
+      const config = tableConfigs.find(c => c.id === table.config_id);
+      return (
+        config &&
+        table.available > 0 &&
+        partySize >= config.min_party_size &&
+        partySize <= config.max_party_size
+      );
+    });
+
+    if (suitableTables.length === 0) return null;
+
+    suitableTables.sort((a, b) => a.seats - b.seats);
+    return suitableTables[0].config_id;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
 
     try {
+      const tableConfigId = findBestTableForPartySize(
+        formData.party_size,
+        formData.reservation_date,
+        formData.reservation_time
+      );
+
+      if (!tableConfigId) {
+        toast({
+          title: "No hay mesas disponibles",
+          description: `No hay mesas disponibles para ${formData.party_size} personas en este horario.`,
+          variant: "destructive",
+        });
+        setSubmitting(false);
+        return;
+      }
+
       const { error } = await supabase.from("reservations").insert({
         client_id: clientId,
         customer_name: formData.customer_name,
@@ -181,6 +251,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         reservation_date: formData.reservation_date,
         reservation_time: formData.reservation_time,
         party_size: formData.party_size,
+        table_config_id: tableConfigId,
         status: "confirmed",
       });
 
@@ -241,7 +312,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         <div>
           <h3 className="text-lg font-semibold">Vista Rápida de Disponibilidad</h3>
           <p className="text-sm text-muted-foreground">
-            Capacidad disponible por día y horario
+            Capacidad disponible por tipo de mesa
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -333,34 +404,53 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
       {Object.keys(groupedByDate).length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            No hay horarios configurados. Configure horarios disponibles primero.
+            {tableConfigs.length === 0
+              ? "Configure tipos de mesas primero en la pestaña Capacidad."
+              : "No hay horarios configurados. Configure horarios disponibles en la pestaña Horarios."}
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-4">
           {Object.entries(groupedByDate)
             .sort(([a], [b]) => a.localeCompare(b))
+            .slice(0, 7)
             .map(([date, slots]) => (
               <Card key={date}>
                 <CardHeader>
                   <CardTitle className="text-base">{formatDate(date)}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  <div className="space-y-4">
                     {slots.map((slot, idx) => (
-                      <div
-                        key={idx}
-                        className={`p-3 rounded-lg border text-center ${
-                          slot.available === 0
-                            ? "bg-destructive/10 border-destructive"
-                            : slot.available <= slot.capacity * 0.3
-                            ? "bg-yellow-500/10 border-yellow-500"
-                            : "bg-green-500/10 border-green-500"
-                        }`}
-                      >
-                        <div className="font-semibold text-sm">{slot.time}</div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {slot.available} / {slot.capacity} disponibles
+                      <div key={idx} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-3">
+                          <div className="font-semibold">{slot.time}</div>
+                          <div className={`text-sm font-medium ${
+                            slot.totalAvailable === 0
+                              ? "text-destructive"
+                              : slot.totalAvailable <= 3
+                              ? "text-yellow-600"
+                              : "text-green-600"
+                          }`}>
+                            {slot.totalAvailable} mesa{slot.totalAvailable !== 1 ? 's' : ''} disponible{slot.totalAvailable !== 1 ? 's' : ''}
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                          {slot.tables.map((table) => (
+                            <div
+                              key={table.config_id}
+                              className={`p-2 rounded text-center text-xs ${
+                                table.available === 0
+                                  ? "bg-muted text-muted-foreground"
+                                  : "bg-primary/10 text-primary"
+                              }`}
+                            >
+                              <div className="font-medium">{table.table_name}</div>
+                              <div className="text-xs mt-1">
+                                {table.available}/{table.total}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ))}
@@ -368,8 +458,8 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
                 </CardContent>
               </Card>
             ))}
-        </div>
-      )}
+          </div>
+        )}
     </div>
   );
 };
