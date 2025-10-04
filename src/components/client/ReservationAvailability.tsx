@@ -350,7 +350,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
     return `${dayName} ${day} ${month}`;
   };
 
-  const dateLabels = Object.keys(groupedByDate).sort().slice(0, 7);
+  const dateLabels = Object.keys(groupedByDate).sort();
 
   return (
     <div className="space-y-6">
