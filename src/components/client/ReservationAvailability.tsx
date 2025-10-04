@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { getCurrentDateInTimezone, combineDateTimeToUtc, extractDateTimeFromUtc } from "@/lib/timezone";
 
 interface CustomTableConfig {
   table_name: string;
@@ -75,6 +76,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [clientTimezone, setClientTimezone] = useState<string>("America/Lima");
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -121,7 +123,12 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [schedulesRes, tableConfigsRes, reservationsRes] = await Promise.all([
+      const [clientRes, schedulesRes, tableConfigsRes, reservationsRes] = await Promise.all([
+        supabase
+          .from("clients")
+          .select("timezone")
+          .eq("id", clientId)
+          .single(),
         supabase
           .from("reservation_schedules")
           .select("*")
@@ -140,13 +147,15 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           .select("*")
           .eq("client_id", clientId)
           .in("status", ["pending", "confirmed"])
-          .gte("reservation_date", new Date().toISOString().split("T")[0]),
+          .gte("reservation_date", getCurrentDateInTimezone(clientTimezone)),
       ]);
 
+      if (clientRes.error) throw clientRes.error;
       if (schedulesRes.error) throw schedulesRes.error;
       if (tableConfigsRes.error) throw tableConfigsRes.error;
       if (reservationsRes.error) throw reservationsRes.error;
 
+      setClientTimezone(clientRes.data.timezone || "America/Lima");
       setSchedules((schedulesRes.data as any) || []);
       setTableConfigs(tableConfigsRes.data || []);
       setReservations(reservationsRes.data || []);
@@ -287,13 +296,23 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         return;
       }
 
+      // Convert local datetime to UTC before saving
+      const utcDateTime = combineDateTimeToUtc(
+        formData.reservation_date,
+        formData.reservation_time,
+        clientTimezone
+      );
+      
+      // Extract UTC date and time for storage
+      const { date: utcDate, time: utcTime } = extractDateTimeFromUtc(utcDateTime, "UTC");
+
       const { error } = await supabase.from("reservations").insert({
         client_id: clientId,
         customer_name: formData.customer_name,
         customer_phone: formData.customer_phone,
         customer_email: formData.customer_email,
-        reservation_date: formData.reservation_date,
-        reservation_time: formData.reservation_time,
+        reservation_date: utcDate,
+        reservation_time: utcTime,
         party_size: formData.party_size,
         table_config_id: tableConfigId,
         status: "confirmed",

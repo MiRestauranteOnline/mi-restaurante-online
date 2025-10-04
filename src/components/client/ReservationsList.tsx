@@ -13,6 +13,7 @@ import { es } from "date-fns/locale";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { getCurrentDateInTimezone, extractDateTimeFromUtc } from "@/lib/timezone";
 
 interface Reservation {
   id: string;
@@ -70,8 +71,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const [reservationToDecline, setReservationToDecline] = useState<string | null>(null);
   const [declineReason, setDeclineReason] = useState("");
   const [customDeclineReason, setCustomDeclineReason] = useState("");
+  const [clientTimezone, setClientTimezone] = useState<string>("America/Lima");
 
   useEffect(() => {
+    fetchClientTimezone();
     fetchReservations();
     cleanupPastReservations();
   }, [clientId]);
@@ -80,9 +83,24 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
     filterReservations();
   }, [reservations, searchTerm, statusFilter]);
 
+  const fetchClientTimezone = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("clients")
+        .select("timezone")
+        .eq("id", clientId)
+        .single();
+
+      if (error) throw error;
+      setClientTimezone(data.timezone || "America/Lima");
+    } catch (error) {
+      console.error("Error fetching client timezone:", error);
+    }
+  };
+
   const cleanupPastReservations = async () => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getCurrentDateInTimezone(clientTimezone);
       const { error } = await supabase
         .from("reservations")
         .delete()
@@ -97,7 +115,7 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
 
   const fetchReservations = async () => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getCurrentDateInTimezone(clientTimezone);
       const { data, error } = await (supabase as any)
         .from("reservations")
         .select("*")
@@ -285,10 +303,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="font-medium">
-                        {format(new Date(reservation.reservation_date), "dd MMM yyyy", { locale: es })}
+                        {format(new Date(reservation.reservation_date + 'T' + reservation.reservation_time), "dd MMM yyyy", { locale: es })}
                       </span>
                       <span className="text-sm text-muted-foreground">
-                        {reservation.reservation_time}
+                        {format(new Date(reservation.reservation_date + 'T' + reservation.reservation_time), "HH:mm")}
                       </span>
                     </div>
                   </TableCell>
@@ -371,10 +389,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                 <div className="space-y-2 text-sm">
                   <p>
                     <span className="text-muted-foreground">Fecha:</span>{" "}
-                    {format(new Date(selectedReservation.reservation_date), "dd MMMM yyyy", { locale: es })}
+                    {format(new Date(selectedReservation.reservation_date + 'T' + selectedReservation.reservation_time), "dd MMMM yyyy", { locale: es })}
                   </p>
                   <p>
-                    <span className="text-muted-foreground">Hora:</span> {selectedReservation.reservation_time}
+                    <span className="text-muted-foreground">Hora:</span> {format(new Date(selectedReservation.reservation_date + 'T' + selectedReservation.reservation_time), "HH:mm")}
                   </p>
                   <p>
                     <span className="text-muted-foreground">Personas:</span> {selectedReservation.party_size}
