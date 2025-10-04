@@ -56,9 +56,6 @@ interface Client {
   restaurant_name: string;
   subdomain: string;
   domain?: string;
-  vercel_team?: string;
-  vercel_project?: string;
-  vercel_dashboard_url?: string;
   email?: string;
   phone?: string;
   phone_country_code?: string;
@@ -817,9 +814,6 @@ const [reviewForm, setReviewForm] = useState({
     restaurant_name: '',
     subdomain: '',
     domain: '',
-    vercel_team: '',
-    vercel_project: '',
-    vercel_dashboard_url: '',
     email: '',
     phone: '',
     phone_country_code: '+51',
@@ -1069,9 +1063,6 @@ const [reviewForm, setReviewForm] = useState({
         restaurant_name: data.restaurant_name || '',
         subdomain: data.subdomain || '',
         domain: (data as any).domain || '',
-        vercel_team: (data as any).vercel_team || '',
-        vercel_project: (data as any).vercel_project || '',
-        vercel_dashboard_url: (data as any).vercel_dashboard_url || '',
         email: data.email || '',
         phone: data.phone || '',
         phone_country_code: (data as any).phone_country_code || '+51',
@@ -1635,9 +1626,6 @@ const [reviewForm, setReviewForm] = useState({
           restaurant_name: formData.restaurant_name,
           subdomain: formData.subdomain,
           domain: formData.domain,
-          vercel_team: formData.vercel_team,
-          vercel_project: formData.vercel_project,
-          vercel_dashboard_url: formData.vercel_dashboard_url,
           email: formData.email,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
@@ -2733,7 +2721,6 @@ setReviewForm({
           {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="discounts">Descuentos</TabsTrigger>}
           {userRole === 'admin' && <TabsTrigger value="advanced">Avanzado</TabsTrigger>}
-          {userRole === 'admin' && <TabsTrigger value="setup-prompt">{t('nav.setupPrompt')}</TabsTrigger>}
         </TabsList>
 
 
@@ -2890,48 +2877,6 @@ setReviewForm({
                   </p>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t">
-                  <h3 className="text-lg font-semibold">Hosting (Vercel)</h3>
-                  
-                  <div>
-                    <Label htmlFor="vercel_team">Vercel Team</Label>
-                    <Input
-                      id="vercel_team"
-                      value={formData.vercel_team}
-                      onChange={(e) => setFormData({...formData, vercel_team: e.target.value})}
-                      placeholder="team-name"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Nombre del equipo de Vercel para hosting del sitio de este cliente.
-                    </p>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="vercel_project">Vercel Project</Label>
-                    <Input
-                      id="vercel_project"
-                      value={formData.vercel_project}
-                      onChange={(e) => setFormData({...formData, vercel_project: e.target.value})}
-                      placeholder="project-name"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Nombre del proyecto de Vercel para este cliente.
-                    </p>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="vercel_dashboard_url">Vercel Dashboard URL</Label>
-                    <Input
-                      id="vercel_dashboard_url"
-                      value={formData.vercel_dashboard_url}
-                      onChange={(e) => setFormData({...formData, vercel_dashboard_url: e.target.value})}
-                      placeholder="https://vercel.com/team/project"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Enlace directo al dashboard del proyecto de este cliente en Vercel.
-                    </p>
-                  </div>
-                </div>
               </CardContent>
             </Card>
 
@@ -5559,121 +5504,6 @@ setReviewForm({
           </CardContent>
         </Card>
       </TabsContent>
-
-      {/* Setup Prompt Tab */}
-      <TabsContent value="setup-prompt">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('setupPrompt.title')}</CardTitle>
-            <CardDescription>
-              Instructions for setting up a new Lovable project based on this client
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Instructions */}
-            <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Setup Instructions:</h4>
-              <div className="text-blue-800 dark:text-blue-200 text-sm leading-relaxed space-y-2">
-                <p>
-                  <strong>1.</strong> To add a new project, copy the template you want to use for the client by opening the project → in the top left corner go to the lovable icon → settings → scroll down to the button "remix" to remix the project. Do not select the checkbox.
-                </p>
-                <p>
-                  <strong>2.</strong> In the top left corner go to the lovable icon → rename project → rename the project to{' '}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="inline-flex items-center gap-1 px-2 py-1 h-auto text-xs font-mono bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 border-blue-300 dark:border-blue-700"
-                    onClick={() => {
-                      navigator.clipboard.writeText(formData.subdomain);
-                      toast({
-                        title: "Copied!",
-                        description: `"${formData.subdomain}" copied to clipboard`,
-                      });
-                    }}
-                  >
-                    {formData.subdomain}
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                  </Button>
-                </p>
-              </div>
-            </div>
-
-            {/* Prompt Field */}
-            <div className="space-y-2">
-              <Label htmlFor="setup-prompt">Prompt for Developer</Label>
-              <Textarea
-                id="setup-prompt"
-                readOnly
-                value={`IMPORTANT: Only change the hardcoded domain identifier, do not make any other changes to the code.
-
-Change ALL hardcoded domain identifiers from 'demos' to '${formData.subdomain}' in the following locations:
-
-1. In src/hooks/useClientData.ts (2 locations):
-   - Line ~456: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
-   - Line ~649: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
-
-2. In src/utils/fastLoadData.ts:
-   - Line ~47: return 'demos'; → return '${formData.subdomain}';
-
-3. In src/utils/cachedContent.ts:
-   - Line ~13: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
-
-4. In src/utils/triggerFastLoad.ts (3 locations):
-   - Line ~4: (domain: string = 'demos') → (domain: string = '${formData.subdomain}')
-   - Line ~29: 'fast-load/demos.json' → 'fast-load/${formData.subdomain}.json'
-   - Line ~33: triggerFastLoadGeneration('demos') → triggerFastLoadGeneration('${formData.subdomain}')
-
-5. In src/main.tsx, update the clearOldDomainCache function to clear old 'demos' cache:
-const clearOldDomainCache = () => { try { // Clear any 'demos' domain cache localStorage.removeItem('fast_load_data_demos'); localStorage.removeItem('client_styles_demos'); console.log('🧹 Cleared old domain cache entries'); } catch (error) { console.warn('Failed to clear old cache:', error); } };
-
-This changes the default domain from 'demos' to '${formData.subdomain}' across all domain detection functions and clears old cached data to prevent conflicts.`}
-                className="min-h-[400px] font-mono text-sm"
-              />
-            </div>
-
-            {/* Copy Button */}
-            <div className="flex justify-end">
-              <Button
-                onClick={() => {
-                  const promptText = `IMPORTANT: Only change the hardcoded domain identifier, do not make any other changes to the code.
-
-Change ALL hardcoded domain identifiers from 'demos' to '${formData.subdomain}' in the following locations:
-
-1. In src/hooks/useClientData.ts (2 locations):
-   - Line ~456: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
-   - Line ~649: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
-
-2. In src/utils/fastLoadData.ts:
-   - Line ~47: return 'demos'; → return '${formData.subdomain}';
-
-3. In src/utils/cachedContent.ts:
-   - Line ~13: return 'demos'; // Default domain for template → return '${formData.subdomain}'; // Default domain for template
-
-4. In src/utils/triggerFastLoad.ts (3 locations):
-   - Line ~4: (domain: string = 'demos') → (domain: string = '${formData.subdomain}')
-   - Line ~29: 'fast-load/demos.json' → 'fast-load/${formData.subdomain}.json'
-   - Line ~33: triggerFastLoadGeneration('demos') → triggerFastLoadGeneration('${formData.subdomain}')
-
-5. In src/main.tsx, update the clearOldDomainCache function to clear old 'demos' cache:
-const clearOldDomainCache = () => { try { // Clear any 'demos' domain cache localStorage.removeItem('fast_load_data_demos'); localStorage.removeItem('client_styles_demos'); console.log('🧹 Cleared old domain cache entries'); } catch (error) { console.warn('Failed to clear old cache:', error); } };
-
-This changes the default domain from 'demos' to '${formData.subdomain}' across all domain detection functions and clears old cached data to prevent conflicts.`;
-                  navigator.clipboard.writeText(promptText);
-                  toast({
-                    title: "Success",
-                    description: "Setup prompt copied to clipboard",
-                  });
-                }}
-                variant="outline"
-              >
-                Copy to Clipboard
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        </TabsContent>
 
         {/* Client Images Tab */}
         <TabsContent value="custom-images">
