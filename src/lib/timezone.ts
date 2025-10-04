@@ -1,4 +1,5 @@
-import { toZonedTime, fromZonedTime, format as formatTz } from 'date-fns-tz';
+import { toZonedTime, fromZonedTime } from 'date-fns-tz';
+import { formatInTimeZone } from 'date-fns-tz/formatInTimeZone';
 import { format, parse } from 'date-fns';
 
 /**
@@ -29,7 +30,7 @@ export function clientTimezoneToUtc(localDate: Date, timezone: string = 'America
  * @returns Formatted date string
  */
 export function formatInTimezone(date: Date, formatStr: string, timezone: string = 'America/Lima'): string {
-  return formatTz(date, formatStr, { timeZone: timezone });
+  return formatInTimeZone(date, timezone, formatStr);
 }
 
 /**
