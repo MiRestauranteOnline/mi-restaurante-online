@@ -146,7 +146,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           .from("reservations")
           .select("*")
           .eq("client_id", clientId)
-          .in("status", ["pending", "confirmed"])
+          .eq("status", "confirmed")
           .gte("reservation_date", getCurrentDateInTimezone(clientTimezone)),
       ]);
 
