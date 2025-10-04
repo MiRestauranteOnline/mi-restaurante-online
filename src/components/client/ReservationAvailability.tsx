@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, ArrowUp } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getCurrentDateInTimezone, combineDateTimeToUtc, extractDateTimeFromUtc } from "@/lib/timezone";
 
 interface CustomTableConfig {
@@ -379,6 +380,55 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
     }
   };
 
+  // Get available dates from availability data
+  const availableDates = useMemo(() => {
+    return Object.keys(groupedByDate).sort();
+  }, [groupedByDate]);
+
+  // Get available times for selected date
+  const availableTimes = useMemo(() => {
+    if (!formData.reservation_date || !groupedByDate[formData.reservation_date]) {
+      return [];
+    }
+    return groupedByDate[formData.reservation_date].map(slot => ({
+      time: slot.time,
+      available: slot.totalAvailable,
+      tables: slot.tables
+    }));
+  }, [formData.reservation_date, groupedByDate]);
+
+  // Get available party sizes for selected date and time
+  const availablePartySizes = useMemo(() => {
+    if (!formData.reservation_date || !formData.reservation_time) {
+      return [];
+    }
+    const slot = groupedByDate[formData.reservation_date]?.find(s => s.time === formData.reservation_time);
+    if (!slot) return [];
+
+    // Get min and max from available tables
+    const availableTables = slot.tables.filter(t => t.available > 0);
+    if (availableTables.length === 0) return [];
+
+    const minSize = Math.min(...availableTables.map(t => t.seats));
+    const maxSize = Math.max(...availableTables.map(t => t.seats));
+    
+    return Array.from({ length: maxSize - minSize + 1 }, (_, i) => minSize + i);
+  }, [formData.reservation_date, formData.reservation_time, groupedByDate]);
+
+  // Reset form when dialog opens/closes
+  useEffect(() => {
+    if (!isDialogOpen) {
+      setFormData({
+        customer_name: "",
+        customer_phone: "",
+        customer_email: "",
+        reservation_date: "",
+        reservation_time: "",
+        party_size: 2,
+      });
+    }
+  }, [isDialogOpen]);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -430,34 +480,84 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
               </div>
               <div>
                 <Label htmlFor="reservation_date">Fecha</Label>
-                <Input
-                  id="reservation_date"
-                  type="date"
+                <Select
                   value={formData.reservation_date}
-                  onChange={(e) => setFormData({ ...formData, reservation_date: e.target.value })}
-                  required
-                />
+                  onValueChange={(value) => setFormData({ 
+                    ...formData, 
+                    reservation_date: value,
+                    reservation_time: "", // Reset time when date changes
+                    party_size: 2 // Reset party size when date changes
+                  })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar fecha" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    {availableDates.length === 0 ? (
+                      <SelectItem value="none" disabled>No hay fechas disponibles</SelectItem>
+                    ) : (
+                      availableDates.map((date) => (
+                        <SelectItem key={date} value={date}>
+                          {formatDate(date)}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="reservation_time">Hora</Label>
-                <Input
-                  id="reservation_time"
-                  type="time"
+                <Select
                   value={formData.reservation_time}
-                  onChange={(e) => setFormData({ ...formData, reservation_time: e.target.value })}
-                  required
-                />
+                  onValueChange={(value) => setFormData({ 
+                    ...formData, 
+                    reservation_time: value,
+                    party_size: 2 // Reset party size when time changes
+                  })}
+                  disabled={!formData.reservation_date}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar hora" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    {availableTimes.length === 0 ? (
+                      <SelectItem value="none" disabled>Seleccionar fecha primero</SelectItem>
+                    ) : (
+                      availableTimes.map((slot) => (
+                        <SelectItem 
+                          key={slot.time} 
+                          value={slot.time}
+                          disabled={slot.available === 0}
+                        >
+                          {slot.time} ({slot.available} disponible{slot.available !== 1 ? 's' : ''})
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="party_size">Número de Personas</Label>
-                <Input
-                  id="party_size"
-                  type="number"
-                  min="1"
-                  value={formData.party_size}
-                  onChange={(e) => setFormData({ ...formData, party_size: parseInt(e.target.value) })}
-                  required
-                />
+                <Select
+                  value={formData.party_size.toString()}
+                  onValueChange={(value) => setFormData({ ...formData, party_size: parseInt(value) })}
+                  disabled={!formData.reservation_time}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar personas" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    {availablePartySizes.length === 0 ? (
+                      <SelectItem value="0" disabled>Seleccionar hora primero</SelectItem>
+                    ) : (
+                      availablePartySizes.map((size) => (
+                        <SelectItem key={size} value={size.toString()}>
+                          {size} persona{size !== 1 ? 's' : ''}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
               <Button type="submit" disabled={submitting} className="w-full">
                 {submitting ? (
