@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Settings, 
   Menu as MenuIcon, 
@@ -18,11 +20,12 @@ import {
   Star,
   BarChart3,
   Shield,
-  Calendar
+  Calendar,
+  ShieldAlert
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
+import { useAdminImpersonation } from '@/hooks/useAdminImpersonation';
 
 interface Client {
   id: string;
@@ -44,7 +47,9 @@ export default function ClientDashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast: toastHook } = useToast();
   const { t } = useDashboardLanguage();
+  const { isImpersonating, impersonatedClientId, endImpersonation } = useAdminImpersonation();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -72,7 +77,7 @@ export default function ClientDashboardLayout() {
         .eq('user_id', session.user.id);
 
       if (error) {
-        toast.error('Error al cargar restaurantes');
+        toastHook({ title: "Error", description: 'Error al cargar restaurantes', variant: "destructive" });
         return;
       }
 
@@ -106,8 +111,14 @@ export default function ClientDashboardLayout() {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      toast.error('Error al cerrar sesión');
+      toastHook({ title: "Error", description: error.message, variant: "destructive" });
     }
+  };
+
+  const handleSwitchBack = () => {
+    endImpersonation();
+    navigate('/admin');
+    toastHook({ title: "Switched back to admin", description: "You are now viewing as admin" });
   };
 
   const selectedClient = clients.find(uc => uc.client_id === selectedClientId)?.clients;
@@ -131,12 +142,30 @@ export default function ClientDashboardLayout() {
   ];
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <aside className={cn(
-        "bg-card border-r transition-all duration-300 ease-in-out",
-        sidebarOpen ? "w-64" : "w-16"
-      )}>
+    <div className="flex flex-col h-screen bg-background">
+      {/* Admin Impersonation Banner */}
+      {isImpersonating && impersonatedClientId === selectedClientId && (
+        <Alert className="rounded-none border-x-0 border-t-0 bg-warning/10">
+          <ShieldAlert className="h-4 w-4" />
+          <AlertDescription className="flex items-center justify-between">
+            <span>You are viewing this account as an admin</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSwitchBack}
+            >
+              Switch Back to Admin
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <div className="flex flex-1 h-full overflow-hidden">
+        {/* Sidebar */}
+        <aside className={cn(
+          "bg-card border-r transition-all duration-300 ease-in-out",
+          sidebarOpen ? "w-64" : "w-16"
+        )}>
         <div className="p-4">
           <div className="flex items-center justify-between mb-6">
             {sidebarOpen && (
@@ -238,14 +267,15 @@ export default function ClientDashboardLayout() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-auto p-6">
-          <Outlet context={{ selectedClientId, selectedClient }} />
-        </main>
+          {/* Page Content */}
+          <main className="flex-1 overflow-auto p-6">
+            <Outlet context={{ selectedClientId, selectedClient }} />
+          </main>
+        </div>
       </div>
     </div>
   );

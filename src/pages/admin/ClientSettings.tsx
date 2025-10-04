@@ -48,6 +48,8 @@ import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
 import { ClientDiscountAssignments } from '@/components/admin/ClientDiscountAssignments';
 import { DomainManagementTab } from '@/components/admin/DomainManagementTab';
+import { useAdminImpersonation } from '@/hooks/useAdminImpersonation';
+import { UserCog } from 'lucide-react';
 
 interface Client {
   id: string;
@@ -663,6 +665,8 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const setSelectedClientId = outletCtx?.setSelectedClientId;
   const navigate = useNavigate();
   const { t } = useDashboardLanguage();
+  const { startImpersonation } = useAdminImpersonation();
+  const [currentUser, setCurrentUser] = useState<any>(null);
   
   // Prefer route param when present, else fall back to admin context selection
   const effectiveClientId = clientId || contextClientId;
@@ -996,6 +1000,14 @@ const [reviewForm, setReviewForm] = useState({
     monthly_reports_enabled: false,
     premium_support_enabled: false
   });
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUser(user);
+    };
+    getUser();
+  }, []);
 
   useEffect(() => {
     if (effectiveClientId) {
@@ -1589,6 +1601,13 @@ const [reviewForm, setReviewForm] = useState({
     } catch (err: any) {
       toast({ title: 'Error', description: err.message || 'No se pudo guardar', variant: 'destructive' });
     }
+  };
+
+  const handleSwitchToUser = () => {
+    if (!currentUser || !effectiveClientId) return;
+    startImpersonation(currentUser.id, effectiveClientId);
+    navigate(`/client/dashboard/${effectiveClientId}`);
+    toast({ title: 'Switched to client view', description: 'You are now viewing as the client' });
   };
 
   const handleSave = async () => {
@@ -2666,7 +2685,20 @@ setReviewForm({
             <h1 className="text-3xl font-bold">
               {userRole === 'admin' ? 'Edit Client Settings' : 'Dashboard'}
             </h1>
-            <p className="text-muted-foreground">{client.restaurant_name}</p>
+            <div className="flex items-center gap-3">
+              <p className="text-muted-foreground">{client.restaurant_name}</p>
+              {userRole === 'admin' && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSwitchToUser}
+                  className="gap-2"
+                >
+                  <UserCog className="h-4 w-4" />
+                  Switch to User
+                </Button>
+              )}
+            </div>
           </div>
         </div>
         <Button onClick={handleSave} disabled={saving}>
