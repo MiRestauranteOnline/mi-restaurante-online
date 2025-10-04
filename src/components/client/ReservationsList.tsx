@@ -72,22 +72,11 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const [declineReason, setDeclineReason] = useState("");
   const [customDeclineReason, setCustomDeclineReason] = useState("");
   const [clientTimezone, setClientTimezone] = useState<string>("America/Lima");
-  const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
     fetchClientTimezone();
     fetchReservations();
     cleanupPastReservations();
-
-    // Handle scroll for back-to-top button
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, [clientId]);
 
   useEffect(() => {
@@ -513,15 +502,13 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
         </DialogContent>
       </Dialog>
 
-      {showBackToTop && (
-        <Button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 rounded-full w-12 h-12 shadow-lg"
-          size="icon"
-        >
-          <ArrowUp className="h-5 w-5" />
-        </Button>
-      )}
+      <Button
+        onClick={scrollToTop}
+        className="fixed bottom-8 right-8 rounded-full w-12 h-12 shadow-lg z-50"
+        size="icon"
+      >
+        <ArrowUp className="h-5 w-5" />
+      </Button>
     </div>
   );
 };

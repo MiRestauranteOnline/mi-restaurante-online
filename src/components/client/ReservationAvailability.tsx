@@ -77,7 +77,6 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [clientTimezone, setClientTimezone] = useState<string>("America/Lima");
-  const [showBackToTop, setShowBackToTop] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -110,15 +109,8 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
       )
       .subscribe();
 
-    // Handle scroll for back-to-top button
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-
     return () => {
       supabase.removeChannel(channel);
-      window.removeEventListener('scroll', handleScroll);
     };
   }, [clientId]);
 
@@ -561,15 +553,13 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         </div>
       )}
       
-      {showBackToTop && (
-        <Button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 rounded-full w-12 h-12 shadow-lg"
-          size="icon"
-        >
-          <ArrowUp className="h-5 w-5" />
-        </Button>
-      )}
+      <Button
+        onClick={scrollToTop}
+        className="fixed bottom-8 right-8 rounded-full w-12 h-12 shadow-lg z-50"
+        size="icon"
+      >
+        <ArrowUp className="h-5 w-5" />
+      </Button>
     </div>
   );
 };
