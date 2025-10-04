@@ -357,11 +357,13 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
     );
   }
 
-  const groupedByDate = availability.reduce((acc, slot) => {
-    if (!acc[slot.date]) acc[slot.date] = [];
-    acc[slot.date].push(slot);
-    return acc;
-  }, {} as Record<string, TimeSlotAvailability[]>);
+  const groupedByDate = useMemo(() => {
+    return availability.reduce((acc, slot) => {
+      if (!acc[slot.date]) acc[slot.date] = [];
+      acc[slot.date].push(slot);
+      return acc;
+    }, {} as Record<string, TimeSlotAvailability[]>);
+  }, [availability]);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr + 'T00:00:00');
