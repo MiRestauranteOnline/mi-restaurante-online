@@ -216,7 +216,8 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
       const { error } = await supabase
         .from("reservations")
         .delete()
-        .eq("id", reservationToDelete);
+        .eq("id", reservationToDelete)
+        .eq("client_id", clientId);
 
       if (error) {
         console.error("Delete error:", error);
