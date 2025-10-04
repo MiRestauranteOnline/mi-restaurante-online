@@ -211,6 +211,7 @@ serve(async (req) => {
         "homepage_cta_button2_link": "",
         "reviews_section_title_first_line": "Primera parte reviews",
         "reviews_section_title_second_line": "Segunda parte reviews",
+        "reviews_section_description": "Descripción de la sección de reseñas que refleje el compromiso con la excelencia y servicio del restaurante",
         "about_page_hero_title_first_line": "Primera parte about hero",
         "about_page_hero_title_second_line": "Segunda parte about hero",
         "about_page_hero_description": "Descripción about hero",
@@ -296,6 +297,8 @@ serve(async (req) => {
     3. SOLO INCLUYE SERVICIOS MENCIONADOS: No agregues servicios (delivery, eventos, etc.) que no estén mencionados en el briefing
     4. VERIFICA INFORMACIÓN: Si el briefing menciona redes sociales o sitio web, úsalos como referencia para validar información
     5. SÉ CONSERVADOR: Es mejor ser general que específico si no tienes datos verificables
+    6. NO INVENTES ESTADÍSTICAS: Nunca crees números, porcentajes, rankings, premios o reconocimientos que no estén en el briefing
+    7. NO AFIRMES HECHOS NO VERIFICABLES: Evita declaraciones como "el mejor", "número 1", "ganador de", "fundado en [año específico]" si no están en el briefing
 
     IMPORTANTE:
     - Todo el contenido debe estar en español
@@ -325,7 +328,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { role: 'system', content: 'Eres un experto en marketing para restaurantes y SEO local. CRÍTICO: NO INVENTES datos específicos como años de experiencia, números de clientes, premios o fechas. Usa solo información del briefing y fuentes verificables. Responde siempre en formato JSON válido.' },
+          { role: 'system', content: 'Eres un experto en marketing para restaurantes y SEO local. CRÍTICO: NO INVENTES datos específicos como años de experiencia, números de clientes, premios o fechas. NO CREES estadísticas, rankings, premios o reconocimientos que no estén explícitamente en el briefing. NO AFIRMES ser "el mejor", "número 1" o "ganador de" sin evidencia del briefing. Usa solo información del briefing y fuentes verificables. Responde siempre en formato JSON válido.' },
           { role: 'user', content: contentPrompt }
         ],
         max_tokens: 3000,

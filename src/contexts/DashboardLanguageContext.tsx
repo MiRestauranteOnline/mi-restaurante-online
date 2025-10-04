@@ -258,6 +258,7 @@ const translations = {
     'content.testimonialsLabel': 'Etiqueta "Testimonios"',
     'content.firstLineReviewsTitle': 'Primera Línea del Título Reseñas',
     'content.secondLineReviewsTitle': 'Segunda Línea del Título Reseñas',
+    'content.reviewsSectionDescription': 'Descripción de la Sección Reseñas',
     'content.deliverySection': 'Sección Delivery',
     'content.deliverySectionTitle': 'Título de la Sección Delivery',
     'content.deliverySectionDescription': 'Descripción de la Sección Delivery',

@@ -108,6 +108,7 @@ interface AdminContent {
   homepage_services_section_title_second_line?: string;
   reviews_section_title_first_line?: string;
   reviews_section_title_second_line?: string;
+  reviews_section_description?: string;
   
   // Page hero titles
   about_page_hero_title_first_line?: string;
@@ -877,6 +878,7 @@ const [reviewForm, setReviewForm] = useState({
     homepage_about_section_title_second_line: '',
     reviews_section_title_first_line: '',
     reviews_section_title_second_line: '',
+    reviews_section_description: '',
     about_page_hero_title_first_line: '',
     about_page_hero_title_second_line: '',
     about_team_section_title_first_line: '',
@@ -1270,6 +1272,7 @@ const [reviewForm, setReviewForm] = useState({
           homepage_about_section_title_second_line: data.homepage_about_section_title_second_line || '',
           reviews_section_title_first_line: data.reviews_section_title_first_line || '',
           reviews_section_title_second_line: data.reviews_section_title_second_line || '',
+          reviews_section_description: data.reviews_section_description || '',
           about_page_hero_title_first_line: data.about_page_hero_title_first_line || '',
           about_page_hero_title_second_line: data.about_page_hero_title_second_line || '',
           about_team_section_title_first_line: data.about_team_section_title_first_line || '',
@@ -1697,6 +1700,7 @@ const [reviewForm, setReviewForm] = useState({
             homepage_about_section_title_second_line: formData.homepage_about_section_title_second_line,
             reviews_section_title_first_line: formData.reviews_section_title_first_line,
             reviews_section_title_second_line: formData.reviews_section_title_second_line,
+            reviews_section_description: formData.reviews_section_description,
             about_page_hero_title_first_line: formData.about_page_hero_title_first_line,
             about_page_hero_title_second_line: formData.about_page_hero_title_second_line,
             about_team_section_title_first_line: formData.about_team_section_title_first_line,
@@ -3661,6 +3665,15 @@ setReviewForm({
                           onChange={(e) => setFormData({...formData, reviews_section_title_second_line: e.target.value})}
                         />
                       </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="reviews_section_description">{t('content.reviewsSectionDescription')}</Label>
+                      <Textarea
+                        id="reviews_section_description"
+                        value={formData.reviews_section_description}
+                        onChange={(e) => setFormData({...formData, reviews_section_description: e.target.value})}
+                        placeholder="Cada opinión refleja nuestro compromiso con la excelencia culinaria y el servicio excepcional."
+                      />
                     </div>
                   </CardContent>
                 </Card>
