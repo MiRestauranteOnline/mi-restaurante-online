@@ -11,6 +11,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, Save } from 'lucide-react';
 import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { timezones } from '@/data/timezones';
+import { countries } from '@/data/countries';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -85,7 +88,10 @@ export default function ClientSettings() {
           coordinates: formData.coordinates,
           opening_hours: formData.opening_hours,
           social_media_links: formData.social_media_links,
-          other_customizations: formData.other_customizations
+          other_customizations: formData.other_customizations,
+          timezone: formData.timezone,
+          country_code: formData.country_code,
+          locale: formData.locale
         })
         .eq('id', selectedClientId);
 
@@ -184,6 +190,57 @@ export default function ClientSettings() {
                   value={formData.address || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="country_code">País</Label>
+                <Select
+                  value={formData.country_code || 'PE'}
+                  onValueChange={(value) => {
+                    const selectedCountry = countries.find(c => c.code === value);
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      country_code: value,
+                      locale: selectedCountry?.locale || 'es-PE'
+                    }));
+                  }}
+                >
+                  <SelectTrigger id="country_code">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countries.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.flag} {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Usado para SEO y configuración regional del sitio
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="timezone">Zona Horaria</Label>
+                <Select
+                  value={formData.timezone || 'America/Lima'}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, timezone: value }))}
+                >
+                  <SelectTrigger id="timezone">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timezones.map((tz) => (
+                      <SelectItem key={tz.value} value={tz.value}>
+                        {tz.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Asegura que las reservas y horarios se muestren correctamente
+                </p>
               </div>
             </CardContent>
           </Card>

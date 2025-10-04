@@ -768,6 +768,7 @@ export type Database = {
           cancellation_date: string | null
           cancellation_reason: string | null
           coordinates: Json | null
+          country_code: string | null
           created_at: string
           custom_domain: string | null
           delivery: Json | null
@@ -779,6 +780,7 @@ export type Database = {
           id: string
           last_domain_check: string | null
           last_payment_attempt: string | null
+          locale: string | null
           monthly_bandwidth_limit_gb: number | null
           monthly_visits_limit: number | null
           next_billing_date: string | null
@@ -802,6 +804,7 @@ export type Database = {
           subscription_status: string | null
           template_id: string | null
           theme: string | null
+          timezone: string | null
           trial_end_date: string | null
           updated_at: string
           vercel_dashboard_url: string | null
@@ -816,6 +819,7 @@ export type Database = {
           cancellation_date?: string | null
           cancellation_reason?: string | null
           coordinates?: Json | null
+          country_code?: string | null
           created_at?: string
           custom_domain?: string | null
           delivery?: Json | null
@@ -827,6 +831,7 @@ export type Database = {
           id?: string
           last_domain_check?: string | null
           last_payment_attempt?: string | null
+          locale?: string | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
           next_billing_date?: string | null
@@ -850,6 +855,7 @@ export type Database = {
           subscription_status?: string | null
           template_id?: string | null
           theme?: string | null
+          timezone?: string | null
           trial_end_date?: string | null
           updated_at?: string
           vercel_dashboard_url?: string | null
@@ -864,6 +870,7 @@ export type Database = {
           cancellation_date?: string | null
           cancellation_reason?: string | null
           coordinates?: Json | null
+          country_code?: string | null
           created_at?: string
           custom_domain?: string | null
           delivery?: Json | null
@@ -875,6 +882,7 @@ export type Database = {
           id?: string
           last_domain_check?: string | null
           last_payment_attempt?: string | null
+          locale?: string | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
           next_billing_date?: string | null
@@ -898,6 +906,7 @@ export type Database = {
           subscription_status?: string | null
           template_id?: string | null
           theme?: string | null
+          timezone?: string | null
           trial_end_date?: string | null
           updated_at?: string
           vercel_dashboard_url?: string | null

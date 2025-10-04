@@ -50,6 +50,8 @@ import { ClientDiscountAssignments } from '@/components/admin/ClientDiscountAssi
 import { DomainManagementTab } from '@/components/admin/DomainManagementTab';
 import { useAdminImpersonation } from '@/hooks/useAdminImpersonation';
 import { UserCog } from 'lucide-react';
+import { timezones } from '@/data/timezones';
+import { countries } from '@/data/countries';
 
 interface Client {
   id: string;
@@ -75,6 +77,9 @@ interface Client {
   custom_cta_button_link?: string;
   show_whatsapp_popup?: boolean;
   template_id?: string;
+  timezone?: string;
+  country_code?: string;
+  locale?: string;
 }
 
 interface ClientSettings {
@@ -827,6 +832,9 @@ const [reviewForm, setReviewForm] = useState({
     custom_cta_button_text: '',
     custom_cta_button_link: '',
     show_whatsapp_popup: false,
+    timezone: 'America/Lima',
+    country_code: 'PE',
+    locale: 'es-PE',
     opening_hours: {
       monday: { open: '09:00', close: '22:00', closed: false },
       tuesday: { open: '09:00', close: '22:00', closed: false },
@@ -1640,6 +1648,9 @@ const [reviewForm, setReviewForm] = useState({
           brand_colors: formData.brand_colors,
           other_customizations: formData.other_customizations,
           template_id: formData.template_id || null,
+          timezone: formData.timezone,
+          country_code: formData.country_code,
+          locale: formData.locale,
           updated_at: new Date().toISOString()
         })
         .eq('id', clientId)
@@ -2780,6 +2791,59 @@ setReviewForm({
                   onChange={(e) => setFormData({...formData, address: e.target.value})}
                   rows={3}
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <Label htmlFor="country_code">País</Label>
+                  <Select
+                    value={formData.country_code || 'PE'}
+                    onValueChange={(value) => {
+                      const selectedCountry = countries.find(c => c.code === value);
+                      setFormData({ 
+                        ...formData, 
+                        country_code: value,
+                        locale: selectedCountry?.locale || 'es-PE'
+                      });
+                    }}
+                  >
+                    <SelectTrigger id="country_code">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map((country) => (
+                        <SelectItem key={country.code} value={country.code}>
+                          {country.flag} {country.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Usado para SEO y configuración regional del sitio
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="timezone">Zona Horaria</Label>
+                  <Select
+                    value={formData.timezone || 'America/Lima'}
+                    onValueChange={(value) => setFormData({ ...formData, timezone: value })}
+                  >
+                    <SelectTrigger id="timezone">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timezones.map((tz) => (
+                        <SelectItem key={tz.value} value={tz.value}>
+                          {tz.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Asegura que las reservas y horarios se muestren correctamente
+                  </p>
+                </div>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
