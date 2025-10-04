@@ -349,13 +349,6 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   const groupedByDate = useMemo(() => {
     return availability.reduce((acc, slot) => {
@@ -430,6 +423,14 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
       });
     }
   }, [isDialogOpen]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
