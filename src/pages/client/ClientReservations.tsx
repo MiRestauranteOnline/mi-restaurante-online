@@ -5,6 +5,7 @@ import ReservationSchedules from "@/components/client/ReservationSchedules";
 import ReservationsList from "@/components/client/ReservationsList";
 import ReservationAvailability from "@/components/client/ReservationAvailability";
 import TableConfigurationManager from "@/components/client/TableConfigurationManager";
+import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
 
 
 const ClientReservations = () => {
@@ -44,7 +45,9 @@ const ClientReservations = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ReservationAvailability clientId={clientId} />
+              <DebugErrorBoundary>
+                <ReservationAvailability clientId={clientId} />
+              </DebugErrorBoundary>
             </CardContent>
           </Card>
         </TabsContent>
