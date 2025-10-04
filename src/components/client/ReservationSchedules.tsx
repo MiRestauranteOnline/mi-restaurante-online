@@ -376,7 +376,7 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
 
                   {useCustomCapacity && (
                     <div className="space-y-3 pl-4 border-l-2">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mb-2">
                         <p className="text-sm font-medium">Tipos de Mesa</p>
                         <Button
                           type="button"
@@ -385,65 +385,101 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                           onClick={addCustomTable}
                         >
                           <Plus className="w-3 h-3 mr-1" />
-                          Agregar
+                          Agregar Mesa
                         </Button>
                       </div>
 
                       {customTables.map((table, index) => (
-                        <div key={index} className="grid grid-cols-5 gap-2 p-3 border rounded-lg bg-muted/50">
-                          <div className="col-span-5 sm:col-span-1">
-                            <Input
-                              placeholder="Nombre"
-                              value={table.table_name}
-                              onChange={(e) => updateCustomTable(index, "table_name", e.target.value)}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              placeholder="Asientos"
-                              min="1"
-                              value={table.seats}
-                              onChange={(e) => updateCustomTable(index, "seats", parseInt(e.target.value))}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              placeholder="Cantidad"
-                              min="1"
-                              value={table.quantity}
-                              onChange={(e) => updateCustomTable(index, "quantity", parseInt(e.target.value))}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              placeholder="Mín"
-                              min="1"
-                              value={table.min_party_size}
-                              onChange={(e) => updateCustomTable(index, "min_party_size", parseInt(e.target.value))}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              placeholder="Máx"
-                              min="1"
-                              value={table.max_party_size}
-                              onChange={(e) => updateCustomTable(index, "max_party_size", parseInt(e.target.value))}
-                            />
-                          </div>
-                          <div className="col-span-5 flex justify-end">
+                        <div key={index} className="space-y-3 p-4 border rounded-lg bg-muted/50">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-semibold text-foreground">Mesa #{index + 1}</p>
                             <Button
                               type="button"
                               variant="ghost"
                               size="sm"
                               onClick={() => removeCustomTable(index)}
+                              className="h-8"
                             >
                               <Trash2 className="w-3 h-3 mr-1" />
                               Eliminar
                             </Button>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div className="space-y-1.5">
+                              <Label htmlFor={`table_name_${index}`} className="text-sm font-medium">
+                                Nombre del Tipo de Mesa
+                              </Label>
+                              <Input
+                                id={`table_name_${index}`}
+                                placeholder="ej. Mesas para 2"
+                                value={table.table_name}
+                                onChange={(e) => updateCustomTable(index, "table_name", e.target.value)}
+                                className="h-10"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="space-y-1.5">
+                                <Label htmlFor={`seats_${index}`} className="text-sm font-medium">
+                                  Asientos por Mesa
+                                </Label>
+                                <Input
+                                  id={`seats_${index}`}
+                                  type="number"
+                                  placeholder="2"
+                                  min="1"
+                                  value={table.seats}
+                                  onChange={(e) => updateCustomTable(index, "seats", parseInt(e.target.value))}
+                                  className="h-10"
+                                />
+                              </div>
+                              <div className="space-y-1.5">
+                                <Label htmlFor={`quantity_${index}`} className="text-sm font-medium">
+                                  Cantidad de Mesas
+                                </Label>
+                                <Input
+                                  id={`quantity_${index}`}
+                                  type="number"
+                                  placeholder="5"
+                                  min="1"
+                                  value={table.quantity}
+                                  onChange={(e) => updateCustomTable(index, "quantity", parseInt(e.target.value))}
+                                  className="h-10"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="space-y-1.5">
+                                <Label htmlFor={`min_party_${index}`} className="text-sm font-medium">
+                                  Mín. Personas
+                                </Label>
+                                <Input
+                                  id={`min_party_${index}`}
+                                  type="number"
+                                  placeholder="1"
+                                  min="1"
+                                  value={table.min_party_size}
+                                  onChange={(e) => updateCustomTable(index, "min_party_size", parseInt(e.target.value))}
+                                  className="h-10"
+                                />
+                              </div>
+                              <div className="space-y-1.5">
+                                <Label htmlFor={`max_party_${index}`} className="text-sm font-medium">
+                                  Máx. Personas
+                                </Label>
+                                <Input
+                                  id={`max_party_${index}`}
+                                  type="number"
+                                  placeholder="2"
+                                  min="1"
+                                  value={table.max_party_size}
+                                  onChange={(e) => updateCustomTable(index, "max_party_size", parseInt(e.target.value))}
+                                  className="h-10"
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))}
