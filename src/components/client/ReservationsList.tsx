@@ -213,12 +213,16 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
     if (!reservationToDelete) return;
 
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from("reservations")
         .delete()
         .eq("id", reservationToDelete);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Delete error:", error);
+        throw error;
+      }
+      
       toast.success("Reserva eliminada correctamente");
       fetchReservations();
     } catch (error) {
