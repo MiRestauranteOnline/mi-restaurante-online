@@ -483,7 +483,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
               <div>
                 <Label htmlFor="reservation_date">Fecha</Label>
                 <Select
-                  value={formData.reservation_date}
+                  value={availableDates.includes(formData.reservation_date) ? formData.reservation_date : undefined}
                   onValueChange={(value) => setFormData({ 
                     ...formData, 
                     reservation_date: value,
@@ -510,7 +510,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
               <div>
                 <Label htmlFor="reservation_time">Hora</Label>
                 <Select
-                  value={formData.reservation_time}
+                  value={availableTimes.some(s => s.time === formData.reservation_time) ? formData.reservation_time : undefined}
                   onValueChange={(value) => setFormData({ 
                     ...formData, 
                     reservation_time: value,
@@ -541,7 +541,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
               <div>
                 <Label htmlFor="party_size">Número de Personas</Label>
                 <Select
-                  value={formData.party_size.toString()}
+                  value={availablePartySizes.includes(formData.party_size) ? formData.party_size.toString() : undefined}
                   onValueChange={(value) => setFormData({ ...formData, party_size: parseInt(value) })}
                   disabled={!formData.reservation_time}
                 >
