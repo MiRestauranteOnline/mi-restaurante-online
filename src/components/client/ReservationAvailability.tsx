@@ -88,6 +88,28 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
 
   useEffect(() => {
     fetchData();
+
+    // Subscribe to real-time reservation changes
+    const channel = supabase
+      .channel('reservations-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'reservations',
+          filter: `client_id=eq.${clientId}`
+        },
+        () => {
+          console.log('Reservation change detected, refetching data...');
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [clientId]);
 
   useEffect(() => {
