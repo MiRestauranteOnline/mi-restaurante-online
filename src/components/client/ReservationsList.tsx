@@ -8,9 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, isPast, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface Reservation {
   id: string;
@@ -38,11 +40,21 @@ const STATUS_OPTIONS = [
 ];
 
 const STATUS_COLORS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  pending: "default",
+  pending: "outline",
   confirmed: "default",
   cancelled: "destructive",
   completed: "secondary",
 };
+
+const DECLINE_REASONS = [
+  "No hay mesas disponibles",
+  "Fuera del horario de atención",
+  "Grupo muy grande",
+  "Día festivo cerrado",
+  "Evento privado",
+  "Mantenimiento programado",
+  "Otro motivo (especificar)",
+];
 
 const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -54,21 +66,43 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [reservationToDelete, setReservationToDelete] = useState<string | null>(null);
+  const [declineDialogOpen, setDeclineDialogOpen] = useState(false);
+  const [reservationToDecline, setReservationToDecline] = useState<string | null>(null);
+  const [declineReason, setDeclineReason] = useState("");
+  const [customDeclineReason, setCustomDeclineReason] = useState("");
 
   useEffect(() => {
     fetchReservations();
+    cleanupPastReservations();
   }, [clientId]);
 
   useEffect(() => {
     filterReservations();
   }, [reservations, searchTerm, statusFilter]);
 
+  const cleanupPastReservations = async () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const { error } = await supabase
+        .from("reservations")
+        .delete()
+        .eq("client_id", clientId)
+        .lt("reservation_date", today);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error cleaning up past reservations:", error);
+    }
+  };
+
   const fetchReservations = async () => {
     try {
+      const today = new Date().toISOString().split('T')[0];
       const { data, error } = await (supabase as any)
         .from("reservations")
         .select("*")
         .eq("client_id", clientId)
+        .gte("reservation_date", today)
         .order("reservation_date", { ascending: false })
         .order("reservation_time", { ascending: false });
 
@@ -103,6 +137,12 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   };
 
   const handleStatusChange = async (reservationId: string, newStatus: string) => {
+    if (newStatus === "cancelled") {
+      setReservationToDecline(reservationId);
+      setDeclineDialogOpen(true);
+      return;
+    }
+
     try {
       const { error } = await (supabase as any)
         .from("reservations")
@@ -115,6 +155,39 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
     } catch (error) {
       console.error("Error updating status:", error);
       toast.error("Error al actualizar el estado");
+    }
+  };
+
+  const handleDeclineReservation = async () => {
+    if (!reservationToDecline) return;
+
+    const finalReason = declineReason === "Otro motivo (especificar)" ? customDeclineReason : declineReason;
+
+    if (!finalReason) {
+      toast.error("Por favor selecciona o especifica un motivo");
+      return;
+    }
+
+    try {
+      const { error } = await (supabase as any)
+        .from("reservations")
+        .update({ 
+          status: "cancelled",
+          special_requests: finalReason 
+        })
+        .eq("id", reservationToDecline);
+
+      if (error) throw error;
+      toast.success("Reserva rechazada correctamente");
+      fetchReservations();
+    } catch (error) {
+      console.error("Error declining reservation:", error);
+      toast.error("Error al rechazar la reserva");
+    } finally {
+      setDeclineDialogOpen(false);
+      setReservationToDecline(null);
+      setDeclineReason("");
+      setCustomDeclineReason("");
     }
   };
 
@@ -239,7 +312,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                       onValueChange={(value) => handleStatusChange(reservation.id, value)}
                     >
                       <SelectTrigger className="w-[130px]">
-                        <Badge variant={STATUS_COLORS[reservation.status] || "outline"}>
+                        <Badge 
+                          variant={STATUS_COLORS[reservation.status] || "outline"}
+                          className={reservation.status === "pending" ? "border-orange-500 text-orange-500" : ""}
+                        >
                           <SelectValue />
                         </Badge>
                       </SelectTrigger>
@@ -355,6 +431,54 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog open={declineDialogOpen} onOpenChange={setDeclineDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rechazar Reserva</DialogTitle>
+            <DialogDescription>
+              Selecciona el motivo del rechazo. Este mensaje se guardará con la reserva.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="decline-reason">Motivo del rechazo</Label>
+              <Select value={declineReason} onValueChange={setDeclineReason}>
+                <SelectTrigger id="decline-reason">
+                  <SelectValue placeholder="Selecciona un motivo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DECLINE_REASONS.map((reason) => (
+                    <SelectItem key={reason} value={reason}>
+                      {reason}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {declineReason === "Otro motivo (especificar)" && (
+              <div>
+                <Label htmlFor="custom-reason">Especifica el motivo</Label>
+                <Textarea
+                  id="custom-reason"
+                  value={customDeclineReason}
+                  onChange={(e) => setCustomDeclineReason(e.target.value)}
+                  placeholder="Escribe el motivo del rechazo..."
+                  rows={3}
+                />
+              </div>
+            )}
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setDeclineDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button variant="destructive" onClick={handleDeclineReservation}>
+                Rechazar Reserva
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

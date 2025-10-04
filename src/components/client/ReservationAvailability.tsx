@@ -328,6 +328,8 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
     return `${dayName} ${day} ${month}`;
   };
 
+  const dateLabels = Object.keys(groupedByDate).sort().slice(0, 7);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -432,56 +434,78 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
-          {Object.entries(groupedByDate)
-            .sort(([a], [b]) => a.localeCompare(b))
-            .slice(0, 7)
-            .map(([date, slots]) => (
-              <Card key={date}>
-                <CardHeader>
-                  <CardTitle className="text-base">{formatDate(date)}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {slots.map((slot, idx) => (
-                      <div key={idx} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-center mb-3">
-                          <div className="font-semibold">{slot.time}</div>
-                          <div className={`text-sm font-medium ${
-                            slot.totalAvailable === 0
-                              ? "text-destructive"
-                              : slot.totalAvailable <= 3
-                              ? "text-yellow-600"
-                              : "text-green-600"
-                          }`}>
-                            {slot.totalAvailable} mesa{slot.totalAvailable !== 1 ? 's' : ''} disponible{slot.totalAvailable !== 1 ? 's' : ''}
+        <div className="flex gap-6">
+          {/* Sticky Date Navigation */}
+          <div className="w-48 flex-shrink-0">
+            <div className="sticky top-4 space-y-2">
+              <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Índice de Fechas</h4>
+              {dateLabels.map((date) => (
+                <button
+                  key={date}
+                  onClick={() => {
+                    const element = document.getElementById(`date-${date}`);
+                    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-sm"
+                >
+                  {formatDate(date)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Availability Cards */}
+          <div className="flex-1 grid gap-4">
+            {dateLabels.map((date) => {
+              const slots = groupedByDate[date];
+              return (
+                <Card key={date} id={`date-${date}`} className="scroll-mt-4">
+                  <CardHeader>
+                    <CardTitle className="text-base">{formatDate(date)}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {slots.map((slot, idx) => (
+                        <div key={idx} className="border rounded-lg p-4">
+                          <div className="flex justify-between items-center mb-3">
+                            <div className="font-semibold">{slot.time}</div>
+                            <div className={`text-sm font-medium ${
+                              slot.totalAvailable === 0
+                                ? "text-destructive"
+                                : slot.totalAvailable <= 3
+                                ? "text-yellow-600"
+                                : "text-green-600"
+                            }`}>
+                              {slot.totalAvailable} mesa{slot.totalAvailable !== 1 ? 's' : ''} disponible{slot.totalAvailable !== 1 ? 's' : ''}
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                            {slot.tables.map((table) => (
+                              <div
+                                key={table.config_id}
+                                className={`p-2 rounded text-center text-xs ${
+                                  table.available === 0
+                                    ? "bg-muted text-muted-foreground"
+                                    : "bg-primary/10 text-primary"
+                                }`}
+                              >
+                                <div className="font-medium">{table.table_name}</div>
+                                <div className="text-xs mt-1">
+                                  {table.available}/{table.total}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                          {slot.tables.map((table) => (
-                            <div
-                              key={table.config_id}
-                              className={`p-2 rounded text-center text-xs ${
-                                table.available === 0
-                                  ? "bg-muted text-muted-foreground"
-                                  : "bg-primary/10 text-primary"
-                              }`}
-                            >
-                              <div className="font-medium">{table.table_name}</div>
-                              <div className="text-xs mt-1">
-                                {table.available}/{table.total}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
-        )}
+        </div>
+      )}
     </div>
   );
 };
