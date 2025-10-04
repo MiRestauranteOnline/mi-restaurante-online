@@ -303,10 +303,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="font-medium">
-                        {format(new Date(reservation.reservation_date + 'T' + reservation.reservation_time), "dd MMM yyyy", { locale: es })}
+                        {format(new Date(reservation.reservation_date + 'T00:00:00'), "dd MMM yyyy", { locale: es })}
                       </span>
                       <span className="text-sm text-muted-foreground">
-                        {format(new Date(reservation.reservation_date + 'T' + reservation.reservation_time), "HH:mm")}
+                        {reservation.reservation_time}
                       </span>
                     </div>
                   </TableCell>
@@ -389,10 +389,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                 <div className="space-y-2 text-sm">
                   <p>
                     <span className="text-muted-foreground">Fecha:</span>{" "}
-                    {format(new Date(selectedReservation.reservation_date + 'T' + selectedReservation.reservation_time), "dd MMMM yyyy", { locale: es })}
+                    {format(new Date(selectedReservation.reservation_date + 'T00:00:00'), "dd MMMM yyyy", { locale: es })}
                   </p>
                   <p>
-                    <span className="text-muted-foreground">Hora:</span> {format(new Date(selectedReservation.reservation_date + 'T' + selectedReservation.reservation_time), "HH:mm")}
+                    <span className="text-muted-foreground">Hora:</span> {selectedReservation.reservation_time}
                   </p>
                   <p>
                     <span className="text-muted-foreground">Personas:</span> {selectedReservation.party_size}

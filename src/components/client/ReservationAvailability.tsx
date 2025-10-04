@@ -296,23 +296,15 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         return;
       }
 
-      // Convert local datetime to UTC before saving
-      const utcDateTime = combineDateTimeToUtc(
-        formData.reservation_date,
-        formData.reservation_time,
-        clientTimezone
-      );
-      
-      // Extract UTC date and time for storage
-      const { date: utcDate, time: utcTime } = extractDateTimeFromUtc(utcDateTime, "UTC");
-
+      // Store date and time in client's local timezone (not UTC)
+      // This keeps date/time fields consistent with the client's timezone
       const { error } = await supabase.from("reservations").insert({
         client_id: clientId,
         customer_name: formData.customer_name,
         customer_phone: formData.customer_phone,
         customer_email: formData.customer_email,
-        reservation_date: utcDate,
-        reservation_time: utcTime,
+        reservation_date: formData.reservation_date,
+        reservation_time: formData.reservation_time,
         party_size: formData.party_size,
         table_config_id: tableConfigId,
         status: "confirmed",
