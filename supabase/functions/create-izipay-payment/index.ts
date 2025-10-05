@@ -91,6 +91,8 @@ const handler = async (req: Request): Promise<Response> => {
     // Izipay returns 200 with an internal status. Validate it.
     if (result.status !== "SUCCESS" || !result?.answer?.formToken) {
       console.error("Izipay reported error:", result?.answer);
+      // Return 200 with success=false so the client can display the exact error message
+      // (avoid supabase.functions.invoke treating it as transport error)
       return new Response(
         JSON.stringify({
           success: false,
@@ -98,9 +100,10 @@ const handler = async (req: Request): Promise<Response> => {
           errorMessage: result?.answer?.errorMessage,
           detailedErrorMessage: result?.answer?.detailedErrorMessage,
           ticket: result?.ticket,
+          upstreamResponse: result,
         }),
         {
-          status: 400,
+          status: 200,
           headers: { "Content-Type": "application/json", ...corsHeaders },
         }
       );

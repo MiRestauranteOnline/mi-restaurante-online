@@ -98,14 +98,33 @@ export const IzipayPaymentForm = ({
       });
 
       if (error) {
-        throw error;
+        console.error("Edge function error:", error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to initialize payment",
+          variant: "destructive",
+        });
+        setLoading(false);
+        onError?.(error.message || "Edge function error");
+        return;
       }
 
       console.log("Payment session created:", data);
 
-      if (!data || !data.formToken) {
-        const errMsg = data?.detailedErrorMessage || data?.errorMessage || data?.error || "No se recibió formToken de Izipay";
-        throw new Error(errMsg);
+      if (data?.success === false) {
+        const msg = data?.detailedErrorMessage || data?.errorMessage || (data?.errorCode ? `Izipay error ${data.errorCode}` : "Payment initialization failed");
+        toast({ title: "Error", description: msg, variant: "destructive" });
+        setLoading(false);
+        onError?.(msg);
+        return;
+      }
+
+      if (!data?.formToken || !data?.publicKey) {
+        const errMsg = "No se recibió formToken o publicKey de Izipay";
+        toast({ title: "Error", description: errMsg, variant: "destructive" });
+        setLoading(false);
+        onError?.(errMsg);
+        return;
       }
 
       setFormToken(data.formToken);
