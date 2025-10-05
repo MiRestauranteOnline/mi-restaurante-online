@@ -79,17 +79,11 @@ const handler = async (req: Request): Promise<Response> => {
       metadata: metadata || {},
     };
 
-    // Add subscription parameters for recurring payments (Izipay format)
+    // For subscriptions we must register a payment method (tokenize card)
+    // Smartform expects a REGISTER action to return a paymentMethodToken
     if (isSubscription) {
-      const today = new Date();
-      // Format: YYYY-MM-DDTHH:mm:ss.sssZ
-      const effectDate = today.toISOString();
-      
-      // Add rrule at root level for Izipay
-      paymentData.effectDate = effectDate;
-      paymentData.rrule = "FREQ=MONTHLY;COUNT=120"; // 120 monthly payments (10 years)
-      
-      console.log("Creating subscription payment with rrule:", paymentData.rrule);
+      paymentData.formAction = "REGISTER"; // Request a registration (tokenization) form
+      console.log("Requesting REGISTER form for subscription flow");
     }
 
     console.log("Creating payment session for subscription:", isSubscription, paymentData);
