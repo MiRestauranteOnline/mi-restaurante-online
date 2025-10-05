@@ -33,6 +33,7 @@ export const IzipayPaymentForm = ({
   const [loading, setLoading] = useState(true);
   const [formToken, setFormToken] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
+  const [scriptsLoaded, setScriptsLoaded] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -44,19 +45,34 @@ export const IzipayPaymentForm = ({
     // Load Izipay JavaScript library once we have the public key
     if (!publicKey) return;
 
-    const script = document.createElement("script");
-    script.src = "https://static.micuentaweb.pe/static/js/krypton-client/V4.0/stable/kr-payment-form.min.js";
-    script.async = true;
-    script.setAttribute("kr-public-key", publicKey);
-    // Force Spanish and SPA mode at script level (per Izipay docs)
-    script.setAttribute("kr-language", "es-ES");
-    script.setAttribute("kr-spa-mode", "true");
-    
-    script.onload = () => {
-      console.log("Izipay library loaded with public key and es-ES language");
+    const paymentScript = document.createElement("script");
+    paymentScript.src = "https://static.micuentaweb.pe/static/js/krypton-client/V4.0/stable/kr-payment-form.min.js";
+    paymentScript.async = true;
+    paymentScript.setAttribute("kr-public-key", publicKey);
+    paymentScript.setAttribute("kr-language", "es-ES");
+    paymentScript.setAttribute("kr-spa-mode", "true");
+
+    let embeddedScript: HTMLScriptElement | null = null;
+
+    paymentScript.onload = () => {
+      console.log("Izipay base library loaded (es-ES)");
+      // Load the embedded plugin required to render <div class="kr-embedded" />
+      embeddedScript = document.createElement("script");
+      embeddedScript.src = "https://static.micuentaweb.pe/static/js/krypton-client/V4.0/stable/kr-embedded-form.min.js";
+      embeddedScript.async = true;
+      embeddedScript.onload = () => {
+        console.log("Izipay embedded plugin loaded");
+        setScriptsLoaded(true);
+      };
+      embeddedScript.onerror = () => {
+        toast({ title: "Error", description: "Failed to load embedded payment plugin", variant: "destructive" });
+        setLoading(false);
+        onError?.("Failed to load embedded payment plugin");
+      };
+      document.body.appendChild(embeddedScript);
     };
 
-    script.onerror = () => {
+    paymentScript.onerror = () => {
       toast({
         title: "Error",
         description: "Failed to load payment library",
@@ -66,25 +82,25 @@ export const IzipayPaymentForm = ({
       onError?.("Failed to load payment library");
     };
 
-    document.body.appendChild(script);
+    document.body.appendChild(paymentScript);
 
     return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
+      if (document.body.contains(paymentScript)) document.body.removeChild(paymentScript);
+      if (embeddedScript && document.body.contains(embeddedScript)) document.body.removeChild(embeddedScript);
+      setScriptsLoaded(false);
     };
   }, [publicKey]);
 
   useEffect(() => {
     // Setup form after the kr-embedded div has been rendered
-    if (formToken && window.KR && publicKey && !loading) {
+    if (formToken && window.KR && publicKey && scriptsLoaded && !loading) {
       // Small delay to ensure DOM is ready
       const timer = setTimeout(() => {
         setupSmartForm();
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [formToken, publicKey, loading]);
+  }, [formToken, publicKey, scriptsLoaded, loading]);
 
   const initializePayment = async () => {
     try {
