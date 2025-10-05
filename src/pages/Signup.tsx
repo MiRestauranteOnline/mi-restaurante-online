@@ -531,6 +531,7 @@ const Signup = () => {
                           planType: selectedPlan,
                           restaurantName: signupData.restaurantName,
                         }}
+                        isSubscription={true}
                         onSuccess={handlePaymentSuccess}
                         onError={handlePaymentError}
                       />

@@ -11,6 +11,7 @@ interface IzipayPaymentFormProps {
   metadata?: Record<string, any>;
   onSuccess?: () => void;
   onError?: (error: string) => void;
+  isSubscription?: boolean; // Flag to indicate subscription payment
 }
 
 declare global {
@@ -27,6 +28,7 @@ export const IzipayPaymentForm = ({
   metadata,
   onSuccess,
   onError,
+  isSubscription = true, // Default to subscription
 }: IzipayPaymentFormProps) => {
   const [loading, setLoading] = useState(true);
   const [formToken, setFormToken] = useState<string | null>(null);
@@ -95,6 +97,7 @@ export const IzipayPaymentForm = ({
             email: customerEmail,
           },
           metadata,
+          isSubscription, // Pass subscription flag
         },
       });
 
@@ -214,8 +217,10 @@ export const IzipayPaymentForm = ({
   }
 
   return (
-    <div className="izipay-payment-container">
-      <div className="kr-embedded" kr-form-token={formToken}></div>
+    <div className="w-full max-w-2xl mx-auto">
+      <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <div className="kr-embedded" kr-form-token={formToken}></div>
+      </div>
     </div>
   );
 };

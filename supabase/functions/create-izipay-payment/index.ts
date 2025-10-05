@@ -16,6 +16,7 @@ interface PaymentRequest {
     reference?: string;
   };
   metadata?: Record<string, any>;
+  isSubscription?: boolean; // Flag to indicate if this is a subscription payment
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -26,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log("Create Izipay payment function called");
 
-    const { amount, currency, orderId, customer, metadata }: PaymentRequest = await req.json();
+    const { amount, currency, orderId, customer, metadata, isSubscription }: PaymentRequest = await req.json();
 
     // Validate input
     if (!amount || amount <= 0) {
@@ -69,14 +70,30 @@ const handler = async (req: Request): Promise<Response> => {
     // Create Basic Auth header
     const auth = btoa(`${shopId}:${testPassword}`);
 
-    // Prepare payment request
-    const paymentData = {
+    // Prepare payment request with subscription support
+    const paymentData: any = {
       amount,
       currency,
       orderId,
       customer,
       metadata: metadata || {},
     };
+
+    // Add subscription parameters for recurring payments
+    if (isSubscription) {
+      const today = new Date();
+      const effectDate = today.toISOString();
+      
+      paymentData.subscription = {
+        effectDate,
+        // Monthly recurrence, no end date (continues until cancelled)
+        rrule: "RRULE:FREQ=MONTHLY",
+        initialAmount: amount,
+        initialAmountNumber: 1,
+      };
+      
+      console.log("Creating subscription payment with rrule:", paymentData.subscription);
+    }
 
     console.log("Creating payment session:", paymentData);
 
