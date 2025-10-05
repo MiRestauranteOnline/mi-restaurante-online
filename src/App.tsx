@@ -45,6 +45,8 @@ import UsageMonitoring from "./pages/admin/UsageMonitoring";
 import BillingInvoicing from "./pages/admin/BillingInvoicing";
 import AdminMonitoring from "./pages/admin/AdminMonitoring";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentError from "./pages/PaymentError";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +83,8 @@ const App = () => (
             <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/registro" element={<Signup />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-error" element={<PaymentError />} />
             <Route path="/dashboard" element={<DashboardLanguageProvider><DashboardLayout /></DashboardLanguageProvider>}>
               <Route index element={<UnifiedDashboard />} />
             </Route>
