@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
+import { IzipayPaymentForm } from "@/components/IzipayPaymentForm";
 
 export interface SignupData {
   email: string;
@@ -520,17 +521,14 @@ const Signup = () => {
                   />
 
                   <DebugErrorBoundary>
-                    {/* Payment component will be added here after Culqi integration */}
-                    <Card className="border-primary/20">
-                      <CardContent className="pt-6">
-                        <p className="text-center text-muted-foreground">
-                          Sistema de pago en proceso de actualización a Culqi.
-                        </p>
-                      </CardContent>
-                    </Card>
-                    
-                    {/* Culqi payment component will replace this placeholder
-                    */}
+                    <IzipayPaymentForm
+                      amount={paymentAmount}
+                      currency="PEN"
+                      orderId={createdClientId}
+                      customerEmail={signupData.email}
+                      onSuccess={handlePaymentSuccess}
+                      onError={handlePaymentError}
+                    />
                   </DebugErrorBoundary>
                 </div>
               )}
