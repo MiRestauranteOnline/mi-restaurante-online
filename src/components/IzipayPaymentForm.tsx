@@ -48,9 +48,12 @@ export const IzipayPaymentForm = ({
     script.src = "https://static.micuentaweb.pe/static/js/krypton-client/V4.0/stable/kr-payment-form.min.js";
     script.async = true;
     script.setAttribute("kr-public-key", publicKey);
+    // Force Spanish and SPA mode at script level (per Izipay docs)
+    script.setAttribute("kr-language", "es-ES");
+    script.setAttribute("kr-spa-mode", "true");
     
     script.onload = () => {
-      console.log("Izipay library loaded with public key");
+      console.log("Izipay library loaded with public key and es-ES language");
     };
 
     script.onerror = () => {
