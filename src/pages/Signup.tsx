@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { SignupStep1 } from "@/components/signup/SignupStep1";
@@ -55,8 +56,41 @@ export interface WebsiteRequirements {
 }
 
 const Signup = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
+  // Get step from URL or default to 1
+  const urlStep = parseInt(searchParams.get('step') || '1');
+  const [currentStep, setCurrentStep] = useState(urlStep);
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
+  
+  // Persist and restore signup data from localStorage
+  useEffect(() => {
+    const savedData = localStorage.getItem('signupProgress');
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        if (parsed.signupData) setSignupData(parsed.signupData);
+        if (parsed.websiteRequirements) setWebsiteRequirements(parsed.websiteRequirements);
+        if (parsed.combinedData) setCombinedData(parsed.combinedData);
+        if (parsed.openingHoursData) setOpeningHoursData(parsed.openingHoursData);
+        if (parsed.imagesData) setImagesData(parsed.imagesData);
+        if (parsed.selectedPlan) setSelectedPlan(parsed.selectedPlan);
+        if (parsed.createdClientId) setCreatedClientId(parsed.createdClientId);
+        if (parsed.currentStep) setCurrentStep(parsed.currentStep);
+      } catch (e) {
+        console.error('Error restoring signup progress:', e);
+      }
+    }
+  }, []);
+  
+  // Update URL when step changes
+  useEffect(() => {
+    const newStep = currentStep.toString();
+    if (searchParams.get('step') !== newStep) {
+      setSearchParams({ step: newStep });
+    }
+  }, [currentStep, searchParams, setSearchParams]);
   const [signupData, setSignupData] = useState<SignupData>({
     email: "",
     password: "",
@@ -114,6 +148,10 @@ const Signup = () => {
     const updatedData = { ...formData, plan_type: plan };
     setSignupData(updatedData);
     setSelectedPlan(plan);
+    
+    // Save progress to localStorage
+    saveProgress(updatedData, websiteRequirements, combinedData, openingHoursData, imagesData, plan, createdClientId, 1);
+    
     setIsProcessingPayment(true);
 
     // Safety timeout to reset loading state if step transition fails
@@ -183,8 +221,14 @@ const Signup = () => {
       if (data?.success && data?.client?.id) {
         console.log('✅ Account created successfully, moving to step 2:', data);
         clearTimeout(safetyTimeout);
-        setCreatedClientId(data.client.id);
-        setSignupData({ ...updatedData, paymentId: data.client.id });
+        const newClientId = data.client.id;
+        setCreatedClientId(newClientId);
+        const finalData = { ...updatedData, paymentId: newClientId };
+        setSignupData(finalData);
+        
+        // Save progress before moving to payment
+        saveProgress(finalData, websiteRequirements, combinedData, openingHoursData, imagesData, plan, newClientId, 2);
+        
         setIsProcessingPayment(false);
         console.log('🔄 Setting currentStep to 2');
         setCurrentStep(2);
@@ -215,8 +259,33 @@ const Signup = () => {
   };
 
   const handlePaymentSuccess = () => {
-    // Move to requirements step after successful payment
+    // Save progress and move to requirements step after successful payment
+    saveProgress(signupData, websiteRequirements, combinedData, openingHoursData, imagesData, selectedPlan, createdClientId, 3);
     setCurrentStep(3);
+  };
+  
+  // Helper function to save progress
+  const saveProgress = (
+    signup: SignupData,
+    requirements: WebsiteRequirements,
+    combined: CombinedData,
+    hours: OpeningHoursData,
+    images: ImagesData,
+    plan: 'basic' | 'advanced',
+    clientId: string,
+    step: number
+  ) => {
+    localStorage.setItem('signupProgress', JSON.stringify({
+      signupData: signup,
+      websiteRequirements: requirements,
+      combinedData: combined,
+      openingHoursData: hours,
+      imagesData: images,
+      selectedPlan: plan,
+      createdClientId: clientId,
+      currentStep: step,
+      timestamp: Date.now()
+    }));
   };
 
   const handlePaymentError = (error: string) => {
@@ -233,18 +302,21 @@ const Signup = () => {
 
   const handleStep2Complete = async (requirements: WebsiteRequirements) => {
     setWebsiteRequirements(requirements);
+    saveProgress(signupData, requirements, combinedData, openingHoursData, imagesData, selectedPlan, createdClientId, 4);
     setCurrentStep(4); // Move to menu step
     window.scrollTo(0, 0);
   };
 
   const handleStep3Complete = async (combined: CombinedData) => {
     setCombinedData(combined);
+    saveProgress(signupData, websiteRequirements, combined, openingHoursData, imagesData, selectedPlan, createdClientId, 5);
     setCurrentStep(5); // Move to opening hours step
     window.scrollTo(0, 0);
   };
 
   const handleStep4Complete = async (openingHours: OpeningHoursData) => {
     setOpeningHoursData(openingHours);
+    saveProgress(signupData, websiteRequirements, combinedData, openingHours, imagesData, selectedPlan, createdClientId, 6);
     setCurrentStep(6); // Move to images step
     window.scrollTo(0, 0);
   };
@@ -305,6 +377,9 @@ const Signup = () => {
     } finally {
       setIsProcessingFinalStep(false);
     }
+    
+    // Clear saved progress on completion
+    localStorage.removeItem('signupProgress');
     
     setCurrentStep(7); // Move to success step
   };

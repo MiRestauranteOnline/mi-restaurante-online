@@ -83,6 +83,7 @@ const App = () => (
             <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/registro" element={<Signup />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-error" element={<PaymentError />} />
             <Route path="/dashboard" element={<DashboardLanguageProvider><DashboardLayout /></DashboardLanguageProvider>}>
