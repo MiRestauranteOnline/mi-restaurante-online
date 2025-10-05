@@ -30,18 +30,28 @@ export const IzipayPaymentForm = ({
 }: IzipayPaymentFormProps) => {
   const [loading, setLoading] = useState(true);
   const [formToken, setFormToken] = useState<string | null>(null);
+  const [publicKey, setPublicKey] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Load Izipay JavaScript library
+    // First, get the payment session to retrieve public key
+    initializePayment();
+  }, []);
+
+  useEffect(() => {
+    // Load Izipay JavaScript library once we have the public key
+    if (!publicKey) return;
+
     const script = document.createElement("script");
     script.src = "https://static.micuentaweb.pe/static/js/krypton-client/V4.0/stable/kr-payment-form.min.js";
     script.async = true;
-    script.setAttribute("kr-public-key", "77392801:testpublickey_blTsYOjwDxCriZGNwoJVFLxe9N7BkQKEML8mvNSh3rSZE");
+    script.setAttribute("kr-public-key", publicKey);
     
     script.onload = () => {
-      console.log("Izipay library loaded");
-      initializePayment();
+      console.log("Izipay library loaded with public key");
+      if (formToken && window.KR) {
+        setupSmartForm();
+      }
     };
 
     script.onerror = () => {
@@ -57,13 +67,22 @@ export const IzipayPaymentForm = ({
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
-  }, []);
+  }, [publicKey]);
+
+  useEffect(() => {
+    // Setup form when both formToken and KR library are ready
+    if (formToken && window.KR && publicKey) {
+      setupSmartForm();
+    }
+  }, [formToken, publicKey]);
 
   const initializePayment = async () => {
     try {
-      console.log("Initializing payment...");
+      console.log("Initializing payment with:", { amount, currency, orderId, email: customerEmail });
       
       // Create payment session via edge function
       const { data, error } = await supabase.functions.invoke("create-izipay-payment", {
@@ -90,53 +109,64 @@ export const IzipayPaymentForm = ({
       }
 
       setFormToken(data.formToken);
-
-      // Initialize SmartForm
-      if (window.KR) {
-        await window.KR.setFormConfig({
-          formToken: data.formToken,
-          "kr-language": "es-ES",
-        });
-
-        // Handle payment events
-        window.KR.onSubmit((paymentResponse: any) => {
-          console.log("Payment submitted:", paymentResponse);
-          
-          if (paymentResponse.clientAnswer.orderStatus === "PAID") {
-            toast({
-              title: "¡Pago exitoso!",
-              description: "Tu pago ha sido procesado correctamente",
-            });
-            onSuccess?.();
-          } else {
-            toast({
-              title: "Pago no completado",
-              description: "El pago no pudo ser procesado",
-              variant: "destructive",
-            });
-            onError?.("Payment not completed");
-          }
-          
-          return false; // Prevent form submission
-        });
-
-        window.KR.onError((error: any) => {
-          console.error("Payment error:", error);
-          toast({
-            title: "Error",
-            description: "Ocurrió un error durante el pago",
-            variant: "destructive",
-          });
-          onError?.(error.detailedErrorMessage || "Payment error");
-        });
-
-        setLoading(false);
-      }
+      setPublicKey(data.publicKey);
     } catch (error: any) {
       console.error("Error initializing payment:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to initialize payment",
+        variant: "destructive",
+      });
+      setLoading(false);
+      onError?.(error.message);
+    }
+  };
+
+  const setupSmartForm = async () => {
+    try {
+      await window.KR.setFormConfig({
+        formToken: formToken,
+        "kr-language": "es-ES",
+      });
+
+      // Handle payment events
+      window.KR.onSubmit((paymentResponse: any) => {
+        console.log("Payment submitted:", paymentResponse);
+        
+        if (paymentResponse.clientAnswer.orderStatus === "PAID") {
+          toast({
+            title: "¡Pago exitoso!",
+            description: "Tu pago ha sido procesado correctamente",
+          });
+          onSuccess?.();
+        } else {
+          toast({
+            title: "Pago no completado",
+            description: "El pago no pudo ser procesado",
+            variant: "destructive",
+          });
+          onError?.("Payment not completed");
+        }
+        
+        return false;
+      });
+
+      window.KR.onError((error: any) => {
+        console.error("Payment error:", error);
+        toast({
+          title: "Error",
+          description: "Ocurrió un error durante el pago",
+          variant: "destructive",
+        });
+        onError?.(error.detailedErrorMessage || "Payment error");
+      });
+
+      setLoading(false);
+    } catch (error: any) {
+      console.error("Error setting up SmartForm:", error);
+      toast({
+        title: "Error",
+        description: "Failed to setup payment form",
         variant: "destructive",
       });
       setLoading(false);

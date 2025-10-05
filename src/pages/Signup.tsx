@@ -520,16 +520,31 @@ const Signup = () => {
                     onCouponApplied={handleCouponApplied}
                   />
 
-                  <DebugErrorBoundary>
-                    <IzipayPaymentForm
-                      amount={paymentAmount * 100} // Convert to cents (PEN to centimos)
-                      currency="PEN"
-                      orderId={createdClientId}
-                      customerEmail={signupData.email}
-                      onSuccess={handlePaymentSuccess}
-                      onError={handlePaymentError}
-                    />
-                  </DebugErrorBoundary>
+                  {createdClientId && signupData.email && paymentAmount > 0 ? (
+                    <DebugErrorBoundary>
+                      <IzipayPaymentForm
+                        amount={paymentAmount * 100}
+                        currency="PEN"
+                        orderId={createdClientId}
+                        customerEmail={signupData.email}
+                        metadata={{
+                          planType: selectedPlan,
+                          restaurantName: signupData.restaurantName,
+                        }}
+                        onSuccess={handlePaymentSuccess}
+                        onError={handlePaymentError}
+                      />
+                    </DebugErrorBoundary>
+                  ) : (
+                    <Card>
+                      <CardContent className="pt-6">
+                        <p className="text-destructive">Error: Missing payment information. Please go back to step 1.</p>
+                        <Button onClick={() => setCurrentStep(1)} className="mt-4">
+                          Go Back
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               )}
               

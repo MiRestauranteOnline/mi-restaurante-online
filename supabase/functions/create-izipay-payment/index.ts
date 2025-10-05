@@ -28,13 +28,32 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { amount, currency, orderId, customer, metadata }: PaymentRequest = await req.json();
 
+    // Validate input
+    if (!amount || amount <= 0) {
+      return new Response(
+        JSON.stringify({ error: "Invalid amount" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    
+    if (!orderId || !customer?.email) {
+      return new Response(
+        JSON.stringify({ error: "Missing orderId or customer email" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     // Get credentials from environment
     const shopId = Deno.env.get("IZIPAY_SHOP_ID");
     const testPassword = Deno.env.get("IZIPAY_TEST_PASSWORD");
+    const publicKey = Deno.env.get("IZIPAY_TEST_PUBLIC_KEY");
     
-    if (!shopId || !testPassword) {
+    if (!shopId || !testPassword || !publicKey) {
+      console.error("Missing credentials:", { shopId: !!shopId, testPassword: !!testPassword, publicKey: !!publicKey });
       throw new Error("Missing Izipay credentials");
     }
+    
+    console.log("Using shop ID:", shopId);
 
     // Create Basic Auth header
     const auth = btoa(`${shopId}:${testPassword}`);
@@ -92,6 +111,7 @@ const handler = async (req: Request): Promise<Response> => {
         success: true,
         formToken: result.answer.formToken,
         orderId: result.answer.orderId,
+        publicKey: publicKey,
       }),
       {
         status: 200,
