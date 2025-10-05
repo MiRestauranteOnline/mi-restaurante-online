@@ -43,18 +43,28 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Get credentials from environment
-    const shopId = Deno.env.get("IZIPAY_SHOP_ID")?.trim();
+    // Get credentials from environment (prefer explicit TEST vars to avoid mixing with PROD)
+    const shopId =
+      Deno.env.get("IZIPAY_TEST_SHOP_ID")?.trim() ||
+      Deno.env.get("IZIPAY_SHOP_ID")?.trim();
     const testPassword = Deno.env.get("IZIPAY_TEST_PASSWORD")?.trim();
     const publicKey = Deno.env.get("IZIPAY_TEST_PUBLIC_KEY")?.trim();
     
     if (!shopId?.length || !testPassword?.length || !publicKey?.length) {
-      console.error("Missing credentials:", { shopId: !!shopId, testPassword: !!testPassword, publicKey: !!publicKey });
+      console.error("Missing credentials:", {
+        shopId: !!shopId,
+        testPassword: !!testPassword,
+        publicKey: !!publicKey,
+      });
       throw new Error("Missing Izipay credentials");
     }
     
-    console.log("Using shop ID:", shopId);
-    console.log("Credential lengths:", { shopIdLen: shopId.length, pwdLen: testPassword.length, pkLen: publicKey.length });
+    console.log("Using shop ID (TEST first, fallback to generic):", shopId);
+    console.log("Credential lengths:", {
+      shopIdLen: shopId.length,
+      pwdLen: testPassword.length,
+      pkLen: publicKey.length,
+    });
 
     // Create Basic Auth header
     const auth = btoa(`${shopId}:${testPassword}`);
