@@ -83,6 +83,12 @@ export const IzipayPaymentForm = ({
       }
 
       console.log("Payment session created:", data);
+
+      if (!data || !data.formToken) {
+        const errMsg = data?.detailedErrorMessage || data?.errorMessage || data?.error || "No se recibió formToken de Izipay";
+        throw new Error(errMsg);
+      }
+
       setFormToken(data.formToken);
 
       // Initialize SmartForm

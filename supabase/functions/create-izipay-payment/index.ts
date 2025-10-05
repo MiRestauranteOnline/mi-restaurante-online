@@ -69,6 +69,24 @@ const handler = async (req: Request): Promise<Response> => {
 
     const result = JSON.parse(responseText);
 
+    // Izipay returns 200 with an internal status. Validate it.
+    if (result.status !== "SUCCESS" || !result?.answer?.formToken) {
+      console.error("Izipay reported error:", result?.answer);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          errorCode: result?.answer?.errorCode,
+          errorMessage: result?.answer?.errorMessage,
+          detailedErrorMessage: result?.answer?.detailedErrorMessage,
+          ticket: result?.ticket,
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
