@@ -65,24 +65,40 @@ const Signup = () => {
   const [currentStep, setCurrentStep] = useState(urlStep);
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
   
-  // Persist and restore signup data from localStorage
+  // Check auth and restore signup data
   useEffect(() => {
-    const savedData = localStorage.getItem('signupProgress');
-    if (savedData) {
+    const checkAuthAndRestoreData = async () => {
       try {
-        const parsed = JSON.parse(savedData);
-        if (parsed.signupData) setSignupData(parsed.signupData);
-        if (parsed.websiteRequirements) setWebsiteRequirements(parsed.websiteRequirements);
-        if (parsed.combinedData) setCombinedData(parsed.combinedData);
-        if (parsed.openingHoursData) setOpeningHoursData(parsed.openingHoursData);
-        if (parsed.imagesData) setImagesData(parsed.imagesData);
-        if (parsed.selectedPlan) setSelectedPlan(parsed.selectedPlan);
-        if (parsed.createdClientId) setCreatedClientId(parsed.createdClientId);
-        if (parsed.currentStep) setCurrentStep(parsed.currentStep);
-      } catch (e) {
-        console.error('Error restoring signup progress:', e);
+        // Check if user is already authenticated
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          console.log('User is authenticated, restoring progress');
+          const savedData = localStorage.getItem('signupProgress');
+          if (savedData) {
+            try {
+              const parsed = JSON.parse(savedData);
+              if (parsed.signupData) setSignupData(parsed.signupData);
+              if (parsed.websiteRequirements) setWebsiteRequirements(parsed.websiteRequirements);
+              if (parsed.combinedData) setCombinedData(parsed.combinedData);
+              if (parsed.openingHoursData) setOpeningHoursData(parsed.openingHoursData);
+              if (parsed.imagesData) setImagesData(parsed.imagesData);
+              if (parsed.selectedPlan) setSelectedPlan(parsed.selectedPlan);
+              if (parsed.createdClientId) setCreatedClientId(parsed.createdClientId);
+              if (parsed.currentStep) setCurrentStep(parsed.currentStep);
+            } catch (e) {
+              console.error('Error restoring signup progress:', e);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error);
+      } finally {
+        setIsAuthChecking(false);
       }
-    }
+    };
+
+    checkAuthAndRestoreData();
   }, []);
   
   // Update URL when step changes
@@ -92,6 +108,7 @@ const Signup = () => {
       setSearchParams({ step: newStep });
     }
   }, [currentStep, searchParams, setSearchParams]);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [signupData, setSignupData] = useState<SignupData>({
     email: "",
     password: "",
@@ -226,6 +243,23 @@ const Signup = () => {
         setCreatedClientId(newClientId);
         const finalData = { ...updatedData, paymentId: newClientId };
         setSignupData(finalData);
+        
+        // Sign in the user so they stay authenticated
+        try {
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: finalData.email,
+            password: finalData.password,
+          });
+          
+          if (signInError) {
+            console.error('Sign in error:', signInError);
+            // Continue anyway, session might still work
+          } else {
+            console.log('✅ User signed in successfully');
+          }
+        } catch (signInErr) {
+          console.error('Failed to sign in user:', signInErr);
+        }
         
         // Save progress before moving to payment
         saveProgress(finalData, websiteRequirements, combinedData, openingHoursData, imagesData, plan, newClientId, 2);
@@ -405,6 +439,18 @@ const Signup = () => {
     setCurrentStep(5);
     window.scrollTo(0, 0);
   };
+
+  // Show loading while checking auth
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-muted-foreground">Verificando sesión...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
