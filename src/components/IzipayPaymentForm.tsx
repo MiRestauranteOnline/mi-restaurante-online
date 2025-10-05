@@ -49,9 +49,6 @@ export const IzipayPaymentForm = ({
     
     script.onload = () => {
       console.log("Izipay library loaded with public key");
-      if (formToken && window.KR) {
-        setupSmartForm();
-      }
     };
 
     script.onerror = () => {
@@ -74,11 +71,15 @@ export const IzipayPaymentForm = ({
   }, [publicKey]);
 
   useEffect(() => {
-    // Setup form when both formToken and KR library are ready
-    if (formToken && window.KR && publicKey) {
-      setupSmartForm();
+    // Setup form after the kr-embedded div has been rendered
+    if (formToken && window.KR && publicKey && !loading) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        setupSmartForm();
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [formToken, publicKey]);
+  }, [formToken, publicKey, loading]);
 
   const initializePayment = async () => {
     try {
@@ -129,6 +130,8 @@ export const IzipayPaymentForm = ({
 
       setFormToken(data.formToken);
       setPublicKey(data.publicKey);
+      // Set loading to false so the kr-embedded div can render
+      setLoading(false);
     } catch (error: any) {
       console.error("Error initializing payment:", error);
       toast({
@@ -180,7 +183,7 @@ export const IzipayPaymentForm = ({
         onError?.(error.detailedErrorMessage || "Payment error");
       });
 
-      setLoading(false);
+      console.log("SmartForm setup completed");
     } catch (error: any) {
       console.error("Error setting up SmartForm:", error);
       toast({
@@ -188,7 +191,6 @@ export const IzipayPaymentForm = ({
         description: "Failed to setup payment form",
         variant: "destructive",
       });
-      setLoading(false);
       onError?.(error.message);
     }
   };
