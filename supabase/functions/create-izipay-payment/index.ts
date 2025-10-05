@@ -79,23 +79,20 @@ const handler = async (req: Request): Promise<Response> => {
       metadata: metadata || {},
     };
 
-    // Add subscription parameters for recurring payments
+    // Add subscription parameters for recurring payments (Izipay format)
     if (isSubscription) {
       const today = new Date();
+      // Format: YYYY-MM-DDTHH:mm:ss.sssZ
       const effectDate = today.toISOString();
       
-      paymentData.subscription = {
-        effectDate,
-        // Monthly recurrence, no end date (continues until cancelled)
-        rrule: "RRULE:FREQ=MONTHLY",
-        initialAmount: amount,
-        initialAmountNumber: 1,
-      };
+      // Add rrule at root level for Izipay
+      paymentData.effectDate = effectDate;
+      paymentData.rrule = "FREQ=MONTHLY;COUNT=120"; // 120 monthly payments (10 years)
       
-      console.log("Creating subscription payment with rrule:", paymentData.subscription);
+      console.log("Creating subscription payment with rrule:", paymentData.rrule);
     }
 
-    console.log("Creating payment session:", paymentData);
+    console.log("Creating payment session for subscription:", isSubscription, paymentData);
 
     // Call Izipay API to create payment session
     const response = await fetch(`${IZIPAY_API_URL}/Charge/CreatePayment`, {

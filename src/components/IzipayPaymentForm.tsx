@@ -149,9 +149,11 @@ export const IzipayPaymentForm = ({
 
   const setupSmartForm = async () => {
     try {
+      console.log("Setting up SmartForm with Spanish language");
       await window.KR.setFormConfig({
         formToken: formToken,
         "kr-language": "es-ES",
+        "kr-spa-mode": "true",
       });
 
       // Handle payment events
@@ -218,7 +220,11 @@ export const IzipayPaymentForm = ({
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+      <div className="rounded-lg border-2 border-primary/20 bg-card p-8 shadow-lg">
+        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-bold text-foreground mb-2">Información de Pago</h2>
+          <p className="text-sm text-muted-foreground">Complete los datos de su tarjeta para activar su suscripción</p>
+        </div>
         <div className="kr-embedded" kr-form-token={formToken}></div>
       </div>
     </div>
