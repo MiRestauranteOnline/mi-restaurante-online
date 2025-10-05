@@ -140,9 +140,18 @@ export const IzipayPaymentForm = ({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
+      <div className="flex flex-col items-center justify-center py-8 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <span className="ml-2">Cargando formulario de pago...</span>
+      </div>
+    );
+  }
+
+  if (!formToken) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8 space-y-4">
+        <p className="text-destructive font-medium">Error al cargar el formulario de pago</p>
+        <p className="text-sm text-muted-foreground">Por favor, contacta a soporte si el problema persiste.</p>
       </div>
     );
   }

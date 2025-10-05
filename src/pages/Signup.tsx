@@ -522,7 +522,7 @@ const Signup = () => {
 
                   <DebugErrorBoundary>
                     <IzipayPaymentForm
-                      amount={paymentAmount}
+                      amount={paymentAmount * 100} // Convert to cents (PEN to centimos)
                       currency="PEN"
                       orderId={createdClientId}
                       customerEmail={signupData.email}
