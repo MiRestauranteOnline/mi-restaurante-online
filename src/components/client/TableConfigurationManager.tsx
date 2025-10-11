@@ -31,7 +31,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface TableConfiguration {
   id: string;
@@ -53,6 +56,8 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<TableConfiguration | null>(null);
+  const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [formData, setFormData] = useState({
     table_name: "",
     seats: 2,
@@ -263,58 +268,118 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
           <p className="text-sm">Comienza agregando tus tipos de mesas.</p>
         </div>
       ) : (
-        <div className="border rounded-lg overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="min-w-[120px]">Nombre</TableHead>
-                <TableHead className="min-w-[100px]">Asientos</TableHead>
-                <TableHead className="min-w-[100px]">Cantidad</TableHead>
-                <TableHead className="min-w-[120px]">Min-Max Personas</TableHead>
-                <TableHead className="min-w-[80px]">Activo</TableHead>
-                <TableHead className="min-w-[120px]">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+        <>
+          {/* Mobile Card View */}
+          {isMobile && (
+            <div className="space-y-3">
               {configs.map((config) => (
-                <TableRow key={config.id}>
-                  <TableCell className="font-medium text-sm">{config.table_name}</TableCell>
-                  <TableCell className="text-sm">{config.seats} asientos</TableCell>
-                  <TableCell className="text-sm">{config.quantity} mesa{config.quantity > 1 ? 's' : ''}</TableCell>
-                  <TableCell className="text-sm whitespace-nowrap">
-                    {config.min_party_size} - {config.max_party_size} personas
-                  </TableCell>
-                  <TableCell>
-                    <Switch
-                      checked={config.is_active}
-                      onCheckedChange={() => handleToggleActive(config)}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1">
+                <Card key={config.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">{config.table_name}</h4>
+                        <div className="space-y-1 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">Asientos:</span>
+                            <span>{config.seats}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">Cantidad:</span>
+                            <span>{config.quantity} mesa{config.quantity > 1 ? 's' : ''}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">Personas:</span>
+                            <span>{config.min_party_size} - {config.max_party_size}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={config.is_active}
+                        onCheckedChange={() => handleToggleActive(config)}
+                      />
+                    </div>
+                    <div className="flex gap-2 pt-3 border-t">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openEditDialog(config)}
-                        className="h-8 w-8 p-0"
+                        className="flex-1"
                       >
-                        <Pencil className="h-3 w-3" />
+                        <Pencil className="h-3 w-3 mr-1" />
+                        Editar
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openDeleteDialog(config)}
-                        className="h-8 w-8 p-0"
+                        className="flex-1"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Eliminar
                       </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
+                  </CardContent>
+                </Card>
               ))}
-            </TableBody>
-          </Table>
-        </div>
+            </div>
+          )}
+
+          {/* Desktop Table View */}
+          {!isMobile && (
+            <div className="border rounded-lg overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead>Asientos</TableHead>
+                    <TableHead>Cantidad</TableHead>
+                    <TableHead>Min-Max Personas</TableHead>
+                    <TableHead>Activo</TableHead>
+                    <TableHead>Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {configs.map((config) => (
+                    <TableRow key={config.id}>
+                      <TableCell className="font-medium">{config.table_name}</TableCell>
+                      <TableCell>{config.seats} asientos</TableCell>
+                      <TableCell>{config.quantity} mesa{config.quantity > 1 ? 's' : ''}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {config.min_party_size} - {config.max_party_size} personas
+                      </TableCell>
+                      <TableCell>
+                        <Switch
+                          checked={config.is_active}
+                          onCheckedChange={() => handleToggleActive(config)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditDialog(config)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openDeleteDialog(config)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </>
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

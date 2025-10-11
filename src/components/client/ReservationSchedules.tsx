@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface TableConfig {
   table_name: string;
@@ -60,6 +62,7 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
   const [scheduleToDelete, setScheduleToDelete] = useState<string | null>(null);
   const [useCustomCapacity, setUseCustomCapacity] = useState(false);
   const [customTables, setCustomTables] = useState<TableConfig[]>([]);
+  const isMobile = useIsMobile();
 
   const [formData, setFormData] = useState({
     day_of_week: 1,
@@ -611,91 +614,182 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
           </p>
         </div>
       ) : (
-        <div className="border rounded-lg overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="min-w-[100px]">Día</TableHead>
-                <TableHead className="min-w-[120px]">Horario</TableHead>
-                <TableHead className="min-w-[80px]">Duración</TableHead>
-                <TableHead className="min-w-[100px]">Capacidad</TableHead>
-                <TableHead className="min-w-[80px]">Personas</TableHead>
-                <TableHead className="min-w-[80px]">Estado</TableHead>
-                <TableHead className="min-w-[150px] text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+        <>
+          {/* Mobile Card View */}
+          {isMobile && (
+            <div className="space-y-3">
               {schedules.map((schedule) => (
-                <TableRow key={schedule.id}>
-                  <TableCell className="font-medium">{getDayName(schedule.day_of_week)}</TableCell>
-                  <TableCell className="whitespace-nowrap">
-                    {schedule.start_time} - {schedule.end_time}
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap">
-                    {schedule.duration_minutes >= 60 
-                      ? `${Math.floor(schedule.duration_minutes / 60)}h ${schedule.duration_minutes % 60 > 0 ? `${schedule.duration_minutes % 60}m` : ''}`.trim()
-                      : `${schedule.duration_minutes}m`
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {schedule.custom_table_configs ? (
-                      <div className="flex flex-col">
-                        <Badge variant="secondary" className="text-xs">Personalizada</Badge>
-                        <span className="text-xs text-muted-foreground mt-1">
-                          {calculateTotalCapacity(schedule.custom_table_configs)} mesas
-                        </span>
+                <Card key={schedule.id}>
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-semibold text-sm">{getDayName(schedule.day_of_week)}</h4>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {schedule.start_time} - {schedule.end_time}
+                          </p>
+                        </div>
+                        <Badge variant={schedule.is_active ? "default" : "secondary"} className="text-xs">
+                          {schedule.is_active ? "Activo" : "Inactivo"}
+                        </Badge>
                       </div>
-                    ) : (
-                      <div className="flex flex-col">
-                        <Badge variant="outline" className="text-xs">Estándar</Badge>
-                        <span className="text-xs text-muted-foreground mt-1">
-                          {calculateTotalCapacity(null)} mesas
-                        </span>
+                      
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-muted-foreground">Duración:</span>
+                          <p className="font-medium">
+                            {schedule.duration_minutes >= 60 
+                              ? `${Math.floor(schedule.duration_minutes / 60)}h ${schedule.duration_minutes % 60 > 0 ? `${schedule.duration_minutes % 60}m` : ''}`.trim()
+                              : `${schedule.duration_minutes}m`
+                            }
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Personas:</span>
+                          <p className="font-medium">{schedule.min_party_size} - {schedule.max_party_size}</p>
+                        </div>
                       </div>
-                    )}
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap text-sm">{schedule.min_party_size} - {schedule.max_party_size}</TableCell>
-                  <TableCell>
-                    <Badge variant={schedule.is_active ? "default" : "secondary"} className="text-xs">
-                      {schedule.is_active ? "Activo" : "Inactivo"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleToggleActive(schedule)}
-                        className="h-8 text-xs"
-                      >
-                        {schedule.is_active ? "Desactivar" : "Activar"}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openEditDialog(schedule)}
-                        className="h-8 w-8 p-0"
-                      >
-                        <Edit className="w-3 h-3" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setScheduleToDelete(schedule.id);
-                          setDeleteDialogOpen(true);
-                        }}
-                        className="h-8 w-8 p-0"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
+
+                      <div>
+                        <span className="text-xs text-muted-foreground">Capacidad:</span>
+                        {schedule.custom_table_configs ? (
+                          <Badge variant="secondary" className="text-xs mt-1">
+                            Personalizada ({calculateTotalCapacity(schedule.custom_table_configs)} mesas)
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs mt-1">
+                            Estándar ({calculateTotalCapacity(null)} mesas)
+                          </Badge>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2 pt-3 border-t">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleToggleActive(schedule)}
+                          className="flex-1 text-xs"
+                        >
+                          {schedule.is_active ? "Desactivar" : "Activar"}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => openEditDialog(schedule)}
+                          className="flex-1 text-xs"
+                        >
+                          <Edit className="w-3 h-3 mr-1" />
+                          Editar
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setScheduleToDelete(schedule.id);
+                            setDeleteDialogOpen(true);
+                          }}
+                          className="flex-1 text-xs"
+                        >
+                          <Trash2 className="w-3 h-3 mr-1" />
+                          Eliminar
+                        </Button>
+                      </div>
                     </div>
-                  </TableCell>
-                </TableRow>
+                  </CardContent>
+                </Card>
               ))}
-            </TableBody>
-          </Table>
-        </div>
+            </div>
+          )}
+
+          {/* Desktop Table View */}
+          {!isMobile && (
+            <div className="border rounded-lg overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Día</TableHead>
+                    <TableHead>Horario</TableHead>
+                    <TableHead>Duración</TableHead>
+                    <TableHead>Capacidad</TableHead>
+                    <TableHead>Personas</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {schedules.map((schedule) => (
+                    <TableRow key={schedule.id}>
+                      <TableCell className="font-medium">{getDayName(schedule.day_of_week)}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {schedule.start_time} - {schedule.end_time}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {schedule.duration_minutes >= 60 
+                          ? `${Math.floor(schedule.duration_minutes / 60)}h ${schedule.duration_minutes % 60 > 0 ? `${schedule.duration_minutes % 60}m` : ''}`.trim()
+                          : `${schedule.duration_minutes}m`
+                        }
+                      </TableCell>
+                      <TableCell>
+                        {schedule.custom_table_configs ? (
+                          <div className="flex flex-col">
+                            <Badge variant="secondary" className="text-xs">Personalizada</Badge>
+                            <span className="text-xs text-muted-foreground mt-1">
+                              {calculateTotalCapacity(schedule.custom_table_configs)} mesas
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col">
+                            <Badge variant="outline" className="text-xs">Estándar</Badge>
+                            <span className="text-xs text-muted-foreground mt-1">
+                              {calculateTotalCapacity(null)} mesas
+                            </span>
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap text-sm">{schedule.min_party_size} - {schedule.max_party_size}</TableCell>
+                      <TableCell>
+                        <Badge variant={schedule.is_active ? "default" : "secondary"} className="text-xs">
+                          {schedule.is_active ? "Activo" : "Inactivo"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleToggleActive(schedule)}
+                            className="h-8 text-xs"
+                          >
+                            {schedule.is_active ? "Desactivar" : "Activar"}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openEditDialog(schedule)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Edit className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setScheduleToDelete(schedule.id);
+                              setDeleteDialogOpen(true);
+                            }}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </>
       )}
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

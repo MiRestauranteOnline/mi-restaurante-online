@@ -14,6 +14,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { getCurrentDateInTimezone, extractDateTimeFromUtc } from "@/lib/timezone";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Reservation {
   id: string;
@@ -72,6 +74,7 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const [declineReason, setDeclineReason] = useState("");
   const [customDeclineReason, setCustomDeclineReason] = useState("");
   const [clientTimezone, setClientTimezone] = useState<string>("America/Lima");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     fetchClientTimezone();
@@ -297,97 +300,183 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
           </p>
         </div>
       ) : (
-        <div className="border rounded-lg overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="min-w-[140px]">Fecha y Hora</TableHead>
-                <TableHead className="min-w-[120px]">Cliente</TableHead>
-                <TableHead className="min-w-[140px]">Contacto</TableHead>
-                <TableHead className="min-w-[80px]">Personas</TableHead>
-                <TableHead className="min-w-[120px]">Estado</TableHead>
-                <TableHead className="min-w-[100px] text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+        <>
+          {/* Mobile Card View */}
+          {isMobile && (
+            <div className="space-y-3">
               {filteredReservations.map((reservation) => (
-                <TableRow key={reservation.id}>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium text-sm">
-                        {format(new Date(reservation.reservation_date + 'T00:00:00'), "dd MMM yyyy", { locale: es })}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {reservation.reservation_time}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium text-sm">{reservation.customer_name}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1 text-xs">
-                      <div className="flex items-center gap-1">
-                        <Phone className="w-3 h-3 flex-shrink-0" />
-                        <span className="truncate">{reservation.customer_phone}</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Mail className="w-3 h-3 flex-shrink-0" />
-                        <span className="truncate">{reservation.customer_email}</span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm">{reservation.party_size}</TableCell>
-                  <TableCell>
-                    <Select
-                      value={reservation.status}
-                      onValueChange={(value) => handleStatusChange(reservation.id, value)}
-                    >
-                      <SelectTrigger className="w-[110px] h-8">
+                <Card key={reservation.id}>
+                  <CardContent className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-semibold text-sm">{reservation.customer_name}</h4>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {format(new Date(reservation.reservation_date + 'T00:00:00'), "dd MMM yyyy", { locale: es })} • {reservation.reservation_time}
+                          </p>
+                        </div>
                         <Badge 
                           variant={STATUS_COLORS[reservation.status] || "outline"}
                           className={`text-xs ${reservation.status === "pending" ? "border-orange-500 text-orange-500" : ""}`}
                         >
-                          <SelectValue />
+                          {STATUS_OPTIONS.find(o => o.value === reservation.status)?.label}
                         </Badge>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pending">Pendiente</SelectItem>
-                        <SelectItem value="confirmed">Confirmado</SelectItem>
-                        <SelectItem value="cancelled">Cancelado</SelectItem>
-                        <SelectItem value="completed">Completado</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedReservation(reservation);
-                          setDetailsDialogOpen(true);
-                        }}
-                        className="h-8 w-8 p-0"
-                      >
-                        <MessageSquare className="w-3 h-3" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setReservationToDelete(reservation.id);
-                          setDeleteDialogOpen(true);
-                        }}
-                        className="h-8 w-8 p-0"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
+                      </div>
+
+                      <div className="space-y-1 text-xs">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Phone className="w-3 h-3" />
+                          <span>{reservation.customer_phone}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Mail className="w-3 h-3" />
+                          <span className="truncate">{reservation.customer_email}</span>
+                        </div>
+                        <div className="font-medium">
+                          {reservation.party_size} persona{reservation.party_size !== 1 ? 's' : ''}
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 pt-3 border-t">
+                        <Select
+                          value={reservation.status}
+                          onValueChange={(value) => handleStatusChange(reservation.id, value)}
+                        >
+                          <SelectTrigger className="flex-1 h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pendiente</SelectItem>
+                            <SelectItem value="confirmed">Confirmado</SelectItem>
+                            <SelectItem value="cancelled">Cancelado</SelectItem>
+                            <SelectItem value="completed">Completado</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedReservation(reservation);
+                            setDetailsDialogOpen(true);
+                          }}
+                          className="h-8 w-8 p-0"
+                        >
+                          <MessageSquare className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setReservationToDelete(reservation.id);
+                            setDeleteDialogOpen(true);
+                          }}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
                     </div>
-                  </TableCell>
-                </TableRow>
+                  </CardContent>
+                </Card>
               ))}
-            </TableBody>
-          </Table>
-        </div>
+            </div>
+          )}
+
+          {/* Desktop Table View */}
+          {!isMobile && (
+            <div className="border rounded-lg overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Fecha y Hora</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Contacto</TableHead>
+                    <TableHead>Personas</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredReservations.map((reservation) => (
+                    <TableRow key={reservation.id}>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">
+                            {format(new Date(reservation.reservation_date + 'T00:00:00'), "dd MMM yyyy", { locale: es })}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {reservation.reservation_time}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium text-sm">{reservation.customer_name}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-1 text-xs">
+                          <div className="flex items-center gap-1">
+                            <Phone className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{reservation.customer_phone}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Mail className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{reservation.customer_email}</span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">{reservation.party_size}</TableCell>
+                      <TableCell>
+                        <Select
+                          value={reservation.status}
+                          onValueChange={(value) => handleStatusChange(reservation.id, value)}
+                        >
+                          <SelectTrigger className="w-[110px] h-8">
+                            <Badge 
+                              variant={STATUS_COLORS[reservation.status] || "outline"}
+                              className={`text-xs ${reservation.status === "pending" ? "border-orange-500 text-orange-500" : ""}`}
+                            >
+                              <SelectValue />
+                            </Badge>
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pendiente</SelectItem>
+                            <SelectItem value="confirmed">Confirmado</SelectItem>
+                            <SelectItem value="cancelled">Cancelado</SelectItem>
+                            <SelectItem value="completed">Completado</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedReservation(reservation);
+                              setDetailsDialogOpen(true);
+                            }}
+                            className="h-8 w-8 p-0"
+                          >
+                            <MessageSquare className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setReservationToDelete(reservation.id);
+                              setDeleteDialogOpen(true);
+                            }}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </>
       )}
 
       <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
