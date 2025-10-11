@@ -515,38 +515,42 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStat
     <div
       ref={setNodeRef}
       style={style}
-      className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 border rounded bg-card"
+      className="flex flex-col gap-3 p-3 border rounded bg-card"
     >
-      <div className="flex items-start gap-3 flex-1 min-w-0">
+      <div className="flex items-start gap-3">
         <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing pt-1 shrink-0">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className="font-medium truncate">{item.name}</span>
-            <Badge variant={item.is_active ? "default" : "secondary"} className="shrink-0">
-              {item.is_active ? 'Active' : 'Inactive'}
-            </Badge>
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col gap-2 mb-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-medium truncate">{item.name}</span>
+              <Badge variant={item.is_active ? "default" : "secondary"} className="shrink-0">
+                {item.is_active ? 'Active' : 'Inactive'}
+              </Badge>
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {currencySymbol}{item.price}
+            </span>
           </div>
-          <span className="text-sm text-muted-foreground block">
-            {currencySymbol}{item.price}
-          </span>
           {item.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{item.description}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2 sm:shrink-0 self-end sm:self-auto">
+      <div className="flex items-center gap-2 justify-between pt-2 border-t">
         <Switch
           checked={item.is_active}
           onCheckedChange={(checked) => onToggleStatus(item.id, checked)}
         />
-        <Button variant="outline" size="sm" onClick={() => onEdit(item)}>
-          <Edit className="h-4 w-4" />
-        </Button>
-        <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => onEdit(item)}>
+            <Edit className="h-4 w-4" />
+          </Button>
+          <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -575,26 +579,28 @@ function SortableTeamMember({ member, onEdit, onDelete }: {
     <div
       ref={setNodeRef}
       style={style}
-      className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 border rounded bg-card"
+      className="flex flex-col gap-3 p-3 border rounded bg-card"
     >
-      <div className="flex items-start gap-3 flex-1 min-w-0">
+      <div className="flex items-start gap-3">
         <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing pt-1 shrink-0">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
         <div className="flex items-start gap-3 min-w-0 flex-1">
           {member.image_url && (
-            <img src={member.image_url} alt={member.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+            <img src={member.image_url} alt={member.name} className="w-12 h-12 rounded-full object-cover shrink-0" />
           )}
           <div className="min-w-0 flex-1">
-            <span className="font-medium block truncate">{member.name}</span>
-            <p className="text-sm text-muted-foreground truncate">{member.title}</p>
+            <div className="flex flex-col gap-1 mb-2">
+              <span className="font-medium truncate">{member.name}</span>
+              <p className="text-sm text-muted-foreground truncate">{member.title}</p>
+            </div>
             {member.bio && (
-              <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{member.bio}</p>
+              <p className="text-xs text-muted-foreground line-clamp-2">{member.bio}</p>
             )}
           </div>
         </div>
       </div>
-      <div className="flex gap-2 sm:shrink-0 self-end sm:self-auto">
+      <div className="flex gap-2 justify-end pt-2 border-t">
         <Button variant="outline" size="sm" onClick={() => onEdit(member)}>
           <Edit className="h-4 w-4" />
         </Button>
@@ -643,21 +649,21 @@ function SortableReview({ review, onEdit, onDelete }: {
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center justify-between p-3 border rounded bg-card"
+      className="flex flex-col gap-3 p-3 border rounded bg-card"
     >
-      <div className="flex items-center gap-3">
-        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing">
+      <div className="flex items-start gap-3">
+        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing pt-1 shrink-0">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-medium">{review.reviewer_name}</span>
-            <div className="flex">{renderStars(review.star_rating)}</div>
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+            <span className="font-medium truncate">{review.reviewer_name}</span>
+            <div className="flex gap-0.5">{renderStars(review.star_rating)}</div>
           </div>
-          <p className="text-sm text-muted-foreground max-w-xs truncate">{review.review_text}</p>
+          <p className="text-sm text-muted-foreground line-clamp-3">{review.review_text}</p>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-end">
         <Button variant="outline" size="sm" onClick={() => onEdit(review)}>
           <Edit className="h-4 w-4" />
         </Button>
@@ -4990,9 +4996,9 @@ setReviewForm({
       <TabsContent value="reviews">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              {t('reviews.title')}
-              <Button onClick={() => openReviewDialog()}>
+            <CardTitle className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+              <span className="text-xl">{t('reviews.title')}</span>
+              <Button onClick={() => openReviewDialog()} size="sm" className="w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 {t('reviews.addReview')}
               </Button>
@@ -5327,7 +5333,7 @@ setReviewForm({
             <DialogTitle>{editingReview ? t('reviews.editReview') : t('reviews.addNewReview')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label>{t('reviews.reviewerName')}</Label>
                 <Input
