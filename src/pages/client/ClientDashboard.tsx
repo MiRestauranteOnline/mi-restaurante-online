@@ -429,7 +429,7 @@ export default function ClientDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="block md:hidden mb-4">
+        <div className="block lg:hidden mb-4">
           <Select value={activeTab} onValueChange={setActiveTab}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -444,7 +444,7 @@ export default function ClientDashboard() {
           </Select>
         </div>
         
-        <TabsList className="hidden md:inline-flex w-full justify-start overflow-x-auto flex-nowrap mb-4">
+        <TabsList className="hidden lg:inline-flex w-full justify-start overflow-x-auto flex-nowrap mb-4">
           <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>
           <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>
           <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>
