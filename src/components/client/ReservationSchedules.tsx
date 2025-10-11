@@ -650,14 +650,14 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                         </div>
                       </div>
 
-                      <div>
+                      <div className="flex items-center justify-between gap-3">
                         <span className="text-xs text-muted-foreground">Capacidad:</span>
                         {schedule.custom_table_configs ? (
-                          <Badge variant="secondary" className="text-xs mt-1">
+                          <Badge variant="secondary" className="text-xs">
                             Personalizada ({calculateTotalCapacity(schedule.custom_table_configs)} mesas)
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="text-xs mt-1">
+                          <Badge variant="outline" className="text-xs">
                             Estándar ({calculateTotalCapacity(null)} mesas)
                           </Badge>
                         )}
