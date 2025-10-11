@@ -35,10 +35,10 @@ export default function ClientAnalytics() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Analíticas</h1>
-        <p className="text-muted-foreground">Resumen de métricas clave de tu sitio web</p>
+        <h1 className="text-2xl sm:text-3xl font-bold">Analíticas</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">Resumen de métricas clave de tu sitio web</p>
       </div>
       
       <UsageWidget clientId={clientId} analyticsEnabled={analyticsEnabled} />

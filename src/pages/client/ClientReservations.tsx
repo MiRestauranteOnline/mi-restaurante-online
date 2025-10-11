@@ -20,20 +20,20 @@ const ClientReservations = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Gestión de Reservas</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Gestión de Reservas</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Administra tus horarios disponibles y las reservas recibidas de tus clientes.
         </p>
       </div>
 
       <Tabs defaultValue="availability" className="w-full">
-        <TabsList className="grid w-full max-w-2xl grid-cols-4">
-          <TabsTrigger value="availability">Disponibilidad</TabsTrigger>
-          <TabsTrigger value="tables">Capacidad</TabsTrigger>
-          <TabsTrigger value="schedules">Horarios</TabsTrigger>
-          <TabsTrigger value="reservations">Reservas</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
+          <TabsTrigger value="availability" className="text-xs sm:text-sm">Disponibilidad</TabsTrigger>
+          <TabsTrigger value="tables" className="text-xs sm:text-sm">Capacidad</TabsTrigger>
+          <TabsTrigger value="schedules" className="text-xs sm:text-sm">Horarios</TabsTrigger>
+          <TabsTrigger value="reservations" className="text-xs sm:text-sm">Reservas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="availability" className="mt-6">

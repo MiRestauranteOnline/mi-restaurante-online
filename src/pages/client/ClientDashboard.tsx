@@ -579,8 +579,8 @@ export default function ClientDashboard() {
                   sunday: 'Domingo'
                 };
                 return (
-                <div key={day} className="flex items-center gap-4 p-4 border rounded-lg">
-                  <div className="w-24">
+                <div key={day} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 border rounded-lg">
+                  <div className="sm:w-24">
                     <Label className="text-sm font-medium">{dayNames[day as keyof typeof dayNames]}</Label>
                   </div>
                   <div className="flex items-center gap-2">
@@ -599,9 +599,9 @@ export default function ClientDashboard() {
                     </span>
                   </div>
                   {!hours.closed && (
-                    <>
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 flex-1">
                       <div className="flex items-center gap-2">
-                        <Label className="text-sm">Abre:</Label>
+                        <Label className="text-sm whitespace-nowrap">Abre:</Label>
                         <Input
                           type="time"
                           value={hours.open}
@@ -612,11 +612,11 @@ export default function ClientDashboard() {
                               [day]: { ...hours, open: e.target.value }
                             }
                           }))}
-                          className="w-32"
+                          className="w-full sm:w-32"
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <Label className="text-sm">Cierra:</Label>
+                        <Label className="text-sm whitespace-nowrap">Cierra:</Label>
                         <Input
                           type="time"
                           value={hours.close}
@@ -627,10 +627,10 @@ export default function ClientDashboard() {
                               [day]: { ...hours, close: e.target.value }
                             }
                           }))}
-                          className="w-32"
+                          className="w-full sm:w-32"
                         />
                       </div>
-                    </>
+                    </div>
                   )}
                  </div>
                 );
@@ -781,21 +781,21 @@ export default function ClientDashboard() {
                   Tienes {menuCategories.length} categorías y {menuItems.length} elementos en tu menú
                 </p>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
                     <div className="p-4 border rounded-lg">
-                      <h4 className="font-medium mb-2">Categorías Activas</h4>
-                      <p className="text-2xl font-bold text-primary">{menuCategories.filter(c => c.is_active).length}</p>
-                      <p className="text-sm text-muted-foreground">de {menuCategories.length} total</p>
+                      <h4 className="font-medium mb-2 text-sm sm:text-base">Categorías Activas</h4>
+                      <p className="text-xl sm:text-2xl font-bold text-primary">{menuCategories.filter(c => c.is_active).length}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">de {menuCategories.length} total</p>
                     </div>
                     <div className="p-4 border rounded-lg">
-                      <h4 className="font-medium mb-2">Elementos del Menú</h4>
-                      <p className="text-2xl font-bold text-primary">{menuItems.filter(i => i.is_active).length}</p>
-                      <p className="text-sm text-muted-foreground">de {menuItems.length} total</p>
+                      <h4 className="font-medium mb-2 text-sm sm:text-base">Elementos del Menú</h4>
+                      <p className="text-xl sm:text-2xl font-bold text-primary">{menuItems.filter(i => i.is_active).length}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">de {menuItems.length} total</p>
                     </div>
                     <div className="p-4 border rounded-lg">
-                      <h4 className="font-medium mb-2">En Página Principal</h4>
-                      <p className="text-2xl font-bold text-primary">{menuItems.filter(i => i.show_on_homepage).length}</p>
-                      <p className="text-sm text-muted-foreground">elementos destacados</p>
+                      <h4 className="font-medium mb-2 text-sm sm:text-base">En Página Principal</h4>
+                      <p className="text-xl sm:text-2xl font-bold text-primary">{menuItems.filter(i => i.show_on_homepage).length}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">elementos destacados</p>
                     </div>
                   </div>
                   <div className="text-center pt-4 border-t">
@@ -825,20 +825,20 @@ export default function ClientDashboard() {
                   Tienes {teamMembers.length} miembros en tu equipo
                 </p>
                 {teamMembers.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
                     {teamMembers.filter(m => m.is_active).slice(0, 6).map((member) => (
                       <div key={member.id} className="p-4 border rounded-lg text-left">
                         <div className="flex items-center gap-3 mb-2">
                           {member.image_url && (
-                            <img src={member.image_url} alt={member.name} className="w-8 h-8 rounded-full object-cover" />
+                            <img src={member.image_url} alt={member.name} className="w-10 h-10 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0" />
                           )}
-                          <div>
-                            <h4 className="font-medium text-sm">{member.name}</h4>
-                            <p className="text-xs text-muted-foreground">{member.title}</p>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-medium text-sm truncate">{member.name}</h4>
+                            <p className="text-xs text-muted-foreground truncate">{member.title}</p>
                           </div>
                         </div>
                         {member.bio && (
-                          <p className="text-xs text-muted-foreground truncate">{member.bio}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-2">{member.bio}</p>
                         )}
                       </div>
                     ))}
@@ -870,20 +870,20 @@ export default function ClientDashboard() {
                   Tienes {reviews.length} reseñas publicadas
                 </p>
                 {reviews.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                     {reviews.filter(r => r.is_active).slice(0, 4).map((review) => (
                       <div key={review.id} className="p-4 border rounded-lg text-left">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-sm">{review.reviewer_name}</h4>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                          <h4 className="font-medium text-sm truncate">{review.reviewer_name}</h4>
                           <div className="flex items-center gap-1">
                             {[...Array(5)].map((_, i) => (
-                              <span key={i} className={`text-xs ${i < review.star_rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+                              <span key={i} className={`text-sm ${i < review.star_rating ? 'text-yellow-400' : 'text-gray-300'}`}>
                                 ★
                               </span>
                             ))}
                           </div>
                         </div>
-                        <p className="text-xs text-muted-foreground line-clamp-2">{review.review_text}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-3">{review.review_text}</p>
                       </div>
                     ))}
                   </div>
@@ -911,9 +911,9 @@ export default function ClientDashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
+                <div className="grid grid-cols-1 gap-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="space-y-0.5 flex-1">
                       <Label htmlFor="carousel-enabled">{t('carousel.showCarousel')}</Label>
                       <p className="text-sm text-muted-foreground">
                         Activa o desactiva el carousel en la página principal
@@ -995,17 +995,17 @@ export default function ClientDashboard() {
                   </div>
                   
                   {carouselImages.length > 0 && (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                       {carouselImages.map((image) => (
                         <div key={image.id} className="relative group">
                           <img
                             src={image.image_url}
                             alt={image.alt_text || "Imagen del carousel"}
-                            className="w-full h-24 object-cover rounded-lg border"
+                            className="w-full h-32 sm:h-24 object-cover rounded-lg border"
                           />
                           <button
                             onClick={() => handleCarouselImageDelete(image.id)}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-7 h-7 sm:w-6 sm:h-6 flex items-center justify-center text-sm sm:text-xs opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
                           >
                             ×
                           </button>
