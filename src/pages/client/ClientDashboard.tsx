@@ -118,9 +118,23 @@ export default function ClientDashboard() {
   const [carouselImages, setCarouselImages] = useState<any[]>([]);
   const [adminContent, setAdminContent] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("basic");
   const { toast } = useToast();
   const { t } = useDashboardLanguage();
   const isMobile = useIsMobile();
+
+  const tabOptions = [
+    { value: "basic", label: "General" },
+    { value: "hours", label: "Horario" },
+    { value: "social", label: "Social" },
+    { value: "delivery", label: "Delivery" },
+    { value: "menu", label: "Menú" },
+    { value: "team", label: "Equipo" },
+    { value: "reviews", label: "Reseñas" },
+    { value: "analytics", label: "Analíticas" },
+    { value: "carousel", label: "Carrusel" },
+    { value: "custom-images", label: "Imágenes" },
+  ];
 
   useEffect(() => {
     if (selectedClientId) {
@@ -414,22 +428,36 @@ export default function ClientDashboard() {
         </Button>
       </div>
 
-      <Tabs defaultValue="basic" className="w-full">
-        <TabsList className={cn(
-          "w-full justify-start overflow-x-auto flex-nowrap",
-          isMobile && "h-auto flex-wrap gap-1"
-        )}>
-          <TabsTrigger value="basic" className="flex-shrink-0">{isMobile ? 'General' : t('nav.general')}</TabsTrigger>
-          <TabsTrigger value="hours" className="flex-shrink-0">{isMobile ? 'Horario' : t('general.openingHours')}</TabsTrigger>
-          <TabsTrigger value="social" className="flex-shrink-0">{isMobile ? 'Social' : t('general.socialMedia')}</TabsTrigger>
-          <TabsTrigger value="delivery" className="flex-shrink-0">{isMobile ? 'Delivery' : t('general.deliveryInfo')}</TabsTrigger>
-          <TabsTrigger value="menu" className="flex-shrink-0">{isMobile ? 'Menú' : t('nav.menu')}</TabsTrigger>
-          <TabsTrigger value="team" className="flex-shrink-0">{isMobile ? 'Equipo' : t('nav.team')}</TabsTrigger>
-          <TabsTrigger value="reviews" className="flex-shrink-0">{isMobile ? 'Reseñas' : t('nav.reviews')}</TabsTrigger>
-          <TabsTrigger value="analytics" className="flex-shrink-0">Analíticas</TabsTrigger>
-          <TabsTrigger value="carousel" className="flex-shrink-0">{isMobile ? 'Carrusel' : t('nav.carousel')}</TabsTrigger>
-          <TabsTrigger value="custom-images" className="flex-shrink-0">{isMobile ? 'Imágenes' : t('nav.images')}</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        {isMobile ? (
+          <div className="mb-4">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {tabOptions.map((tab) => (
+                  <SelectItem key={tab.value} value={tab.value}>
+                    {tab.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        ) : (
+          <TabsList className="w-full justify-start overflow-x-auto flex-nowrap mb-4">
+            <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>
+            <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>
+            <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>
+            <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>
+            <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>
+            <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>
+            <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>
+            <TabsTrigger value="analytics">Analíticas</TabsTrigger>
+            <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>
+            <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>
+          </TabsList>
+        )}
 
         <TabsContent value="basic">
           <Card>
