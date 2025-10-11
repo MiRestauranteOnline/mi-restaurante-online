@@ -575,26 +575,26 @@ function SortableTeamMember({ member, onEdit, onDelete }: {
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center justify-between p-3 border rounded bg-card"
+      className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 border rounded bg-card"
     >
-      <div className="flex items-center gap-3">
-        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing">
+      <div className="flex items-start gap-3 flex-1 min-w-0">
+        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing pt-1 shrink-0">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3 min-w-0 flex-1">
           {member.image_url && (
-            <img src={member.image_url} alt={member.name} className="w-10 h-10 rounded-full object-cover" />
+            <img src={member.image_url} alt={member.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
           )}
-          <div>
-            <span className="font-medium">{member.name}</span>
-            <p className="text-sm text-muted-foreground">{member.title}</p>
+          <div className="min-w-0 flex-1">
+            <span className="font-medium block truncate">{member.name}</span>
+            <p className="text-sm text-muted-foreground truncate">{member.title}</p>
             {member.bio && (
-              <p className="text-xs text-muted-foreground max-w-xs truncate">{member.bio}</p>
+              <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{member.bio}</p>
             )}
           </div>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 sm:shrink-0 self-end sm:self-auto">
         <Button variant="outline" size="sm" onClick={() => onEdit(member)}>
           <Edit className="h-4 w-4" />
         </Button>
@@ -4951,9 +4951,9 @@ setReviewForm({
       <TabsContent value="team">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              {t('team.teamMembers')}
-              <Button onClick={() => openTeamMemberDialog()}>
+            <CardTitle className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+              <span className="text-xl">{t('team.teamMembers')}</span>
+              <Button onClick={() => openTeamMemberDialog()} size="sm" className="w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 {t('team.addTeamMember')}
               </Button>
@@ -5273,7 +5273,7 @@ setReviewForm({
             <DialogTitle>{editingTeamMember ? t('team.editTeamMember') : t('team.addTeamMember')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label>{t('common.name')}</Label>
                 <Input
