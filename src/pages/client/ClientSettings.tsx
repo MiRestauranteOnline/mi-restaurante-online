@@ -29,6 +29,7 @@ export default function ClientSettings() {
   const [formData, setFormData] = useState<any>({});
   const { toast } = useToast();
   const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState("general");
 
   useEffect(() => {
     if (selectedClientId) {
@@ -150,13 +151,20 @@ export default function ClientSettings() {
         </Button>
       </div>
 
-      <Tabs defaultValue="general" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="general">{t('settings.general')}</TabsTrigger>
-          <TabsTrigger value="appearance">{t('settings.appearance')}</TabsTrigger>
-          <TabsTrigger value="contact">{t('settings.contact')}</TabsTrigger>
-          <TabsTrigger value="analytics">Analíticas</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <div className="mb-4">
+          <Select value={activeTab} onValueChange={setActiveTab}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="z-50">
+              <SelectItem value="general">{t('settings.general')}</SelectItem>
+              <SelectItem value="appearance">{t('settings.appearance')}</SelectItem>
+              <SelectItem value="contact">{t('settings.contact')}</SelectItem>
+              <SelectItem value="analytics">Analíticas</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         <TabsContent value="general" className="space-y-4">
           <Card>
