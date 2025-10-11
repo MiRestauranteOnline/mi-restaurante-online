@@ -17,6 +17,8 @@ import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { ImageUpload } from "@/components/ImageUpload";
 import { CustomImagesManager } from "@/components/client/CustomImagesManager";
 import { AnalyticsOverview } from "@/components/client/AnalyticsOverview";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface ClientContext {
   selectedClientId: string;
@@ -118,6 +120,7 @@ export default function ClientDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const { t } = useDashboardLanguage();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (selectedClientId) {
@@ -402,27 +405,30 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t('general.title')}</h1>
-        <Button onClick={handleSave} disabled={saving}>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold">{t('general.title')}</h1>
+        <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
           {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
           {t('common.save')}
         </Button>
       </div>
 
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList>
-          <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>
-          <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>
-          <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>
-          <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>
-          <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>
-          <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>
-          <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>
-          <TabsTrigger value="analytics">Analíticas</TabsTrigger>
-          <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>
-          <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>
+        <TabsList className={cn(
+          "w-full justify-start overflow-x-auto flex-nowrap",
+          isMobile && "h-auto flex-wrap gap-1"
+        )}>
+          <TabsTrigger value="basic" className="flex-shrink-0">{isMobile ? 'General' : t('nav.general')}</TabsTrigger>
+          <TabsTrigger value="hours" className="flex-shrink-0">{isMobile ? 'Horario' : t('general.openingHours')}</TabsTrigger>
+          <TabsTrigger value="social" className="flex-shrink-0">{isMobile ? 'Social' : t('general.socialMedia')}</TabsTrigger>
+          <TabsTrigger value="delivery" className="flex-shrink-0">{isMobile ? 'Delivery' : t('general.deliveryInfo')}</TabsTrigger>
+          <TabsTrigger value="menu" className="flex-shrink-0">{isMobile ? 'Menú' : t('nav.menu')}</TabsTrigger>
+          <TabsTrigger value="team" className="flex-shrink-0">{isMobile ? 'Equipo' : t('nav.team')}</TabsTrigger>
+          <TabsTrigger value="reviews" className="flex-shrink-0">{isMobile ? 'Reseñas' : t('nav.reviews')}</TabsTrigger>
+          <TabsTrigger value="analytics" className="flex-shrink-0">Analíticas</TabsTrigger>
+          <TabsTrigger value="carousel" className="flex-shrink-0">{isMobile ? 'Carrusel' : t('nav.carousel')}</TabsTrigger>
+          <TabsTrigger value="custom-images" className="flex-shrink-0">{isMobile ? 'Imágenes' : t('nav.images')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
