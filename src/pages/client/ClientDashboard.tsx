@@ -429,12 +429,12 @@ export default function ClientDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="block lg:hidden mb-4">
+        <div className="mb-4">
           <Select value={activeTab} onValueChange={setActiveTab}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Selecciona sección">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="z-50">
+            <SelectContent className="z-50 max-h-[60vh]">
               {tabOptions.map((tab) => (
                 <SelectItem key={tab.value} value={tab.value}>
                   {tab.label}
@@ -442,21 +442,6 @@ export default function ClientDashboard() {
               ))}
             </SelectContent>
           </Select>
-        </div>
-        
-        <div className="hidden lg:block mb-4">
-          <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
-            <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>
-            <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>
-            <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>
-            <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>
-            <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>
-            <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>
-            <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>
-            <TabsTrigger value="analytics">Analíticas</TabsTrigger>
-            <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>
-            <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>
-          </TabsList>
         </div>
 
         <TabsContent value="basic">
