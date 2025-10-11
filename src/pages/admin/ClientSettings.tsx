@@ -3005,8 +3005,8 @@ setReviewForm({
               {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
                 const hours = formData.opening_hours[day] || { closed: true, open: '09:00', close: '17:00' };
                 return (
-                <div key={day} className="flex items-center gap-4 p-4 border rounded-lg">
-                  <div className="w-24">
+                <div key={day} className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 border rounded-lg">
+                  <div className="min-w-[100px]">
                     <Label className="text-sm font-medium">{t(`general.${day}`)}</Label>
                   </div>
                   <div className="flex items-center gap-2">
@@ -3025,9 +3025,9 @@ setReviewForm({
                     </span>
                   </div>
                   {!hours.closed && (
-                    <>
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
                       <div className="flex items-center gap-2">
-                        <Label className="text-sm">{t('general.opens')}:</Label>
+                        <Label className="text-sm whitespace-nowrap">{t('general.opens')}:</Label>
                         <Input
                           type="time"
                           value={hours.open}
@@ -3038,11 +3038,11 @@ setReviewForm({
                               [day]: { ...hours, open: e.target.value }
                             }
                           })}
-                          className="w-32"
+                          className="w-full sm:w-32"
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <Label className="text-sm">{t('general.closes')}:</Label>
+                        <Label className="text-sm whitespace-nowrap">{t('general.closes')}:</Label>
                         <Input
                           type="time"
                           value={hours.close}
@@ -3053,10 +3053,10 @@ setReviewForm({
                               [day]: { ...hours, close: e.target.value }
                             }
                           })}
-                          className="w-32"
+                          className="w-full sm:w-32"
                         />
                       </div>
-                    </>
+                    </div>
                   )}
                  </div>
                 );
