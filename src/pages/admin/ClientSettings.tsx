@@ -335,28 +335,28 @@ function SortableCategoryCard({
       <Collapsible defaultOpen={!searchTerm || categoryItems.length > 0}>
         <CollapsibleTrigger asChild>
           <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+              <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                 <div
-                  className="cursor-grab active:cursor-grabbing p-1"
+                  className="cursor-grab active:cursor-grabbing p-1 shrink-0"
                   onClick={(e) => e.stopPropagation()}
                   {...attributes}
                   {...listeners}
                 >
                   <GripVertical className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <ChevronRight className="h-4 w-4 transition-transform duration-200 data-[state=open]:rotate-90" />
-                <div className="flex items-center gap-2">
-                  <CardTitle className="text-lg">{category.name}</CardTitle>
-                  <Badge variant={category.is_active ? "default" : "secondary"}>
+                <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90" />
+                <div className="flex items-center gap-2 flex-wrap min-w-0">
+                  <CardTitle className="text-base sm:text-lg truncate">{category.name}</CardTitle>
+                  <Badge variant={category.is_active ? "default" : "secondary"} className="shrink-0">
                     {category.is_active ? 'Active' : 'Inactive'}
                   </Badge>
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="shrink-0">
                     {categoryItems.length} items
                   </Badge>
                 </div>
               </div>
-              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center gap-2 flex-wrap" onClick={(e) => e.stopPropagation()}>
                 <Switch
                   checked={category.is_active}
                   onCheckedChange={(checked) => handleToggleCategoryStatus(category.id, checked)}
@@ -365,9 +365,18 @@ function SortableCategoryCard({
                   variant="ghost"
                   size="sm"
                   onClick={() => openMenuItemDialog(undefined, category.name)}
+                  className="hidden sm:inline-flex"
                 >
                   <Plus className="h-4 w-4" />
                   Agregar Producto
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => openMenuItemDialog(undefined, category.name)}
+                  className="sm:hidden"
+                >
+                  <Plus className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -506,28 +515,28 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStat
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center justify-between p-3 border rounded bg-card"
+      className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 border rounded bg-card"
     >
-      <div className="flex items-center gap-3">
-        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing">
+      <div className="flex items-start gap-3 flex-1 min-w-0">
+        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing pt-1 shrink-0">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-medium">{item.name}</span>
-            <Badge variant={item.is_active ? "default" : "secondary"}>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            <span className="font-medium truncate">{item.name}</span>
+            <Badge variant={item.is_active ? "default" : "secondary"} className="shrink-0">
               {item.is_active ? 'Active' : 'Inactive'}
             </Badge>
           </div>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-muted-foreground block">
             {currencySymbol}{item.price}
           </span>
           {item.description && (
-            <p className="text-sm text-muted-foreground">{item.description}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{item.description}</p>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 sm:shrink-0 self-end sm:self-auto">
         <Switch
           checked={item.is_active}
           onCheckedChange={(checked) => onToggleStatus(item.id, checked)}
@@ -4851,16 +4860,16 @@ setReviewForm({
           {/* Menu Management Section */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                {t('menu.title')}
-                <div className="flex gap-2">
-                  <Button onClick={() => openCategoryDialog()}>
+            <CardTitle className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+                <span className="text-xl">{t('menu.title')}</span>
+                <div className="flex gap-2 flex-wrap">
+                  <Button onClick={() => openCategoryDialog()} size="sm" className="flex-1 sm:flex-initial">
                     <FolderPlus className="h-4 w-4 mr-2" />
-                    Nueva Categoría
+                    <span className="sm:inline">Nueva Categoría</span>
                   </Button>
-                  <Button onClick={() => openMenuItemDialog()}>
+                  <Button onClick={() => openMenuItemDialog()} size="sm" className="flex-1 sm:flex-initial">
                     <Plus className="h-4 w-4 mr-2" />
-                    Nuevo Producto
+                    <span className="sm:inline">Nuevo Producto</span>
                   </Button>
                 </div>
               </CardTitle>
@@ -5213,36 +5222,39 @@ setReviewForm({
             
             {/* Visibility Options */}
             <div className="space-y-4 pt-4 border-t">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex-1">
                   <Label>{t('menu.showOnHomepage')}</Label>
                   <p className="text-sm text-muted-foreground">{t('menu.showOnHomepageDesc')}</p>
                 </div>
                 <Switch
                   checked={menuItemForm.show_on_homepage || false}
                   onCheckedChange={(checked) => setMenuItemForm({...menuItemForm, show_on_homepage: checked})}
+                  className="self-start sm:self-auto"
                 />
               </div>
               
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex-1">
                   <Label>{t('menu.showImageHome')}</Label>
                   <p className="text-sm text-muted-foreground">{t('menu.showImageHomeDesc')}</p>
                 </div>
                 <Switch
                   checked={menuItemForm.show_image_home || false}
                   onCheckedChange={(checked) => setMenuItemForm({...menuItemForm, show_image_home: checked})}
+                  className="self-start sm:self-auto"
                 />
               </div>
               
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex-1">
                   <Label>{t('menu.showImageMenu')}</Label>
                   <p className="text-sm text-muted-foreground">{t('menu.showImageMenuDesc')}</p>
                 </div>
                 <Switch
                   checked={menuItemForm.show_image_menu !== false}
                   onCheckedChange={(checked) => setMenuItemForm({...menuItemForm, show_image_menu: checked})}
+                  className="self-start sm:self-auto"
                 />
               </div>
             </div>
