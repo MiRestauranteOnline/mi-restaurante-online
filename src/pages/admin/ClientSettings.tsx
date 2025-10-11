@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -711,6 +711,21 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const [warningTabName, setWarningTabName] = useState('');
   const [userConfirmedWarning, setUserConfirmedWarning] = useState(false);
   const { toast } = useToast();
+
+  const location = useLocation();
+  const isClientView = location.pathname.startsWith('/client/');
+  const [activeTab, setActiveTab] = useState<string>('basic');
+
+  // Ensure activeTab is allowed (especially in client view)
+  useEffect(() => {
+    const order = ['basic','domain','hours','social','delivery','branding','content','briefing','menu','team','reviews','carousel','custom-images'];
+    const adminOnly = ['discounts','advanced'];
+    const ordered = userRole === 'admin' ? [...order, ...adminOnly] : order;
+    const firstAllowed = ordered.find((v) => showTab(v));
+    if (firstAllowed && !showTab(activeTab)) {
+      setActiveTab(firstAllowed);
+    }
+  }, [allowedTabs, userRole]);
 
   const showTab = (name: string) => !allowedTabs || allowedTabs.includes(name);
 
@@ -2715,24 +2730,51 @@ setReviewForm({
         </Button>
       </div>
 
-      <Tabs defaultValue="basic" className="w-full" onValueChange={handleTabChange}>
-        <TabsList>
-          {showTab('basic') && <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>}
-          {showTab('domain') && <TabsTrigger value="domain">Dominio</TabsTrigger>}
-          {showTab('hours') && <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>}
-          {showTab('social') && <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>}
-          {showTab('delivery') && <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>}
-          {showTab('branding') && <TabsTrigger value="branding">Marca</TabsTrigger>}
-          {showTab('content') && <TabsTrigger value="content">Contenido</TabsTrigger>}
-          {showTab('briefing') && <TabsTrigger value="briefing">{t('nav.briefing')}</TabsTrigger>}
-          {showTab('menu') && <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>}
-          {showTab('team') && <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>}
-          {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
-          {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
-          {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
-          {userRole === 'admin' && <TabsTrigger value="discounts">Descuentos</TabsTrigger>}
-          {userRole === 'admin' && <TabsTrigger value="advanced">Avanzado</TabsTrigger>}
-        </TabsList>
+      <Tabs value={activeTab} className="w-full" onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
+        {isClientView ? (
+          <div className="mb-4">
+            <Select value={activeTab} onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
+              <SelectTrigger className="w-full" aria-label="Selecciona sección">
+                <SelectValue placeholder={t('nav.general')} />
+              </SelectTrigger>
+              <SelectContent className="z-50">
+                {showTab('basic') && <SelectItem value="basic">{t('nav.general')}</SelectItem>}
+                {showTab('domain') && <SelectItem value="domain">Dominio</SelectItem>}
+                {showTab('hours') && <SelectItem value="hours">{t('general.openingHours')}</SelectItem>}
+                {showTab('social') && <SelectItem value="social">{t('general.socialMedia')}</SelectItem>}
+                {showTab('delivery') && <SelectItem value="delivery">{t('general.deliveryInfo')}</SelectItem>}
+                {showTab('branding') && <SelectItem value="branding">Marca</SelectItem>}
+                {showTab('content') && <SelectItem value="content">Contenido</SelectItem>}
+                {showTab('briefing') && <SelectItem value="briefing">{t('nav.briefing')}</SelectItem>}
+                {showTab('menu') && <SelectItem value="menu">{t('nav.menu')}</SelectItem>}
+                {showTab('team') && <SelectItem value="team">{t('nav.team')}</SelectItem>}
+                {showTab('reviews') && <SelectItem value="reviews">{t('nav.reviews')}</SelectItem>}
+                {showTab('carousel') && <SelectItem value="carousel">{t('nav.carousel')}</SelectItem>}
+                {showTab('custom-images') && <SelectItem value="custom-images">{t('nav.images')}</SelectItem>}
+                {userRole === 'admin' && <SelectItem value="discounts">Descuentos</SelectItem>}
+                {userRole === 'admin' && <SelectItem value="advanced">Avanzado</SelectItem>}
+              </SelectContent>
+            </Select>
+          </div>
+        ) : (
+          <TabsList>
+            {showTab('basic') && <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>}
+            {showTab('domain') && <TabsTrigger value="domain">Dominio</TabsTrigger>}
+            {showTab('hours') && <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>}
+            {showTab('social') && <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>}
+            {showTab('delivery') && <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>}
+            {showTab('branding') && <TabsTrigger value="branding">Marca</TabsTrigger>}
+            {showTab('content') && <TabsTrigger value="content">Contenido</TabsTrigger>}
+            {showTab('briefing') && <TabsTrigger value="briefing">{t('nav.briefing')}</TabsTrigger>}
+            {showTab('menu') && <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>}
+            {showTab('team') && <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>}
+            {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
+            {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
+            {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
+            {userRole === 'admin' && <TabsTrigger value="discounts">Descuentos</TabsTrigger>}
+            {userRole === 'admin' && <TabsTrigger value="advanced">Avanzado</TabsTrigger>}
+          </TabsList>
+        )}
 
 
         <TabsContent value="basic">
