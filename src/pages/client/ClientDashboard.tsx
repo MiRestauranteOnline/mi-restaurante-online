@@ -429,35 +429,33 @@ export default function ClientDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        {isMobile ? (
-          <div className="mb-4">
-            <Select value={activeTab} onValueChange={setActiveTab}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {tabOptions.map((tab) => (
-                  <SelectItem key={tab.value} value={tab.value}>
-                    {tab.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        ) : (
-          <TabsList className="w-full justify-start overflow-x-auto flex-nowrap mb-4">
-            <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>
-            <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>
-            <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>
-            <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>
-            <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>
-            <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>
-            <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>
-            <TabsTrigger value="analytics">Analíticas</TabsTrigger>
-            <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>
-            <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>
-          </TabsList>
-        )}
+        <div className="block md:hidden mb-4">
+          <Select value={activeTab} onValueChange={setActiveTab}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="z-50">
+              {tabOptions.map((tab) => (
+                <SelectItem key={tab.value} value={tab.value}>
+                  {tab.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <TabsList className="hidden md:inline-flex w-full justify-start overflow-x-auto flex-nowrap mb-4">
+          <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>
+          <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>
+          <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>
+          <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>
+          <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>
+          <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>
+          <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>
+          <TabsTrigger value="analytics">Analíticas</TabsTrigger>
+          <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>
+          <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>
+        </TabsList>
 
         <TabsContent value="basic">
           <Card>
