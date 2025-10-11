@@ -276,13 +276,13 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           {schedules.length} horario(s) configurado(s)
         </p>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => { setEditingSchedule(null); resetForm(); }}>
+            <Button onClick={() => { setEditingSchedule(null); resetForm(); }} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Agregar Horario
             </Button>
@@ -611,27 +611,27 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
           </p>
         </div>
       ) : (
-        <div className="border rounded-lg">
+        <div className="border rounded-lg overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Día</TableHead>
-                <TableHead>Horario</TableHead>
-                <TableHead>Duración</TableHead>
-                <TableHead>Capacidad</TableHead>
-                <TableHead>Personas</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
+                <TableHead className="min-w-[100px]">Día</TableHead>
+                <TableHead className="min-w-[120px]">Horario</TableHead>
+                <TableHead className="min-w-[80px]">Duración</TableHead>
+                <TableHead className="min-w-[100px]">Capacidad</TableHead>
+                <TableHead className="min-w-[80px]">Personas</TableHead>
+                <TableHead className="min-w-[80px]">Estado</TableHead>
+                <TableHead className="min-w-[150px] text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {schedules.map((schedule) => (
                 <TableRow key={schedule.id}>
                   <TableCell className="font-medium">{getDayName(schedule.day_of_week)}</TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
                     {schedule.start_time} - {schedule.end_time}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
                     {schedule.duration_minutes >= 60 
                       ? `${Math.floor(schedule.duration_minutes / 60)}h ${schedule.duration_minutes % 60 > 0 ? `${schedule.duration_minutes % 60}m` : ''}`.trim()
                       : `${schedule.duration_minutes}m`
@@ -640,32 +640,33 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                   <TableCell>
                     {schedule.custom_table_configs ? (
                       <div className="flex flex-col">
-                        <Badge variant="secondary">Personalizada</Badge>
+                        <Badge variant="secondary" className="text-xs">Personalizada</Badge>
                         <span className="text-xs text-muted-foreground mt-1">
                           {calculateTotalCapacity(schedule.custom_table_configs)} mesas
                         </span>
                       </div>
                     ) : (
                       <div className="flex flex-col">
-                        <Badge variant="outline">Estándar</Badge>
+                        <Badge variant="outline" className="text-xs">Estándar</Badge>
                         <span className="text-xs text-muted-foreground mt-1">
                           {calculateTotalCapacity(null)} mesas
                         </span>
                       </div>
                     )}
                   </TableCell>
-                  <TableCell>{schedule.min_party_size} - {schedule.max_party_size}</TableCell>
+                  <TableCell className="whitespace-nowrap text-sm">{schedule.min_party_size} - {schedule.max_party_size}</TableCell>
                   <TableCell>
-                    <Badge variant={schedule.is_active ? "default" : "secondary"}>
+                    <Badge variant={schedule.is_active ? "default" : "secondary"} className="text-xs">
                       {schedule.is_active ? "Activo" : "Inactivo"}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                  <TableCell>
+                    <div className="flex justify-end gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => handleToggleActive(schedule)}
+                        className="h-8 text-xs"
                       >
                         {schedule.is_active ? "Desactivar" : "Activar"}
                       </Button>
@@ -673,8 +674,9 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                         variant="ghost"
                         size="sm"
                         onClick={() => openEditDialog(schedule)}
+                        className="h-8 w-8 p-0"
                       >
-                        <Edit className="w-4 h-4" />
+                        <Edit className="w-3 h-3" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -683,8 +685,9 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                           setScheduleToDelete(schedule.id);
                           setDeleteDialogOpen(true);
                         }}
+                        className="h-8 w-8 p-0"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
                   </TableCell>

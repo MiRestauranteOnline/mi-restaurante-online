@@ -224,11 +224,11 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div>
-          <h3 className="text-lg font-semibold">Configuración de Mesas</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-base sm:text-lg font-semibold">Configuración de Mesas</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Define los tipos de mesas disponibles en tu restaurante
           </p>
         </div>
@@ -237,6 +237,7 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
             resetForm();
             setDialogOpen(true);
           }}
+          className="w-full sm:w-auto"
         >
           <Plus className="h-4 w-4 mr-2" />
           Agregar Configuración
@@ -244,8 +245,8 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
       </div>
 
       {configs.length > 0 && (
-        <div className="bg-muted p-4 rounded-lg">
-          <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="bg-muted p-3 sm:p-4 rounded-lg">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
             <div>
               <span className="font-medium">Total de mesas:</span> {getTotalTables()}
             </div>
@@ -262,54 +263,58 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
           <p className="text-sm">Comienza agregando tus tipos de mesas.</p>
         </div>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre</TableHead>
-              <TableHead>Asientos</TableHead>
-              <TableHead>Cantidad</TableHead>
-              <TableHead>Min-Max Personas</TableHead>
-              <TableHead>Activo</TableHead>
-              <TableHead>Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {configs.map((config) => (
-              <TableRow key={config.id}>
-                <TableCell className="font-medium">{config.table_name}</TableCell>
-                <TableCell>{config.seats} asientos</TableCell>
-                <TableCell>{config.quantity} mesa{config.quantity > 1 ? 's' : ''}</TableCell>
-                <TableCell>
-                  {config.min_party_size} - {config.max_party_size} personas
-                </TableCell>
-                <TableCell>
-                  <Switch
-                    checked={config.is_active}
-                    onCheckedChange={() => handleToggleActive(config)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => openEditDialog(config)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => openDeleteDialog(config)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
+        <div className="border rounded-lg overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="min-w-[120px]">Nombre</TableHead>
+                <TableHead className="min-w-[100px]">Asientos</TableHead>
+                <TableHead className="min-w-[100px]">Cantidad</TableHead>
+                <TableHead className="min-w-[120px]">Min-Max Personas</TableHead>
+                <TableHead className="min-w-[80px]">Activo</TableHead>
+                <TableHead className="min-w-[120px]">Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {configs.map((config) => (
+                <TableRow key={config.id}>
+                  <TableCell className="font-medium text-sm">{config.table_name}</TableCell>
+                  <TableCell className="text-sm">{config.seats} asientos</TableCell>
+                  <TableCell className="text-sm">{config.quantity} mesa{config.quantity > 1 ? 's' : ''}</TableCell>
+                  <TableCell className="text-sm whitespace-nowrap">
+                    {config.min_party_size} - {config.max_party_size} personas
+                  </TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={config.is_active}
+                      onCheckedChange={() => handleToggleActive(config)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openEditDialog(config)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openDeleteDialog(config)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

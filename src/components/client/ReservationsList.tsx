@@ -289,8 +289,8 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
       {filteredReservations.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed rounded-lg">
           <CalendarIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <h3 className="text-lg font-semibold mb-2">No hay reservas</h3>
-          <p className="text-muted-foreground">
+          <h3 className="text-base sm:text-lg font-semibold mb-2">No hay reservas</h3>
+          <p className="text-sm text-muted-foreground">
             {searchTerm || statusFilter !== "all"
               ? "No se encontraron reservas con los filtros aplicados."
               : "Las reservas de tus clientes aparecerán aquí."}
@@ -301,12 +301,12 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Fecha y Hora</TableHead>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Contacto</TableHead>
-                <TableHead>Personas</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
+                <TableHead className="min-w-[140px]">Fecha y Hora</TableHead>
+                <TableHead className="min-w-[120px]">Cliente</TableHead>
+                <TableHead className="min-w-[140px]">Contacto</TableHead>
+                <TableHead className="min-w-[80px]">Personas</TableHead>
+                <TableHead className="min-w-[120px]">Estado</TableHead>
+                <TableHead className="min-w-[100px] text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -314,37 +314,37 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                 <TableRow key={reservation.id}>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="font-medium">
+                      <span className="font-medium text-sm">
                         {format(new Date(reservation.reservation_date + 'T00:00:00'), "dd MMM yyyy", { locale: es })}
                       </span>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-xs text-muted-foreground">
                         {reservation.reservation_time}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">{reservation.customer_name}</TableCell>
+                  <TableCell className="font-medium text-sm">{reservation.customer_name}</TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-1 text-sm">
+                    <div className="flex flex-col gap-1 text-xs">
                       <div className="flex items-center gap-1">
-                        <Phone className="w-3 h-3" />
-                        {reservation.customer_phone}
+                        <Phone className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{reservation.customer_phone}</span>
                       </div>
                       <div className="flex items-center gap-1 text-muted-foreground">
-                        <Mail className="w-3 h-3" />
-                        {reservation.customer_email}
+                        <Mail className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{reservation.customer_email}</span>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{reservation.party_size}</TableCell>
+                  <TableCell className="text-sm">{reservation.party_size}</TableCell>
                   <TableCell>
                     <Select
                       value={reservation.status}
                       onValueChange={(value) => handleStatusChange(reservation.id, value)}
                     >
-                      <SelectTrigger className="w-[130px]">
+                      <SelectTrigger className="w-[110px] h-8">
                         <Badge 
                           variant={STATUS_COLORS[reservation.status] || "outline"}
-                          className={reservation.status === "pending" ? "border-orange-500 text-orange-500" : ""}
+                          className={`text-xs ${reservation.status === "pending" ? "border-orange-500 text-orange-500" : ""}`}
                         >
                           <SelectValue />
                         </Badge>
@@ -357,8 +357,8 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                  <TableCell>
+                    <div className="flex justify-end gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -366,8 +366,9 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                           setSelectedReservation(reservation);
                           setDetailsDialogOpen(true);
                         }}
+                        className="h-8 w-8 p-0"
                       >
-                        <MessageSquare className="w-4 h-4" />
+                        <MessageSquare className="w-3 h-3" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -376,8 +377,9 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                           setReservationToDelete(reservation.id);
                           setDeleteDialogOpen(true);
                         }}
+                        className="h-8 w-8 p-0"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
                   </TableCell>
@@ -512,10 +514,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
 
       <Button
         onClick={scrollToTop}
-        className="fixed bottom-8 right-24 rounded-full w-12 h-12 shadow-lg z-50"
+        className="fixed bottom-8 right-8 sm:right-24 rounded-full w-10 h-10 sm:w-12 sm:h-12 shadow-lg z-50"
         size="icon"
       >
-        <ArrowUp className="h-5 w-5" />
+        <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
       </Button>
     </div>
   );

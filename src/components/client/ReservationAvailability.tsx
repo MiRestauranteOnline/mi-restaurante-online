@@ -433,19 +433,19 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div>
-          <h3 className="text-lg font-semibold">Vista Rápida de Disponibilidad</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-base sm:text-lg font-semibold">Vista Rápida de Disponibilidad</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Capacidad disponible por tipo de mesa
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
-              Agregar Reserva Manual
+              <span className="sm:inline">Agregar Reserva</span>
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -586,85 +586,109 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           </CardContent>
         </Card>
       ) : (
-        <div className="flex gap-6">
-          {/* Sticky Date Navigation */}
-          <div className="w-48 flex-shrink-0">
-            <div className="sticky top-4 space-y-2">
-              <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Índice de Fechas</h4>
-              {dateLabels.map((date) => (
-                <button
-                  key={date}
-                  onClick={() => {
-                    const element = document.getElementById(`date-${date}`);
-                    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }}
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-sm"
-                >
-                  {formatDate(date)}
-                </button>
-              ))}
-            </div>
+        <>
+          {/* Mobile Date Selector */}
+          <div className="block lg:hidden mb-4">
+            <Select
+              value={dateLabels[0]}
+              onValueChange={(value) => {
+                const element = document.getElementById(`date-${value}`);
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar fecha" />
+              </SelectTrigger>
+              <SelectContent>
+                {dateLabels.map((date) => (
+                  <SelectItem key={date} value={date}>
+                    {formatDate(date)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          {/* Availability Cards */}
-          <div className="flex-1 grid gap-4">
-            {dateLabels.map((date) => {
-              const slots = groupedByDate[date];
-              return (
-                <Card key={date} id={`date-${date}`} className="scroll-mt-4">
-                  <CardHeader>
-                    <CardTitle className="text-base">{formatDate(date)}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {slots.map((slot, idx) => (
-                        <div key={idx} className="border rounded-lg p-4">
-                          <div className="flex justify-between items-center mb-3">
-                            <div className="font-semibold">{slot.time}</div>
-                            <div className={`text-sm font-medium ${
-                              slot.totalAvailable === 0
-                                ? "text-destructive"
-                                : slot.totalAvailable <= 3
-                                ? "text-yellow-600"
-                                : "text-green-600"
-                            }`}>
-                              {slot.totalAvailable} mesa{slot.totalAvailable !== 1 ? 's' : ''} disponible{slot.totalAvailable !== 1 ? 's' : ''}
+          <div className="flex gap-6">
+            {/* Desktop Sticky Date Navigation */}
+            <div className="hidden lg:block w-48 flex-shrink-0">
+              <div className="sticky top-4 space-y-2">
+                <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Índice de Fechas</h4>
+                {dateLabels.map((date) => (
+                  <button
+                    key={date}
+                    onClick={() => {
+                      const element = document.getElementById(`date-${date}`);
+                      element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-sm"
+                  >
+                    {formatDate(date)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Availability Cards */}
+            <div className="flex-1 grid gap-4">
+              {dateLabels.map((date) => {
+                const slots = groupedByDate[date];
+                return (
+                  <Card key={date} id={`date-${date}`} className="scroll-mt-4">
+                    <CardHeader>
+                      <CardTitle className="text-sm sm:text-base">{formatDate(date)}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3 sm:space-y-4">
+                        {slots.map((slot, idx) => (
+                          <div key={idx} className="border rounded-lg p-3 sm:p-4">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
+                              <div className="font-semibold text-sm sm:text-base">{slot.time}</div>
+                              <div className={`text-xs sm:text-sm font-medium ${
+                                slot.totalAvailable === 0
+                                  ? "text-destructive"
+                                  : slot.totalAvailable <= 3
+                                  ? "text-yellow-600"
+                                  : "text-green-600"
+                              }`}>
+                                {slot.totalAvailable} mesa{slot.totalAvailable !== 1 ? 's' : ''} disponible{slot.totalAvailable !== 1 ? 's' : ''}
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                              {slot.tables.map((table) => (
+                                <div
+                                  key={table.config_id}
+                                  className={`p-2 rounded text-center text-xs ${
+                                    table.available === 0
+                                      ? "bg-muted text-muted-foreground"
+                                      : "bg-primary/10 text-primary"
+                                  }`}
+                                >
+                                  <div className="font-medium truncate">{table.table_name}</div>
+                                  <div className="text-xs mt-1">
+                                    {table.available}/{table.total}
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                            {slot.tables.map((table) => (
-                              <div
-                                key={table.config_id}
-                                className={`p-2 rounded text-center text-xs ${
-                                  table.available === 0
-                                    ? "bg-muted text-muted-foreground"
-                                    : "bg-primary/10 text-primary"
-                                }`}
-                              >
-                                <div className="font-medium">{table.table_name}</div>
-                                <div className="text-xs mt-1">
-                                  {table.available}/{table.total}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </>
       )}
       
       <Button
         onClick={scrollToTop}
-        className="fixed bottom-8 right-24 rounded-full w-12 h-12 shadow-lg z-50"
+        className="fixed bottom-8 right-8 sm:right-24 rounded-full w-10 h-10 sm:w-12 sm:h-12 shadow-lg z-50"
         size="icon"
       >
-        <ArrowUp className="h-5 w-5" />
+        <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
       </Button>
     </div>
   );
