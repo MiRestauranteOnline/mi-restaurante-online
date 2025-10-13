@@ -488,8 +488,8 @@ export default function TeamMembers() {
             </Button>
           </DialogTrigger>
           
-          <DialogContent className="max-w-md">
-            <DialogHeader>
+          <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col">
+            <DialogHeader className="flex-shrink-0">
               <DialogTitle>
                 {editing ? 'Editar Miembro' : 'Nuevo Miembro del Equipo'}
               </DialogTitle>
@@ -501,8 +501,9 @@ export default function TeamMembers() {
               </DialogDescription>
             </DialogHeader>
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="overflow-y-auto flex-1 -mx-6 px-6">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -613,6 +614,7 @@ export default function TeamMembers() {
                 </div>
               </form>
             </Form>
+            </div>
           </DialogContent>
         </Dialog>
       </div>

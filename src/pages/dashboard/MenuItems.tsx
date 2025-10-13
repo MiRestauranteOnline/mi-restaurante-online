@@ -283,28 +283,34 @@ function SortableCategory({
                    >
                      <GripVertical className="h-4 w-4 text-muted-foreground" />
                    </div>
-                 ) : (
-                   <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
-                     <Button
-                       variant="ghost"
-                       size="sm"
-                       onClick={() => onMoveUp(category.id)}
-                       disabled={isFirst}
-                       className="h-6 w-6 p-0"
-                     >
-                       <ArrowUp className="h-3 w-3" />
-                     </Button>
-                     <Button
-                       variant="ghost"
-                       size="sm"
-                       onClick={() => onMoveDown(category.id)}
-                       disabled={isLast}
-                       className="h-6 w-6 p-0"
-                     >
-                       <ArrowDown className="h-3 w-3" />
-                     </Button>
-                   </div>
-                 )}
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onMoveUp(category.id);
+                        }}
+                        disabled={isFirst}
+                        className="h-6 w-6 p-0"
+                      >
+                        <ArrowUp className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onMoveDown(category.id);
+                        }}
+                        disabled={isLast}
+                        className="h-6 w-6 p-0"
+                      >
+                        <ArrowDown className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
                  <div className="flex items-center gap-2">
                    {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                    <CardTitle className="text-lg">{category.name}</CardTitle>
@@ -1047,8 +1053,8 @@ export default function MenuItems() {
 
       {/* Item Dialog */}
       <Dialog open={isItemDialogOpen} onOpenChange={setIsItemDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle>
               {editingItem ? 'Editar Plato' : 'Nuevo Plato'}
             </DialogTitle>
@@ -1057,8 +1063,9 @@ export default function MenuItems() {
             </DialogDescription>
           </DialogHeader>
 
-          <Form {...itemForm}>
-            <form onSubmit={itemForm.handleSubmit(onSubmitItem)} className="space-y-4">
+          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+            <Form {...itemForm}>
+              <form onSubmit={itemForm.handleSubmit(onSubmitItem)} className="space-y-4 py-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={itemForm.control}
@@ -1271,6 +1278,7 @@ export default function MenuItems() {
               </div>
             </form>
           </Form>
+          </div>
         </DialogContent>
       </Dialog>
 

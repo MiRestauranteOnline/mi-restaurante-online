@@ -525,8 +525,8 @@ export default function Reviews() {
             </Button>
           </DialogTrigger>
           
-          <DialogContent className="max-w-md">
-            <DialogHeader>
+          <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col">
+            <DialogHeader className="flex-shrink-0">
               <DialogTitle>
                 {editing ? 'Editar Reseña' : 'Nueva Reseña'}
               </DialogTitle>
@@ -538,8 +538,9 @@ export default function Reviews() {
               </DialogDescription>
             </DialogHeader>
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="overflow-y-auto flex-1 -mx-6 px-6">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
                 <FormField
                   control={form.control}
                   name="reviewer_name"
@@ -707,6 +708,7 @@ export default function Reviews() {
                 </div>
               </form>
             </Form>
+            </div>
           </DialogContent>
         </Dialog>
       </div>

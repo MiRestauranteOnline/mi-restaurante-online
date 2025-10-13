@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -103,7 +104,10 @@ function SortableItem({ category, onEdit, onDelete, onToggleStatus, onMoveUp, on
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onMoveUp(category.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onMoveUp(category.id);
+                  }}
                   disabled={isFirst}
                   className="h-6 w-6 p-0"
                 >
@@ -112,7 +116,10 @@ function SortableItem({ category, onEdit, onDelete, onToggleStatus, onMoveUp, on
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onMoveDown(category.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onMoveDown(category.id);
+                  }}
                   disabled={isLast}
                   className="h-6 w-6 p-0"
                 >
