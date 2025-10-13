@@ -150,7 +150,7 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <div className="container mx-auto max-w-6xl">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Your Support Tickets</h1>
         <Button onClick={() => window.location.href = "/soporte"}>
