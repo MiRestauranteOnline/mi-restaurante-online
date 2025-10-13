@@ -104,8 +104,6 @@ export default function ClientSettings() {
         .upsert({
           client_id: selectedClientId,
           primary_color: formData.primary_color,
-          header_background_enabled: formData.header_background_enabled,
-          header_background_style: formData.header_background_style,
           hide_phone_button_menu: formData.hide_phone_button_menu,
           hide_whatsapp_button_menu: formData.hide_whatsapp_button_menu,
           custom_cta_button_text: formData.custom_cta_button_text,
@@ -268,15 +266,6 @@ export default function ClientSettings() {
                   value={formData.primary_color || '#FFD700'}
                   onChange={(e) => setFormData(prev => ({ ...prev, primary_color: e.target.value }))}
                 />
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="header_background_enabled"
-                  checked={formData.header_background_enabled || false}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, header_background_enabled: checked }))}
-                />
-                <Label htmlFor="header_background_enabled">Fondo del Header Habilitado</Label>
               </div>
             </CardContent>
           </Card>

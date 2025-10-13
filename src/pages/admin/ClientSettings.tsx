@@ -906,8 +906,6 @@ const [reviewForm, setReviewForm] = useState({
       currency: 'S/'
     },
     primary_color: '#FFD700',
-    header_background_enabled: false,
-    header_background_style: 'dark',
     title_font: 'Cormorant Garamond',
     body_font: 'Inter',
     title_font_weight: '400',
@@ -1180,8 +1178,6 @@ const [reviewForm, setReviewForm] = useState({
         setFormData(prev => ({
           ...prev,
           primary_color: (data as any).primary_color || prev.brand_colors?.primary || '#FFD700',
-          header_background_enabled: (data as any).header_background_enabled || false,
-          header_background_style: (data as any).header_background_style || 'dark',
           title_font: (data as any).title_font || 'Cormorant Garamond',
           body_font: (data as any).body_font || 'Inter',
           title_font_weight: (data as any).title_font_weight || '400',
@@ -1198,8 +1194,6 @@ const [reviewForm, setReviewForm] = useState({
           .upsert({
             client_id: effectiveClientId,
             primary_color: '#FFD700',
-            header_background_enabled: false,
-            header_background_style: 'dark',
             title_font: 'Cormorant Garamond',
             body_font: 'Inter',
             title_font_weight: '400',
@@ -1713,8 +1707,6 @@ const [reviewForm, setReviewForm] = useState({
         .upsert({
           client_id: effectiveClientId,
           primary_color: formData.primary_color,
-          header_background_enabled: formData.header_background_enabled,
-          header_background_style: formData.header_background_style,
           title_font: formData.title_font,
           body_font: formData.body_font,
           title_font_weight: formData.title_font_weight,
@@ -3296,20 +3288,6 @@ setReviewForm({
                     />
                   </div>
                 </div>
-                <div>
-                  <Label htmlFor="header_background_enabled">{t('branding.headerBackground')}</Label>
-                  <div className="flex items-center space-x-2 mt-3">
-                    <Switch
-                      id="header_background_enabled"
-                      checked={formData.header_background_enabled || false}
-                      onCheckedChange={(checked) => setFormData({
-                        ...formData,
-                        header_background_enabled: checked
-                      })}
-                    />
-                    <Label htmlFor="header_background_enabled">Habilitar Fondo del Header</Label>
-                  </div>
-                </div>
               </div>
 
               <div className="space-y-4 border-t pt-4">
@@ -3327,24 +3305,6 @@ setReviewForm({
                   </Select>
                 </div>
               </div>
-                
-              {formData.header_background_enabled && (
-                <div className="border-t pt-4">
-                  <Label htmlFor="header_background_style">Estilo del Fondo del Header</Label>
-                  <Select 
-                    value={formData.header_background_style || 'dark'} 
-                    onValueChange={(value) => setFormData({...formData, header_background_style: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bright">{t('branding.bright')}</SelectItem>
-                      <SelectItem value="dark">{t('branding.dark')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
 
               {/* Template Selection - Only show if templates table exists and has data */}
               {Array.isArray(templates) && templates.length > 0 && (
