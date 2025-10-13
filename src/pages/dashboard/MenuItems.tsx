@@ -100,12 +100,14 @@ function SortableItem({
   item, 
   onEdit, 
   onDelete,
-  onToggleStatus 
+  onToggleStatus,
+  isMobile,
 }: {
   item: MenuItem;
   onEdit: (item: MenuItem) => void;
   onDelete: (id: string) => void;
   onToggleStatus: (id: string, isActive: boolean) => void;
+  isMobile: boolean;
 }) {
   const {
     attributes,
@@ -135,13 +137,15 @@ function SortableItem({
           <ImageIcon className="h-12 w-12 text-muted-foreground" />
         )}
         <div className="absolute top-2 left-2">
-          <div
-            {...attributes}
-            {...listeners}
-            className="cursor-grab active:cursor-grabbing p-1 bg-background/80 rounded"
-          >
-            <GripVertical className="h-3 w-3 text-muted-foreground" />
-          </div>
+          {!isMobile && (
+            <div
+              {...attributes}
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing p-1 bg-background/80 rounded"
+            >
+              <GripVertical className="h-3 w-3 text-muted-foreground" />
+            </div>
+          )}
         </div>
         <div className="absolute top-2 right-2 flex gap-1">
           {item.show_on_homepage && (
@@ -389,6 +393,7 @@ function SortableCategory({
                     onEdit={onEditItem} 
                     onDelete={onDeleteItem}
                     onToggleStatus={onToggleItemStatus}
+                    isMobile={isMobile}
                   />
                 ))}
               </div>
@@ -1284,8 +1289,8 @@ export default function MenuItems() {
 
       {/* Category Dialog */}
       <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
+        <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle>
               {editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
             </DialogTitle>
@@ -1294,67 +1299,69 @@ export default function MenuItems() {
             </DialogDescription>
           </DialogHeader>
 
-          <Form {...categoryForm}>
-            <form onSubmit={categoryForm.handleSubmit(onSubmitCategory)} className="space-y-4">
-              <FormField
-                control={categoryForm.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nombre de la Categoría</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ej: Entradas, Platos Principales, Postres" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={categoryForm.control}
-                name="is_active"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel>Categoría Activa</FormLabel>
-                      <div className="text-sm text-muted-foreground">
-                        La categoría aparecerá en el menú público
-                      </div>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsCategoryDialogOpen(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={saving}>
-                  {saving ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Guardando...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="h-4 w-4 mr-2" />
-                      {editingCategory ? 'Actualizar' : 'Crear'} Categoría
-                    </>
+          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+            <Form {...categoryForm}>
+              <form onSubmit={categoryForm.handleSubmit(onSubmitCategory)} className="space-y-4 py-4">
+                <FormField
+                  control={categoryForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nombre de la Categoría</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ej: Entradas, Platos Principales, Postres" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </Button>
-              </div>
-            </form>
-          </Form>
+                />
+
+                <FormField
+                  control={categoryForm.control}
+                  name="is_active"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel>Categoría Activa</FormLabel>
+                        <div className="text-sm text-muted-foreground">
+                          La categoría aparecerá en el menú público
+                        </div>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsCategoryDialogOpen(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={saving}>
+                    {saving ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Guardando...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4 mr-2" />
+                        {editingCategory ? 'Actualizar' : 'Crear'} Categoría
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
