@@ -4834,7 +4834,7 @@ setReviewForm({
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Link to your menu file hosted elsewhere
+                      Enlace a tu menú alojado externamente
                     </p>
                   </div>
                 </div>
