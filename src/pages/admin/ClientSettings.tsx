@@ -524,7 +524,7 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStat
         <div className="flex-1 min-w-0">
           <div className="flex flex-col gap-2 mb-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-medium truncate">{item.name}</span>
+              <span className="font-medium break-words">{item.name}</span>
               <Badge variant={item.is_active ? "default" : "secondary"} className="shrink-0">
                 {item.is_active ? 'Active' : 'Inactive'}
               </Badge>
