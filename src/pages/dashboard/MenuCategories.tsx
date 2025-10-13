@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2, Save, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, Loader2, ArrowUp, ArrowDown } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 import {
   DndContext,
@@ -33,7 +33,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
-import { ArrowUp, ArrowDown } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardContext {
@@ -62,11 +61,16 @@ const categorySchema = z.object({
 type CategoryFormData = z.infer<typeof categorySchema>;
 
 // SortableItem component for drag and drop
-function SortableItem({ category, onEdit, onDelete, onToggleStatus }: {
+function SortableItem({ category, onEdit, onDelete, onToggleStatus, onMoveUp, onMoveDown, isFirst, isLast, isMobile }: {
   category: MenuCategory;
   onEdit: (category: MenuCategory) => void;
   onDelete: (id: string) => void;
   onToggleStatus: (id: string, isActive: boolean) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  isFirst: boolean;
+  isLast: boolean;
+  isMobile: boolean;
 }) {
   const {
     attributes,
@@ -86,13 +90,36 @@ function SortableItem({ category, onEdit, onDelete, onToggleStatus }: {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div
-              {...attributes}
-              {...listeners}
-              className="cursor-grab active:cursor-grabbing"
-            >
-              <GripVertical className="h-4 w-4 text-muted-foreground" />
-            </div>
+            {!isMobile ? (
+              <div
+                {...attributes}
+                {...listeners}
+                className="cursor-grab active:cursor-grabbing"
+              >
+                <GripVertical className="h-4 w-4 text-muted-foreground" />
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMoveUp(category.id)}
+                  disabled={isFirst}
+                  className="h-6 w-6 p-0"
+                >
+                  <ArrowUp className="h-3 w-3" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMoveDown(category.id)}
+                  disabled={isLast}
+                  className="h-6 w-6 p-0"
+                >
+                  <ArrowDown className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
             <div>
               <h3 className="text-lg font-medium text-foreground">
                 {category.name}
@@ -337,6 +364,60 @@ export default function MenuCategories() {
     }
   };
 
+  const handleMoveUp = async (categoryId: string) => {
+    const index = categories.findIndex(cat => cat.id === categoryId);
+    if (index > 0) {
+      const newCategories = arrayMove(categories, index, index - 1);
+      setCategories(newCategories);
+
+      try {
+        const updates = newCategories.map((category, idx) => ({
+          id: category.id,
+          display_order: idx + 1,
+        }));
+
+        for (const update of updates) {
+          await (supabase as any)
+            .from('menu_categories')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado exitosamente');
+      } catch (error) {
+        toast.error('Error al actualizar el orden');
+        fetchCategories();
+      }
+    }
+  };
+
+  const handleMoveDown = async (categoryId: string) => {
+    const index = categories.findIndex(cat => cat.id === categoryId);
+    if (index < categories.length - 1) {
+      const newCategories = arrayMove(categories, index, index + 1);
+      setCategories(newCategories);
+
+      try {
+        const updates = newCategories.map((category, idx) => ({
+          id: category.id,
+          display_order: idx + 1,
+        }));
+
+        for (const update of updates) {
+          await (supabase as any)
+            .from('menu_categories')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado exitosamente');
+      } catch (error) {
+        toast.error('Error al actualizar el orden');
+        fetchCategories();
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -486,13 +567,18 @@ export default function MenuCategories() {
           >
             <SortableContext items={categories.map(c => c.id)} strategy={verticalListSortingStrategy}>
               <div className="space-y-4">
-                {categories.map((category) => (
+                {categories.map((category, index) => (
                   <SortableItem
                     key={category.id}
                     category={category}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onToggleStatus={toggleCategoryStatus}
+                    onMoveUp={handleMoveUp}
+                    onMoveDown={handleMoveDown}
+                    isFirst={index === 0}
+                    isLast={index === categories.length - 1}
+                    isMobile={isMobile}
                   />
                 ))}
               </div>

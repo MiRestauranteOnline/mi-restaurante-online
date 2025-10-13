@@ -17,7 +17,9 @@ import {
   Edit, 
   Trash2, 
   GripVertical,
-  Users
+  Users,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import {
   DndContext,
@@ -39,6 +41,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ImageUpload } from '@/components/ImageUpload';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardContext {
   selectedClientId: string;
@@ -71,11 +74,16 @@ const teamMemberSchema = z.object({
 
 type TeamMemberFormData = z.infer<typeof teamMemberSchema>;
 
-function SortableTeamMemberItem({ member, onEdit, onDelete, onToggleStatus }: {
+function SortableTeamMemberItem({ member, onEdit, onDelete, onToggleStatus, onMoveUp, onMoveDown, isFirst, isLast, isMobile }: {
   member: TeamMember;
   onEdit: (member: TeamMember) => void;
   onDelete: (id: string) => void;
   onToggleStatus: (id: string, isActive: boolean) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  isFirst: boolean;
+  isLast: boolean;
+  isMobile: boolean;
 }) {
   const {
     attributes,
@@ -95,13 +103,36 @@ function SortableTeamMemberItem({ member, onEdit, onDelete, onToggleStatus }: {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div
-              {...attributes}
-              {...listeners}
-              className="cursor-grab active:cursor-grabbing"
-            >
-              <GripVertical className="h-4 w-4 text-muted-foreground" />
-            </div>
+            {!isMobile ? (
+              <div
+                {...attributes}
+                {...listeners}
+                className="cursor-grab active:cursor-grabbing"
+              >
+                <GripVertical className="h-4 w-4 text-muted-foreground" />
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMoveUp(member.id)}
+                  disabled={isFirst}
+                  className="h-6 w-6 p-0"
+                >
+                  <ArrowUp className="h-3 w-3" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMoveDown(member.id)}
+                  disabled={isLast}
+                  className="h-6 w-6 p-0"
+                >
+                  <ArrowDown className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
             
             <div className="flex items-center gap-4">
               {member.image_url && (
@@ -166,13 +197,15 @@ export default function TeamMembers() {
   const [saving, setSaving] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [editing, setEditing] = useState<TeamMember | null>(null);
+  const isMobile = useIsMobile();
 
-  const sensors = useSensors(
+  const desktopSensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const sensors = isMobile ? useSensors() : desktopSensors;
 
   const form = useForm<TeamMemberFormData>({
     resolver: zodResolver(teamMemberSchema) as any,
@@ -361,6 +394,60 @@ export default function TeamMembers() {
     setShowDialog(true);
   };
 
+  const handleMoveUp = async (memberId: string) => {
+    const index = teamMembers.findIndex(m => m.id === memberId);
+    if (index > 0) {
+      const newMembers = arrayMove(teamMembers, index, index - 1);
+      setTeamMembers(newMembers);
+
+      try {
+        const updates = newMembers.map((member, idx) => ({
+          id: member.id,
+          display_order: idx,
+        }));
+
+        for (const update of updates) {
+          await supabase
+            .from('team_members')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado correctamente');
+      } catch (error) {
+        toast.error('Error al actualizar el orden');
+        fetchTeamMembers();
+      }
+    }
+  };
+
+  const handleMoveDown = async (memberId: string) => {
+    const index = teamMembers.findIndex(m => m.id === memberId);
+    if (index < teamMembers.length - 1) {
+      const newMembers = arrayMove(teamMembers, index, index + 1);
+      setTeamMembers(newMembers);
+
+      try {
+        const updates = newMembers.map((member, idx) => ({
+          id: member.id,
+          display_order: idx,
+        }));
+
+        for (const update of updates) {
+          await supabase
+            .from('team_members')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado correctamente');
+      } catch (error) {
+        toast.error('Error al actualizar el orden');
+        fetchTeamMembers();
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -389,7 +476,7 @@ export default function TeamMembers() {
         <div>
           <h2 className="text-2xl font-bold text-foreground">Miembros del Equipo</h2>
           <p className="text-muted-foreground">
-            Gestiona los miembros de tu equipo. Puedes arrastrar para reordenar.
+            Gestiona los miembros de tu equipo. {isMobile ? 'Usa las flechas para reordenar.' : 'Puedes arrastrar para reordenar.'}
           </p>
         </div>
         
@@ -554,13 +641,18 @@ export default function TeamMembers() {
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={teamMembers} strategy={verticalListSortingStrategy}>
-              {teamMembers.map((member) => (
+              {teamMembers.map((member, index) => (
                 <SortableTeamMemberItem
                   key={member.id}
                   member={member}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   onToggleStatus={handleToggleStatus}
+                  onMoveUp={handleMoveUp}
+                  onMoveDown={handleMoveDown}
+                  isFirst={index === 0}
+                  isLast={index === teamMembers.length - 1}
+                  isMobile={isMobile}
                 />
               ))}
             </SortableContext>

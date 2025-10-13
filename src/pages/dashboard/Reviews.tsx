@@ -20,7 +20,9 @@ import {
   GripVertical,
   Star,
   MessageSquare,
-  CalendarIcon
+  CalendarIcon,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -50,6 +52,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardContext {
   selectedClientId: string;
@@ -122,11 +125,16 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-function SortableReviewItem({ review, onEdit, onDelete, onToggleStatus }: {
+function SortableReviewItem({ review, onEdit, onDelete, onToggleStatus, onMoveUp, onMoveDown, isFirst, isLast, isMobile }: {
   review: Review;
   onEdit: (review: Review) => void;
   onDelete: (id: string) => void;
   onToggleStatus: (id: string, isActive: boolean) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  isFirst: boolean;
+  isLast: boolean;
+  isMobile: boolean;
 }) {
   const {
     attributes,
@@ -146,13 +154,36 @@ function SortableReviewItem({ review, onEdit, onDelete, onToggleStatus }: {
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-4 flex-1">
-            <div
-              {...attributes}
-              {...listeners}
-              className="cursor-grab active:cursor-grabbing mt-1"
-            >
-              <GripVertical className="h-4 w-4 text-muted-foreground" />
-            </div>
+            {!isMobile ? (
+              <div
+                {...attributes}
+                {...listeners}
+                className="cursor-grab active:cursor-grabbing mt-1"
+              >
+                <GripVertical className="h-4 w-4 text-muted-foreground" />
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMoveUp(review.id)}
+                  disabled={isFirst}
+                  className="h-6 w-6 p-0"
+                >
+                  <ArrowUp className="h-3 w-3" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMoveDown(review.id)}
+                  disabled={isLast}
+                  className="h-6 w-6 p-0"
+                >
+                  <ArrowDown className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
             
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
@@ -205,13 +236,15 @@ export default function Reviews() {
   const [saving, setSaving] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [editing, setEditing] = useState<Review | null>(null);
+  const isMobile = useIsMobile();
 
-  const sensors = useSensors(
+  const desktopSensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const sensors = isMobile ? useSensors() : desktopSensors;
 
   const form = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema) as any,
@@ -398,6 +431,60 @@ export default function Reviews() {
     setShowDialog(true);
   };
 
+  const handleMoveUp = async (reviewId: string) => {
+    const index = reviews.findIndex(r => r.id === reviewId);
+    if (index > 0) {
+      const newReviews = arrayMove(reviews, index, index - 1);
+      setReviews(newReviews);
+
+      try {
+        const updates = newReviews.map((review, idx) => ({
+          id: review.id,
+          display_order: idx,
+        }));
+
+        for (const update of updates) {
+          await supabase
+            .from('reviews')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado correctamente');
+      } catch (error) {
+        toast.error('Error al actualizar el orden');
+        fetchReviews();
+      }
+    }
+  };
+
+  const handleMoveDown = async (reviewId: string) => {
+    const index = reviews.findIndex(r => r.id === reviewId);
+    if (index < reviews.length - 1) {
+      const newReviews = arrayMove(reviews, index, index + 1);
+      setReviews(newReviews);
+
+      try {
+        const updates = newReviews.map((review, idx) => ({
+          id: review.id,
+          display_order: idx,
+        }));
+
+        for (const update of updates) {
+          await supabase
+            .from('reviews')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado correctamente');
+      } catch (error) {
+        toast.error('Error al actualizar el orden');
+        fetchReviews();
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -426,7 +513,7 @@ export default function Reviews() {
         <div>
           <h2 className="text-2xl font-bold text-foreground">Reseñas</h2>
           <p className="text-muted-foreground">
-            Gestiona las reseñas de tus clientes. Puedes arrastrar para reordenar.
+            Gestiona las reseñas de tus clientes. {isMobile ? 'Usa las flechas para reordenar.' : 'Puedes arrastrar para reordenar.'}
           </p>
         </div>
         
@@ -648,13 +735,18 @@ export default function Reviews() {
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={reviews} strategy={verticalListSortingStrategy}>
-              {reviews.map((review) => (
+              {reviews.map((review, index) => (
                 <SortableReviewItem
                   key={review.id}
                   review={review}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   onToggleStatus={handleToggleStatus}
+                  onMoveUp={handleMoveUp}
+                  onMoveDown={handleMoveDown}
+                  isFirst={index === 0}
+                  isLast={index === reviews.length - 1}
+                  isMobile={isMobile}
                 />
               ))}
             </SortableContext>
