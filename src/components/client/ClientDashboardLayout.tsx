@@ -315,7 +315,7 @@ export default function ClientDashboardLayout() {
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="h-4 w-4 mr-2" />
-                      {t('nav.logout')}
+                      {t('button.logout')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

@@ -195,6 +195,7 @@ const translations = {
     // Menu tab
     'menu.createFirstCategoryButton': 'Crear Primera Categoría',
     'menu.manageDescription': 'Administra las categorías y productos de tu menú. Arrastra las categorías para reordenarlas.',
+    'menu.searchPlaceholder': 'Buscar categorías y productos...',
     
     // Team tab
     'team.teamMembers': 'Miembros del Equipo',
@@ -533,6 +534,7 @@ const translations = {
     'menu.selectCategory': 'Select category',
     'menu.imageUrl': 'Image URL',
     'menu.saveMenu': 'Save Menu',
+    'menu.searchPlaceholder': 'Search categories and items...',
     
     // Carousel tab
     'carousel.title': 'Carousel Settings',
