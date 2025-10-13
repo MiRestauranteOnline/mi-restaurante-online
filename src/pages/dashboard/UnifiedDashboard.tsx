@@ -1026,7 +1026,7 @@ export default function UnifiedDashboard() {
         </div>
         <Button 
           variant="outline"
-          onClick={() => window.open(`https://${selectedClient?.subdomain}.mirestaurante.com`, '_blank')}
+          onClick={() => window.open(`https://${selectedClient?.subdomain}.mirestaurante.online`, '_blank')}
         >
           <Store className="h-4 w-4 mr-2" />
           Ver Sitio Web
@@ -1098,7 +1098,7 @@ export default function UnifiedDashboard() {
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {selectedClient?.subdomain}.mirestaurante.com
+                    {selectedClient?.subdomain}.mirestaurante.online
                   </p>
                 </CardContent>
               </Card>
@@ -1171,7 +1171,7 @@ export default function UnifiedDashboard() {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="info@mirestaurante.com" {...field} />
+                            <Input type="email" placeholder="info@mirestaurante.online" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

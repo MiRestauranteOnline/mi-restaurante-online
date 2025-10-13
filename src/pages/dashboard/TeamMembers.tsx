@@ -103,7 +103,7 @@ function SortableTeamMemberItem({ member, onEdit, onDelete, onToggleStatus, onMo
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {!isMobile ? (
+            <div className="hidden lg:block">
               <div
                 {...attributes}
                 {...listeners}
@@ -111,28 +111,27 @@ function SortableTeamMemberItem({ member, onEdit, onDelete, onToggleStatus, onMo
               >
                 <GripVertical className="h-4 w-4 text-muted-foreground" />
               </div>
-            ) : (
-              <div className="flex flex-col gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onMoveUp(member.id)}
-                  disabled={isFirst}
-                  className="h-6 w-6 p-0"
-                >
-                  <ArrowUp className="h-3 w-3" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onMoveDown(member.id)}
-                  disabled={isLast}
-                  className="h-6 w-6 p-0"
-                >
-                  <ArrowDown className="h-3 w-3" />
-                </Button>
-              </div>
-            )}
+            </div>
+            <div className="flex flex-col gap-1 lg:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveUp(member.id)}
+                disabled={isFirst}
+                className="h-6 w-6 p-0"
+              >
+                <ArrowUp className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveDown(member.id)}
+                disabled={isLast}
+                className="h-6 w-6 p-0"
+              >
+                <ArrowDown className="h-3 w-3" />
+              </Button>
+            </div>
             
             <div className="flex items-center gap-4">
               {member.image_url && (
@@ -488,7 +487,7 @@ export default function TeamMembers() {
             </Button>
           </DialogTrigger>
           
-          <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogContent className="max-w-md max-h-[85svh] overflow-hidden flex flex-col">
             <DialogHeader className="flex-shrink-0">
               <DialogTitle>
                 {editing ? 'Editar Miembro' : 'Nuevo Miembro del Equipo'}

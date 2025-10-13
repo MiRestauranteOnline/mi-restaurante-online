@@ -123,7 +123,7 @@ export default function ProjectConfiguration() {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => window.open(`https://${currentClient.subdomain}.mirestaurante.com`, '_blank')}
+                  onClick={() => window.open(`https://${currentClient.subdomain}.mirestaurante.online`, '_blank')}
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
                   View Live Site
@@ -164,7 +164,7 @@ export default function ProjectConfiguration() {
                   The frontend will display: <span className="font-medium">{selectedClient.restaurant_name}</span>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Accessible at: <span className="font-medium">{selectedClient.subdomain}.mirestaurante.com</span>
+                  Accessible at: <span className="font-medium">{selectedClient.subdomain}.mirestaurante.online</span>
                 </p>
               </div>
             )}

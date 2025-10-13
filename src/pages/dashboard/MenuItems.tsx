@@ -137,7 +137,7 @@ function SortableItem({
           <ImageIcon className="h-12 w-12 text-muted-foreground" />
         )}
         <div className="absolute top-2 left-2">
-          {!isMobile && (
+          <div className="hidden lg:block">
             <div
               {...attributes}
               {...listeners}
@@ -145,7 +145,7 @@ function SortableItem({
             >
               <GripVertical className="h-3 w-3 text-muted-foreground" />
             </div>
-          )}
+          </div>
         </div>
         <div className="absolute top-2 right-2 flex gap-1">
           {item.show_on_homepage && (
@@ -277,45 +277,43 @@ function SortableCategory({
         <CollapsibleTrigger asChild>
            <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
              <div className="flex items-center justify-between">
-               <div className="flex items-center gap-3">
-                 {!isMobile ? (
-                   <div
-                     {...attributes}
-                     {...listeners}
-                     className="cursor-grab active:cursor-grabbing p-1"
-                     onClick={(e) => e.stopPropagation()}
-                   >
-                     <GripVertical className="h-4 w-4 text-muted-foreground" />
+                 <div className="flex items-center gap-3">
+                   <div className="hidden lg:block" onClick={(e) => e.stopPropagation()}>
+                     <div
+                       {...attributes}
+                       {...listeners}
+                       className="cursor-grab active:cursor-grabbing p-1"
+                     >
+                       <GripVertical className="h-4 w-4 text-muted-foreground" />
+                     </div>
                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onMoveUp(category.id);
-                        }}
-                        disabled={isFirst}
-                        className="h-6 w-6 p-0"
-                      >
-                        <ArrowUp className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onMoveDown(category.id);
-                        }}
-                        disabled={isLast}
-                        className="h-6 w-6 p-0"
-                      >
-                        <ArrowDown className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  )}
-                 <div className="flex items-center gap-2">
+                   <div className="flex flex-col gap-1 lg:hidden">
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         onMoveUp(category.id);
+                       }}
+                       disabled={isFirst}
+                       className="h-6 w-6 p-0"
+                     >
+                       <ArrowUp className="h-3 w-3" />
+                     </Button>
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         onMoveDown(category.id);
+                       }}
+                       disabled={isLast}
+                       className="h-6 w-6 p-0"
+                     >
+                       <ArrowDown className="h-3 w-3" />
+                     </Button>
+                   </div>
+                   <div className="flex items-center gap-2">
                    {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                    <CardTitle className="text-lg">{category.name}</CardTitle>
                    <Badge variant={category.is_active ? "default" : "secondary"}>
@@ -1058,7 +1056,7 @@ export default function MenuItems() {
 
       {/* Item Dialog */}
       <Dialog open={isItemDialogOpen} onOpenChange={setIsItemDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-2xl max-h-[85svh] overflow-hidden flex flex-col">
           <DialogHeader className="flex-shrink-0">
             <DialogTitle>
               {editingItem ? 'Editar Plato' : 'Nuevo Plato'}
@@ -1289,7 +1287,7 @@ export default function MenuItems() {
 
       {/* Category Dialog */}
       <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
-        <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-md max-h-[85svh] overflow-hidden flex flex-col">
           <DialogHeader className="flex-shrink-0">
             <DialogTitle>
               {editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}

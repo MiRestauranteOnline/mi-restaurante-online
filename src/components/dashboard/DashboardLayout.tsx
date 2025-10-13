@@ -229,7 +229,7 @@ export default function DashboardLayout() {
                     {selectedClient.restaurant_name}
                   </h1>
                   <p className="text-sm text-muted-foreground">
-                    {selectedClient.subdomain}.mirestaurante.com
+                    {selectedClient.subdomain}.mirestaurante.online
                   </p>
                 </div>
               ) : isAdmin ? (
@@ -252,7 +252,7 @@ export default function DashboardLayout() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.com`, '_blank')}
+                  onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.online`, '_blank')}
                   className="hidden sm:flex"
                 >
                   <Store className="h-4 w-4 mr-2" />

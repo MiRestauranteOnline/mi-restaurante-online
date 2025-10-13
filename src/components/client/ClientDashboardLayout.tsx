@@ -271,7 +271,7 @@ export default function ClientDashboardLayout() {
                       {selectedClient.restaurant_name}
                     </h1>
                     <p className="text-xs sm:text-sm text-muted-foreground truncate">
-                      {selectedClient.subdomain}.mirestaurante.com
+                      {selectedClient.subdomain}.mirestaurante.online
                     </p>
                   </div>
                 )}
@@ -283,7 +283,7 @@ export default function ClientDashboardLayout() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.com`, '_blank')}
+                    onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.online`, '_blank')}
                   >
                     <Store className="h-4 w-4 mr-2" />
                     Ver Sitio Web
@@ -295,7 +295,7 @@ export default function ClientDashboardLayout() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.com`, '_blank')}
+                    onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.online`, '_blank')}
                   >
                     <Store className="h-4 w-4" />
                   </Button>
