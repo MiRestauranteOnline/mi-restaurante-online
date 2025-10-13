@@ -33,6 +33,8 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
+import { ArrowUp, ArrowDown } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardContext {
   selectedClientId: string;
@@ -145,12 +147,15 @@ export default function MenuCategories() {
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const sensors = useSensors(
+  const isMobile = useIsMobile();
+
+  const desktopSensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const sensors = isMobile ? useSensors() : desktopSensors;
 
   const form = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema) as any,
