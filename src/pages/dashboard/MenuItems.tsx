@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2, Upload, Eye, Home, Save, Loader2, Image as ImageIcon, GripVertical, ChevronDown, ChevronRight, FolderPlus, Trash, Power, PowerOff } from 'lucide-react';
+import { Plus, Edit, Trash2, Upload, Eye, Home, Save, Loader2, Image as ImageIcon, GripVertical, ChevronDown, ChevronRight, FolderPlus, Trash, Power, PowerOff, ArrowUp, ArrowDown } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DndContext,
@@ -37,6 +37,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardContext {
   selectedClientId: string;
@@ -229,7 +230,12 @@ function SortableCategory({
   onToggleItemStatus, 
   onNewItem,
   isOpen,
-  onToggleOpen 
+  onToggleOpen,
+  onMoveUp,
+  onMoveDown,
+  isFirst,
+  isLast,
+  isMobile
 }: {
   category: CategoryWithItems;
   onEditCategory: (category: MenuCategory) => void;
@@ -242,6 +248,11 @@ function SortableCategory({
   onNewItem: (categoryName: string) => void;
   isOpen: boolean;
   onToggleOpen: (categoryId: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  isFirst: boolean;
+  isLast: boolean;
+  isMobile: boolean;
 }) {
   const {
     attributes,
@@ -260,28 +271,51 @@ function SortableCategory({
     <Card ref={setNodeRef} style={style} className="mb-4">
       <Collapsible open={isOpen} onOpenChange={() => onToggleOpen(category.id)}>
         <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div
-                  {...attributes}
-                  {...listeners}
-                  className="cursor-grab active:cursor-grabbing p-1"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <GripVertical className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <div className="flex items-center gap-2">
-                  {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                  <CardTitle className="text-lg">{category.name}</CardTitle>
-                  <Badge variant={category.is_active ? "default" : "secondary"}>
-                    {category.is_active ? 'Activo' : 'Inactivo'}
-                  </Badge>
-                  <Badge variant="outline">
-                    {category.items.length} platos
-                  </Badge>
-                </div>
-              </div>
+           <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
+             <div className="flex items-center justify-between">
+               <div className="flex items-center gap-3">
+                 {!isMobile ? (
+                   <div
+                     {...attributes}
+                     {...listeners}
+                     className="cursor-grab active:cursor-grabbing p-1"
+                     onClick={(e) => e.stopPropagation()}
+                   >
+                     <GripVertical className="h-4 w-4 text-muted-foreground" />
+                   </div>
+                 ) : (
+                   <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       onClick={() => onMoveUp(category.id)}
+                       disabled={isFirst}
+                       className="h-6 w-6 p-0"
+                     >
+                       <ArrowUp className="h-3 w-3" />
+                     </Button>
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       onClick={() => onMoveDown(category.id)}
+                       disabled={isLast}
+                       className="h-6 w-6 p-0"
+                     >
+                       <ArrowDown className="h-3 w-3" />
+                     </Button>
+                   </div>
+                 )}
+                 <div className="flex items-center gap-2">
+                   {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                   <CardTitle className="text-lg">{category.name}</CardTitle>
+                   <Badge variant={category.is_active ? "default" : "secondary"}>
+                     {category.is_active ? 'Activo' : 'Inactivo'}
+                   </Badge>
+                   <Badge variant="outline">
+                     {category.items.length} platos
+                   </Badge>
+                 </div>
+               </div>
               <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                 <Switch
                   checked={category.is_active}
@@ -373,8 +407,9 @@ export default function MenuItems() {
   const [uploading, setUploading] = useState(false);
   const [openCategories, setOpenCategories] = useState<Set<string>>(new Set());
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
-  const sensors = useSensors(
+  const desktopSensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
@@ -384,6 +419,7 @@ export default function MenuItems() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const sensors = isMobile ? useSensors() : desktopSensors;
 
   const itemForm = useForm<MenuItemFormData>({
     resolver: zodResolver(menuItemSchema) as any,
@@ -856,6 +892,60 @@ export default function MenuItems() {
     setOpenCategories(newOpenCategories);
   };
 
+  const handleMoveCategoryUp = async (categoryId: string) => {
+    const index = categoriesWithItems.findIndex(cat => cat.id === categoryId);
+    if (index > 0) {
+      const newCategories = arrayMove(categoriesWithItems, index, index - 1);
+      setCategoriesWithItems(newCategories);
+
+      try {
+        const updates = newCategories.map((category, idx) => ({
+          id: category.id,
+          display_order: idx,
+        }));
+
+        for (const update of updates) {
+          await (supabase as any)
+            .from('menu_categories')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado');
+      } catch (error) {
+        toast.error('Error al actualizar orden');
+        fetchData();
+      }
+    }
+  };
+
+  const handleMoveCategoryDown = async (categoryId: string) => {
+    const index = categoriesWithItems.findIndex(cat => cat.id === categoryId);
+    if (index < categoriesWithItems.length - 1) {
+      const newCategories = arrayMove(categoriesWithItems, index, index + 1);
+      setCategoriesWithItems(newCategories);
+
+      try {
+        const updates = newCategories.map((category, idx) => ({
+          id: category.id,
+          display_order: idx,
+        }));
+
+        for (const update of updates) {
+          await (supabase as any)
+            .from('menu_categories')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        toast.success('Orden actualizado');
+      } catch (error) {
+        toast.error('Error al actualizar orden');
+        fetchData();
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -930,7 +1020,7 @@ export default function MenuItems() {
             ]} 
             strategy={verticalListSortingStrategy}
           >
-            {categoriesWithItems.map((category) => (
+            {categoriesWithItems.map((category, index) => (
               <SortableCategory
                 key={category.id}
                 category={category}
@@ -944,6 +1034,11 @@ export default function MenuItems() {
                 onNewItem={handleNewItem}
                 isOpen={openCategories.has(category.id)}
                 onToggleOpen={toggleCategoryOpen}
+                onMoveUp={handleMoveCategoryUp}
+                onMoveDown={handleMoveCategoryDown}
+                isFirst={index === 0}
+                isLast={index === categoriesWithItems.length - 1}
+                isMobile={isMobile}
               />
             ))}
           </SortableContext>
