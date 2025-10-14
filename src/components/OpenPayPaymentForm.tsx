@@ -119,12 +119,9 @@ export default function OpenPayPaymentForm({
         },
       });
 
-      if (error) {
-        throw error;
-      }
-
-      if (!data.success) {
-        throw new Error(data.error || 'Payment failed');
+      if (error || !data?.success) {
+        const errorMessage = data?.error || error?.message || "Hubo un problema al procesar tu pago. Por favor, intenta nuevamente.";
+        throw new Error(errorMessage);
       }
 
       // Increment coupon usage if applied

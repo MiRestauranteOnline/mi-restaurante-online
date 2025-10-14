@@ -20,6 +20,7 @@ serve(async (req) => {
     const privateKey = Deno.env.get('OPENPAY_PRIVATE_KEY_SANDBOX')!;
     const planBasicId = Deno.env.get('OPENPAY_PLAN_BASIC_ID_SANDBOX')!;
     const planAdvancedId = Deno.env.get('OPENPAY_PLAN_ADVANCED_ID_SANDBOX')!;
+    const openpayApiBase = Deno.env.get('OPENPAY_API_BASE')!;
 
     const { clientId, planType, customerData, cardData, couponCode, discountAmount } = await req.json();
 
@@ -38,7 +39,10 @@ serve(async (req) => {
 
     // Create OpenPay customer
     const auth = btoa(`${privateKey}:`);
-    const openpayUrl = `https://sandbox-api.openpay.mx/v1/${merchantId}`;
+    const openpayUrl = `${openpayApiBase}/${merchantId}`;
+    
+    console.log('Using OpenPay API base:', openpayApiBase);
+    console.log('OpenPay URL:', openpayUrl);
 
     // Create customer
     const customerResponse = await fetch(`${openpayUrl}/customers`, {

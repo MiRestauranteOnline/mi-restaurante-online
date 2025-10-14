@@ -18,6 +18,7 @@ serve(async (req) => {
 
     const merchantId = Deno.env.get('OPENPAY_MERCHANT_ID_SANDBOX')!;
     const privateKey = Deno.env.get('OPENPAY_PRIVATE_KEY_SANDBOX')!;
+    const openpayApiBase = Deno.env.get('OPENPAY_API_BASE')!;
 
     const { clientId, action } = await req.json();
 
@@ -39,7 +40,10 @@ serve(async (req) => {
     }
 
     const auth = btoa(`${privateKey}:`);
-    const openpayUrl = `https://sandbox-api.openpay.mx/v1/${merchantId}`;
+    const openpayUrl = `${openpayApiBase}/${merchantId}`;
+    
+    console.log('Using OpenPay API base:', openpayApiBase);
+    console.log('OpenPay URL:', openpayUrl);
 
     if (action === 'pause') {
       // Cancel the subscription in OpenPay (will be recreated on resume)
