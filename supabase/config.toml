@@ -38,3 +38,9 @@ verify_jwt = false
 
 [functions.openpay-webhook]
 verify_jwt = false
+
+[functions.pause-openpay-subscription]
+verify_jwt = false
+
+[functions.change-openpay-plan]
+verify_jwt = false

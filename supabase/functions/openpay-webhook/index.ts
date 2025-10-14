@@ -65,30 +65,44 @@ serve(async (req) => {
 async function handleChargeSucceeded(supabase: any, transaction: any) {
   console.log('Processing successful charge:', transaction.id);
   
-  // Find client by subscription ID or customer ID
-  // Note: You may need to store OpenPay customer ID in clients table
+  // Find client by OpenPay subscription ID
+  const customerId = transaction.customer_id;
   const { data: clients } = await supabase
     .from('clients')
     .select('*')
-    .eq('subscription_status', 'active')
-    .limit(1);
+    .eq('openpay_customer_id', customerId);
 
   if (clients && clients.length > 0) {
     const client = clients[0];
     
+    // Check if there's a pending plan change
+    const updates: any = {
+      payment_status: 'paid',
+      payment_failures_count: 0,
+      last_payment_attempt: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    // If there's a pending plan change and it's time to apply it
+    if (client.pending_plan_change && client.pending_plan_change_date) {
+      const changeDate = new Date(client.pending_plan_change_date);
+      if (changeDate <= new Date()) {
+        updates.plan_type = client.pending_plan_change;
+        updates.pending_plan_change = null;
+        updates.pending_plan_change_date = null;
+        console.log('Applied pending plan change to:', client.pending_plan_change);
+      }
+    }
+
     // Update next billing date
     const nextBillingDate = new Date();
     nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
+    updates.next_billing_date = nextBillingDate.toISOString();
+    updates.subscription_end_date = nextBillingDate.toISOString();
 
     await supabase
       .from('clients')
-      .update({
-        payment_status: 'paid',
-        next_billing_date: nextBillingDate.toISOString(),
-        payment_failures_count: 0,
-        last_payment_attempt: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .update(updates)
       .eq('id', client.id);
 
     console.log('Client payment status updated successfully');
@@ -98,11 +112,11 @@ async function handleChargeSucceeded(supabase: any, transaction: any) {
 async function handleChargeFailed(supabase: any, transaction: any) {
   console.log('Processing failed charge:', transaction.id);
   
+  const customerId = transaction.customer_id;
   const { data: clients } = await supabase
     .from('clients')
     .select('*')
-    .eq('subscription_status', 'active')
-    .limit(1);
+    .eq('openpay_customer_id', customerId);
 
   if (clients && clients.length > 0) {
     const client = clients[0];
@@ -139,11 +153,11 @@ async function handleSubscriptionUpdated(supabase: any, transaction: any) {
 async function handleSubscriptionCancelled(supabase: any, transaction: any) {
   console.log('Processing subscription cancellation:', transaction.id);
   
+  const customerId = transaction.customer_id;
   const { data: clients } = await supabase
     .from('clients')
     .select('*')
-    .eq('subscription_status', 'active')
-    .limit(1);
+    .eq('openpay_customer_id', customerId);
 
   if (clients && clients.length > 0) {
     const client = clients[0];

@@ -786,9 +786,13 @@ export type Database = {
           next_billing_date: string | null
           opening_hours: Json | null
           opening_hours_ordered: Json | null
+          openpay_customer_id: string | null
+          openpay_subscription_id: string | null
           other_customizations: Json | null
           payment_failures_count: number | null
           payment_status: string | null
+          pending_plan_change: string | null
+          pending_plan_change_date: string | null
           phone: string | null
           phone_country_code: string | null
           plan_type: string | null
@@ -800,6 +804,8 @@ export type Database = {
           subdomain: string
           subscription_auto_recurring: boolean | null
           subscription_end_date: string | null
+          subscription_pause_date: string | null
+          subscription_resume_date: string | null
           subscription_start_date: string | null
           subscription_status: string | null
           template_id: string | null
@@ -837,9 +843,13 @@ export type Database = {
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
+          openpay_customer_id?: string | null
+          openpay_subscription_id?: string | null
           other_customizations?: Json | null
           payment_failures_count?: number | null
           payment_status?: string | null
+          pending_plan_change?: string | null
+          pending_plan_change_date?: string | null
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
@@ -851,6 +861,8 @@ export type Database = {
           subdomain: string
           subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
+          subscription_pause_date?: string | null
+          subscription_resume_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
           template_id?: string | null
@@ -888,9 +900,13 @@ export type Database = {
           next_billing_date?: string | null
           opening_hours?: Json | null
           opening_hours_ordered?: Json | null
+          openpay_customer_id?: string | null
+          openpay_subscription_id?: string | null
           other_customizations?: Json | null
           payment_failures_count?: number | null
           payment_status?: string | null
+          pending_plan_change?: string | null
+          pending_plan_change_date?: string | null
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
@@ -902,6 +918,8 @@ export type Database = {
           subdomain?: string
           subscription_auto_recurring?: boolean | null
           subscription_end_date?: string | null
+          subscription_pause_date?: string | null
+          subscription_resume_date?: string | null
           subscription_start_date?: string | null
           subscription_status?: string | null
           template_id?: string | null

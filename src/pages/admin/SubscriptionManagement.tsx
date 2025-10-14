@@ -20,6 +20,11 @@ interface Client {
   subscription_status: string;
   next_billing_date: string | null;
   subscription_end_date: string | null;
+  subscription_pause_date: string | null;
+  pending_plan_change: string | null;
+  pending_plan_change_date: string | null;
+  openpay_customer_id: string | null;
+  openpay_subscription_id: string | null;
 }
 
 export default function SubscriptionManagement() {
@@ -59,7 +64,7 @@ export default function SubscriptionManagement() {
     try {
       const { data, error } = await supabase
         .from('clients')
-        .select('id, restaurant_name, subdomain, email, plan_type, subscription_status, next_billing_date, subscription_end_date')
+        .select('id, restaurant_name, subdomain, email, plan_type, subscription_status, next_billing_date, subscription_end_date, subscription_pause_date, pending_plan_change, pending_plan_change_date, openpay_customer_id, openpay_subscription_id')
         .order('restaurant_name');
 
       if (error) throw error;
@@ -109,23 +114,71 @@ export default function SubscriptionManagement() {
   const handleUpgradeDowngrade = async (clientId: string, newPlan: 'basic' | 'advanced') => {
     try {
       setLoading(true);
-      const { error } = await supabase
-        .from('clients')
-        .update({ plan_type: newPlan })
-        .eq('id', clientId);
+      
+      const client = clients.find(c => c.id === clientId);
+      if (!client) throw new Error('Client not found');
+
+      const isUpgrade = (client.plan_type === 'basic' && newPlan === 'advanced');
+      
+      // Call OpenPay edge function to handle plan change
+      const { data, error } = await supabase.functions.invoke('change-openpay-plan', {
+        body: {
+          clientId,
+          newPlanType: newPlan,
+          immediate: isUpgrade, // Upgrades are immediate, downgrades are scheduled
+        },
+      });
 
       if (error) throw error;
+      if (!data.success) throw new Error(data.error || 'Failed to change plan');
 
-      toast({
-        title: "Plan Updated",
-        description: `Plan has been updated to ${newPlan}.`,
-      });
+      if (data.immediate) {
+        toast({
+          title: "Plan Upgraded!",
+          description: `Plan has been immediately upgraded to ${newPlan}. You've been charged for the new plan.`,
+        });
+      } else {
+        toast({
+          title: "Plan Change Scheduled",
+          description: `Plan will be changed to ${newPlan} on ${new Date(data.scheduledDate).toLocaleDateString()}`,
+        });
+      }
 
       await fetchClients();
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.message || "Failed to update plan",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePauseResume = async (clientId: string, action: 'pause' | 'resume') => {
+    try {
+      setLoading(true);
+
+      const { data, error } = await supabase.functions.invoke('pause-openpay-subscription', {
+        body: { clientId, action },
+      });
+
+      if (error) throw error;
+      if (!data.success) throw new Error(data.error || `Failed to ${action} subscription`);
+
+      toast({
+        title: action === 'pause' ? 'Subscription Paused' : 'Subscription Resumed',
+        description: action === 'pause' 
+          ? 'The subscription has been paused. No charges will be made.'
+          : 'The subscription has been resumed and will be charged monthly.',
+      });
+
+      await fetchClients();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || `Failed to ${action} subscription`,
         variant: "destructive"
       });
     } finally {
@@ -371,23 +424,74 @@ export default function SubscriptionManagement() {
                         </div>
                       )}
 
-                      <div className="flex gap-2">
+                      {client.subscription_status === 'paused' && (
+                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded">
+                          <p className="text-sm text-blue-800 dark:text-blue-200">
+                            <strong>Subscription Paused:</strong> Paused on {
+                              client.subscription_pause_date 
+                                ? new Date(client.subscription_pause_date).toLocaleDateString('es-PE', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                  })
+                                : 'unknown date'
+                            }
+                          </p>
+                        </div>
+                      )}
+
+                      {client.pending_plan_change && (
+                        <div className="p-3 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded">
+                          <p className="text-sm text-orange-800 dark:text-orange-200">
+                            <strong>Pending Plan Change:</strong> Will change to {client.pending_plan_change} on {
+                              client.pending_plan_change_date 
+                                ? new Date(client.pending_plan_change_date).toLocaleDateString('es-PE', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                  })
+                                : 'next billing date'
+                            }
+                          </p>
+                        </div>
+                      )}
+
+                      <div className="flex gap-2 flex-wrap">
                         <Button
                           onClick={() => handleUpgradeDowngrade(selectedClient, 'advanced')}
-                          disabled={client.plan_type === 'advanced'}
+                          disabled={client.plan_type === 'advanced' || loading}
                         >
                           Upgrade to Advanced
                         </Button>
                         <Button
                           variant="outline"
                           onClick={() => handleUpgradeDowngrade(selectedClient, 'basic')}
-                          disabled={client.plan_type === 'basic'}
+                          disabled={client.plan_type === 'basic' || loading}
                         >
                           Downgrade to Basic
                         </Button>
+                        {client.subscription_status === 'active' && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => handlePauseResume(selectedClient, 'pause')}
+                            disabled={loading}
+                          >
+                            Pause Subscription
+                          </Button>
+                        )}
+                        {client.subscription_status === 'paused' && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => handlePauseResume(selectedClient, 'resume')}
+                            disabled={loading}
+                          >
+                            Resume Subscription
+                          </Button>
+                        )}
                         <Button
                           variant="destructive"
                           onClick={() => handleCancelSubscription(selectedClient)}
+                          disabled={loading}
                         >
                           Cancel Subscription
                         </Button>

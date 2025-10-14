@@ -21,7 +21,7 @@ serve(async (req) => {
     const planBasicId = Deno.env.get('OPENPAY_PLAN_BASIC_ID_SANDBOX')!;
     const planAdvancedId = Deno.env.get('OPENPAY_PLAN_ADVANCED_ID_SANDBOX')!;
 
-    const { clientId, planType, customerData, cardData } = await req.json();
+    const { clientId, planType, customerData, cardData, couponCode, discountAmount } = await req.json();
 
     console.log('Creating OpenPay subscription for client:', clientId, 'plan:', planType);
 
@@ -120,16 +120,20 @@ serve(async (req) => {
     const subscriptionEndDate = new Date();
     subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1);
 
+    const updateData: any = {
+      subscription_status: 'active',
+      subscription_start_date: subscriptionStartDate.toISOString(),
+      subscription_end_date: subscriptionEndDate.toISOString(),
+      next_billing_date: subscriptionEndDate.toISOString(),
+      payment_status: 'paid',
+      openpay_customer_id: customer.id,
+      openpay_subscription_id: subscription.id,
+      updated_at: new Date().toISOString(),
+    };
+
     const { error: updateError } = await supabase
       .from('clients')
-      .update({
-        subscription_status: 'active',
-        subscription_start_date: subscriptionStartDate.toISOString(),
-        subscription_end_date: subscriptionEndDate.toISOString(),
-        next_billing_date: subscriptionEndDate.toISOString(),
-        payment_status: 'paid',
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', clientId);
 
     if (updateError) {
