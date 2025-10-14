@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
-import { IzipayPaymentForm } from "@/components/IzipayPaymentForm";
+import OpenPayPaymentForm from "@/components/OpenPayPaymentForm";
 
 export interface SignupData {
   email: string;
@@ -566,20 +566,17 @@ const Signup = () => {
                     onCouponApplied={handleCouponApplied}
                   />
 
-                  {createdClientId && signupData.email && paymentAmount > 0 ? (
+                  {createdClientId && signupData.email && signupData.restaurantName && signupData.phone && paymentAmount > 0 ? (
                     <DebugErrorBoundary>
-                      <IzipayPaymentForm
-                        amount={paymentAmount * 100}
-                        currency="PEN"
-                        orderId={createdClientId}
+                      <OpenPayPaymentForm
+                        clientId={createdClientId}
+                        planType={selectedPlan}
+                        customerName={signupData.restaurantName}
                         customerEmail={signupData.email}
-                        metadata={{
-                          planType: selectedPlan,
-                          restaurantName: signupData.restaurantName,
-                        }}
-                        isSubscription={true}
+                        customerPhone={signupData.phone}
+                        couponCode={appliedCoupon?.code}
                         onSuccess={handlePaymentSuccess}
-                        onError={handlePaymentError}
+                        onCancel={handlePaymentCancel}
                       />
                     </DebugErrorBoundary>
                   ) : (
