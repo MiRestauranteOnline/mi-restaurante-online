@@ -57,6 +57,7 @@ export default function OpenPayPaymentForm({
 }: OpenPayPaymentFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [cardError, setCardError] = useState('');
   const [cardData, setCardData] = useState({
     cardNumber: '',
     holderName: '',
@@ -68,6 +69,7 @@ export default function OpenPayPaymentForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setCardError('');
 
     try {
       // Validate card data
@@ -95,8 +97,8 @@ export default function OpenPayPaymentForm({
         } else if (couponResult && typeof couponResult === 'object' && 'valid' in couponResult && couponResult.valid) {
           discountAmount = (couponResult as any).discount_amount;
           toast({
-            title: 'Coupon applied',
-            description: `Discount: S/${discountAmount.toFixed(2)}`,
+            title: 'Cupón aplicado',
+            description: `Descuento: S/${discountAmount.toFixed(2)}`,
           });
         }
       }
@@ -131,16 +133,16 @@ export default function OpenPayPaymentForm({
       }
 
       toast({
-        title: 'Payment successful!',
-        description: 'Your subscription is now active.',
+        title: '¡Pago exitoso!',
+        description: 'Tu suscripción está activa.',
       });
 
       onSuccess();
     } catch (error) {
       console.error('Payment error:', error);
       
-      let title = 'Payment failed';
-      let description = 'An unexpected error occurred. Please try again.';
+      let title = 'Pago rechazado';
+      let description = 'Ocurrió un error inesperado. Por favor, intenta nuevamente.';
       
       if (error instanceof Error) {
         const errorMsg = error.message.toLowerCase();
@@ -149,21 +151,23 @@ export default function OpenPayPaymentForm({
         if (errorMsg.includes('declined') || errorMsg.includes('rejected') || 
             errorMsg.includes('insufficient') || errorMsg.includes('invalid card') ||
             errorMsg.includes('stolen') || errorMsg.includes('lost')) {
-          title = 'Card Declined';
-          description = 'Your card was declined by your bank. Please check your card details or try a different payment method.';
+          title = 'Tarjeta rechazada';
+          description = 'Tu tarjeta fue rechazada por tu banco. Por favor, verifica los datos de tu tarjeta o intenta con otro método de pago.';
         } else if (errorMsg.includes('expired')) {
-          title = 'Card Expired';
-          description = 'Your card has expired. Please use a different payment method.';
+          title = 'Tarjeta vencida';
+          description = 'Tu tarjeta ha vencido. Por favor, utiliza otro método de pago.';
         } else if (errorMsg.includes('cvv') || errorMsg.includes('security code')) {
-          title = 'Invalid Security Code';
-          description = 'The CVV/security code is incorrect. Please check and try again.';
+          title = 'Código de seguridad inválido';
+          description = 'El código CVV es incorrecto. Por favor, verifica e intenta nuevamente.';
         } else if (errorMsg.includes('card number')) {
-          title = 'Invalid Card Number';
-          description = 'The card number is invalid. Please check and try again.';
+          title = 'Número de tarjeta inválido';
+          description = 'El número de tarjeta es inválido. Por favor, verifica e intenta nuevamente.';
         } else {
           description = error.message;
         }
       }
+      
+      setCardError(description);
       
       toast({
         title,
@@ -178,30 +182,37 @@ export default function OpenPayPaymentForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Payment Information</CardTitle>
+        <CardTitle>Información de Pago</CardTitle>
         <CardDescription>
-          Enter your card details to complete your {planType} plan subscription
+          Ingresa los datos de tu tarjeta para completar tu suscripción al plan {planType === 'basic' ? 'básico' : 'avanzado'}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="cardNumber">Card Number</Label>
+            <Label htmlFor="cardNumber">Número de Tarjeta</Label>
             <Input
               id="cardNumber"
               placeholder="1234567890123456"
               value={cardData.cardNumber}
-              onChange={(e) => setCardData({ ...cardData, cardNumber: e.target.value.replace(/\D/g, '').slice(0, 16) })}
+              onChange={(e) => {
+                setCardData({ ...cardData, cardNumber: e.target.value.replace(/\D/g, '').slice(0, 16) });
+                setCardError('');
+              }}
               maxLength={16}
               required
+              className={cardError ? 'border-red-500' : ''}
             />
+            {cardError && (
+              <p className="text-sm text-red-500 mt-1">{cardError}</p>
+            )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="holderName">Cardholder Name</Label>
+            <Label htmlFor="holderName">Nombre del Titular</Label>
             <Input
               id="holderName"
-              placeholder="John Doe"
+              placeholder="Juan Pérez"
               value={cardData.holderName}
               onChange={(e) => setCardData({ ...cardData, holderName: e.target.value })}
               maxLength={100}
@@ -211,7 +222,7 @@ export default function OpenPayPaymentForm({
 
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="expirationMonth">Month</Label>
+              <Label htmlFor="expirationMonth">Mes</Label>
               <Input
                 id="expirationMonth"
                 placeholder="MM"
@@ -223,10 +234,10 @@ export default function OpenPayPaymentForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="expirationYear">Year</Label>
+              <Label htmlFor="expirationYear">Año</Label>
               <Input
                 id="expirationYear"
-                placeholder="YY"
+                placeholder="AA"
                 value={cardData.expirationYear}
                 onChange={(e) => setCardData({ ...cardData, expirationYear: e.target.value.replace(/\D/g, '').slice(0, 2) })}
                 maxLength={2}
@@ -250,16 +261,16 @@ export default function OpenPayPaymentForm({
 
           <div className="flex gap-4 pt-4">
             <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
-              Cancel
+              Cancelar
             </Button>
             <Button type="submit" disabled={loading} className="flex-1">
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
+                  Procesando...
                 </>
               ) : (
-                `Pay & Subscribe`
+                `Pagar y Suscribirse`
               )}
             </Button>
           </div>
