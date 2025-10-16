@@ -30,9 +30,6 @@ verify_jwt = false
 [functions.process-expired-discounts]
 verify_jwt = false
 
-[functions.izipay-webhook]
-verify_jwt = false
-
 [functions.create-openpay-subscription]
 verify_jwt = false
 
