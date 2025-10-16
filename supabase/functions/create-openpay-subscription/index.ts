@@ -39,7 +39,7 @@ serve(async (req) => {
 
     // Create OpenPay customer
     const auth = btoa(`${privateKey}:`);
-    const openpayUrl = `${openpayApiBase}/${merchantId}`;
+    const openpayUrl = `${openpayApiBase.replace(/\/$/, '')}/${merchantId}`;
     
     console.log('Using OpenPay API base:', openpayApiBase);
     console.log('OpenPay URL:', openpayUrl);
