@@ -121,6 +121,7 @@ export default function OpenPayPaymentForm({
 
       if (error || !data?.success) {
         const errorMessage = data?.error || error?.message || "Hubo un problema al procesar tu pago. Por favor, intenta nuevamente.";
+        console.error('OpenPay payment error:', { error, data });
         throw new Error(errorMessage);
       }
 
@@ -146,7 +147,8 @@ export default function OpenPayPaymentForm({
         
         // Check for card rejection scenarios
         if (errorMsg.includes('declined') || errorMsg.includes('rejected') || 
-            errorMsg.includes('insufficient') || errorMsg.includes('invalid card')) {
+            errorMsg.includes('insufficient') || errorMsg.includes('invalid card') ||
+            errorMsg.includes('stolen') || errorMsg.includes('lost')) {
           title = 'Card Declined';
           description = 'Your card was declined by your bank. Please check your card details or try a different payment method.';
         } else if (errorMsg.includes('expired')) {
