@@ -137,10 +137,35 @@ export default function OpenPayPaymentForm({
       onSuccess();
     } catch (error) {
       console.error('Payment error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Payment failed';
+      
+      let title = 'Payment failed';
+      let description = 'An unexpected error occurred. Please try again.';
+      
+      if (error instanceof Error) {
+        const errorMsg = error.message.toLowerCase();
+        
+        // Check for card rejection scenarios
+        if (errorMsg.includes('declined') || errorMsg.includes('rejected') || 
+            errorMsg.includes('insufficient') || errorMsg.includes('invalid card')) {
+          title = 'Card Declined';
+          description = 'Your card was declined by your bank. Please check your card details or try a different payment method.';
+        } else if (errorMsg.includes('expired')) {
+          title = 'Card Expired';
+          description = 'Your card has expired. Please use a different payment method.';
+        } else if (errorMsg.includes('cvv') || errorMsg.includes('security code')) {
+          title = 'Invalid Security Code';
+          description = 'The CVV/security code is incorrect. Please check and try again.';
+        } else if (errorMsg.includes('card number')) {
+          title = 'Invalid Card Number';
+          description = 'The card number is invalid. Please check and try again.';
+        } else {
+          description = error.message;
+        }
+      }
+      
       toast({
-        title: 'Payment failed',
-        description: errorMessage,
+        title,
+        description,
         variant: 'destructive',
       });
     } finally {
