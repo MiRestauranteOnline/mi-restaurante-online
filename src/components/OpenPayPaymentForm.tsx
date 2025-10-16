@@ -10,8 +10,8 @@ import { z } from 'zod';
 
 const cardSchema = z.object({
   cardNumber: z.string()
-    .min(16, 'Card number must be 16 digits')
-    .max(16, 'Card number must be 16 digits')
+    .min(14, 'Card number must be at least 14 digits')
+    .max(16, 'Card number must be at most 16 digits')
     .regex(/^\d+$/, 'Card number must contain only digits'),
   holderName: z.string()
     .trim()
