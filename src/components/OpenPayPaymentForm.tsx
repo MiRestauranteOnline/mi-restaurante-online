@@ -10,28 +10,28 @@ import { z } from 'zod';
 
 const cardSchema = z.object({
   cardNumber: z.string()
-    .min(14, 'Card number must be at least 14 digits')
-    .max(16, 'Card number must be at most 16 digits')
-    .regex(/^\d+$/, 'Card number must contain only digits'),
+    .min(14, 'El número de tarjeta debe tener al menos 14 dígitos')
+    .max(16, 'El número de tarjeta debe tener como máximo 16 dígitos')
+    .regex(/^\d+$/, 'El número de tarjeta debe contener solo dígitos'),
   holderName: z.string()
     .trim()
-    .min(3, 'Name must be at least 3 characters')
-    .max(100, 'Name must be less than 100 characters'),
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .max(100, 'El nombre debe tener menos de 100 caracteres'),
   expirationMonth: z.string()
-    .regex(/^(0[1-9]|1[0-2])$/, 'Month must be 01-12'),
+    .regex(/^(0[1-9]|1[0-2])$/, 'El mes debe ser 01-12'),
   expirationYear: z.string()
-    .regex(/^\d{2}$/, 'Year must be 2 digits')
-    .refine((year) => parseInt(year) >= parseInt(new Date().getFullYear().toString().slice(-2)), 'Card is expired'),
+    .regex(/^\d{2}$/, 'El año debe tener 2 dígitos')
+    .refine((year) => parseInt(year) >= parseInt(new Date().getFullYear().toString().slice(-2)), 'La tarjeta está vencida'),
   cvv2: z.string()
-    .min(3, 'CVV must be 3 or 4 digits')
-    .max(4, 'CVV must be 3 or 4 digits')
-    .regex(/^\d+$/, 'CVV must contain only digits'),
+    .min(3, 'El CVV debe tener 3 o 4 dígitos')
+    .max(4, 'El CVV debe tener 3 o 4 dígitos')
+    .regex(/^\d+$/, 'El CVV debe contener solo dígitos'),
 });
 
 const customerSchema = z.object({
-  name: z.string().trim().min(3, 'Name must be at least 3 characters').max(100),
-  email: z.string().trim().email('Invalid email address').max(255),
-  phone: z.string().trim().min(7, 'Phone must be at least 7 characters').max(20),
+  name: z.string().trim().min(3, 'El nombre debe tener al menos 3 caracteres').max(100),
+  email: z.string().trim().email('Correo electrónico inválido').max(255),
+  phone: z.string().trim().min(7, 'El teléfono debe tener al menos 7 caracteres').max(20),
 });
 
 interface OpenPayPaymentFormProps {
