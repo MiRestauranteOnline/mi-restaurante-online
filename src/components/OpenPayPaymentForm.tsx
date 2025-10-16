@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { z } from 'zod';
+import { BillingInfoForm, BillingInfo } from '@/components/BillingInfoForm';
 
 const cardSchema = z.object({
   cardNumber: z.string()
@@ -43,6 +44,7 @@ interface OpenPayPaymentFormProps {
   couponCode?: string;
   onSuccess: () => void;
   onCancel: () => void;
+  onBillingInfoSaved?: (billingInfo: BillingInfo) => void;
 }
 
 export default function OpenPayPaymentForm({
@@ -54,6 +56,7 @@ export default function OpenPayPaymentForm({
   couponCode,
   onSuccess,
   onCancel,
+  onBillingInfoSaved,
 }: OpenPayPaymentFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -66,12 +69,77 @@ export default function OpenPayPaymentForm({
     cvv2: '',
   });
 
+  const [billingInfo, setBillingInfo] = useState<BillingInfo>({
+    documentType: 'boleta',
+  });
+  const [billingErrors, setBillingErrors] = useState<Record<string, string>>({});
+
+  const validateBillingInfo = (): boolean => {
+    const errors: Record<string, string> = {};
+    
+    if (billingInfo.documentType === 'boleta' && billingInfo.dni) {
+      if (!/^\d{8}$/.test(billingInfo.dni)) {
+        errors.dni = 'El DNI debe tener 8 dígitos';
+      }
+    }
+    
+    if (billingInfo.documentType === 'factura') {
+      if (!billingInfo.ruc || !/^\d{11}$/.test(billingInfo.ruc)) {
+        errors.ruc = 'El RUC debe tener 11 dígitos';
+      }
+      if (!billingInfo.businessName || billingInfo.businessName.trim().length < 3) {
+        errors.businessName = 'La razón social es requerida';
+      }
+      if (!billingInfo.fiscalAddress || billingInfo.fiscalAddress.trim().length < 10) {
+        errors.fiscalAddress = 'La dirección fiscal es requerida';
+      }
+    }
+    
+    setBillingErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const saveBillingInfo = async () => {
+    try {
+      const { error } = await supabase
+        .from('client_billing_info')
+        .upsert({
+          client_id: clientId,
+          document_type: billingInfo.documentType,
+          dni: billingInfo.documentType === 'boleta' ? billingInfo.dni : null,
+          ruc: billingInfo.documentType === 'factura' ? billingInfo.ruc : null,
+          business_name: billingInfo.documentType === 'factura' ? billingInfo.businessName : null,
+          fiscal_address: billingInfo.documentType === 'factura' ? billingInfo.fiscalAddress : null,
+        });
+
+      if (error) throw error;
+      
+      if (onBillingInfoSaved) {
+        onBillingInfoSaved(billingInfo);
+      }
+    } catch (error) {
+      console.error('Error saving billing info:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setCardError('');
+    setBillingErrors({});
 
     try {
+      // Validate billing info first
+      if (!validateBillingInfo()) {
+        toast({
+          title: "Error de validación",
+          description: "Por favor complete correctamente la información de facturación",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
       // Validate card data
       const validatedCard = cardSchema.parse(cardData);
       
@@ -126,6 +194,9 @@ export default function OpenPayPaymentForm({
         console.error('OpenPay payment error:', { error, data });
         throw new Error(errorMessage);
       }
+
+      // Save billing info after successful payment
+      await saveBillingInfo();
 
       // Increment coupon usage if applied
       if (couponCode) {
@@ -258,6 +329,12 @@ export default function OpenPayPaymentForm({
               />
             </div>
           </div>
+
+          <BillingInfoForm
+            billingInfo={billingInfo}
+            onChange={setBillingInfo}
+            errors={billingErrors}
+          />
 
           <div className="flex gap-4 pt-4">
             <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>

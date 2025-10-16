@@ -517,6 +517,50 @@ export type Database = {
         }
         Relationships: []
       }
+      client_billing_info: {
+        Row: {
+          business_name: string | null
+          client_id: string
+          created_at: string
+          dni: string | null
+          document_type: string
+          fiscal_address: string | null
+          id: string
+          ruc: string | null
+          updated_at: string
+        }
+        Insert: {
+          business_name?: string | null
+          client_id: string
+          created_at?: string
+          dni?: string | null
+          document_type: string
+          fiscal_address?: string | null
+          id?: string
+          ruc?: string | null
+          updated_at?: string
+        }
+        Update: {
+          business_name?: string | null
+          client_id?: string
+          created_at?: string
+          dni?: string | null
+          document_type?: string
+          fiscal_address?: string | null
+          id?: string
+          ruc?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_billing_info_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_discount_assignments: {
         Row: {
           applied_at: string | null
