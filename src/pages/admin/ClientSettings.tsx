@@ -2811,30 +2811,38 @@ setReviewForm({
 
       <Tabs value={activeTab} className="w-full" onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
         {isClientView ? (
-          <div className="mb-4">
-            <Select value={activeTab} onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
-              <SelectTrigger className="w-full" aria-label="Selecciona sección">
-                <SelectValue placeholder={t('nav.general')} />
-              </SelectTrigger>
-              <SelectContent className="z-50">
-                {showTab('basic') && <SelectItem value="basic">{t('nav.general')}</SelectItem>}
-                {showTab('domain') && <SelectItem value="domain">Dominio</SelectItem>}
-                {showTab('hours') && <SelectItem value="hours">{t('general.openingHours')}</SelectItem>}
-                {showTab('social') && <SelectItem value="social">{t('general.socialMedia')}</SelectItem>}
-                {showTab('delivery') && <SelectItem value="delivery">{t('general.deliveryInfo')}</SelectItem>}
-                {showTab('branding') && <SelectItem value="branding">Marca</SelectItem>}
-                {showTab('content') && <SelectItem value="content">Contenido</SelectItem>}
-                {showTab('briefing') && <SelectItem value="briefing">{t('nav.briefing')}</SelectItem>}
-                {showTab('menu') && <SelectItem value="menu">{t('nav.menu')}</SelectItem>}
-                {showTab('team') && <SelectItem value="team">{t('nav.team')}</SelectItem>}
-                {showTab('reviews') && <SelectItem value="reviews">{t('nav.reviews')}</SelectItem>}
-                {showTab('carousel') && <SelectItem value="carousel">{t('nav.carousel')}</SelectItem>}
-                {showTab('custom-images') && <SelectItem value="custom-images">{t('nav.images')}</SelectItem>}
-                {userRole === 'admin' && <SelectItem value="discounts">Descuentos</SelectItem>}
-                {userRole === 'admin' && <SelectItem value="advanced">Avanzado</SelectItem>}
-              </SelectContent>
-            </Select>
-          </div>
+          <Card className="mb-6 bg-primary/5 border-primary/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="h-8 w-1 bg-primary rounded-full" />
+                <Label className="text-base font-semibold text-primary">
+                  Secciones de Configuración
+                </Label>
+              </div>
+              <Select value={activeTab} onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
+                <SelectTrigger className="w-full h-12 text-base font-medium bg-background border-2 hover:border-primary/50 transition-colors" aria-label="Selecciona sección">
+                  <SelectValue placeholder={t('nav.general')} />
+                </SelectTrigger>
+                <SelectContent className="z-50">
+                  {showTab('basic') && <SelectItem value="basic">{t('nav.general')}</SelectItem>}
+                  {showTab('domain') && <SelectItem value="domain">Dominio</SelectItem>}
+                  {showTab('hours') && <SelectItem value="hours">{t('general.openingHours')}</SelectItem>}
+                  {showTab('social') && <SelectItem value="social">{t('general.socialMedia')}</SelectItem>}
+                  {showTab('delivery') && <SelectItem value="delivery">{t('general.deliveryInfo')}</SelectItem>}
+                  {showTab('branding') && <SelectItem value="branding">Marca</SelectItem>}
+                  {showTab('content') && <SelectItem value="content">Contenido</SelectItem>}
+                  {showTab('briefing') && <SelectItem value="briefing">{t('nav.briefing')}</SelectItem>}
+                  {showTab('menu') && <SelectItem value="menu">{t('nav.menu')}</SelectItem>}
+                  {showTab('team') && <SelectItem value="team">{t('nav.team')}</SelectItem>}
+                  {showTab('reviews') && <SelectItem value="reviews">{t('nav.reviews')}</SelectItem>}
+                  {showTab('carousel') && <SelectItem value="carousel">{t('nav.carousel')}</SelectItem>}
+                  {showTab('custom-images') && <SelectItem value="custom-images">{t('nav.images')}</SelectItem>}
+                  {userRole === 'admin' && <SelectItem value="discounts">Descuentos</SelectItem>}
+                  {userRole === 'admin' && <SelectItem value="advanced">Avanzado</SelectItem>}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
         ) : (
           <TabsList>
             {showTab('basic') && <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>}
