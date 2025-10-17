@@ -2869,9 +2869,6 @@ setReviewForm({
                     })}
                     placeholder="-12.0464"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Coordenada de latitud para Google Maps
-                  </p>
                 </div>
                 <div>
                   <Label htmlFor="longitude">Longitud</Label>
@@ -2889,11 +2886,11 @@ setReviewForm({
                     })}
                     placeholder="-77.0428"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Coordenada de longitud para Google Maps
-                  </p>
                 </div>
               </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Coordenadas del mapa para mostrar la ubicación exacta del restaurante. Para encontrarlas, abre Google Maps, haz clic derecho en la ubicación deseada y selecciona las coordenadas para copiarlas.
+              </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>
