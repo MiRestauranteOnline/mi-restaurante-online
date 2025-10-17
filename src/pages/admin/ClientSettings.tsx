@@ -3470,11 +3470,20 @@ setReviewForm({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">Sin plantilla</SelectItem>
-                        {templates.map((template: any) => (
-                          <SelectItem key={template.id} value={template.id}>
-                            {template.name} ({template.slug})
-                          </SelectItem>
-                        ))}
+                        {templates.map((template: any) => {
+                          // Convert template name to proper Spanish display name
+                          const displayName = template.name
+                            .replace(/-/g, ' ')
+                            .split(' ')
+                            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                            .join(' ');
+                          
+                          return (
+                            <SelectItem key={template.id} value={template.id}>
+                              {displayName}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground mt-1">
