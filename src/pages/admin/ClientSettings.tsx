@@ -1668,7 +1668,6 @@ const [reviewForm, setReviewForm] = useState({
         .update({
           restaurant_name: formData.restaurant_name,
           subdomain: formData.subdomain,
-          domain: formData.domain,
           email: formData.email,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
