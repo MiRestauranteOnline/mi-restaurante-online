@@ -1041,7 +1041,22 @@ const [reviewForm, setReviewForm] = useState({
     google_search_console_verification: '',
     analytics_enabled: false,
     monthly_reports_enabled: false,
-    premium_support_enabled: false
+    premium_support_enabled: false,
+    // Section Visibility Toggles
+    homepage_about_section_visible: true,
+    homepage_about_stats_visible: true,
+    homepage_menu_section_visible: true,
+    homepage_services_section_visible: true,
+    homepage_reservations_section_visible: true,
+    homepage_reviews_section_visible: true,
+    homepage_contact_section_visible: true,
+    homepage_contact_map_visible: true,
+    about_page_about_section_visible: true,
+    about_page_about_stats_visible: true,
+    about_page_stats_section_visible: true,
+    about_page_team_section_visible: true,
+    contact_page_contact_section_visible: true,
+    contact_page_map_visible: true
   });
 
   useEffect(() => {
@@ -1428,7 +1443,22 @@ const [reviewForm, setReviewForm] = useState({
           contact_us_label: data.contact_us_label || '',
           about_us_label: data.about_us_label || '',
           our_menu_label: data.our_menu_label || '',
-          our_team_label: data.our_team_label || ''
+          our_team_label: data.our_team_label || '',
+          // Section Visibility Toggles
+          homepage_about_section_visible: data.homepage_about_section_visible ?? true,
+          homepage_about_stats_visible: data.homepage_about_stats_visible ?? true,
+          homepage_menu_section_visible: data.homepage_menu_section_visible ?? true,
+          homepage_services_section_visible: data.homepage_services_section_visible ?? true,
+          homepage_reservations_section_visible: data.homepage_reservations_section_visible ?? true,
+          homepage_reviews_section_visible: data.homepage_reviews_section_visible ?? true,
+          homepage_contact_section_visible: data.homepage_contact_section_visible ?? true,
+          homepage_contact_map_visible: data.homepage_contact_map_visible ?? true,
+          about_page_about_section_visible: data.about_page_about_section_visible ?? true,
+          about_page_about_stats_visible: data.about_page_about_stats_visible ?? true,
+          about_page_stats_section_visible: data.about_page_stats_section_visible ?? true,
+          about_page_team_section_visible: data.about_page_team_section_visible ?? true,
+          contact_page_contact_section_visible: data.contact_page_contact_section_visible ?? true,
+          contact_page_map_visible: data.contact_page_map_visible ?? true
         }));
       }
     } catch (error: any) {
@@ -1861,6 +1891,21 @@ const [reviewForm, setReviewForm] = useState({
             content_briefing: formData.content_briefing,
             style_briefing: formData.style_briefing,
             contact_delivery_briefing: formData.contact_delivery_briefing,
+            // Section Visibility Toggles
+            homepage_about_section_visible: formData.homepage_about_section_visible,
+            homepage_about_stats_visible: formData.homepage_about_stats_visible,
+            homepage_menu_section_visible: formData.homepage_menu_section_visible,
+            homepage_services_section_visible: formData.homepage_services_section_visible,
+            homepage_reservations_section_visible: formData.homepage_reservations_section_visible,
+            homepage_reviews_section_visible: formData.homepage_reviews_section_visible,
+            homepage_contact_section_visible: formData.homepage_contact_section_visible,
+            homepage_contact_map_visible: formData.homepage_contact_map_visible,
+            about_page_about_section_visible: formData.about_page_about_section_visible,
+            about_page_about_stats_visible: formData.about_page_about_stats_visible,
+            about_page_stats_section_visible: formData.about_page_stats_section_visible,
+            about_page_team_section_visible: formData.about_page_team_section_visible,
+            contact_page_contact_section_visible: formData.contact_page_contact_section_visible,
+            contact_page_map_visible: formData.contact_page_map_visible,
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'client_id'
@@ -3583,6 +3628,148 @@ setReviewForm({
             />
           )}
           <div className="space-y-6">
+              
+              {/* SECTION VISIBILITY CONTROLS */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Controles de Visibilidad de Secciones</CardTitle>
+                  <CardDescription>Controla qué secciones se muestran en cada página de tu sitio web</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Homepage Toggles */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-base border-b pb-2">Página de Inicio</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_about_section_visible" className="flex-1">Mostrar Sección Acerca de Nosotros</Label>
+                        <Switch
+                          id="homepage_about_section_visible"
+                          checked={formData.homepage_about_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_about_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_about_stats_visible" className="flex-1">Mostrar Estadísticas en Sección Acerca</Label>
+                        <Switch
+                          id="homepage_about_stats_visible"
+                          checked={formData.homepage_about_stats_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_about_stats_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_menu_section_visible" className="flex-1">Mostrar Sección de Menú</Label>
+                        <Switch
+                          id="homepage_menu_section_visible"
+                          checked={formData.homepage_menu_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_menu_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_services_section_visible" className="flex-1">Mostrar Sección de Servicios</Label>
+                        <Switch
+                          id="homepage_services_section_visible"
+                          checked={formData.homepage_services_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_services_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_reservations_section_visible" className="flex-1">Mostrar Sección de Reservaciones</Label>
+                        <Switch
+                          id="homepage_reservations_section_visible"
+                          checked={formData.homepage_reservations_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_reservations_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_reviews_section_visible" className="flex-1">Mostrar Sección de Reseñas</Label>
+                        <Switch
+                          id="homepage_reviews_section_visible"
+                          checked={formData.homepage_reviews_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_reviews_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_contact_section_visible" className="flex-1">Mostrar Sección de Contacto</Label>
+                        <Switch
+                          id="homepage_contact_section_visible"
+                          checked={formData.homepage_contact_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_contact_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_contact_map_visible" className="flex-1">Mostrar Mapa en Sección de Contacto</Label>
+                        <Switch
+                          id="homepage_contact_map_visible"
+                          checked={formData.homepage_contact_map_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_contact_map_visible: checked})}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* About Page Toggles */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-base border-b pb-2">Página Acerca de Nosotros</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="about_page_about_section_visible" className="flex-1">Mostrar Sección Acerca de</Label>
+                        <Switch
+                          id="about_page_about_section_visible"
+                          checked={formData.about_page_about_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, about_page_about_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="about_page_about_stats_visible" className="flex-1">Mostrar Estadísticas en Texto</Label>
+                        <Switch
+                          id="about_page_about_stats_visible"
+                          checked={formData.about_page_about_stats_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, about_page_about_stats_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="about_page_stats_section_visible" className="flex-1">Mostrar Sección de Estadísticas</Label>
+                        <Switch
+                          id="about_page_stats_section_visible"
+                          checked={formData.about_page_stats_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, about_page_stats_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="about_page_team_section_visible" className="flex-1">Mostrar Sección de Equipo</Label>
+                        <Switch
+                          id="about_page_team_section_visible"
+                          checked={formData.about_page_team_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, about_page_team_section_visible: checked})}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact Page Toggles */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-base border-b pb-2">Página de Contacto</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="contact_page_contact_section_visible" className="flex-1">Mostrar Formulario de Contacto</Label>
+                        <Switch
+                          id="contact_page_contact_section_visible"
+                          checked={formData.contact_page_contact_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, contact_page_contact_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="contact_page_map_visible" className="flex-1">Mostrar Mapa</Label>
+                        <Switch
+                          id="contact_page_map_visible"
+                          checked={formData.contact_page_map_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, contact_page_map_visible: checked})}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
               
               {/* HOMEPAGE SECTION */}
               <div className="space-y-4">
