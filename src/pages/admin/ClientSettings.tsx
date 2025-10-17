@@ -866,6 +866,7 @@ const [reviewForm, setReviewForm] = useState({
     address: '',
     whatsapp: '',
     whatsapp_country_code: '+51',
+    use_coordinates: false,
     coordinates: { lat: '', lng: '' },
     theme: 'dark',
     hide_whatsapp_button_menu: false,
@@ -1116,6 +1117,7 @@ const [reviewForm, setReviewForm] = useState({
         address: data.address || '',
         whatsapp: data.whatsapp || '',
         whatsapp_country_code: (data as any).whatsapp_country_code || '+51',
+        use_coordinates: (data as any).use_coordinates || false,
         coordinates: (data.coordinates as any) || { lat: '', lng: '' },
         theme: (data as any).theme || 'dark',
         hide_whatsapp_button_menu: (data as any).hide_whatsapp_button_menu || false,
@@ -1674,6 +1676,7 @@ const [reviewForm, setReviewForm] = useState({
           address: formData.address,
           whatsapp: formData.whatsapp,
           whatsapp_country_code: formData.whatsapp_country_code,
+          use_coordinates: formData.use_coordinates,
           coordinates: formData.coordinates,
           theme: formData.theme,
           opening_hours: orderedOpeningHours,
@@ -2852,45 +2855,67 @@ setReviewForm({
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                  <Label htmlFor="latitude">Latitud</Label>
-                  <Input
-                    id="latitude"
-                    type="number"
-                    step="any"
-                    value={formData.coordinates.lat || ''}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      coordinates: {
-                        ...formData.coordinates,
-                        lat: e.target.value
-                      }
-                    })}
-                    placeholder="-12.0464"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="longitude">Longitud</Label>
-                  <Input
-                    id="longitude"
-                    type="number"
-                    step="any"
-                    value={formData.coordinates.lng || ''}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      coordinates: {
-                        ...formData.coordinates,
-                        lng: e.target.value
-                      }
-                    })}
-                    placeholder="-77.0428"
+              <div className="space-y-2 mt-4">
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="use_coordinates" className="text-base font-medium">
+                      Usar Coordenadas Específicas
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Activar para usar coordenadas exactas en lugar de la dirección para los mapas
+                    </p>
+                  </div>
+                  <Switch
+                    id="use_coordinates"
+                    checked={formData.use_coordinates}
+                    onCheckedChange={(checked) => setFormData({...formData, use_coordinates: checked})}
                   />
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mt-2">
-                Coordenadas del mapa para mostrar la ubicación exacta del restaurante. Para encontrarlas, abre Google Maps, haz clic derecho en la ubicación deseada y selecciona las coordenadas para copiarlas.
-              </p>
+
+              {formData.use_coordinates && (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <Label htmlFor="latitude">Latitud del Mapa</Label>
+                      <Input
+                        id="latitude"
+                        type="number"
+                        step="any"
+                        value={formData.coordinates.lat || ''}
+                        onChange={(e) => setFormData({
+                          ...formData, 
+                          coordinates: {
+                            ...formData.coordinates,
+                            lat: e.target.value
+                          }
+                        })}
+                        placeholder="-12.0464"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="longitude">Longitud del Mapa</Label>
+                      <Input
+                        id="longitude"
+                        type="number"
+                        step="any"
+                        value={formData.coordinates.lng || ''}
+                        onChange={(e) => setFormData({
+                          ...formData, 
+                          coordinates: {
+                            ...formData.coordinates,
+                            lng: e.target.value
+                          }
+                        })}
+                        placeholder="-77.0428"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Para encontrar las coordenadas, abre Google Maps, haz clic derecho en la ubicación deseada y copia las coordenadas (primero latitud, luego longitud).
+                  </p>
+                </>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>

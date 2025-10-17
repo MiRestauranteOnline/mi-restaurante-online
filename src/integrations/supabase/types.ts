@@ -857,6 +857,7 @@ export type Database = {
           timezone: string | null
           trial_end_date: string | null
           updated_at: string
+          use_coordinates: boolean | null
           vercel_dashboard_url: string | null
           vercel_project: string | null
           vercel_team: string | null
@@ -914,6 +915,7 @@ export type Database = {
           timezone?: string | null
           trial_end_date?: string | null
           updated_at?: string
+          use_coordinates?: boolean | null
           vercel_dashboard_url?: string | null
           vercel_project?: string | null
           vercel_team?: string | null
@@ -971,6 +973,7 @@ export type Database = {
           timezone?: string | null
           trial_end_date?: string | null
           updated_at?: string
+          use_coordinates?: boolean | null
           vercel_dashboard_url?: string | null
           vercel_project?: string | null
           vercel_team?: string | null
