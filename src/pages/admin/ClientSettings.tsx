@@ -910,6 +910,7 @@ const [reviewForm, setReviewForm] = useState({
     title_font: 'Cormorant Garamond',
     body_font: 'Inter',
     title_font_weight: '400',
+    title_size_scale: 0,
     template_id: '',
     // Admin content fields - Two-part titles
     homepage_hero_title_first_line: '',
@@ -1183,6 +1184,7 @@ const [reviewForm, setReviewForm] = useState({
           title_font: (data as any).title_font || 'Cormorant Garamond',
           body_font: (data as any).body_font || 'Inter',
           title_font_weight: (data as any).title_font_weight || '400',
+          title_size_scale: (data as any).title_size_scale ?? 0,
           hide_whatsapp_button_menu: (data as any).hide_whatsapp_button_menu || false,
           hide_phone_button_menu: (data as any).hide_phone_button_menu || false,
           custom_cta_button_text: (data as any).custom_cta_button_text || '',
@@ -1712,6 +1714,7 @@ const [reviewForm, setReviewForm] = useState({
           title_font: formData.title_font,
           body_font: formData.body_font,
           title_font_weight: formData.title_font_weight,
+          title_size_scale: formData.title_size_scale,
           hide_whatsapp_button_menu: formData.hide_whatsapp_button_menu,
           hide_phone_button_menu: formData.hide_phone_button_menu,
           custom_cta_button_text: formData.custom_cta_button_text,
@@ -3427,7 +3430,7 @@ setReviewForm({
 
               <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">{t('branding.typography')}</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="title_font">{t('branding.titleFont')}</Label>
                     <Select
@@ -3487,6 +3490,8 @@ setReviewForm({
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
                     <Label htmlFor="body_font">{t('branding.bodyFont')}</Label>
                     <Select
@@ -3520,6 +3525,26 @@ setReviewForm({
                         <SelectItem value="Source Serif Pro">Source Serif Pro</SelectItem>
                         <SelectItem value="Cormorant Garamond">Cormorant Garamond</SelectItem>
                         <SelectItem value="Playfair Display">Playfair Display</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="title_size_scale">Escala de Tamaño de Títulos</Label>
+                    <Select
+                      value={String(formData.title_size_scale ?? 0)}
+                      onValueChange={(value) => setFormData({...formData, title_size_scale: parseInt(value)})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-md z-50">
+                        <SelectItem value="-50">50% más pequeño</SelectItem>
+                        <SelectItem value="-25">25% más pequeño</SelectItem>
+                        <SelectItem value="-10">10% más pequeño</SelectItem>
+                        <SelectItem value="0">Tamaño normal (predeterminado)</SelectItem>
+                        <SelectItem value="10">10% más grande</SelectItem>
+                        <SelectItem value="25">25% más grande</SelectItem>
+                        <SelectItem value="50">50% más grande</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
