@@ -1767,152 +1767,159 @@ const [reviewForm, setReviewForm] = useState({
       if (settingsError) throw settingsError;
       if (brandColorsError) throw brandColorsError;
 
-      // Update admin_content table if user is admin
-      if (userRole === 'admin') {
-        const { error: adminContentError } = await (supabase as any)
-          .from('admin_content')
-          .upsert({
-            client_id: effectiveClientId,
-            // Two-part titles
-            homepage_hero_title_first_line: formData.homepage_hero_title_first_line,
-            homepage_hero_title_second_line: formData.homepage_hero_title_second_line,
-            homepage_menu_section_title_first_line: formData.homepage_menu_section_title_first_line,
-            homepage_menu_section_title_second_line: formData.homepage_menu_section_title_second_line,
-            homepage_contact_section_title_first_line: formData.homepage_contact_section_title_first_line,
-            homepage_contact_section_title_second_line: formData.homepage_contact_section_title_second_line,
-            homepage_services_section_title_first_line: formData.homepage_services_section_title_first_line,
-            homepage_services_section_title_second_line: formData.homepage_services_section_title_second_line,
-            homepage_about_section_title_first_line: formData.homepage_about_section_title_first_line,
-            homepage_about_section_title_second_line: formData.homepage_about_section_title_second_line,
-            reviews_section_title_first_line: formData.reviews_section_title_first_line,
-            reviews_section_title_second_line: formData.reviews_section_title_second_line,
-            reviews_section_description: formData.reviews_section_description,
-            about_page_hero_title_first_line: formData.about_page_hero_title_first_line,
-            about_page_hero_title_second_line: formData.about_page_hero_title_second_line,
-            about_team_section_title_first_line: formData.about_team_section_title_first_line,
-            about_team_section_title_second_line: formData.about_team_section_title_second_line,
-            contact_page_hero_title_first_line: formData.contact_page_hero_title_first_line,
-            contact_page_hero_title_second_line: formData.contact_page_hero_title_second_line,
-            menu_page_hero_title_first_line: formData.menu_page_hero_title_first_line,
-            menu_page_hero_title_second_line: formData.menu_page_hero_title_second_line,
-            reviews_page_hero_title_first_line: formData.reviews_page_hero_title_first_line,
-            reviews_page_hero_title_second_line: formData.reviews_page_hero_title_second_line,
-            // Other content fields
-            homepage_hero_description: formData.homepage_hero_description,
-            homepage_hero_background_url: formData.homepage_hero_background_url,
-            homepage_hero_right_button_text: formData.homepage_hero_right_button_text,
-            homepage_hero_right_button_link: formData.homepage_hero_right_button_link,
-            homepage_about_section_description: formData.homepage_about_section_description,
-            homepage_about_section_image_url: formData.homepage_about_section_image_url,
-            homepage_services_section_description: formData.homepage_services_section_description,
-            homepage_menu_section_description: formData.homepage_menu_section_description,
-            homepage_contact_section_description: formData.homepage_contact_section_description,
-            homepage_delivery_section_title: formData.homepage_delivery_section_title,
-            homepage_delivery_section_description: formData.homepage_delivery_section_description,
-            homepage_contact_hide_reservation_box: formData.homepage_contact_hide_reservation_box,
-            about_page_hero_description: formData.about_page_hero_description,
-            about_page_hero_background_url: formData.about_page_hero_background_url,
-            about_page_about_section_image_url: formData.about_page_about_section_image_url,
-            about_team_section_description: formData.about_team_section_description,
-            menu_page_hero_description: formData.menu_page_hero_description,
-            menu_page_hero_background_url: formData.menu_page_hero_background_url,
-            contact_page_hero_description: formData.contact_page_hero_description,
-            contact_page_hero_background_url: formData.contact_page_hero_background_url,
-            reviews_page_hero_description: formData.reviews_page_hero_description,
-            reviews_page_hero_background_url: formData.reviews_page_hero_background_url,
-            // Carousel settings
-            carousel_enabled: (adminContent as any)?.carousel_enabled ?? true,
-            carousel_display_order: (adminContent as any)?.carousel_display_order ?? 2,
-            // About content fields (replacing JSONB)
-            about_story: formData.about_story,
-            about_chef_info: formData.about_chef_info,
-            about_mission: formData.about_mission,
-            // Stats fields (3 items)
-            stats_item1_icon: formData.stats_item1_icon,
-            stats_item1_number: formData.stats_item1_number,
-            stats_item1_label: formData.stats_item1_label,
-            stats_item2_icon: formData.stats_item2_icon,
-            stats_item2_number: formData.stats_item2_number,
-            stats_item2_label: formData.stats_item2_label,
-            stats_item3_icon: formData.stats_item3_icon,
-            stats_item3_number: formData.stats_item3_number,
-            stats_item3_label: formData.stats_item3_label,
-            // Legacy stats fields
-            stats_experience_number: formData.stats_experience_number,
-            stats_experience_label: formData.stats_experience_label,
-            stats_clients_number: formData.stats_clients_number,
-            stats_clients_label: formData.stats_clients_label,
-            stats_awards_number: formData.stats_awards_number,
-            stats_awards_label: formData.stats_awards_label,
-            // Services Cards (3 cards)
-            services_card1_icon: formData.services_card1_icon,
-            services_card1_title: formData.services_card1_title,
-            services_card1_description: formData.services_card1_description,
-            services_card1_button_text: formData.services_card1_button_text,
-            services_card1_button_link: formData.services_card1_button_link,
-            services_card2_icon: formData.services_card2_icon,
-            services_card2_title: formData.services_card2_title,
-            services_card2_description: formData.services_card2_description,
-            services_card2_button_text: formData.services_card2_button_text,
-            services_card2_button_link: formData.services_card2_button_link,
-            services_card3_icon: formData.services_card3_icon,
-            services_card3_title: formData.services_card3_title,
-            services_card3_description: formData.services_card3_description,
-            services_card3_button_text: formData.services_card3_button_text,
-            services_card3_button_link: formData.services_card3_button_link,
-            // Services Features (3 features)
-            services_feature1_icon: formData.services_feature1_icon,
-            services_feature1_text: formData.services_feature1_text,
-            services_feature2_icon: formData.services_feature2_icon,
-            services_feature2_text: formData.services_feature2_text,
-            services_feature3_icon: formData.services_feature3_icon,
-            services_feature3_text: formData.services_feature3_text,
-            // Footer description
-            footer_description: formData.footer_description,
-            // Logo URLs
-            header_logo_url: formData.header_logo_url,
-            footer_logo_url: formData.footer_logo_url,
-            // Downloadable menu
-            downloadable_menu_url: formData.downloadable_menu_url,
-            // Homepage CTA Section Fields
-            homepage_cta_title: formData.homepage_cta_title,
-            homepage_cta_description: formData.homepage_cta_description,
-            homepage_cta_button1_text: formData.homepage_cta_button1_text,
-            homepage_cta_button1_link: formData.homepage_cta_button1_link,
-            homepage_cta_button2_text: formData.homepage_cta_button2_text,
-            homepage_cta_button2_link: formData.homepage_cta_button2_link,
-            // Contact Reservation Section Fields
-            contact_reservation_title: formData.contact_reservation_title,
-            contact_reservation_description: formData.contact_reservation_description,
-            // WhatsApp Message Fields
-            whatsapp_reservation_message: formData.whatsapp_reservation_message,
-            whatsapp_general_message: formData.whatsapp_general_message,
-            // Briefing fields
-            content_briefing: formData.content_briefing,
-            style_briefing: formData.style_briefing,
-            contact_delivery_briefing: formData.contact_delivery_briefing,
-            // Section Visibility Toggles
-            homepage_about_section_visible: formData.homepage_about_section_visible,
-            homepage_about_stats_visible: formData.homepage_about_stats_visible,
-            homepage_menu_section_visible: formData.homepage_menu_section_visible,
-            homepage_services_section_visible: formData.homepage_services_section_visible,
-            homepage_reservations_section_visible: formData.homepage_reservations_section_visible,
-            homepage_reviews_section_visible: formData.homepage_reviews_section_visible,
-            homepage_contact_section_visible: formData.homepage_contact_section_visible,
-            homepage_contact_map_visible: formData.homepage_contact_map_visible,
-            about_page_about_section_visible: formData.about_page_about_section_visible,
-            about_page_about_stats_visible: formData.about_page_about_stats_visible,
-            about_page_stats_section_visible: formData.about_page_stats_section_visible,
-            about_page_team_section_visible: formData.about_page_team_section_visible,
-            contact_page_contact_section_visible: formData.contact_page_contact_section_visible,
-            contact_page_map_visible: formData.contact_page_map_visible,
-            updated_at: new Date().toISOString()
-          }, {
-            onConflict: 'client_id'
-          });
+      // Update admin_content table
+      const { error: adminContentError } = await (supabase as any)
+        .from('admin_content')
+        .upsert({
+          client_id: effectiveClientId,
+          // Two-part titles
+          homepage_hero_title_first_line: formData.homepage_hero_title_first_line,
+          homepage_hero_title_second_line: formData.homepage_hero_title_second_line,
+          homepage_menu_section_title_first_line: formData.homepage_menu_section_title_first_line,
+          homepage_menu_section_title_second_line: formData.homepage_menu_section_title_second_line,
+          homepage_contact_section_title_first_line: formData.homepage_contact_section_title_first_line,
+          homepage_contact_section_title_second_line: formData.homepage_contact_section_title_second_line,
+          homepage_services_section_title_first_line: formData.homepage_services_section_title_first_line,
+          homepage_services_section_title_second_line: formData.homepage_services_section_title_second_line,
+          homepage_about_section_title_first_line: formData.homepage_about_section_title_first_line,
+          homepage_about_section_title_second_line: formData.homepage_about_section_title_second_line,
+          reviews_section_title_first_line: formData.reviews_section_title_first_line,
+          reviews_section_title_second_line: formData.reviews_section_title_second_line,
+          reviews_section_description: formData.reviews_section_description,
+          about_page_hero_title_first_line: formData.about_page_hero_title_first_line,
+          about_page_hero_title_second_line: formData.about_page_hero_title_second_line,
+          about_team_section_title_first_line: formData.about_team_section_title_first_line,
+          about_team_section_title_second_line: formData.about_team_section_title_second_line,
+          contact_page_hero_title_first_line: formData.contact_page_hero_title_first_line,
+          contact_page_hero_title_second_line: formData.contact_page_hero_title_second_line,
+          menu_page_hero_title_first_line: formData.menu_page_hero_title_first_line,
+          menu_page_hero_title_second_line: formData.menu_page_hero_title_second_line,
+          reviews_page_hero_title_first_line: formData.reviews_page_hero_title_first_line,
+          reviews_page_hero_title_second_line: formData.reviews_page_hero_title_second_line,
+          // Other content fields
+          homepage_hero_description: formData.homepage_hero_description,
+          homepage_hero_background_url: formData.homepage_hero_background_url,
+          homepage_hero_right_button_text: formData.homepage_hero_right_button_text,
+          homepage_hero_right_button_link: formData.homepage_hero_right_button_link,
+          homepage_about_section_description: formData.homepage_about_section_description,
+          homepage_about_section_image_url: formData.homepage_about_section_image_url,
+          homepage_services_section_description: formData.homepage_services_section_description,
+          homepage_menu_section_description: formData.homepage_menu_section_description,
+          homepage_contact_section_description: formData.homepage_contact_section_description,
+          homepage_delivery_section_title: formData.homepage_delivery_section_title,
+          homepage_delivery_section_description: formData.homepage_delivery_section_description,
+          homepage_contact_hide_reservation_box: formData.homepage_contact_hide_reservation_box,
+          about_page_hero_description: formData.about_page_hero_description,
+          about_page_hero_background_url: formData.about_page_hero_background_url,
+          about_page_about_section_image_url: formData.about_page_about_section_image_url,
+          about_team_section_description: formData.about_team_section_description,
+          menu_page_hero_description: formData.menu_page_hero_description,
+          menu_page_hero_background_url: formData.menu_page_hero_background_url,
+          contact_page_hero_description: formData.contact_page_hero_description,
+          contact_page_hero_background_url: formData.contact_page_hero_background_url,
+          reviews_page_hero_description: formData.reviews_page_hero_description,
+          reviews_page_hero_background_url: formData.reviews_page_hero_background_url,
+          // Carousel settings
+          carousel_enabled: (adminContent as any)?.carousel_enabled ?? true,
+          carousel_display_order: (adminContent as any)?.carousel_display_order ?? 2,
+          // About content fields (replacing JSONB)
+          about_story: formData.about_story,
+          about_chef_info: formData.about_chef_info,
+          about_mission: formData.about_mission,
+          // Stats fields (3 items)
+          stats_item1_icon: formData.stats_item1_icon,
+          stats_item1_number: formData.stats_item1_number,
+          stats_item1_label: formData.stats_item1_label,
+          stats_item2_icon: formData.stats_item2_icon,
+          stats_item2_number: formData.stats_item2_number,
+          stats_item2_label: formData.stats_item2_label,
+          stats_item3_icon: formData.stats_item3_icon,
+          stats_item3_number: formData.stats_item3_number,
+          stats_item3_label: formData.stats_item3_label,
+          // Legacy stats fields
+          stats_experience_number: formData.stats_experience_number,
+          stats_experience_label: formData.stats_experience_label,
+          stats_clients_number: formData.stats_clients_number,
+          stats_clients_label: formData.stats_clients_label,
+          stats_awards_number: formData.stats_awards_number,
+          stats_awards_label: formData.stats_awards_label,
+          // Services Cards (3 cards)
+          services_card1_icon: formData.services_card1_icon,
+          services_card1_title: formData.services_card1_title,
+          services_card1_description: formData.services_card1_description,
+          services_card1_button_text: formData.services_card1_button_text,
+          services_card1_button_link: formData.services_card1_button_link,
+          services_card2_icon: formData.services_card2_icon,
+          services_card2_title: formData.services_card2_title,
+          services_card2_description: formData.services_card2_description,
+          services_card2_button_text: formData.services_card2_button_text,
+          services_card2_button_link: formData.services_card2_button_link,
+          services_card3_icon: formData.services_card3_icon,
+          services_card3_title: formData.services_card3_title,
+          services_card3_description: formData.services_card3_description,
+          services_card3_button_text: formData.services_card3_button_text,
+          services_card3_button_link: formData.services_card3_button_link,
+          // Services Features (3 features)
+          services_feature1_icon: formData.services_feature1_icon,
+          services_feature1_text: formData.services_feature1_text,
+          services_feature2_icon: formData.services_feature2_icon,
+          services_feature2_text: formData.services_feature2_text,
+          services_feature3_icon: formData.services_feature3_icon,
+          services_feature3_text: formData.services_feature3_text,
+          // Footer description
+          footer_description: formData.footer_description,
+          // Logo URLs
+          header_logo_url: formData.header_logo_url,
+          footer_logo_url: formData.footer_logo_url,
+          // Downloadable menu
+          downloadable_menu_url: formData.downloadable_menu_url,
+          // Homepage CTA Section Fields
+          homepage_cta_title: formData.homepage_cta_title,
+          homepage_cta_description: formData.homepage_cta_description,
+          homepage_cta_button1_text: formData.homepage_cta_button1_text,
+          homepage_cta_button1_link: formData.homepage_cta_button1_link,
+          homepage_cta_button2_text: formData.homepage_cta_button2_text,
+          homepage_cta_button2_link: formData.homepage_cta_button2_link,
+          // Contact Reservation Section Fields
+          contact_reservation_title: formData.contact_reservation_title,
+          contact_reservation_description: formData.contact_reservation_description,
+          // WhatsApp Message Fields
+          whatsapp_reservation_message: formData.whatsapp_reservation_message,
+          whatsapp_general_message: formData.whatsapp_general_message,
+          // Briefing fields
+          content_briefing: formData.content_briefing,
+          style_briefing: formData.style_briefing,
+          contact_delivery_briefing: formData.contact_delivery_briefing,
+          // Label Fields
+          our_story_label: formData.our_story_label,
+          culinary_masterpieces_label: formData.culinary_masterpieces_label,
+          testimonials_label: formData.testimonials_label,
+          our_services_label: formData.our_services_label,
+          contact_us_label: formData.contact_us_label,
+          about_us_label: formData.about_us_label,
+          our_menu_label: formData.our_menu_label,
+          our_team_label: formData.our_team_label,
+          // Section Visibility Toggles
+          homepage_about_section_visible: formData.homepage_about_section_visible,
+          homepage_about_stats_visible: formData.homepage_about_stats_visible,
+          homepage_menu_section_visible: formData.homepage_menu_section_visible,
+          homepage_services_section_visible: formData.homepage_services_section_visible,
+          homepage_reservations_section_visible: formData.homepage_reservations_section_visible,
+          homepage_reviews_section_visible: formData.homepage_reviews_section_visible,
+          homepage_contact_section_visible: formData.homepage_contact_section_visible,
+          homepage_contact_map_visible: formData.homepage_contact_map_visible,
+          about_page_about_section_visible: formData.about_page_about_section_visible,
+          about_page_about_stats_visible: formData.about_page_about_stats_visible,
+          about_page_stats_section_visible: formData.about_page_stats_section_visible,
+          about_page_team_section_visible: formData.about_page_team_section_visible,
+          contact_page_contact_section_visible: formData.contact_page_contact_section_visible,
+          contact_page_map_visible: formData.contact_page_map_visible,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'client_id'
+        });
 
-        if (adminContentError) throw adminContentError;
-      }
+      if (adminContentError) throw adminContentError;
 
       // Update or create premium features if any premium feature fields have values
       if (formData.google_analytics_id || formData.google_search_console_verification || 
