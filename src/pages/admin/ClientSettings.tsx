@@ -911,6 +911,7 @@ const [reviewForm, setReviewForm] = useState({
     body_font: 'Inter',
     title_font_weight: '400',
     title_size_scale: 0,
+    hero_overlay_opacity: 70,
     template_id: '',
     // Admin content fields - Two-part titles
     homepage_hero_title_first_line: '',
@@ -1200,6 +1201,7 @@ const [reviewForm, setReviewForm] = useState({
           body_font: (data as any).body_font || 'Inter',
           title_font_weight: (data as any).title_font_weight || '400',
           title_size_scale: (data as any).title_size_scale ?? 0,
+          hero_overlay_opacity: (data as any).hero_overlay_opacity ?? 70,
           hide_whatsapp_button_menu: (data as any).hide_whatsapp_button_menu || false,
           hide_phone_button_menu: (data as any).hide_phone_button_menu || false,
           custom_cta_button_text: (data as any).custom_cta_button_text || '',
@@ -1216,6 +1218,7 @@ const [reviewForm, setReviewForm] = useState({
             title_font: 'Cormorant Garamond',
             body_font: 'Inter',
             title_font_weight: '400',
+            hero_overlay_opacity: 70,
             hide_whatsapp_button_menu: false,
             hide_phone_button_menu: false,
             custom_cta_button_text: '',
@@ -1745,6 +1748,7 @@ const [reviewForm, setReviewForm] = useState({
           body_font: formData.body_font,
           title_font_weight: formData.title_font_weight,
           title_size_scale: formData.title_size_scale,
+          hero_overlay_opacity: formData.hero_overlay_opacity,
           hide_whatsapp_button_menu: formData.hide_whatsapp_button_menu,
           hide_phone_button_menu: formData.hide_phone_button_menu,
           custom_cta_button_text: formData.custom_cta_button_text,
@@ -3411,17 +3415,43 @@ setReviewForm({
 
               <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">{t('branding.themeSettings')}</h4>
-                <div>
-                  <Label htmlFor="theme">{t('branding.theme')}</Label>
-                  <Select value={formData.theme || 'dark'} onValueChange={(value) => setFormData({...formData, theme: value})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bright">{t('branding.bright')}</SelectItem>
-                      <SelectItem value="dark">{t('branding.dark')}</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="theme">{t('branding.theme')}</Label>
+                    <Select value={formData.theme || 'dark'} onValueChange={(value) => setFormData({...formData, theme: value})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="bright">{t('branding.bright')}</SelectItem>
+                        <SelectItem value="dark">{t('branding.dark')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="hero_overlay_opacity">Opacidad de Superposición del Hero</Label>
+                    <Select 
+                      value={String(formData.hero_overlay_opacity ?? 70)} 
+                      onValueChange={(value) => setFormData({...formData, hero_overlay_opacity: parseInt(value)})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-md z-50">
+                        <SelectItem value="0">0% (Transparente)</SelectItem>
+                        <SelectItem value="10">10%</SelectItem>
+                        <SelectItem value="20">20%</SelectItem>
+                        <SelectItem value="30">30%</SelectItem>
+                        <SelectItem value="40">40%</SelectItem>
+                        <SelectItem value="50">50%</SelectItem>
+                        <SelectItem value="60">60%</SelectItem>
+                        <SelectItem value="70">70% (Predeterminado)</SelectItem>
+                        <SelectItem value="80">80%</SelectItem>
+                        <SelectItem value="90">90%</SelectItem>
+                        <SelectItem value="100">100% (Negro Sólido)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
