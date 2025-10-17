@@ -2854,6 +2854,49 @@ setReviewForm({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>
+                  <Label htmlFor="latitude">Latitud</Label>
+                  <Input
+                    id="latitude"
+                    type="number"
+                    step="any"
+                    value={formData.coordinates.lat || ''}
+                    onChange={(e) => setFormData({
+                      ...formData, 
+                      coordinates: {
+                        ...formData.coordinates,
+                        lat: e.target.value
+                      }
+                    })}
+                    placeholder="-12.0464"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Coordenada de latitud para Google Maps
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="longitude">Longitud</Label>
+                  <Input
+                    id="longitude"
+                    type="number"
+                    step="any"
+                    value={formData.coordinates.lng || ''}
+                    onChange={(e) => setFormData({
+                      ...formData, 
+                      coordinates: {
+                        ...formData.coordinates,
+                        lng: e.target.value
+                      }
+                    })}
+                    placeholder="-77.0428"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Coordenada de longitud para Google Maps
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
                   <Label htmlFor="country_code">País</Label>
                   <Select
                     value={formData.country_code || 'PE'}
