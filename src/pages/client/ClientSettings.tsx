@@ -316,6 +316,93 @@ export default function ClientSettings() {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Redes Sociales</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="facebook">Facebook</Label>
+                  <Input
+                    id="facebook"
+                    value={formData.social_media_links?.facebook || ''}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      social_media_links: { ...prev.social_media_links, facebook: e.target.value }
+                    }))}
+                    placeholder="https://facebook.com/mirestaurante"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="instagram">Instagram</Label>
+                  <Input
+                    id="instagram"
+                    value={formData.social_media_links?.instagram || ''}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      social_media_links: { ...prev.social_media_links, instagram: e.target.value }
+                    }))}
+                    placeholder="https://instagram.com/mirestaurante"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="x">X (Twitter)</Label>
+                  <Input
+                    id="x"
+                    value={formData.social_media_links?.x || ''}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      social_media_links: { ...prev.social_media_links, x: e.target.value }
+                    }))}
+                    placeholder="https://x.com/mirestaurante"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="tiktok">TikTok</Label>
+                  <Input
+                    id="tiktok"
+                    value={formData.social_media_links?.tiktok || ''}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      social_media_links: { ...prev.social_media_links, tiktok: e.target.value }
+                    }))}
+                    placeholder="https://tiktok.com/@mirestaurante"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="youtube">YouTube</Label>
+                  <Input
+                    id="youtube"
+                    value={formData.social_media_links?.youtube || ''}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      social_media_links: { ...prev.social_media_links, youtube: e.target.value }
+                    }))}
+                    placeholder="https://youtube.com/@mirestaurante"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="linkedin">LinkedIn</Label>
+                  <Input
+                    id="linkedin"
+                    value={formData.social_media_links?.linkedin || ''}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      social_media_links: { ...prev.social_media_links, linkedin: e.target.value }
+                    }))}
+                    placeholder="https://linkedin.com/company/mirestaurante"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       <TabsContent value="analytics" className="space-y-4">
         <Card>
