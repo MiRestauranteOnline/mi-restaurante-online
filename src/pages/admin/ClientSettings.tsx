@@ -2493,22 +2493,27 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
           .update({
             question: faqForm.question,
             answer: faqForm.answer,
-            display_order: faqForm.display_order,
           })
-          .eq('id', editingFaq.id);
+          .eq('id', editingFaq.id)
+          .select()
+          .single();
 
         if (error) throw error;
         
-        setFaqs(faqs.map(f => f.id === editingFaq.id ? { ...f, ...faqForm } : f));
-        setEditingFaq(null);
+        if (data) {
+          setFaqs(faqs.map(f => f.id === editingFaq.id ? data : f));
+        }
       } else {
+        // Get the highest display_order and add 1
+        const maxOrder = faqs.length > 0 ? Math.max(...faqs.map(f => f.display_order)) : -1;
+        
         const { data, error } = await (supabase as any)
           .from('faqs')
           .insert({
             client_id: effectiveClientId,
             question: faqForm.question,
             answer: faqForm.answer,
-            display_order: faqForm.display_order,
+            display_order: maxOrder + 1,
             is_active: true,
           })
           .select()
@@ -2526,7 +2531,7 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
       setFaqForm({ question: '', answer: '', display_order: 0 });
       
       toast({
-        title: "Success",
+        title: "Éxito",
         description: "FAQ guardado exitosamente"
       });
     } catch (error: any) {
@@ -2854,7 +2859,8 @@ setReviewForm({
       });
     } else {
       setEditingFaq(null);
-      setFaqForm({ question: '', answer: '', display_order: 0 });
+      const maxOrder = faqs.length > 0 ? Math.max(...faqs.map(f => f.display_order)) : -1;
+      setFaqForm({ question: '', answer: '', display_order: maxOrder + 1 });
     }
     setShowFaqDialog(true);
   };
