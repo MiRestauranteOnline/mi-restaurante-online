@@ -53,6 +53,8 @@ interface TableAvailability {
   seats: number;
   total: number;
   available: number;
+  min_party_size: number;
+  max_party_size: number;
 }
 
 interface TimeSlotAvailability {
@@ -246,6 +248,8 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
               seats: config.seats,
               total: config.quantity,
               available,
+              min_party_size: config.min_party_size,
+              max_party_size: config.max_party_size,
             };
           });
 
@@ -665,8 +669,14 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
                                   }`}
                                 >
                                   <div className="font-medium truncate">{table.table_name}</div>
-                                  <div className="text-xs mt-1">
-                                    {table.available}/{table.total}
+                                  <div className="text-[10px] opacity-75">
+                                    {table.seats} asientos
+                                  </div>
+                                  <div className="text-xs mt-1 font-semibold">
+                                    {table.available}/{table.total} disponible{table.available !== 1 ? 's' : ''}
+                                  </div>
+                                  <div className="text-[10px] opacity-75 mt-1">
+                                    {table.min_party_size}-{table.max_party_size} personas
                                   </div>
                                 </div>
                               ))}
