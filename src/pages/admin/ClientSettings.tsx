@@ -451,12 +451,6 @@ function SortableCategoryCard({
                 )}
               </div>
               ) : (
-                <DndContext
-                  sensors={itemSensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={(event) => onItemDragEnd(event, category.id)}
-                >
-                  <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-2">
                       {categoryItems.map((item, index) => (
                         <SortableMenuItem
@@ -473,8 +467,6 @@ function SortableCategoryCard({
                         />
                       ))}
                     </div>
-                  </SortableContext>
-                </DndContext>
             )}
           </CardContent>
         </CollapsibleContent>
@@ -539,25 +531,8 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStat
   isFirst: boolean,
   isLast: boolean
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: item.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="flex flex-col gap-3 p-3 border rounded bg-card"
-    >
+    <div className="flex flex-col gap-3 p-3 border rounded bg-card">
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex flex-col gap-2 mb-2">
@@ -610,25 +585,8 @@ function SortableTeamMember({ member, onEdit, onDelete, onMoveUp, onMoveDown, is
   isFirst: boolean,
   isLast: boolean
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: member.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="flex flex-col gap-3 p-3 border rounded bg-card"
-    >
+    <div className="flex flex-col gap-3 p-3 border rounded bg-card">
       <div className="flex items-start gap-3">
         <div className="flex items-start gap-3 min-w-0 flex-1">
           {member.image_url && (
@@ -673,19 +631,6 @@ function SortableReview({ review, onEdit, onDelete, onMoveUp, onMoveDown, isFirs
   isFirst: boolean,
   isLast: boolean
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: review.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -701,11 +646,7 @@ function SortableReview({ review, onEdit, onDelete, onMoveUp, onMoveDown, isFirs
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="flex flex-col gap-3 p-3 border rounded bg-card"
-    >
+    <div className="flex flex-col gap-3 p-3 border rounded bg-card">
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
@@ -5762,26 +5703,18 @@ setReviewForm({
           <CardContent>
             <div className="space-y-2">
               {teamMembers.length > 0 ? (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleTeamMemberDragEnd}
-                >
-                  <SortableContext items={teamMembers.map(m => m.id)} strategy={verticalListSortingStrategy}>
-                    {[...teamMembers].sort((a, b) => a.display_order - b.display_order).map((member, index) => (
-                      <SortableTeamMember
-                        key={member.id}
-                        member={member}
-                        onEdit={openTeamMemberDialog}
-                        onDelete={handleDeleteTeamMember}
-                        onMoveUp={handleMoveTeamMemberUp}
-                        onMoveDown={handleMoveTeamMemberDown}
-                        isFirst={index === 0}
-                        isLast={index === teamMembers.length - 1}
-                      />
-                    ))}
-                  </SortableContext>
-                </DndContext>
+                [...teamMembers].sort((a, b) => a.display_order - b.display_order).map((member, index) => (
+                  <SortableTeamMember
+                    key={member.id}
+                    member={member}
+                    onEdit={openTeamMemberDialog}
+                    onDelete={handleDeleteTeamMember}
+                    onMoveUp={handleMoveTeamMemberUp}
+                    onMoveDown={handleMoveTeamMemberDown}
+                    isFirst={index === 0}
+                    isLast={index === teamMembers.length - 1}
+                  />
+                ))
               ) : (
                 <p className="text-muted-foreground text-center py-4">{t('team.noTeamMembers')}</p>
               )}
@@ -5805,26 +5738,18 @@ setReviewForm({
           <CardContent>
             <div className="space-y-2">
               {reviews.length > 0 ? (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleReviewDragEnd}
-                >
-                  <SortableContext items={reviews.map(r => r.id)} strategy={verticalListSortingStrategy}>
-                    {[...reviews].sort((a, b) => a.display_order - b.display_order).map((review, index) => (
-                      <SortableReview
-                        key={review.id}
-                        review={review}
-                        onEdit={openReviewDialog}
-                        onDelete={handleDeleteReview}
-                        onMoveUp={handleMoveReviewUp}
-                        onMoveDown={handleMoveReviewDown}
-                        isFirst={index === 0}
-                        isLast={index === reviews.length - 1}
-                      />
-                    ))}
-                  </SortableContext>
-                </DndContext>
+                [...reviews].sort((a, b) => a.display_order - b.display_order).map((review, index) => (
+                  <SortableReview
+                    key={review.id}
+                    review={review}
+                    onEdit={openReviewDialog}
+                    onDelete={handleDeleteReview}
+                    onMoveUp={handleMoveReviewUp}
+                    onMoveDown={handleMoveReviewDown}
+                    isFirst={index === 0}
+                    isLast={index === reviews.length - 1}
+                  />
+                ))
               ) : (
                 <p className="text-muted-foreground text-center py-4">{t('reviews.noReviewsFound')}</p>
               )}
