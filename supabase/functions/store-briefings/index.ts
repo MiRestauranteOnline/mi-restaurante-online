@@ -25,6 +25,7 @@ serve(async (req) => {
       teamData,
       openingHoursData,
       imagesData,
+      faqsData,
       skipBranding = false,
     } = await req.json();
 
@@ -398,6 +399,45 @@ serve(async (req) => {
         console.error('Error storing opening hours:', hoursError);
       } else {
         console.log('Successfully stored opening hours');
+      }
+    }
+
+    // Store FAQs if provided
+    if (faqsData?.faqs?.length > 0) {
+      console.log('Processing FAQs data for client:', actualClientId);
+      
+      for (let i = 0; i < faqsData.faqs.length; i++) {
+        const faq = faqsData.faqs[i];
+        if (faq.question?.trim() && faq.answer?.trim()) {
+          // Check if FAQ already exists
+          const { data: existingFaq } = await supabase
+            .from('faqs')
+            .select('id')
+            .eq('client_id', actualClientId)
+            .eq('question', faq.question.trim())
+            .single();
+
+          if (existingFaq) {
+            console.log('FAQ already exists:', faq.question);
+            continue;
+          }
+
+          const { error: faqError } = await supabase
+            .from('faqs')
+            .insert({
+              client_id: actualClientId,
+              question: faq.question.trim(),
+              answer: faq.answer.trim(),
+              display_order: i,
+              is_active: true
+            });
+
+          if (faqError) {
+            console.error('Error inserting FAQ:', faqError);
+          } else {
+            console.log('Successfully created FAQ:', faq.question);
+          }
+        }
       }
     }
 

@@ -7,6 +7,7 @@ import { SignupStep2 } from "@/components/signup/SignupStep2";
 import { SignupStep3Combined, type CombinedData } from "@/components/signup/SignupStep3Combined";
 import { SignupStep4OpeningHours, type OpeningHoursData } from "@/components/signup/SignupStep4OpeningHours";
 import { SignupStep5Images, type ImagesData } from "@/components/signup/SignupStep5Images";
+import { SignupStep6FAQs, type FAQsData } from "@/components/signup/SignupStep6FAQs";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { CouponInput } from "@/components/signup/CouponInput";
 import { Card, CardContent } from "@/components/ui/card";
@@ -83,6 +84,7 @@ const Signup = () => {
               if (parsed.combinedData) setCombinedData(parsed.combinedData);
               if (parsed.openingHoursData) setOpeningHoursData(parsed.openingHoursData);
               if (parsed.imagesData) setImagesData(parsed.imagesData);
+              if (parsed.faqsData) setFaqsData(parsed.faqsData);
               if (parsed.selectedPlan) setSelectedPlan(parsed.selectedPlan);
               if (parsed.createdClientId) setCreatedClientId(parsed.createdClientId);
               if (parsed.currentStep) setCurrentStep(parsed.currentStep);
@@ -147,6 +149,9 @@ const Signup = () => {
     custom_images_enabled: false,
     custom_images: [],
   });
+  const [faqsData, setFaqsData] = useState<FAQsData>({
+    faqs: [],
+  });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isProcessingFinalStep, setIsProcessingFinalStep] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
@@ -168,7 +173,7 @@ const Signup = () => {
     setSelectedPlan(plan);
     
     // Save progress to localStorage
-    saveProgress(updatedData, websiteRequirements, combinedData, openingHoursData, imagesData, plan, createdClientId, 1);
+    saveProgress(updatedData, websiteRequirements, combinedData, openingHoursData, imagesData, faqsData, plan, createdClientId, 1);
     
     setIsProcessingPayment(true);
 
@@ -262,7 +267,7 @@ const Signup = () => {
         }
         
         // Save progress before moving to payment
-        saveProgress(finalData, websiteRequirements, combinedData, openingHoursData, imagesData, plan, newClientId, 2);
+        saveProgress(finalData, websiteRequirements, combinedData, openingHoursData, imagesData, faqsData, plan, newClientId, 2);
         
         setIsProcessingPayment(false);
         console.log('🔄 Setting currentStep to 2');
@@ -295,7 +300,7 @@ const Signup = () => {
 
   const handlePaymentSuccess = () => {
     // Save progress and move to requirements step after successful payment
-    saveProgress(signupData, websiteRequirements, combinedData, openingHoursData, imagesData, selectedPlan, createdClientId, 3);
+    saveProgress(signupData, websiteRequirements, combinedData, openingHoursData, imagesData, faqsData, selectedPlan, createdClientId, 3);
     setCurrentStep(3);
   };
   
@@ -306,6 +311,7 @@ const Signup = () => {
     combined: CombinedData,
     hours: OpeningHoursData,
     images: ImagesData,
+    faqs: FAQsData,
     plan: 'basic' | 'advanced',
     clientId: string,
     step: number
@@ -316,6 +322,7 @@ const Signup = () => {
       combinedData: combined,
       openingHoursData: hours,
       imagesData: images,
+      faqsData: faqs,
       selectedPlan: plan,
       createdClientId: clientId,
       currentStep: step,
@@ -337,27 +344,34 @@ const Signup = () => {
 
   const handleStep2Complete = async (requirements: WebsiteRequirements) => {
     setWebsiteRequirements(requirements);
-    saveProgress(signupData, requirements, combinedData, openingHoursData, imagesData, selectedPlan, createdClientId, 4);
+    saveProgress(signupData, requirements, combinedData, openingHoursData, imagesData, faqsData, selectedPlan, createdClientId, 4);
     setCurrentStep(4); // Move to menu step
     window.scrollTo(0, 0);
   };
 
   const handleStep3Complete = async (combined: CombinedData) => {
     setCombinedData(combined);
-    saveProgress(signupData, websiteRequirements, combined, openingHoursData, imagesData, selectedPlan, createdClientId, 5);
+    saveProgress(signupData, websiteRequirements, combined, openingHoursData, imagesData, faqsData, selectedPlan, createdClientId, 5);
     setCurrentStep(5); // Move to opening hours step
     window.scrollTo(0, 0);
   };
 
   const handleStep4Complete = async (openingHours: OpeningHoursData) => {
     setOpeningHoursData(openingHours);
-    saveProgress(signupData, websiteRequirements, combinedData, openingHours, imagesData, selectedPlan, createdClientId, 6);
+    saveProgress(signupData, websiteRequirements, combinedData, openingHours, imagesData, faqsData, selectedPlan, createdClientId, 6);
     setCurrentStep(6); // Move to images step
     window.scrollTo(0, 0);
   };
 
   const handleStep5Complete = async (images: ImagesData) => {
     setImagesData(images);
+    saveProgress(signupData, websiteRequirements, combinedData, openingHoursData, images, faqsData, selectedPlan, createdClientId, 7);
+    setCurrentStep(7); // Move to FAQs step
+    window.scrollTo(0, 0);
+  };
+
+  const handleStep6Complete = async (faqs: FAQsData) => {
+    setFaqsData(faqs);
     setIsProcessingFinalStep(true);
     
     try {
@@ -381,7 +395,8 @@ const Signup = () => {
           reviewsData: { reviews: combinedData.reviews },
           teamData: { teamMembers: combinedData.teamMembers },
           openingHoursData,
-          imagesData: images
+          imagesData,
+          faqsData: faqs
         }
       });
 
@@ -416,7 +431,7 @@ const Signup = () => {
     // Clear saved progress on completion
     localStorage.removeItem('signupProgress');
     
-    setCurrentStep(7); // Move to success step
+    setCurrentStep(8); // Move to success step
   };
 
 
@@ -437,6 +452,11 @@ const Signup = () => {
 
   const handleBackToStep4 = () => {
     setCurrentStep(5);
+    window.scrollTo(0, 0);
+  };
+
+  const handleBackToStep5 = () => {
+    setCurrentStep(6);
     window.scrollTo(0, 0);
   };
 
@@ -531,6 +551,17 @@ const Signup = () => {
                 <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
                   currentStep >= 7 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
                 }`}>
+                  7
+                </div>
+                <span className="ml-2 font-medium text-xs sm:text-sm">FAQs</span>
+              </div>
+
+              <div className={`w-8 h-0.5 ${currentStep > 7 ? 'bg-primary' : 'bg-muted'}`} />
+              
+              <div className={`flex items-center ${currentStep >= 8 ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
+                  currentStep >= 8 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground'
+                }`}>
                   ✓
                 </div>
                 <span className="ml-2 font-medium text-xs sm:text-sm">Listo</span>
@@ -623,11 +654,19 @@ const Signup = () => {
                 onComplete={handleStep5Complete}
                 onBack={() => setCurrentStep(5)}
                 initialData={imagesData}
-                isProcessingFinalStep={isProcessingFinalStep}
               />
               )}
               
               {currentStep === 7 && (
+                <SignupStep6FAQs
+                  onComplete={handleStep6Complete}
+                  onBack={handleBackToStep5}
+                  initialData={faqsData}
+                  isProcessing={isProcessingFinalStep}
+                />
+              )}
+              
+              {currentStep === 8 && (
                 <SignupSuccess 
                   signupData={signupData}
                   websiteRequirements={websiteRequirements}
