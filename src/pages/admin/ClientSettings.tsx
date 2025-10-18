@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil, ArrowUp, ArrowDown } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil, ArrowUp, ArrowDown, ChevronUp, ChevronDown } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -326,7 +326,11 @@ function SortableCategoryCard({
   handleToggleItemStatus,
   onItemDragEnd,
   handleMoveMenuItemUp,
-  handleMoveMenuItemDown
+  handleMoveMenuItemDown,
+  handleMoveCategoryUp,
+  handleMoveCategoryDown,
+  isFirst,
+  isLast
 }: {
   category: MenuCategory;
   categoryItems: MenuItem[];
@@ -343,40 +347,37 @@ function SortableCategoryCard({
   onItemDragEnd: (event: DragEndEvent, categoryId: string) => void;
   handleMoveMenuItemUp: (id: string) => void;
   handleMoveMenuItemDown: (id: string) => void;
+  handleMoveCategoryUp: (id: string) => void;
+  handleMoveCategoryDown: (id: string) => void;
+  isFirst: boolean;
+  isLast: boolean;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: category.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  // Local sensors for item-level DnD within this category only
-  const itemSensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
-
   return (
-    <Card ref={setNodeRef} style={style} className="overflow-hidden">
+    <Card className="overflow-hidden">
       <Collapsible defaultOpen={!searchTerm || categoryItems.length > 0}>
         <CollapsibleTrigger asChild>
           <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors pb-3">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
               <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                <div
-                  className="cursor-grab active:cursor-grabbing p-1 shrink-0"
-                  onClick={(e) => e.stopPropagation()}
-                  {...attributes}
-                  {...listeners}
-                >
-                  <GripVertical className="h-4 w-4 text-muted-foreground" />
+                <div className="flex flex-col gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleMoveCategoryUp(category.id)}
+                    disabled={isFirst}
+                    className="h-6 w-6 p-0"
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleMoveCategoryDown(category.id)}
+                    disabled={isLast}
+                    className="h-6 w-6 p-0"
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
                 </div>
                 <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90" />
                 <div className="flex items-center gap-2 flex-wrap min-w-0">
@@ -801,13 +802,15 @@ const [faqForm, setFaqForm] = useState({
     });
 
     const grouped = categories.reduce((acc, category) => {
-      acc[category.id] = filtered.filter(item => {
+      const categoryItems = filtered.filter(item => {
         const byId = item.category_id === category.id;
         const byLegacyName = (item as any).category 
           ? (item as any).category.toLowerCase().trim() === category.name.toLowerCase().trim()
           : false;
         return byId || byLegacyName;
       });
+      // Sort by display_order to ensure items appear in the correct order
+      acc[category.id] = categoryItems.sort((a, b) => a.display_order - b.display_order);
       return acc;
     }, {} as Record<string, MenuItem[]>);
 
@@ -3042,40 +3045,66 @@ setReviewForm({
     setShowFaqDialog(true);
   };
 
-  const handleCategoryDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (active.id !== over?.id) {
-      const oldIndex = categories.findIndex((item) => item.id === active.id);
-      const newIndex = categories.findIndex((item) => item.id === over?.id);
-
-      const reorderedCategories = arrayMove(categories, oldIndex, newIndex);
+  const handleMoveCategoryUp = async (categoryId: string) => {
+    const sortedCategories = [...categories].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedCategories.findIndex(c => c.id === categoryId);
+    
+    if (index > 0) {
+      const swapped = [...sortedCategories];
+      [swapped[index], swapped[index - 1]] = [swapped[index - 1], swapped[index]];
       
-      // Update display_order values to match regular user system (1-based indexing)
-      const updatedCategories = reorderedCategories.map((category, index) => ({
-        ...category,
-        display_order: index + 1  // Changed from index to index + 1
+      const updated = swapped.map((cat, idx) => ({ 
+        ...cat, 
+        display_order: idx 
       }));
-
-      setCategories(updatedCategories);
-
-      // Update database
+      
+      setCategories(updated);
+      
       try {
-        for (const category of updatedCategories) {
-          await supabase
+        const updatePromises = updated.map((cat) =>
+          supabase
             .from('menu_categories')
-            .update({ display_order: category.display_order })
-            .eq('id', category.id);
-        }
-        toast({ title: "Success", description: "Category order updated" });
+            .update({ display_order: cat.display_order })
+            .eq('id', cat.id)
+        );
+        
+        await Promise.all(updatePromises);
+        toast({ title: "Éxito", description: "Orden actualizado" });
       } catch (error: any) {
-        toast({
-          title: "Error",
-          description: "Failed to update category order: " + error.message,
-          variant: "destructive"
-        });
-        // Revert on error
-        await fetchCategories();
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
+        fetchCategories();
+      }
+    }
+  };
+
+  const handleMoveCategoryDown = async (categoryId: string) => {
+    const sortedCategories = [...categories].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedCategories.findIndex(c => c.id === categoryId);
+    
+    if (index < sortedCategories.length - 1) {
+      const swapped = [...sortedCategories];
+      [swapped[index], swapped[index + 1]] = [swapped[index + 1], swapped[index]];
+      
+      const updated = swapped.map((cat, idx) => ({ 
+        ...cat, 
+        display_order: idx 
+      }));
+      
+      setCategories(updated);
+      
+      try {
+        const updatePromises = updated.map((cat) =>
+          supabase
+            .from('menu_categories')
+            .update({ display_order: cat.display_order })
+            .eq('id', cat.id)
+        );
+        
+        await Promise.all(updatePromises);
+        toast({ title: "Éxito", description: "Orden actualizado" });
+      } catch (error: any) {
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
+        fetchCategories();
       }
     }
   };
@@ -3127,23 +3156,6 @@ setReviewForm({
     }
   };
 
-  // Global drag end to route between category vs item reordering
-  const handleGlobalDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-
-    const isCategoryDrag = categories.some(c => c.id === String(active.id));
-    if (isCategoryDrag) {
-      return handleCategoryDragEnd(event);
-    }
-
-    const activeItem = menuItems.find(mi => mi.id === String(active.id));
-    const overItem = menuItems.find(mi => mi.id === String(over.id));
-
-    if (activeItem && overItem && activeItem.category_id && overItem.category_id && activeItem.category_id === overItem.category_id) {
-      return handleMenuItemDragEnd(event, activeItem.category_id);
-    }
-  };
 
   const handleTabChange = (value: string) => {
     // Show warning for non-admin users accessing sensitive tabs
@@ -5643,17 +5655,8 @@ setReviewForm({
                   </div>
                 </div>
               ) : (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleGlobalDragEnd}
-                >
-                  <SortableContext 
-                    items={categories.map(c => c.id)} 
-                    strategy={verticalListSortingStrategy}
-                  >
                     <div className="space-y-4">
-                      {categories.map((category) => {
+                      {[...categories].sort((a, b) => a.display_order - b.display_order).map((category, index, sortedCategories) => {
                         const categoryItems = filteredAndGroupedMenuItems[category.id] || [];
                         const hasMatchingItems = searchTerm ? categoryItems.length > 0 : true;
                         
@@ -5677,12 +5680,14 @@ setReviewForm({
                             onItemDragEnd={handleMenuItemDragEnd}
                             handleMoveMenuItemUp={handleMoveMenuItemUp}
                             handleMoveMenuItemDown={handleMoveMenuItemDown}
+                            handleMoveCategoryUp={handleMoveCategoryUp}
+                            handleMoveCategoryDown={handleMoveCategoryDown}
+                            isFirst={index === 0}
+                            isLast={index === sortedCategories.length - 1}
                           />
                         );
                       })}
                     </div>
-                  </SortableContext>
-                </DndContext>
               )}
             </CardContent>
           </Card>
