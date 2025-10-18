@@ -2572,33 +2572,24 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
     const index = sortedFaqs.findIndex(f => f.id === faqId);
     
     if (index > 0) {
-      const newFaqs = [...sortedFaqs];
-      [newFaqs[index], newFaqs[index - 1]] = [newFaqs[index - 1], newFaqs[index]];
+      // Swap items in sorted order
+      const swapped = [...sortedFaqs];
+      [swapped[index], swapped[index - 1]] = [swapped[index - 1], swapped[index]];
+
+      // Reassign sequential display_order (1-based) and optimistically update UI
+      const updated = swapped.map((faq, idx) => ({ ...faq, display_order: idx + 1 }));
+      setFaqs(updated);
       
       try {
-        const updates = newFaqs.map((faq, idx) => ({
-          id: faq.id,
-          display_order: idx,
-        }));
-
-        for (const update of updates) {
+        for (const item of updated) {
           await (supabase as any)
             .from('faqs')
-            .update({ display_order: update.display_order })
-            .eq('id', update.id);
+            .update({ display_order: item.display_order })
+            .eq('id', item.id);
         }
-
-        setFaqs(newFaqs);
-        toast({
-          title: "Éxito",
-          description: "Orden actualizado exitosamente"
-        });
+        toast({ title: "Éxito", description: "Orden actualizado exitosamente" });
       } catch (error: any) {
-        toast({
-          title: "Error",
-          description: "Error al actualizar el orden",
-          variant: "destructive"
-        });
+        toast({ title: "Error", description: "Error al actualizar el orden", variant: "destructive" });
         fetchFaqs();
       }
     }
@@ -2609,33 +2600,23 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
     const index = sortedFaqs.findIndex(f => f.id === faqId);
     
     if (index < sortedFaqs.length - 1) {
-      const newFaqs = [...sortedFaqs];
-      [newFaqs[index], newFaqs[index + 1]] = [newFaqs[index + 1], newFaqs[index]];
+      const swapped = [...sortedFaqs];
+      [swapped[index], swapped[index + 1]] = [swapped[index + 1], swapped[index]];
+      
+      // Reassign sequential display_order (1-based) and optimistically update UI
+      const updated = swapped.map((faq, idx) => ({ ...faq, display_order: idx + 1 }));
+      setFaqs(updated);
       
       try {
-        const updates = newFaqs.map((faq, idx) => ({
-          id: faq.id,
-          display_order: idx,
-        }));
-
-        for (const update of updates) {
+        for (const item of updated) {
           await (supabase as any)
             .from('faqs')
-            .update({ display_order: update.display_order })
-            .eq('id', update.id);
+            .update({ display_order: item.display_order })
+            .eq('id', item.id);
         }
-
-        setFaqs(newFaqs);
-        toast({
-          title: "Éxito",
-          description: "Orden actualizado exitosamente"
-        });
+        toast({ title: "Éxito", description: "Orden actualizado exitosamente" });
       } catch (error: any) {
-        toast({
-          title: "Error",
-          description: "Error al actualizar el orden",
-          variant: "destructive"
-        });
+        toast({ title: "Error", description: "Error al actualizar el orden", variant: "destructive" });
         fetchFaqs();
       }
     }
