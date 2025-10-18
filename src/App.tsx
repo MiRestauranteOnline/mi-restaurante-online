@@ -110,7 +110,7 @@ const AppContent = () => {
         </Route>
         <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
           <Route index element={<ClientDashboard />} />
-          <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","carousel","custom-images"]} />} />
+          <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","faqs","carousel","custom-images"]} />} />
           <Route path="reservations/:clientId" element={<ClientReservations />} />
           <Route path="analytics/:clientId" element={<ClientAnalytics />} />
           <Route path="support/:clientId" element={<ClientSupport />} />
