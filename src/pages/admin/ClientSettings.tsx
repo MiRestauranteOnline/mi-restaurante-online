@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -2770,6 +2770,21 @@ setReviewForm({
     setShowReviewDialog(true);
   };
 
+  const openFaqDialog = (faq?: FAQ) => {
+    if (faq) {
+      setEditingFaq(faq);
+      setFaqForm({
+        question: faq.question,
+        answer: faq.answer,
+        display_order: faq.display_order,
+      });
+    } else {
+      setEditingFaq(null);
+      setFaqForm({ question: '', answer: '', display_order: 0 });
+    }
+    setShowFaqDialog(true);
+  };
+
   const handleCategoryDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -5492,6 +5507,70 @@ setReviewForm({
         </Card>
       </TabsContent>
 
+      {/* FAQs Tab */}
+      <TabsContent value="faqs">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+              <span className="text-xl">Preguntas Frecuentes</span>
+              <Button onClick={() => openFaqDialog()} size="sm" className="w-full sm:w-auto">
+                <Plus className="h-4 w-4 mr-2" />
+                Agregar FAQ
+              </Button>
+            </CardTitle>
+            <CardDescription>
+              Gestiona las preguntas frecuentes que se mostrarán en tu sitio web
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {faqs.length > 0 ? (
+                faqs.map((faq) => (
+                  <Card key={faq.id} className="overflow-hidden">
+                    <CardContent className="p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:justify-between">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-base mb-2">{faq.question}</h4>
+                          <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant={faq.is_active ? "default" : "secondary"}>
+                              {faq.is_active ? 'Activo' : 'Inactivo'}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">
+                              Orden: {faq.display_order}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openFaqDialog(faq)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteFaq(faq.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-center py-4">
+                  No hay preguntas frecuentes. Agrega una para comenzar.
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
       {/* Carousel Tab */}
       <TabsContent value="carousel">
         <div className="grid gap-6">
@@ -5892,6 +5971,46 @@ setReviewForm({
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowReviewDialog(false)}>{t('common.cancel')}</Button>
               <Button onClick={handleSaveReview}>{t('common.save')}</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* FAQ Dialog */}
+      <Dialog open={showFaqDialog} onOpenChange={setShowFaqDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{editingFaq ? 'Editar FAQ' : 'Agregar FAQ'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Pregunta</Label>
+              <Input
+                value={faqForm.question}
+                onChange={(e) => setFaqForm({...faqForm, question: e.target.value})}
+                placeholder="¿Cuál es tu pregunta?"
+              />
+            </div>
+            <div>
+              <Label>Respuesta</Label>
+              <Textarea
+                value={faqForm.answer}
+                onChange={(e) => setFaqForm({...faqForm, answer: e.target.value})}
+                placeholder="Escribe la respuesta aquí..."
+                rows={4}
+              />
+            </div>
+            <div>
+              <Label>Orden de visualización</Label>
+              <Input
+                type="number"
+                value={faqForm.display_order}
+                onChange={(e) => setFaqForm({...faqForm, display_order: parseInt(e.target.value) || 0})}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowFaqDialog(false)}>Cancelar</Button>
+              <Button onClick={handleSaveFaq}>Guardar</Button>
             </div>
           </div>
         </DialogContent>
