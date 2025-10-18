@@ -2572,24 +2572,33 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
     const index = sortedFaqs.findIndex(f => f.id === faqId);
     
     if (index > 0) {
-      // Swap items in sorted order
+      // Swap items
       const swapped = [...sortedFaqs];
       [swapped[index], swapped[index - 1]] = [swapped[index - 1], swapped[index]];
 
-      // Reassign sequential display_order (1-based) and optimistically update UI
-      const updated = swapped.map((faq, idx) => ({ ...faq, display_order: idx + 1 }));
+      // Reassign display_order values
+      const updated = swapped.map((faq, idx) => ({ 
+        ...faq, 
+        display_order: idx 
+      }));
+      
+      // Update UI immediately
       setFaqs(updated);
       
+      // Update database in background
       try {
-        for (const item of updated) {
-          await (supabase as any)
+        const updatePromises = updated.map((item) =>
+          (supabase as any)
             .from('faqs')
             .update({ display_order: item.display_order })
-            .eq('id', item.id);
-        }
-        toast({ title: "Éxito", description: "Orden actualizado exitosamente" });
+            .eq('id', item.id)
+        );
+        
+        await Promise.all(updatePromises);
+        
+        toast({ title: "Éxito", description: "Orden actualizado" });
       } catch (error: any) {
-        toast({ title: "Error", description: "Error al actualizar el orden", variant: "destructive" });
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
         fetchFaqs();
       }
     }
@@ -2600,23 +2609,33 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
     const index = sortedFaqs.findIndex(f => f.id === faqId);
     
     if (index < sortedFaqs.length - 1) {
+      // Swap items
       const swapped = [...sortedFaqs];
       [swapped[index], swapped[index + 1]] = [swapped[index + 1], swapped[index]];
       
-      // Reassign sequential display_order (1-based) and optimistically update UI
-      const updated = swapped.map((faq, idx) => ({ ...faq, display_order: idx + 1 }));
+      // Reassign display_order values
+      const updated = swapped.map((faq, idx) => ({ 
+        ...faq, 
+        display_order: idx 
+      }));
+      
+      // Update UI immediately
       setFaqs(updated);
       
+      // Update database in background
       try {
-        for (const item of updated) {
-          await (supabase as any)
+        const updatePromises = updated.map((item) =>
+          (supabase as any)
             .from('faqs')
             .update({ display_order: item.display_order })
-            .eq('id', item.id);
-        }
-        toast({ title: "Éxito", description: "Orden actualizado exitosamente" });
+            .eq('id', item.id)
+        );
+        
+        await Promise.all(updatePromises);
+        
+        toast({ title: "Éxito", description: "Orden actualizado" });
       } catch (error: any) {
-        toast({ title: "Error", description: "Error al actualizar el orden", variant: "destructive" });
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
         fetchFaqs();
       }
     }
