@@ -658,26 +658,47 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
                                 {slot.totalAvailable} mesa{slot.totalAvailable !== 1 ? 's' : ''} disponible{slot.totalAvailable !== 1 ? 's' : ''}
                               </div>
                             </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                               {slot.tables.map((table) => (
                                 <div
                                   key={table.config_id}
-                                  className={`p-3 rounded text-xs space-y-1 ${
+                                  className={`rounded-lg border transition-all ${
                                     table.available === 0
-                                      ? "bg-muted text-muted-foreground"
-                                      : "bg-primary/10 text-primary"
+                                      ? "bg-muted/50 border-muted text-muted-foreground"
+                                      : "bg-primary/5 border-primary/20 text-foreground hover:border-primary/40"
                                   }`}
                                 >
-                                  <div className="font-medium truncate text-center">{table.table_name}</div>
-                                  <div className="text-[10px] opacity-75 text-center">
-                                    {table.seats} asientos
+                                  {/* Header */}
+                                  <div className="px-4 py-3 border-b border-current/10">
+                                    <div className="font-semibold text-sm">{table.table_name}</div>
+                                    <div className="text-xs text-muted-foreground mt-0.5">
+                                      {table.seats} asientos
+                                    </div>
                                   </div>
-                                  <div className="text-xs mt-1 font-semibold text-center">
-                                    {table.available}/{table.total} disponible{table.available !== 1 ? 's' : ''}
-                                  </div>
-                                  <div className="text-[10px] opacity-75 border-t border-current/20 pt-1">
-                                    <div>Min Personas: {table.min_party_size}</div>
-                                    <div>Max Personas: {table.max_party_size}</div>
+                                  
+                                  {/* Body */}
+                                  <div className="px-4 py-3 space-y-2">
+                                    {/* Availability */}
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-muted-foreground">Disponibilidad</span>
+                                      <span className={`text-sm font-semibold ${
+                                        table.available === 0
+                                          ? "text-destructive"
+                                          : table.available <= 2
+                                          ? "text-yellow-600"
+                                          : "text-green-600"
+                                      }`}>
+                                        {table.available}/{table.total}
+                                      </span>
+                                    </div>
+                                    
+                                    {/* Party Size Range */}
+                                    <div className="flex items-center justify-between pt-2 border-t border-current/10">
+                                      <span className="text-xs text-muted-foreground">Capacidad</span>
+                                      <span className="text-sm font-medium">
+                                        {table.min_party_size}-{table.max_party_size} personas
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                               ))}
