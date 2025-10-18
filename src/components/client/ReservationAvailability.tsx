@@ -35,6 +35,7 @@ interface TableConfiguration {
   quantity: number;
   min_party_size: number;
   max_party_size: number;
+  duration_minutes: number;
   is_active: boolean;
 }
 
@@ -198,15 +199,22 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         
         // Use custom configs if available, otherwise use global configs
         const activeTableConfigs = schedule.custom_table_configs && schedule.custom_table_configs.length > 0
-          ? schedule.custom_table_configs.map((ct, index) => ({
-              id: `custom-${schedule.id}-${index}`,
-              table_name: ct.table_name,
-              seats: ct.seats,
-              quantity: ct.quantity,
-              min_party_size: ct.min_party_size,
-              max_party_size: ct.max_party_size,
-              is_active: true,
-            }))
+          ? schedule.custom_table_configs.map((ct, index) => {
+              // Find the matching global config to get default duration
+              const matchingGlobalConfig = tableConfigs.find(
+                tc => tc.table_name === ct.table_name && tc.seats === ct.seats
+              );
+              return {
+                id: `custom-${schedule.id}-${index}`,
+                table_name: ct.table_name,
+                seats: ct.seats,
+                quantity: ct.quantity,
+                min_party_size: ct.min_party_size,
+                max_party_size: ct.max_party_size,
+                duration_minutes: matchingGlobalConfig?.duration_minutes || 120,
+                is_active: true,
+              };
+            })
           : tableConfigs;
         
         for (let slotStart = startMinutes; slotStart < endMinutes; slotStart += slotInterval) {
@@ -220,7 +228,11 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             const resHour = parseInt(res.reservation_time.substring(0, 2));
             const resMin = parseInt(res.reservation_time.substring(3, 5));
             const resStartMinutes = resHour * 60 + resMin;
-            const resEndMinutes = resStartMinutes + schedule.duration_minutes;
+            
+            // Use schedule duration if specified, otherwise use table config default duration
+            const resTableConfig = tableConfigs.find(tc => tc.id === res.table_config_id);
+            const resDuration = schedule.duration_minutes || resTableConfig?.duration_minutes || 120;
+            const resEndMinutes = resStartMinutes + resDuration;
             
             const slotEndMinutes = slotStart + slotInterval;
             return (slotStart < resEndMinutes && slotEndMinutes > resStartMinutes);

@@ -43,6 +43,7 @@ interface TableConfiguration {
   quantity: number;
   min_party_size: number;
   max_party_size: number;
+  duration_minutes: number;
   is_active: boolean;
 }
 
@@ -64,6 +65,7 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
     quantity: 1,
     min_party_size: 1,
     max_party_size: 2,
+    duration_minutes: 120,
   });
 
   useEffect(() => {
@@ -192,6 +194,7 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
       quantity: config.quantity,
       min_party_size: config.min_party_size,
       max_party_size: config.max_party_size,
+      duration_minutes: config.duration_minutes,
     });
     setDialogOpen(true);
   };
@@ -208,6 +211,7 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
       quantity: 1,
       min_party_size: 1,
       max_party_size: 2,
+      duration_minutes: 120,
     });
     setSelectedConfig(null);
   };
@@ -291,6 +295,10 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
                             <span className="font-medium">Personas:</span>
                             <span>{config.min_party_size} - {config.max_party_size}</span>
                           </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">Duración:</span>
+                            <span>{config.duration_minutes} min</span>
+                          </div>
                         </div>
                       </div>
                       <Switch
@@ -334,6 +342,7 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
                     <TableHead>Asientos</TableHead>
                     <TableHead>Cantidad</TableHead>
                     <TableHead>Min-Max Personas</TableHead>
+                    <TableHead>Duración</TableHead>
                     <TableHead>Activo</TableHead>
                     <TableHead>Acciones</TableHead>
                   </TableRow>
@@ -347,6 +356,7 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
                       <TableCell className="whitespace-nowrap">
                         {config.min_party_size} - {config.max_party_size} personas
                       </TableCell>
+                      <TableCell>{config.duration_minutes} min</TableCell>
                       <TableCell>
                         <Switch
                           checked={config.is_active}
@@ -472,6 +482,27 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
                     required
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="duration_minutes">Duración Predeterminada (minutos)</Label>
+                <Input
+                  id="duration_minutes"
+                  type="number"
+                  min="30"
+                  step="30"
+                  value={formData.duration_minutes}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      duration_minutes: parseInt(e.target.value),
+                    })
+                  }
+                  required
+                />
+                <p className="text-xs text-muted-foreground">
+                  Duración predeterminada de las reservas. Se puede sobrescribir en horarios específicos.
+                </p>
               </div>
 
               <p className="text-sm text-muted-foreground">

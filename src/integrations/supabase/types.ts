@@ -19,12 +19,16 @@ export type Database = {
           about_chef_info: string | null
           about_mission: string | null
           about_page_about_section_image_url: string | null
+          about_page_about_section_visible: boolean | null
+          about_page_about_stats_visible: boolean | null
           about_page_content: Json | null
           about_page_hero_background_url: string | null
           about_page_hero_description: string | null
           about_page_hero_title: string | null
           about_page_hero_title_first_line: string | null
           about_page_hero_title_second_line: string | null
+          about_page_stats_section_visible: boolean | null
+          about_page_team_section_visible: boolean | null
           about_story: string | null
           about_team_section_description: string | null
           about_team_section_title_first_line: string | null
@@ -34,11 +38,13 @@ export type Database = {
           carousel_enabled: boolean | null
           client_id: string
           contact_delivery_briefing: string | null
+          contact_page_contact_section_visible: boolean | null
           contact_page_hero_background_url: string | null
           contact_page_hero_description: string | null
           contact_page_hero_title: string | null
           contact_page_hero_title_first_line: string | null
           contact_page_hero_title_second_line: string | null
+          contact_page_map_visible: boolean | null
           contact_reservation_description: string | null
           contact_reservation_title: string | null
           contact_us_label: string | null
@@ -54,11 +60,15 @@ export type Database = {
           homepage_about_section_title: string | null
           homepage_about_section_title_first_line: string | null
           homepage_about_section_title_second_line: string | null
+          homepage_about_section_visible: boolean | null
+          homepage_about_stats_visible: boolean | null
           homepage_contact_hide_reservation_box: boolean | null
+          homepage_contact_map_visible: boolean | null
           homepage_contact_section_description: string | null
           homepage_contact_section_title: string | null
           homepage_contact_section_title_first_line: string | null
           homepage_contact_section_title_second_line: string | null
+          homepage_contact_section_visible: boolean | null
           homepage_cta_button1_link: string | null
           homepage_cta_button1_text: string | null
           homepage_cta_button2_link: string | null
@@ -67,6 +77,8 @@ export type Database = {
           homepage_cta_title: string | null
           homepage_delivery_section_description: string | null
           homepage_delivery_section_title: string | null
+          homepage_delivery_section_visible: boolean | null
+          homepage_faq_section_visible: boolean | null
           homepage_hero_background_url: string | null
           homepage_hero_description: string | null
           homepage_hero_right_button_link: string | null
@@ -78,10 +90,14 @@ export type Database = {
           homepage_menu_section_title: string | null
           homepage_menu_section_title_first_line: string | null
           homepage_menu_section_title_second_line: string | null
+          homepage_menu_section_visible: boolean | null
+          homepage_reservations_section_visible: boolean | null
+          homepage_reviews_section_visible: boolean | null
           homepage_services_section_description: string | null
           homepage_services_section_title: string | null
           homepage_services_section_title_first_line: string | null
           homepage_services_section_title_second_line: string | null
+          homepage_services_section_visible: boolean | null
           id: string
           menu_page_hero_background_url: string | null
           menu_page_hero_description: string | null
@@ -146,12 +162,16 @@ export type Database = {
           about_chef_info?: string | null
           about_mission?: string | null
           about_page_about_section_image_url?: string | null
+          about_page_about_section_visible?: boolean | null
+          about_page_about_stats_visible?: boolean | null
           about_page_content?: Json | null
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
           about_page_hero_title?: string | null
           about_page_hero_title_first_line?: string | null
           about_page_hero_title_second_line?: string | null
+          about_page_stats_section_visible?: boolean | null
+          about_page_team_section_visible?: boolean | null
           about_story?: string | null
           about_team_section_description?: string | null
           about_team_section_title_first_line?: string | null
@@ -161,11 +181,13 @@ export type Database = {
           carousel_enabled?: boolean | null
           client_id: string
           contact_delivery_briefing?: string | null
+          contact_page_contact_section_visible?: boolean | null
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
+          contact_page_map_visible?: boolean | null
           contact_reservation_description?: string | null
           contact_reservation_title?: string | null
           contact_us_label?: string | null
@@ -181,11 +203,15 @@ export type Database = {
           homepage_about_section_title?: string | null
           homepage_about_section_title_first_line?: string | null
           homepage_about_section_title_second_line?: string | null
+          homepage_about_section_visible?: boolean | null
+          homepage_about_stats_visible?: boolean | null
           homepage_contact_hide_reservation_box?: boolean | null
+          homepage_contact_map_visible?: boolean | null
           homepage_contact_section_description?: string | null
           homepage_contact_section_title?: string | null
           homepage_contact_section_title_first_line?: string | null
           homepage_contact_section_title_second_line?: string | null
+          homepage_contact_section_visible?: boolean | null
           homepage_cta_button1_link?: string | null
           homepage_cta_button1_text?: string | null
           homepage_cta_button2_link?: string | null
@@ -194,6 +220,8 @@ export type Database = {
           homepage_cta_title?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
+          homepage_delivery_section_visible?: boolean | null
+          homepage_faq_section_visible?: boolean | null
           homepage_hero_background_url?: string | null
           homepage_hero_description?: string | null
           homepage_hero_right_button_link?: string | null
@@ -205,10 +233,14 @@ export type Database = {
           homepage_menu_section_title?: string | null
           homepage_menu_section_title_first_line?: string | null
           homepage_menu_section_title_second_line?: string | null
+          homepage_menu_section_visible?: boolean | null
+          homepage_reservations_section_visible?: boolean | null
+          homepage_reviews_section_visible?: boolean | null
           homepage_services_section_description?: string | null
           homepage_services_section_title?: string | null
           homepage_services_section_title_first_line?: string | null
           homepage_services_section_title_second_line?: string | null
+          homepage_services_section_visible?: boolean | null
           id?: string
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
@@ -273,12 +305,16 @@ export type Database = {
           about_chef_info?: string | null
           about_mission?: string | null
           about_page_about_section_image_url?: string | null
+          about_page_about_section_visible?: boolean | null
+          about_page_about_stats_visible?: boolean | null
           about_page_content?: Json | null
           about_page_hero_background_url?: string | null
           about_page_hero_description?: string | null
           about_page_hero_title?: string | null
           about_page_hero_title_first_line?: string | null
           about_page_hero_title_second_line?: string | null
+          about_page_stats_section_visible?: boolean | null
+          about_page_team_section_visible?: boolean | null
           about_story?: string | null
           about_team_section_description?: string | null
           about_team_section_title_first_line?: string | null
@@ -288,11 +324,13 @@ export type Database = {
           carousel_enabled?: boolean | null
           client_id?: string
           contact_delivery_briefing?: string | null
+          contact_page_contact_section_visible?: boolean | null
           contact_page_hero_background_url?: string | null
           contact_page_hero_description?: string | null
           contact_page_hero_title?: string | null
           contact_page_hero_title_first_line?: string | null
           contact_page_hero_title_second_line?: string | null
+          contact_page_map_visible?: boolean | null
           contact_reservation_description?: string | null
           contact_reservation_title?: string | null
           contact_us_label?: string | null
@@ -308,11 +346,15 @@ export type Database = {
           homepage_about_section_title?: string | null
           homepage_about_section_title_first_line?: string | null
           homepage_about_section_title_second_line?: string | null
+          homepage_about_section_visible?: boolean | null
+          homepage_about_stats_visible?: boolean | null
           homepage_contact_hide_reservation_box?: boolean | null
+          homepage_contact_map_visible?: boolean | null
           homepage_contact_section_description?: string | null
           homepage_contact_section_title?: string | null
           homepage_contact_section_title_first_line?: string | null
           homepage_contact_section_title_second_line?: string | null
+          homepage_contact_section_visible?: boolean | null
           homepage_cta_button1_link?: string | null
           homepage_cta_button1_text?: string | null
           homepage_cta_button2_link?: string | null
@@ -321,6 +363,8 @@ export type Database = {
           homepage_cta_title?: string | null
           homepage_delivery_section_description?: string | null
           homepage_delivery_section_title?: string | null
+          homepage_delivery_section_visible?: boolean | null
+          homepage_faq_section_visible?: boolean | null
           homepage_hero_background_url?: string | null
           homepage_hero_description?: string | null
           homepage_hero_right_button_link?: string | null
@@ -332,10 +376,14 @@ export type Database = {
           homepage_menu_section_title?: string | null
           homepage_menu_section_title_first_line?: string | null
           homepage_menu_section_title_second_line?: string | null
+          homepage_menu_section_visible?: boolean | null
+          homepage_reservations_section_visible?: boolean | null
+          homepage_reviews_section_visible?: boolean | null
           homepage_services_section_description?: string | null
           homepage_services_section_title?: string | null
           homepage_services_section_title_first_line?: string | null
           homepage_services_section_title_second_line?: string | null
+          homepage_services_section_visible?: boolean | null
           id?: string
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
@@ -738,6 +786,7 @@ export type Database = {
           delivery_info: Json | null
           header_background_enabled: boolean | null
           header_background_style: string | null
+          hero_overlay_opacity: number | null
           hide_phone_button_menu: boolean | null
           hide_whatsapp_button_menu: boolean | null
           id: string
@@ -748,6 +797,7 @@ export type Database = {
           show_whatsapp_popup: boolean | null
           title_font: string | null
           title_font_weight: string | null
+          title_size_scale: number | null
           updated_at: string
           whatsapp_messages: Json | null
         }
@@ -760,6 +810,7 @@ export type Database = {
           delivery_info?: Json | null
           header_background_enabled?: boolean | null
           header_background_style?: string | null
+          hero_overlay_opacity?: number | null
           hide_phone_button_menu?: boolean | null
           hide_whatsapp_button_menu?: boolean | null
           id?: string
@@ -770,6 +821,7 @@ export type Database = {
           show_whatsapp_popup?: boolean | null
           title_font?: string | null
           title_font_weight?: string | null
+          title_size_scale?: number | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
@@ -782,6 +834,7 @@ export type Database = {
           delivery_info?: Json | null
           header_background_enabled?: boolean | null
           header_background_style?: string | null
+          hero_overlay_opacity?: number | null
           hide_phone_button_menu?: boolean | null
           hide_whatsapp_button_menu?: boolean | null
           id?: string
@@ -792,6 +845,7 @@ export type Database = {
           show_whatsapp_popup?: boolean | null
           title_font?: string | null
           title_font_weight?: string | null
+          title_size_scale?: number | null
           updated_at?: string
           whatsapp_messages?: Json | null
         }
@@ -1135,6 +1189,47 @@ export type Database = {
           whatsapp_clicks?: number
         }
         Relationships: []
+      }
+      faqs: {
+        Row: {
+          answer: string
+          client_id: string
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          client_id: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          client_id?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          question?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faqs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       generated_articles: {
         Row: {
@@ -1739,6 +1834,7 @@ export type Database = {
         Row: {
           client_id: string
           created_at: string
+          duration_minutes: number
           id: string
           is_active: boolean
           max_party_size: number
@@ -1751,6 +1847,7 @@ export type Database = {
         Insert: {
           client_id: string
           created_at?: string
+          duration_minutes?: number
           id?: string
           is_active?: boolean
           max_party_size: number
@@ -1763,6 +1860,7 @@ export type Database = {
         Update: {
           client_id?: string
           created_at?: string
+          duration_minutes?: number
           id?: string
           is_active?: boolean
           max_party_size?: number
