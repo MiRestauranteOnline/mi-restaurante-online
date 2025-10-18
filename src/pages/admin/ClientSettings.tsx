@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil, ArrowUp, ArrowDown } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -2550,7 +2550,7 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
       setFaqs(faqs.filter(f => f.id !== id));
       
       toast({
-        title: "Success",
+        title: "Éxito",
         description: "FAQ eliminado exitosamente"
       });
     } catch (error: any) {
@@ -2559,6 +2559,80 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
         description: "Failed to delete FAQ: " + error.message,
         variant: "destructive"
       });
+    }
+  };
+
+  const handleMoveFaqUp = async (faqId: string) => {
+    const sortedFaqs = [...faqs].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedFaqs.findIndex(f => f.id === faqId);
+    
+    if (index > 0) {
+      const newFaqs = [...sortedFaqs];
+      [newFaqs[index], newFaqs[index - 1]] = [newFaqs[index - 1], newFaqs[index]];
+      
+      try {
+        const updates = newFaqs.map((faq, idx) => ({
+          id: faq.id,
+          display_order: idx,
+        }));
+
+        for (const update of updates) {
+          await (supabase as any)
+            .from('faqs')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        setFaqs(newFaqs);
+        toast({
+          title: "Éxito",
+          description: "Orden actualizado exitosamente"
+        });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: "Error al actualizar el orden",
+          variant: "destructive"
+        });
+        fetchFaqs();
+      }
+    }
+  };
+
+  const handleMoveFaqDown = async (faqId: string) => {
+    const sortedFaqs = [...faqs].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedFaqs.findIndex(f => f.id === faqId);
+    
+    if (index < sortedFaqs.length - 1) {
+      const newFaqs = [...sortedFaqs];
+      [newFaqs[index], newFaqs[index + 1]] = [newFaqs[index + 1], newFaqs[index]];
+      
+      try {
+        const updates = newFaqs.map((faq, idx) => ({
+          id: faq.id,
+          display_order: idx,
+        }));
+
+        for (const update of updates) {
+          await (supabase as any)
+            .from('faqs')
+            .update({ display_order: update.display_order })
+            .eq('id', update.id);
+        }
+
+        setFaqs(newFaqs);
+        toast({
+          title: "Éxito",
+          description: "Orden actualizado exitosamente"
+        });
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: "Error al actualizar el orden",
+          variant: "destructive"
+        });
+        fetchFaqs();
+      }
     }
   };
 
@@ -5525,7 +5599,7 @@ setReviewForm({
           <CardContent>
             <div className="space-y-4">
               {faqs.length > 0 ? (
-                faqs.map((faq) => (
+                [...faqs].sort((a, b) => a.display_order - b.display_order).map((faq, index) => (
                   <Card key={faq.id} className="overflow-hidden">
                     <CardContent className="p-4">
                       <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:justify-between">
@@ -5536,12 +5610,25 @@ setReviewForm({
                             <Badge variant={faq.is_active ? "default" : "secondary"}>
                               {faq.is_active ? 'Activo' : 'Inactivo'}
                             </Badge>
-                            <span className="text-xs text-muted-foreground">
-                              Orden: {faq.display_order}
-                            </span>
                           </div>
                         </div>
                         <div className="flex gap-2 shrink-0">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleMoveFaqUp(faq.id)}
+                            disabled={index === 0}
+                          >
+                            <ArrowUp className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleMoveFaqDown(faq.id)}
+                            disabled={index === faqs.length - 1}
+                          >
+                            <ArrowDown className="h-4 w-4" />
+                          </Button>
                           <Button
                             variant="outline"
                             size="sm"
@@ -5998,14 +6085,6 @@ setReviewForm({
                 onChange={(e) => setFaqForm({...faqForm, answer: e.target.value})}
                 placeholder="Escribe la respuesta aquí..."
                 rows={4}
-              />
-            </div>
-            <div>
-              <Label>Orden de visualización</Label>
-              <Input
-                type="number"
-                value={faqForm.display_order}
-                onChange={(e) => setFaqForm({...faqForm, display_order: parseInt(e.target.value) || 0})}
               />
             </div>
             <div className="flex justify-end gap-2">
