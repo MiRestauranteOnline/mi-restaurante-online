@@ -265,6 +265,7 @@ interface MenuItem {
   show_on_homepage: boolean;
   show_image_menu: boolean;
   show_image_home: boolean;
+  display_order: number;
 }
 
 interface TeamMember {
@@ -323,7 +324,9 @@ function SortableCategoryCard({
   formData,
   handleDeleteMenuItem,
   handleToggleItemStatus,
-  onItemDragEnd
+  onItemDragEnd,
+  handleMoveMenuItemUp,
+  handleMoveMenuItemDown
 }: {
   category: MenuCategory;
   categoryItems: MenuItem[];
@@ -338,6 +341,8 @@ function SortableCategoryCard({
   handleDeleteMenuItem: (id: string) => void;
   handleToggleItemStatus: (id: string, isActive: boolean) => void;
   onItemDragEnd: (event: DragEndEvent, categoryId: string) => void;
+  handleMoveMenuItemUp: (id: string) => void;
+  handleMoveMenuItemDown: (id: string) => void;
 }) {
   const {
     attributes,
@@ -453,7 +458,7 @@ function SortableCategoryCard({
                 >
                   <SortableContext items={categoryItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-2">
-                      {categoryItems.map((item) => (
+                      {categoryItems.map((item, index) => (
                         <SortableMenuItem
                           key={item.id}
                           item={item}
@@ -461,6 +466,10 @@ function SortableCategoryCard({
                           onEdit={openMenuItemDialog}
                           onDelete={handleDeleteMenuItem}
                           onToggleStatus={handleToggleItemStatus}
+                          onMoveUp={handleMoveMenuItemUp}
+                          onMoveDown={handleMoveMenuItemDown}
+                          isFirst={index === 0}
+                          isLast={index === categoryItems.length - 1}
                         />
                       ))}
                     </div>
@@ -519,12 +528,16 @@ function SortableCategoryItem({ category, onEdit, onDelete }: {
 }
 
 // Sortable Menu Item Component
-function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStatus }: { 
+function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStatus, onMoveUp, onMoveDown, isFirst, isLast }: { 
   item: MenuItem, 
   currencySymbol: string,
   onEdit: (item: MenuItem) => void,
   onDelete: (id: string) => void,
-  onToggleStatus: (id: string, isActive: boolean) => void
+  onToggleStatus: (id: string, isActive: boolean) => void,
+  onMoveUp: (id: string) => void,
+  onMoveDown: (id: string) => void,
+  isFirst: boolean,
+  isLast: boolean
 }) {
   const {
     attributes,
@@ -546,9 +559,6 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStat
       className="flex flex-col gap-3 p-3 border rounded bg-card"
     >
       <div className="flex items-start gap-3">
-        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing pt-1 shrink-0">
-          <GripVertical className="h-5 w-5 text-muted-foreground" />
-        </div>
         <div className="flex-1 min-w-0">
           <div className="flex flex-col gap-2 mb-2">
             <div className="flex items-center gap-2 flex-wrap">
@@ -572,6 +582,12 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStat
           onCheckedChange={(checked) => onToggleStatus(item.id, checked)}
         />
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => onMoveUp(item.id)} disabled={isFirst}>
+            <ArrowUp className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => onMoveDown(item.id)} disabled={isLast}>
+            <ArrowDown className="h-4 w-4" />
+          </Button>
           <Button variant="outline" size="sm" onClick={() => onEdit(item)}>
             <Edit className="h-4 w-4" />
           </Button>
@@ -585,10 +601,14 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStat
 }
 
 // Sortable Team Member Component
-function SortableTeamMember({ member, onEdit, onDelete }: { 
+function SortableTeamMember({ member, onEdit, onDelete, onMoveUp, onMoveDown, isFirst, isLast }: { 
   member: TeamMember, 
   onEdit: (member: TeamMember) => void,
-  onDelete: (id: string) => void 
+  onDelete: (id: string) => void,
+  onMoveUp: (id: string) => void,
+  onMoveDown: (id: string) => void,
+  isFirst: boolean,
+  isLast: boolean
 }) {
   const {
     attributes,
@@ -610,9 +630,6 @@ function SortableTeamMember({ member, onEdit, onDelete }: {
       className="flex flex-col gap-3 p-3 border rounded bg-card"
     >
       <div className="flex items-start gap-3">
-        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing pt-1 shrink-0">
-          <GripVertical className="h-5 w-5 text-muted-foreground" />
-        </div>
         <div className="flex items-start gap-3 min-w-0 flex-1">
           {member.image_url && (
             <img src={member.image_url} alt={member.name} className="w-12 h-12 rounded-full object-cover shrink-0" />
@@ -629,6 +646,12 @@ function SortableTeamMember({ member, onEdit, onDelete }: {
         </div>
       </div>
       <div className="flex gap-2 justify-end pt-2 border-t">
+        <Button variant="outline" size="sm" onClick={() => onMoveUp(member.id)} disabled={isFirst}>
+          <ArrowUp className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => onMoveDown(member.id)} disabled={isLast}>
+          <ArrowDown className="h-4 w-4" />
+        </Button>
         <Button variant="outline" size="sm" onClick={() => onEdit(member)}>
           <Edit className="h-4 w-4" />
         </Button>
@@ -641,10 +664,14 @@ function SortableTeamMember({ member, onEdit, onDelete }: {
 }
 
 // Sortable Review Component
-function SortableReview({ review, onEdit, onDelete }: { 
+function SortableReview({ review, onEdit, onDelete, onMoveUp, onMoveDown, isFirst, isLast }: { 
   review: Review, 
   onEdit: (review: Review) => void,
-  onDelete: (id: string) => void 
+  onDelete: (id: string) => void,
+  onMoveUp: (id: string) => void,
+  onMoveDown: (id: string) => void,
+  isFirst: boolean,
+  isLast: boolean
 }) {
   const {
     attributes,
@@ -680,9 +707,6 @@ function SortableReview({ review, onEdit, onDelete }: {
       className="flex flex-col gap-3 p-3 border rounded bg-card"
     >
       <div className="flex items-start gap-3">
-        <div {...attributes} {...listeners} className="cursor-grab hover:cursor-grabbing pt-1 shrink-0">
-          <GripVertical className="h-5 w-5 text-muted-foreground" />
-        </div>
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
             <span className="font-medium truncate">{review.reviewer_name}</span>
@@ -691,7 +715,13 @@ function SortableReview({ review, onEdit, onDelete }: {
           <p className="text-sm text-muted-foreground line-clamp-3">{review.review_text}</p>
         </div>
       </div>
-      <div className="flex gap-2 justify-end">
+      <div className="flex gap-2 justify-end pt-2 border-t">
+        <Button variant="outline" size="sm" onClick={() => onMoveUp(review.id)} disabled={isFirst}>
+          <ArrowUp className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => onMoveDown(review.id)} disabled={isLast}>
+          <ArrowDown className="h-4 w-4" />
+        </Button>
         <Button variant="outline" size="sm" onClick={() => onEdit(review)}>
           <Edit className="h-4 w-4" />
         </Button>
@@ -2324,6 +2354,84 @@ const [faqForm, setFaqForm] = useState({
     }
   };
 
+  const handleMoveMenuItemUp = async (itemId: string) => {
+    const item = menuItems.find(i => i.id === itemId);
+    if (!item) return;
+    
+    const categoryItems = menuItems.filter(i => i.category_id === item.category_id);
+    const sortedItems = [...categoryItems].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedItems.findIndex(i => i.id === itemId);
+    
+    if (index > 0) {
+      const swapped = [...sortedItems];
+      [swapped[index], swapped[index - 1]] = [swapped[index - 1], swapped[index]];
+      
+      const updated = swapped.map((item, idx) => ({ 
+        ...item, 
+        display_order: idx 
+      }));
+      
+      setMenuItems(menuItems.map(i => {
+        const updatedItem = updated.find(u => u.id === i.id);
+        return updatedItem || i;
+      }));
+      
+      try {
+        const updatePromises = updated.map((item) =>
+          supabase
+            .from('menu_items')
+            .update({ display_order: item.display_order })
+            .eq('id', item.id)
+        );
+        
+        await Promise.all(updatePromises);
+        toast({ title: "Éxito", description: "Orden actualizado" });
+      } catch (error: any) {
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
+        fetchMenuItems();
+      }
+    }
+  };
+
+  const handleMoveMenuItemDown = async (itemId: string) => {
+    const item = menuItems.find(i => i.id === itemId);
+    if (!item) return;
+    
+    const categoryItems = menuItems.filter(i => i.category_id === item.category_id);
+    const sortedItems = [...categoryItems].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedItems.findIndex(i => i.id === itemId);
+    
+    if (index < sortedItems.length - 1) {
+      const swapped = [...sortedItems];
+      [swapped[index], swapped[index + 1]] = [swapped[index + 1], swapped[index]];
+      
+      const updated = swapped.map((item, idx) => ({ 
+        ...item, 
+        display_order: idx 
+      }));
+      
+      setMenuItems(menuItems.map(i => {
+        const updatedItem = updated.find(u => u.id === i.id);
+        return updatedItem || i;
+      }));
+      
+      try {
+        const updatePromises = updated.map((item) =>
+          supabase
+            .from('menu_items')
+            .update({ display_order: item.display_order })
+            .eq('id', item.id)
+        );
+        
+        await Promise.all(updatePromises);
+        toast({ title: "Éxito", description: "Orden actualizado" });
+      } catch (error: any) {
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
+        fetchMenuItems();
+      }
+    }
+  };
+
   // Team Member CRUD Functions
   const handleSaveTeamMember = async () => {
     if (!clientId) return;
@@ -2395,6 +2503,70 @@ const [faqForm, setFaqForm] = useState({
         description: "Failed to delete team member: " + error.message,
         variant: "destructive"
       });
+    }
+  };
+
+  const handleMoveTeamMemberUp = async (memberId: string) => {
+    const sortedMembers = [...teamMembers].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedMembers.findIndex(m => m.id === memberId);
+    
+    if (index > 0) {
+      const swapped = [...sortedMembers];
+      [swapped[index], swapped[index - 1]] = [swapped[index - 1], swapped[index]];
+      
+      const updated = swapped.map((member, idx) => ({ 
+        ...member, 
+        display_order: idx 
+      }));
+      
+      setTeamMembers(updated);
+      
+      try {
+        const updatePromises = updated.map((item) =>
+          supabase
+            .from('team_members')
+            .update({ display_order: item.display_order })
+            .eq('id', item.id)
+        );
+        
+        await Promise.all(updatePromises);
+        toast({ title: "Éxito", description: "Orden actualizado" });
+      } catch (error: any) {
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
+        fetchTeamMembers();
+      }
+    }
+  };
+
+  const handleMoveTeamMemberDown = async (memberId: string) => {
+    const sortedMembers = [...teamMembers].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedMembers.findIndex(m => m.id === memberId);
+    
+    if (index < sortedMembers.length - 1) {
+      const swapped = [...sortedMembers];
+      [swapped[index], swapped[index + 1]] = [swapped[index + 1], swapped[index]];
+      
+      const updated = swapped.map((member, idx) => ({ 
+        ...member, 
+        display_order: idx 
+      }));
+      
+      setTeamMembers(updated);
+      
+      try {
+        const updatePromises = updated.map((item) =>
+          supabase
+            .from('team_members')
+            .update({ display_order: item.display_order })
+            .eq('id', item.id)
+        );
+        
+        await Promise.all(updatePromises);
+        toast({ title: "Éxito", description: "Orden actualizado" });
+      } catch (error: any) {
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
+        fetchTeamMembers();
+      }
     }
   };
 
@@ -2479,6 +2651,70 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
         description: "Failed to delete review: " + error.message,
         variant: "destructive"
       });
+    }
+  };
+
+  const handleMoveReviewUp = async (reviewId: string) => {
+    const sortedReviews = [...reviews].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedReviews.findIndex(r => r.id === reviewId);
+    
+    if (index > 0) {
+      const swapped = [...sortedReviews];
+      [swapped[index], swapped[index - 1]] = [swapped[index - 1], swapped[index]];
+      
+      const updated = swapped.map((review, idx) => ({ 
+        ...review, 
+        display_order: idx 
+      }));
+      
+      setReviews(updated);
+      
+      try {
+        const updatePromises = updated.map((item) =>
+          supabase
+            .from('reviews')
+            .update({ display_order: item.display_order })
+            .eq('id', item.id)
+        );
+        
+        await Promise.all(updatePromises);
+        toast({ title: "Éxito", description: "Orden actualizado" });
+      } catch (error: any) {
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
+        fetchReviews();
+      }
+    }
+  };
+
+  const handleMoveReviewDown = async (reviewId: string) => {
+    const sortedReviews = [...reviews].sort((a, b) => a.display_order - b.display_order);
+    const index = sortedReviews.findIndex(r => r.id === reviewId);
+    
+    if (index < sortedReviews.length - 1) {
+      const swapped = [...sortedReviews];
+      [swapped[index], swapped[index + 1]] = [swapped[index + 1], swapped[index]];
+      
+      const updated = swapped.map((review, idx) => ({ 
+        ...review, 
+        display_order: idx 
+      }));
+      
+      setReviews(updated);
+      
+      try {
+        const updatePromises = updated.map((item) =>
+          supabase
+            .from('reviews')
+            .update({ display_order: item.display_order })
+            .eq('id', item.id)
+        );
+        
+        await Promise.all(updatePromises);
+        toast({ title: "Éxito", description: "Orden actualizado" });
+      } catch (error: any) {
+        toast({ title: "Error", description: "Error al actualizar", variant: "destructive" });
+        fetchReviews();
+      }
     }
   };
 
@@ -5498,6 +5734,8 @@ setReviewForm({
                             handleDeleteMenuItem={handleDeleteMenuItem}
                             handleToggleItemStatus={handleToggleItemStatus}
                             onItemDragEnd={handleMenuItemDragEnd}
+                            handleMoveMenuItemUp={handleMoveMenuItemUp}
+                            handleMoveMenuItemDown={handleMoveMenuItemDown}
                           />
                         );
                       })}
@@ -5530,12 +5768,16 @@ setReviewForm({
                   onDragEnd={handleTeamMemberDragEnd}
                 >
                   <SortableContext items={teamMembers.map(m => m.id)} strategy={verticalListSortingStrategy}>
-                    {teamMembers.map((member) => (
+                    {[...teamMembers].sort((a, b) => a.display_order - b.display_order).map((member, index) => (
                       <SortableTeamMember
                         key={member.id}
                         member={member}
                         onEdit={openTeamMemberDialog}
                         onDelete={handleDeleteTeamMember}
+                        onMoveUp={handleMoveTeamMemberUp}
+                        onMoveDown={handleMoveTeamMemberDown}
+                        isFirst={index === 0}
+                        isLast={index === teamMembers.length - 1}
                       />
                     ))}
                   </SortableContext>
@@ -5569,12 +5811,16 @@ setReviewForm({
                   onDragEnd={handleReviewDragEnd}
                 >
                   <SortableContext items={reviews.map(r => r.id)} strategy={verticalListSortingStrategy}>
-                    {reviews.map((review) => (
+                    {[...reviews].sort((a, b) => a.display_order - b.display_order).map((review, index) => (
                       <SortableReview
                         key={review.id}
                         review={review}
                         onEdit={openReviewDialog}
                         onDelete={handleDeleteReview}
+                        onMoveUp={handleMoveReviewUp}
+                        onMoveDown={handleMoveReviewDown}
+                        isFirst={index === 0}
+                        isLast={index === reviews.length - 1}
                       />
                     ))}
                   </SortableContext>
