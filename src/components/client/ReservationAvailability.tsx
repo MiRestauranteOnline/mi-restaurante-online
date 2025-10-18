@@ -662,21 +662,22 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
                               {slot.tables.map((table) => (
                                 <div
                                   key={table.config_id}
-                                  className={`p-2 rounded text-center text-xs ${
+                                  className={`p-3 rounded text-xs space-y-1 ${
                                     table.available === 0
                                       ? "bg-muted text-muted-foreground"
                                       : "bg-primary/10 text-primary"
                                   }`}
                                 >
-                                  <div className="font-medium truncate">{table.table_name}</div>
-                                  <div className="text-[10px] opacity-75">
+                                  <div className="font-medium truncate text-center">{table.table_name}</div>
+                                  <div className="text-[10px] opacity-75 text-center">
                                     {table.seats} asientos
                                   </div>
-                                  <div className="text-xs mt-1 font-semibold">
+                                  <div className="text-xs mt-1 font-semibold text-center">
                                     {table.available}/{table.total} disponible{table.available !== 1 ? 's' : ''}
                                   </div>
-                                  <div className="text-[10px] opacity-75 mt-1">
-                                    {table.min_party_size}-{table.max_party_size} personas
+                                  <div className="text-[10px] opacity-75 border-t border-current/20 pt-1">
+                                    <div>Min Personas: {table.min_party_size}</div>
+                                    <div>Max Personas: {table.max_party_size}</div>
                                   </div>
                                 </div>
                               ))}
