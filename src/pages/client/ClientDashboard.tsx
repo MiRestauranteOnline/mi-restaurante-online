@@ -720,6 +720,36 @@ export default function ClientDashboard() {
                     placeholder="https://tiktok.com/@tu-restaurante"
                   />
                 </div>
+                <div>
+                  <Label htmlFor="youtube">YouTube</Label>
+                  <Input
+                    id="youtube"
+                    value={formData.social_media_links?.youtube || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev, 
+                      social_media_links: {
+                        ...prev.social_media_links,
+                        youtube: e.target.value
+                      }
+                    }))}
+                    placeholder="https://youtube.com/@tu-restaurante"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="linkedin">LinkedIn</Label>
+                  <Input
+                    id="linkedin"
+                    value={formData.social_media_links?.linkedin || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev, 
+                      social_media_links: {
+                        ...prev.social_media_links,
+                        linkedin: e.target.value
+                      }
+                    }))}
+                    placeholder="https://linkedin.com/company/tu-restaurante"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
