@@ -5,10 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, ArrowUp } from "lucide-react";
+import { Loader2, Plus, ArrowUp, ChevronDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getCurrentDateInTimezone, combineDateTimeToUtc, extractDateTimeFromUtc } from "@/lib/timezone";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 
 interface CustomTableConfig {
   table_name: string;
@@ -602,129 +605,104 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           </CardContent>
         </Card>
       ) : (
-        <>
-          {/* Mobile Date Selector */}
-          <div className="block lg:hidden mb-4">
-            <Select
-              value={dateLabels[0]}
-              onValueChange={(value) => {
-                const element = document.getElementById(`date-${value}`);
-                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar fecha" />
-              </SelectTrigger>
-              <SelectContent>
-                {dateLabels.map((date) => (
-                  <SelectItem key={date} value={date}>
-                    {formatDate(date)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex gap-6">
-            {/* Desktop Sticky Date Navigation */}
-            <div className="hidden lg:block w-48 flex-shrink-0">
-              <div className="sticky top-4 space-y-2">
-                <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Índice de Fechas</h4>
-                {dateLabels.map((date) => (
-                  <button
-                    key={date}
-                    onClick={() => {
-                      const element = document.getElementById(`date-${date}`);
-                      element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-sm"
-                  >
-                    {formatDate(date)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Availability Cards */}
-            <div className="flex-1 grid gap-4">
-              {dateLabels.map((date) => {
-                const slots = groupedByDate[date];
-                return (
-                  <Card key={date} id={`date-${date}`} className="scroll-mt-4">
-                    <CardHeader>
-                      <CardTitle className="text-sm sm:text-base">{formatDate(date)}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3 sm:space-y-4">
-                        {slots.map((slot, idx) => (
-                          <div key={idx} className="border rounded-lg p-3 sm:p-4">
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
-                              <div className="font-semibold text-sm sm:text-base">{slot.time}</div>
-                              <div className={`text-xs sm:text-sm font-medium ${
-                                slot.totalAvailable === 0
-                                  ? "text-destructive"
-                                  : slot.totalAvailable <= 3
-                                  ? "text-yellow-600"
-                                  : "text-green-600"
-                              }`}>
-                                {slot.totalAvailable} mesa{slot.totalAvailable !== 1 ? 's' : ''} disponible{slot.totalAvailable !== 1 ? 's' : ''}
+        <Accordion type="single" collapsible className="space-y-2">
+          {dateLabels.map((date) => {
+            const slots = groupedByDate[date];
+            const totalSlotsAvailable = slots.filter(s => s.totalAvailable > 0).length;
+            const totalSlots = slots.length;
+            
+            return (
+              <AccordionItem key={date} value={date} className="border rounded-lg">
+                <AccordionTrigger className="px-4 sm:px-6 py-3 sm:py-4 hover:no-underline hover:bg-accent/50 rounded-lg transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full pr-4 text-left gap-2">
+                    <div>
+                      <div className="font-semibold text-sm sm:text-base">
+                        {format(parseISO(date), "EEEE, d 'de' MMMM yyyy", { locale: es })}
+                      </div>
+                      <div className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                        {DAYS[slots[0].dayOfWeek]}
+                      </div>
+                    </div>
+                    <div className={`text-xs sm:text-sm font-medium ${
+                      totalSlotsAvailable === 0
+                        ? "text-destructive"
+                        : totalSlotsAvailable < totalSlots / 2
+                        ? "text-yellow-600"
+                        : "text-green-600"
+                    }`}>
+                      {totalSlotsAvailable} de {totalSlots} horarios disponibles
+                    </div>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 sm:px-6 pb-4">
+                  <div className="space-y-3 sm:space-y-4 pt-2">
+                    {slots.map((slot, idx) => (
+                      <div key={idx} className="border rounded-lg p-3 sm:p-4">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
+                          <div className="font-semibold text-sm sm:text-base">{slot.time}</div>
+                          <div className={`text-xs sm:text-sm font-medium ${
+                            slot.totalAvailable === 0
+                              ? "text-destructive"
+                              : slot.totalAvailable <= 3
+                              ? "text-yellow-600"
+                              : "text-green-600"
+                          }`}>
+                            {slot.totalAvailable} mesa{slot.totalAvailable !== 1 ? 's' : ''} disponible{slot.totalAvailable !== 1 ? 's' : ''}
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {slot.tables.map((table) => (
+                            <div
+                              key={table.config_id}
+                              className={`rounded-lg border transition-all ${
+                                table.available === 0
+                                  ? "bg-muted/50 border-muted text-muted-foreground"
+                                  : "bg-primary/5 border-primary/20 text-foreground hover:border-primary/40"
+                              }`}
+                            >
+                              {/* Header */}
+                              <div className="px-4 py-3 border-b border-current/10">
+                                <div className="font-semibold text-sm">{table.table_name}</div>
+                                <div className="text-xs text-muted-foreground mt-0.5">
+                                  {table.seats} asientos
+                                </div>
+                              </div>
+                              
+                              {/* Body */}
+                              <div className="px-4 py-3 space-y-2">
+                                {/* Availability */}
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-muted-foreground">Disponibilidad</span>
+                                  <span className={`text-sm font-semibold ${
+                                    table.available === 0
+                                      ? "text-destructive"
+                                      : table.available <= 2
+                                      ? "text-yellow-600"
+                                      : "text-green-600"
+                                  }`}>
+                                    {table.available}/{table.total}
+                                  </span>
+                                </div>
+                                
+                                {/* Party Size Range */}
+                                <div className="flex items-center justify-between pt-2 border-t border-current/10">
+                                  <span className="text-xs text-muted-foreground">Capacidad</span>
+                                  <span className="text-sm font-medium">
+                                    {table.min_party_size}-{table.max_party_size} personas
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                              {slot.tables.map((table) => (
-                                <div
-                                  key={table.config_id}
-                                  className={`rounded-lg border transition-all ${
-                                    table.available === 0
-                                      ? "bg-muted/50 border-muted text-muted-foreground"
-                                      : "bg-primary/5 border-primary/20 text-foreground hover:border-primary/40"
-                                  }`}
-                                >
-                                  {/* Header */}
-                                  <div className="px-4 py-3 border-b border-current/10">
-                                    <div className="font-semibold text-sm">{table.table_name}</div>
-                                    <div className="text-xs text-muted-foreground mt-0.5">
-                                      {table.seats} asientos
-                                    </div>
-                                  </div>
-                                  
-                                  {/* Body */}
-                                  <div className="px-4 py-3 space-y-2">
-                                    {/* Availability */}
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-xs text-muted-foreground">Disponibilidad</span>
-                                      <span className={`text-sm font-semibold ${
-                                        table.available === 0
-                                          ? "text-destructive"
-                                          : table.available <= 2
-                                          ? "text-yellow-600"
-                                          : "text-green-600"
-                                      }`}>
-                                        {table.available}/{table.total}
-                                      </span>
-                                    </div>
-                                    
-                                    {/* Party Size Range */}
-                                    <div className="flex items-center justify-between pt-2 border-t border-current/10">
-                                      <span className="text-xs text-muted-foreground">Capacidad</span>
-                                      <span className="text-sm font-medium">
-                                        {table.min_party_size}-{table.max_party_size} personas
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        </>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
       )}
       
       <Button
