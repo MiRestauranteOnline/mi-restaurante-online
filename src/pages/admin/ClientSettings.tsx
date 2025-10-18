@@ -3705,6 +3705,34 @@ setReviewForm({
                     })}
                   />
                 </div>
+                <div>
+                  <Label htmlFor="youtube">YouTube</Label>
+                  <Input
+                    id="youtube"
+                    value={formData.social_media_links.youtube}
+                    onChange={(e) => setFormData({
+                      ...formData, 
+                      social_media_links: {
+                        ...formData.social_media_links,
+                        youtube: e.target.value
+                      }
+                    })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="linkedin">LinkedIn</Label>
+                  <Input
+                    id="linkedin"
+                    value={formData.social_media_links.linkedin}
+                    onChange={(e) => setFormData({
+                      ...formData, 
+                      social_media_links: {
+                        ...formData.social_media_links,
+                        linkedin: e.target.value
+                      }
+                    })}
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
