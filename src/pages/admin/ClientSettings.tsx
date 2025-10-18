@@ -224,6 +224,24 @@ interface AdminContent {
   // Carousel
   carousel_enabled?: boolean;
   carousel_display_order?: number;
+  
+  // Visibility toggles
+  homepage_about_section_visible?: boolean;
+  homepage_about_stats_visible?: boolean;
+  homepage_menu_section_visible?: boolean;
+  homepage_services_section_visible?: boolean;
+  homepage_reservations_section_visible?: boolean;
+  homepage_reviews_section_visible?: boolean;
+  homepage_contact_section_visible?: boolean;
+  homepage_contact_map_visible?: boolean;
+  homepage_delivery_section_visible?: boolean;
+  homepage_faq_section_visible?: boolean;
+  about_page_about_section_visible?: boolean;
+  about_page_about_stats_visible?: boolean;
+  about_page_stats_section_visible?: boolean;
+  about_page_team_section_visible?: boolean;
+  contact_page_contact_section_visible?: boolean;
+  contact_page_map_visible?: boolean;
 }
 
 interface MenuCategory {
@@ -269,6 +287,15 @@ interface Review {
   is_active: boolean;
   client_id: string;
   review_date?: string;
+}
+
+interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+  display_order: number;
+  is_active: boolean;
+  client_id: string;
 }
 
 interface PremiumFeatures {
@@ -709,6 +736,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [carouselImages, setCarouselImages] = useState<any[]>([]);
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -717,10 +745,12 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const [showMenuItemDialog, setShowMenuItemDialog] = useState(false);
   const [showTeamMemberDialog, setShowTeamMemberDialog] = useState(false);
   const [showReviewDialog, setShowReviewDialog] = useState(false);
+  const [showFaqDialog, setShowFaqDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
   const [editingTeamMember, setEditingTeamMember] = useState<TeamMember | null>(null);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
+  const [editingFaq, setEditingFaq] = useState<FAQ | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [userRole, setUserRole] = useState<string | null>(null);
   const [showWarningOverlay, setShowWarningOverlay] = useState(false);
@@ -734,7 +764,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
 
   // Ensure activeTab is allowed (especially in client view)
   useEffect(() => {
-    const order = ['basic','domain','hours','social','delivery','branding','content','briefing','menu','team','reviews','carousel','custom-images'];
+    const order = ['basic','domain','hours','social','delivery','branding','content','briefing','menu','team','reviews','faqs','carousel','custom-images'];
     const adminOnly = ['discounts','advanced'];
     const ordered = userRole === 'admin' ? [...order, ...adminOnly] : order;
     const firstAllowed = ordered.find((v) => showTab(v));
@@ -774,6 +804,10 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
 
 const [reviewForm, setReviewForm] = useState({
   reviewer_name: '', review_text: '', star_rating: 5, display_order: 0, review_date: null as Date | null,
+});
+
+const [faqForm, setFaqForm] = useState({
+  question: '', answer: '', display_order: 0
 });
 
   // Briefing state - now three separate briefings
@@ -1052,6 +1086,8 @@ const [reviewForm, setReviewForm] = useState({
     homepage_reviews_section_visible: true,
     homepage_contact_section_visible: true,
     homepage_contact_map_visible: true,
+    homepage_delivery_section_visible: true,
+    homepage_faq_section_visible: true,
     about_page_about_section_visible: true,
     about_page_about_stats_visible: true,
     about_page_stats_section_visible: true,
@@ -1078,6 +1114,7 @@ const [reviewForm, setReviewForm] = useState({
       fetchMenuItems();
       fetchTeamMembers();
       fetchReviews();
+      fetchFaqs();
       fetchCarouselImages();
       fetchPremiumFeatures();
       fetchUserRole();
@@ -1456,6 +1493,8 @@ const [reviewForm, setReviewForm] = useState({
           homepage_reviews_section_visible: data.homepage_reviews_section_visible ?? true,
           homepage_contact_section_visible: data.homepage_contact_section_visible ?? true,
           homepage_contact_map_visible: data.homepage_contact_map_visible ?? true,
+          homepage_delivery_section_visible: data.homepage_delivery_section_visible ?? true,
+          homepage_faq_section_visible: data.homepage_faq_section_visible ?? true,
           about_page_about_section_visible: data.about_page_about_section_visible ?? true,
           about_page_about_stats_visible: data.about_page_about_stats_visible ?? true,
           about_page_stats_section_visible: data.about_page_stats_section_visible ?? true,
@@ -1572,6 +1611,27 @@ const [reviewForm, setReviewForm] = useState({
       toast({
         title: "Error",
         description: "Failed to load reviews: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const fetchFaqs = async () => {
+    if (!effectiveClientId) return;
+    
+    try {
+      const { data, error } = await (supabase as any)
+        .from('faqs')
+        .select('*')
+        .eq('client_id', effectiveClientId)
+        .order('display_order');
+
+      if (error) throw error;
+      setFaqs((data as FAQ[]) || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to load FAQs: " + error.message,
         variant: "destructive"
       });
     }
@@ -1912,6 +1972,8 @@ const [reviewForm, setReviewForm] = useState({
           homepage_reviews_section_visible: formData.homepage_reviews_section_visible,
           homepage_contact_section_visible: formData.homepage_contact_section_visible,
           homepage_contact_map_visible: formData.homepage_contact_map_visible,
+          homepage_delivery_section_visible: formData.homepage_delivery_section_visible,
+          homepage_faq_section_visible: formData.homepage_faq_section_visible,
           about_page_about_section_visible: formData.about_page_about_section_visible,
           about_page_about_stats_visible: formData.about_page_about_stats_visible,
           about_page_stats_section_visible: formData.about_page_stats_section_visible,
@@ -2420,6 +2482,86 @@ setReviewForm({ reviewer_name: '', review_text: '', star_rating: 5, display_orde
     }
   };
 
+  // FAQ CRUD Functions
+  const handleSaveFaq = async () => {
+    if (!clientId) return;
+    
+    try {
+      if (editingFaq) {
+        const { data, error } = await (supabase as any)
+          .from('faqs')
+          .update({
+            question: faqForm.question,
+            answer: faqForm.answer,
+            display_order: faqForm.display_order,
+          })
+          .eq('id', editingFaq.id);
+
+        if (error) throw error;
+        
+        setFaqs(faqs.map(f => f.id === editingFaq.id ? { ...f, ...faqForm } : f));
+        setEditingFaq(null);
+      } else {
+        const { data, error } = await (supabase as any)
+          .from('faqs')
+          .insert({
+            client_id: effectiveClientId,
+            question: faqForm.question,
+            answer: faqForm.answer,
+            display_order: faqForm.display_order,
+            is_active: true,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        
+        if (data) {
+          setFaqs([...faqs, data as FAQ]);
+        }
+      }
+
+      setShowFaqDialog(false);
+      setEditingFaq(null);
+      setFaqForm({ question: '', answer: '', display_order: 0 });
+      
+      toast({
+        title: "Success",
+        description: "FAQ guardado exitosamente"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to save FAQ: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteFaq = async (id: string) => {
+    try{
+      const { error } = await (supabase as any)
+        .from('faqs')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setFaqs(faqs.filter(f => f.id !== id));
+      
+      toast({
+        title: "Success",
+        description: "FAQ eliminado exitosamente"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to delete FAQ: " + error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
   // Three separate generation processes
   const handleGenerateContent = async () => {
     if (!contentBriefing.trim()) {
@@ -2835,6 +2977,7 @@ setReviewForm({
                   {showTab('menu') && <SelectItem value="menu">{t('nav.menu')}</SelectItem>}
                   {showTab('team') && <SelectItem value="team">{t('nav.team')}</SelectItem>}
                   {showTab('reviews') && <SelectItem value="reviews">{t('nav.reviews')}</SelectItem>}
+                  {showTab('faqs') && <SelectItem value="faqs">Preguntas Frecuentes</SelectItem>}
                   {showTab('carousel') && <SelectItem value="carousel">{t('nav.carousel')}</SelectItem>}
                   {showTab('custom-images') && <SelectItem value="custom-images">{t('nav.images')}</SelectItem>}
                   {userRole === 'admin' && <SelectItem value="discounts">Descuentos</SelectItem>}
@@ -2856,6 +2999,7 @@ setReviewForm({
             {showTab('menu') && <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>}
             {showTab('team') && <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>}
             {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
+            {showTab('faqs') && <TabsTrigger value="faqs">Preguntas Frecuentes</TabsTrigger>}
             {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
             {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
             {userRole === 'admin' && <TabsTrigger value="discounts">Descuentos</TabsTrigger>}
@@ -3756,6 +3900,22 @@ setReviewForm({
                           id="homepage_contact_map_visible"
                           checked={formData.homepage_contact_map_visible}
                           onCheckedChange={(checked) => setFormData({...formData, homepage_contact_map_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_delivery_section_visible" className="flex-1">Mostrar sección de Delivery en página principal</Label>
+                        <Switch
+                          id="homepage_delivery_section_visible"
+                          checked={formData.homepage_delivery_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_delivery_section_visible: checked})}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between space-x-2">
+                        <Label htmlFor="homepage_faq_section_visible" className="flex-1">Mostrar sección de FAQ en página principal</Label>
+                        <Switch
+                          id="homepage_faq_section_visible"
+                          checked={formData.homepage_faq_section_visible}
+                          onCheckedChange={(checked) => setFormData({...formData, homepage_faq_section_visible: checked})}
                         />
                       </div>
                     </div>
