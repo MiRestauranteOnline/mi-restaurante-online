@@ -440,7 +440,7 @@ export default function RestaurantSettings() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="facebook"
@@ -485,12 +485,12 @@ export default function RestaurantSettings() {
 
                 <FormField
                   control={form.control}
-                  name="linkedin"
+                  name="tiktok"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>LinkedIn</FormLabel>
+                      <FormLabel>TikTok</FormLabel>
                       <FormControl>
-                        <Input placeholder="https://linkedin.com/company/mirestaurante" {...field} />
+                        <Input placeholder="https://tiktok.com/@mirestaurante" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -513,12 +513,12 @@ export default function RestaurantSettings() {
 
                 <FormField
                   control={form.control}
-                  name="tiktok"
+                  name="linkedin"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>TikTok</FormLabel>
+                      <FormLabel>LinkedIn</FormLabel>
                       <FormControl>
-                        <Input placeholder="https://tiktok.com/@mirestaurante" {...field} />
+                        <Input placeholder="https://linkedin.com/company/mirestaurante" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
