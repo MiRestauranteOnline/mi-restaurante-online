@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Copy, Check, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { EmailDNSConfigForm } from "@/components/client/EmailDNSConfigForm";
 import namecheapStep1 from "@/assets/namecheap-step-1.webp";
 import namecheapStep2 from "@/assets/namecheap-step-2.webp";
 import namecheapStep3 from "@/assets/namecheap-step-3.webp";
@@ -13,6 +15,24 @@ export default function ClientGuides() {
   const { toast } = useToast();
   const [copiedNS1, setCopiedNS1] = useState(false);
   const [copiedNS2, setCopiedNS2] = useState(false);
+  const [clientId, setClientId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchClientId = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from("user_clients")
+          .select("client_id")
+          .eq("user_id", user.id)
+          .single();
+        if (data) {
+          setClientId(data.client_id);
+        }
+      }
+    };
+    fetchClientId();
+  }, []);
 
   const nameserver1 = "craig.ns.cloudflare.com";
   const nameserver2 = "uma.ns.cloudflare.com";
@@ -389,18 +409,31 @@ export default function ClientGuides() {
                 </div>
               </div>
 
-              {/* Step 4: Configure Cloudflare */}
+              {/* Automated DNS Configuration Form */}
+              {clientId && (
+                <div className="space-y-4">
+                  <EmailDNSConfigForm clientId={clientId} />
+                  
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      — O si prefieres, configura manualmente en Cloudflare —
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 4: Configure Cloudflare (Manual Option) */}
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     4
                   </div>
                   <div className="space-y-3 flex-1">
-                    <h3 className="text-xl font-semibold">Configurar DNS en Cloudflare</h3>
+                    <h3 className="text-xl font-semibold">Configurar DNS en Cloudflare (Manual)</h3>
                     <div className="space-y-2 text-muted-foreground">
                       <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
                         <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                          ℹ️ <strong>Importante sobre DNS:</strong> Si tu sitio web usa nameservers personalizados de Cloudflare (como configuraste en la pestaña "Conectar Dominio"), los registros DNS de NameCheap ya no se utilizan. Debes agregar todos los registros de correo en Cloudflare para que funcionen correctamente.
+                          ℹ️ <strong>Configuración Manual:</strong> Si prefieres configurar manualmente o la configuración automática falló, sigue estos pasos para agregar los registros DNS en Cloudflare.
                         </p>
                       </div>
                       <p>Ahora debes agregar los registros DNS en Cloudflare:</p>

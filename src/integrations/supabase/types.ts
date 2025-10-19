@@ -865,6 +865,7 @@ export type Database = {
           brand_colors: Json | null
           cancellation_date: string | null
           cancellation_reason: string | null
+          cloudflare_zone_id: string | null
           coordinates: Json | null
           country_code: string | null
           created_at: string
@@ -924,6 +925,7 @@ export type Database = {
           brand_colors?: Json | null
           cancellation_date?: string | null
           cancellation_reason?: string | null
+          cloudflare_zone_id?: string | null
           coordinates?: Json | null
           country_code?: string | null
           created_at?: string
@@ -983,6 +985,7 @@ export type Database = {
           brand_colors?: Json | null
           cancellation_date?: string | null
           cancellation_reason?: string | null
+          cloudflare_zone_id?: string | null
           coordinates?: Json | null
           country_code?: string | null
           created_at?: string
@@ -1192,6 +1195,65 @@ export type Database = {
           whatsapp_clicks?: number
         }
         Relationships: []
+      }
+      email_dns_requests: {
+        Row: {
+          client_id: string
+          created_at: string
+          dkim_selector: string
+          dkim_value: string
+          error_message: string | null
+          id: string
+          mx1_priority: number
+          mx1_record: string
+          mx2_priority: number
+          mx2_record: string
+          processed_at: string | null
+          spf_record: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          dkim_selector?: string
+          dkim_value: string
+          error_message?: string | null
+          id?: string
+          mx1_priority?: number
+          mx1_record?: string
+          mx2_priority?: number
+          mx2_record?: string
+          processed_at?: string | null
+          spf_record?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          dkim_selector?: string
+          dkim_value?: string
+          error_message?: string | null
+          id?: string
+          mx1_priority?: number
+          mx1_record?: string
+          mx2_priority?: number
+          mx2_record?: string
+          processed_at?: string | null
+          spf_record?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_dns_requests_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       faqs: {
         Row: {
