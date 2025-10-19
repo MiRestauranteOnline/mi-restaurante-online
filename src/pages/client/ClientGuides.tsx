@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -14,10 +15,19 @@ import namecheapStep4 from "@/assets/namecheap-step-4.webp";
 
 export default function ClientGuides() {
   const { toast } = useToast();
+  const { category, guide } = useParams<{ category?: string; guide?: string }>();
+  const navigate = useNavigate();
   const [copiedNS1, setCopiedNS1] = useState(false);
   const [copiedNS2, setCopiedNS2] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
-  const [activeGuide, setActiveGuide] = useState("custom-domain");
+  
+  // Map URL params to guide IDs
+  const getGuideIdFromUrl = () => {
+    if (!category || !guide) return "intro";
+    return guide;
+  };
+  
+  const activeGuide = getGuideIdFromUrl();
 
   useEffect(() => {
     const fetchClientId = async () => {
@@ -2449,7 +2459,7 @@ export default function ClientGuides() {
 
   return (
     <div className="flex h-full w-full overflow-hidden">
-      <GuidesSidebar activeGuide={activeGuide} onGuideChange={setActiveGuide} />
+      <GuidesSidebar activeGuide={activeGuide} />
       
       <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto p-6 space-y-6">

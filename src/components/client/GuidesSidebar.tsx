@@ -16,6 +16,15 @@ interface GuideCategory {
   items: GuideItem[];
 }
 
+// Map guide categories to URL-friendly slugs
+const categoryToSlug: Record<string, string> = {
+  "Primeros Pasos": "primeros-pasos",
+  "Panel Principal": "panel-principal",
+  "Configuración de Dominio": "configuracion-dominio",
+  "Configuración de Email": "configuracion-email",
+  "Reservas": "reservas",
+};
+
 const guideCategories: GuideCategory[] = [
   {
     title: "Primeros Pasos",
@@ -66,10 +75,9 @@ const guideCategories: GuideCategory[] = [
 
 interface GuidesSidebarProps {
   activeGuide: string;
-  onGuideChange: (guideId: string) => void;
 }
 
-export function GuidesSidebar({ activeGuide, onGuideChange }: GuidesSidebarProps) {
+export function GuidesSidebar({ activeGuide }: GuidesSidebarProps) {
   const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos", "Panel Principal", "Configuración de Dominio", "Configuración de Email", "Reservas"]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -80,11 +88,6 @@ export function GuidesSidebar({ activeGuide, onGuideChange }: GuidesSidebarProps
         ? prev.filter((c) => c !== category)
         : [...prev, category]
     );
-  };
-
-  const handleGuideClick = (guideId: string) => {
-    onGuideChange(guideId);
-    if (isMobile) setMobileOpen(false);
   };
 
   const SidebarContent = () => (
@@ -120,21 +123,29 @@ export function GuidesSidebar({ activeGuide, onGuideChange }: GuidesSidebarProps
             
             {openCategories.includes(category.title) && (
               <div className="ml-2 mt-1 space-y-1">
-                {category.items.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleGuideClick(item.id)}
-                    className={cn(
-                      "flex items-center gap-2 w-full px-4 py-2 text-sm rounded-md transition-colors",
-                      activeGuide === item.id
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted"
-                    )}
-                  >
-                    <item.icon className="h-4 w-4 flex-shrink-0" />
-                    <span>{item.title}</span>
-                  </button>
-                ))}
+                {category.items.map((item) => {
+                  const categorySlug = categoryToSlug[category.title];
+                  const guidePath = `/client/guides/${categorySlug}/${item.id}`;
+                  
+                  return (
+                    <NavLink
+                      key={item.id}
+                      to={guidePath}
+                      onClick={() => isMobile && setMobileOpen(false)}
+                      className={({ isActive }) =>
+                        cn(
+                          "flex items-center gap-2 w-full px-4 py-2 text-sm rounded-md transition-colors",
+                          isActive
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-muted"
+                        )
+                      }
+                    >
+                      <item.icon className="h-4 w-4 flex-shrink-0" />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  );
+                })}
               </div>
             )}
           </div>
