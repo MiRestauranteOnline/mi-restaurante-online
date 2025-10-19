@@ -31,6 +31,11 @@ const guideCategories: GuideCategory[] = [
       { id: "social-media", title: "Redes Sociales", icon: FileText },
       { id: "delivery", title: "Información de Delivery", icon: FileText },
       { id: "branding", title: "Marca y Personalización", icon: FileText },
+    ],
+  },
+  {
+    title: "Contenido",
+    items: [
       { id: "menu-categories", title: "Categorías del Menú", icon: FileText },
       { id: "menu-items", title: "Elementos del Menú", icon: FileText },
       { id: "team", title: "Equipo", icon: FileText },
@@ -57,7 +62,7 @@ interface GuidesSidebarProps {
 }
 
 export function GuidesSidebar({ activeGuide, onGuideChange }: GuidesSidebarProps) {
-  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos", "Panel Principal", "Configuración de Dominio", "Configuración de Email"]);
+  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos", "Panel Principal", "Contenido", "Configuración de Dominio", "Configuración de Email"]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
