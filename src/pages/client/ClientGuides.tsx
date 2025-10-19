@@ -1954,6 +1954,493 @@ export default function ClientGuides() {
             </CardContent>
           </Card>
         );
+
+      case "reservation-schedules":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Horarios de Reserva</CardTitle>
+              <CardDescription>
+                Configura los horarios y franjas disponibles para que tus clientes puedan hacer reservas
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué son los Horarios de Reserva?</h3>
+                <p className="text-muted-foreground">
+                  Los horarios de reserva definen cuándo tu restaurante acepta reservas. Puedes crear diferentes franjas horarias para cada día de la semana, establecer capacidades y configurar reglas especiales para grupos grandes.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Crear un Horario de Reserva</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Haz clic en el botón <strong>"Agregar Horario"</strong></li>
+                  <li>Selecciona el día de la semana (o varios días)</li>
+                  <li>Establece la hora de inicio y fin del turno</li>
+                  <li>Define la capacidad máxima de comensales para ese horario</li>
+                  <li>Opcionalmente, configura intervalos de tiempo entre reservas</li>
+                  <li>Guarda la configuración</li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Configuraciones Avanzadas</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Configuración de Mesas Personalizada</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Puedes definir tipos de mesa específicos para cada horario (ej: 2 mesas de 4 personas, 3 mesas de 2 personas). Esto te da control detallado sobre la disponibilidad.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Grupos Especiales</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Activa esta opción para grupos de más de 8 personas. Puedes personalizar el mensaje que se muestra y establecer requisitos especiales de confirmación.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Estado Activo/Inactivo</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Desactiva temporalmente un horario sin eliminarlo. Útil para eventos especiales o mantenimiento temporal.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Consejos y Mejores Prácticas</h3>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Crea horarios separados para almuerzo y cena si tienen diferentes capacidades</li>
+                  <li>Deja intervalos de 15-30 minutos entre reservas para dar tiempo de limpieza</li>
+                  <li>Configura horarios especiales para fines de semana si tienes mayor demanda</li>
+                  <li>Usa la función de duplicar para crear rápidamente horarios similares</li>
+                  <li>Revisa regularmente tus horarios y ajústalos según la demanda observada</li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Tip:</strong> Puedes combinar horarios globales con configuración de mesas personalizada. Si no especificas mesas personalizadas, el sistema usará las mesas configuradas en la pestaña "Configuración de Mesas".
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "table-configuration":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Configuración de Mesas</CardTitle>
+              <CardDescription>
+                Define los tipos de mesa disponibles en tu restaurante
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué es la Configuración de Mesas?</h3>
+                <p className="text-muted-foreground">
+                  Aquí defines los diferentes tipos de mesa que tiene tu restaurante. Esta información se usa como base para calcular la disponibilidad de reservas automáticamente.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Configurar tus Mesas</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Haz clic en <strong>"Agregar Configuración"</strong></li>
+                  <li>Dale un nombre descriptivo (ej: "Mesa para 2", "Mesa VIP")</li>
+                  <li>Especifica el número de asientos</li>
+                  <li>Indica cuántas mesas de este tipo tienes</li>
+                  <li>Define el tamaño mínimo y máximo de grupo que puede usar esta mesa</li>
+                  <li>Establece la duración promedio de la reserva (en minutos)</li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Campos Detallados</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Nombre de Mesa</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Un nombre identificativo para el tipo de mesa. Ejemplo: "Mesa 2 personas", "Mesa familiar", "Mesa bar".
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Asientos</h4>
+                    <p className="text-sm text-muted-foreground">
+                      El número exacto de sillas/asientos que tiene cada mesa de este tipo.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Cantidad</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cuántas mesas de este tipo existen en tu restaurante.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Tamaño de Grupo (Min/Max)</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Define el rango de personas que puede acomodar este tipo de mesa. Por ejemplo, una mesa de 4 asientos podría acomodar grupos de 2-4 personas.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Duración de Reserva</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Tiempo promedio (en minutos) que un grupo permanece en la mesa. Esto ayuda a calcular cuántas reservas pueden hacerse en el mismo horario.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Ejemplo Práctico</h3>
+                <div className="bg-muted p-4 rounded-lg space-y-2">
+                  <p className="font-medium">Restaurante "La Estrella"</p>
+                  <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
+                    <li>4 mesas de 2 personas (duración: 90 minutos)</li>
+                    <li>6 mesas de 4 personas (duración: 120 minutos)</li>
+                    <li>2 mesas de 6 personas (duración: 150 minutos)</li>
+                    <li>1 mesa VIP de 8 personas (duración: 180 minutos)</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                  ⚠️ <strong>Importante:</strong> Las mesas inactivas no se mostrarán en el sistema de reservas. Usa el toggle de estado para activar/desactivar tipos de mesa temporalmente.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "reservation-availability":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Disponibilidad de Reservas</CardTitle>
+              <CardDescription>
+                Visualiza en tiempo real la disponibilidad y crea reservas manuales
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué Muestra la Disponibilidad?</h3>
+                <p className="text-muted-foreground">
+                  Esta vista te muestra automáticamente todos los horarios disponibles para los próximos 28 días, calculados en tiempo real basándose en tus horarios de reserva, configuración de mesas y reservas existentes.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Funciona el Cálculo</h3>
+                <p className="text-muted-foreground">
+                  El sistema calcula la disponibilidad automáticamente considerando:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Los horarios de reserva activos que has configurado</li>
+                  <li>Las mesas disponibles (globales o personalizadas por horario)</li>
+                  <li>Las reservas ya confirmadas en cada franja horaria</li>
+                  <li>La duración estimada de cada tipo de mesa</li>
+                  <li>El tamaño del grupo que intenta reservar</li>
+                </ul>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Crear Reservas Manuales</h3>
+                <p className="text-muted-foreground">
+                  Puedes crear reservas directamente desde el panel de administración:
+                </p>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Haz clic en el botón <strong>"Agregar Reserva"</strong></li>
+                  <li>Selecciona la fecha deseada</li>
+                  <li>Elige el horario disponible (solo verás horarios con disponibilidad)</li>
+                  <li>Especifica el tamaño del grupo</li>
+                  <li>Ingresa los datos del cliente (nombre, email, teléfono)</li>
+                  <li>Guarda la reserva</li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Información Detallada</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Vista por Fecha</h4>
+                    <p className="text-sm text-muted-foreground">
+                      La disponibilidad se agrupa por fecha, mostrando todos los horarios disponibles para cada día. Esto te permite ver rápidamente qué días tienen mayor disponibilidad.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Detalles de Cada Horario</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Para cada horario se muestra: la hora, las mesas disponibles, la capacidad total, y el rango de tamaños de grupo que puede acomodar.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Actualización en Tiempo Real</h4>
+                    <p className="text-sm text-muted-foreground">
+                      La disponibilidad se recalcula automáticamente cada vez que se crea, modifica o cancela una reserva.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                  ✅ <strong>Ventaja:</strong> No necesitas calcular manualmente la disponibilidad. El sistema lo hace por ti automáticamente, evitando sobreventa de mesas.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "reservation-list":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Lista de Reservas</CardTitle>
+              <CardDescription>
+                Gestiona todas tus reservas en un solo lugar
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué es la Lista de Reservas?</h3>
+                <p className="text-muted-foreground">
+                  La lista de reservas muestra todas las reservas futuras de tu restaurante, permitiéndote buscar, filtrar, gestionar y actualizar el estado de cada reserva.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Funciones Principales</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Búsqueda</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Busca reservas por nombre del cliente, email o número de teléfono usando el campo de búsqueda.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Filtros por Estado</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Filtra reservas por estado: Pendientes, Confirmadas, Canceladas o Completadas.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Cambio de Estado</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Actualiza el estado de una reserva directamente desde la lista: confirmar, cancelar, declinar o marcar como completada.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Notas Internas</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Añade notas privadas a cada reserva para recordar detalles especiales (alergias, preferencias, ocasiones especiales).
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Exportar a CSV</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Descarga todas las reservas filtradas en formato CSV para análisis o respaldo.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Estados de Reserva</h3>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pendiente</span>
+                    <p className="text-sm text-muted-foreground">Nueva reserva que aún no has confirmado</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Confirmada</span>
+                    <p className="text-sm text-muted-foreground">Reserva confirmada y garantizada</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Cancelada</span>
+                    <p className="text-sm text-muted-foreground">Cliente canceló la reserva</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Declinada</span>
+                    <p className="text-sm text-muted-foreground">Restaurante rechazó la reserva</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Completada</span>
+                    <p className="text-sm text-muted-foreground">Cliente llegó y completó su visita</p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Consejos de Gestión</h3>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Revisa las reservas pendientes diariamente y confírmalas lo antes posible</li>
+                  <li>Usa las notas internas para registrar preferencias especiales de clientes habituales</li>
+                  <li>Marca las reservas como completadas al final del día para mantener un historial preciso</li>
+                  <li>Si debes declinar una reserva, proporciona un motivo claro al cliente</li>
+                  <li>Exporta regularmente tus datos para análisis de tendencias y demanda</li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Tip:</strong> Las reservas pasadas se limpian automáticamente del sistema para mantener la lista enfocada en reservas futuras.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "reservation-calendar":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Calendario de Reservas</CardTitle>
+              <CardDescription>
+                Visualiza tus reservas en formato de calendario mensual
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Para Qué Sirve el Calendario?</h3>
+                <p className="text-muted-foreground">
+                  El calendario te ofrece una vista mensual de todas tus reservas, permitiéndote identificar rápidamente los días con mayor demanda y planificar recursos en consecuencia.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Usar el Calendario</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Navega entre meses usando las flechas en la parte superior</li>
+                  <li>Cada día muestra el número total de reservas</li>
+                  <li>Los indicadores de color muestran los estados de las reservas del día</li>
+                  <li>Haz clic en cualquier día con reservas para ver los detalles</li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Indicadores Visuales</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Número de Reservas</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cada día muestra claramente cuántas reservas tienes programadas. Los días sin reservas aparecen sin indicadores.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Código de Colores</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Los puntos de color bajo cada día indican los estados:
+                    </p>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <span>Amarillo: Pendientes</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span>Verde: Confirmadas</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <span>Rojo: Canceladas</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Vista Detallada</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Al hacer clic en un día, se abre un diálogo mostrando todas las reservas de ese día con información completa: nombre, hora, personas, contacto y estado.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Ventajas de la Vista de Calendario</h3>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Identifica rápidamente los días con alta demanda</li>
+                  <li>Planifica la asignación de personal según la ocupación prevista</li>
+                  <li>Detecta patrones de reservas (días populares, temporadas altas)</li>
+                  <li>Anticipa necesidades de inventario y preparación</li>
+                  <li>Visualiza la distribución de reservas a lo largo del mes</li>
+                </ul>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Actualizaciones en Tiempo Real</h3>
+                <p className="text-muted-foreground">
+                  El calendario se actualiza automáticamente cuando:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Se crea una nueva reserva (manual o desde el sitio web)</li>
+                  <li>Un cliente cancela su reserva</li>
+                  <li>Cambias el estado de una reserva</li>
+                  <li>Se elimina una reserva</li>
+                </ul>
+              </div>
+
+              <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                  ✅ <strong>Consejo:</strong> Usa el calendario junto con la lista de reservas. El calendario es ideal para planificación a largo plazo, mientras que la lista es mejor para gestión detallada del día a día.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
       
       default:
         return null;

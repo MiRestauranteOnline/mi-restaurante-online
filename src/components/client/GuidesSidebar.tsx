@@ -52,6 +52,16 @@ const guideCategories: GuideCategory[] = [
       { id: "email-config", title: "Correo Electrónico", icon: Mail },
     ],
   },
+  {
+    title: "Reservas",
+    items: [
+      { id: "reservation-schedules", title: "Horarios de Reserva", icon: FileText },
+      { id: "table-configuration", title: "Configuración de Mesas", icon: FileText },
+      { id: "reservation-availability", title: "Disponibilidad", icon: FileText },
+      { id: "reservation-list", title: "Lista de Reservas", icon: FileText },
+      { id: "reservation-calendar", title: "Calendario", icon: FileText },
+    ],
+  },
 ];
 
 interface GuidesSidebarProps {
@@ -60,7 +70,7 @@ interface GuidesSidebarProps {
 }
 
 export function GuidesSidebar({ activeGuide, onGuideChange }: GuidesSidebarProps) {
-  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos", "Panel Principal", "Configuración de Dominio", "Configuración de Email"]);
+  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos", "Panel Principal", "Configuración de Dominio", "Configuración de Email", "Reservas"]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
