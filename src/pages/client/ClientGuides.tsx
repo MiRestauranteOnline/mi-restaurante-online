@@ -1,0 +1,246 @@
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Copy, Check, ExternalLink } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+export default function ClientGuides() {
+  const { toast } = useToast();
+  const [copiedNS1, setCopiedNS1] = useState(false);
+  const [copiedNS2, setCopiedNS2] = useState(false);
+
+  const nameserver1 = "craig.ns.cloudflare.com";
+  const nameserver2 = "uma.ns.cloudflare.com";
+
+  const copyToClipboard = (text: string, nsNumber: number) => {
+    navigator.clipboard.writeText(text);
+    if (nsNumber === 1) {
+      setCopiedNS1(true);
+      setTimeout(() => setCopiedNS1(false), 2000);
+    } else {
+      setCopiedNS2(true);
+      setTimeout(() => setCopiedNS2(false), 2000);
+    }
+    toast({
+      title: "Copiado",
+      description: "Nameserver copiado al portapapeles",
+    });
+  };
+
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">Guías y Tutoriales</h1>
+        <p className="text-muted-foreground">
+          Aprende cómo configurar y gestionar tu restaurante online
+        </p>
+      </div>
+
+      <Tabs defaultValue="custom-domain" className="w-full">
+        <TabsList className="grid w-full grid-cols-1 lg:w-auto lg:inline-grid">
+          <TabsTrigger value="custom-domain">Configurar Dominio Personalizado</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="custom-domain" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Cómo Configurar tu Dominio Personalizado con NameCheap</CardTitle>
+              <CardDescription>
+                Sigue estos pasos para conectar tu dominio personalizado a tu restaurante online
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              {/* Video Tutorial Placeholder */}
+              <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center border-2 border-dashed">
+                <div className="text-center">
+                  <p className="text-lg font-medium mb-2">Video Tutorial Próximamente</p>
+                  <p className="text-sm text-muted-foreground">
+                    Aquí aparecerá un video tutorial completo del proceso
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 1: Buy a Domain */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    1
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Comprar un Dominio en NameCheap</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>Si aún no tienes un dominio, necesitas comprarlo primero:</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>
+                          Ve a{" "}
+                          <a
+                            href="https://www.namecheap.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline inline-flex items-center gap-1"
+                          >
+                            namecheap.com
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </li>
+                        <li>En la barra de búsqueda de la página principal, escribe el nombre de dominio que deseas (ej: mirestaurante.com)</li>
+                        <li>Haz clic en el botón "Search" para verificar la disponibilidad</li>
+                        <li>Si el dominio está disponible, verás un botón "Add to Cart" (Agregar al carrito)</li>
+                        <li>Selecciona la extensión que prefieras (.com, .pe, .restaurant, etc.) y agrégalo al carrito</li>
+                        <li>Completa el proceso de compra siguiendo las instrucciones en pantalla</li>
+                      </ol>
+                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
+                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          💡 <strong>Consejo:</strong> Los dominios .com son los más populares, pero puedes elegir otras extensiones como .pe (Perú), .restaurant, .food, etc. según tu preferencia y disponibilidad.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 2: Check Domain Availability */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    2
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Verificar Disponibilidad del Dominio</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>Antes de comprar, verifica que el dominio esté disponible:</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>Usa el buscador de NameCheap en la página principal</li>
+                        <li>Si el dominio está tomado, verás alternativas sugeridas</li>
+                        <li>Puedes probar diferentes extensiones (.com, .net, .pe, etc.)</li>
+                        <li>También puedes agregar palabras como "restaurant", "cocina", "bistro", etc. a tu nombre</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3: Configure Nameservers */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    3
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Configurar los Nameservers</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>Una vez que tengas tu dominio, debes configurar los nameservers para apuntar a Cloudflare:</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>Inicia sesión en tu cuenta de NameCheap</li>
+                        <li>Ve a tu "Domain List" (Lista de Dominios)</li>
+                        <li>Encuentra tu dominio y haz clic en el botón "Manage" (Administrar)</li>
+                        <li>En la página de gestión del dominio, busca la sección "Nameservers"</li>
+                        <li>Selecciona la opción "Custom DNS" en el menú desplegable</li>
+                        <li>Ingresa los siguientes nameservers en los campos correspondientes:</li>
+                      </ol>
+
+                      <div className="space-y-3 mt-4">
+                        <div className="bg-secondary/50 rounded-lg p-4 space-y-3">
+                          <div>
+                            <label className="text-sm font-medium block mb-2">Nameserver 1:</label>
+                            <div className="flex gap-2">
+                              <code className="flex-1 bg-background border rounded px-3 py-2 font-mono text-sm">
+                                {nameserver1}
+                              </code>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => copyToClipboard(nameserver1, 1)}
+                              >
+                                {copiedNS1 ? (
+                                  <Check className="h-4 w-4 text-green-600" />
+                                ) : (
+                                  <Copy className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium block mb-2">Nameserver 2:</label>
+                            <div className="flex gap-2">
+                              <code className="flex-1 bg-background border rounded px-3 py-2 font-mono text-sm">
+                                {nameserver2}
+                              </code>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => copyToClipboard(nameserver2, 2)}
+                              >
+                                {copiedNS2 ? (
+                                  <Check className="h-4 w-4 text-green-600" />
+                                ) : (
+                                  <Copy className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <ol start={7} className="list-decimal list-inside space-y-2 ml-4 mt-4">
+                        <li>Haz clic en el botón "✓" (checkmark) o "Save" para guardar los cambios</li>
+                        <li>NameCheap mostrará un mensaje de confirmación</li>
+                      </ol>
+
+                      <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
+                        <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                          ⏱️ <strong>Tiempo de Propagación:</strong> Los cambios de nameservers pueden tardar entre 5 minutos y 48 horas en propagarse completamente, aunque normalmente toma entre 30 minutos y 2 horas.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 4: Verification */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    4
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Verificación y Activación</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>Después de configurar los nameservers:</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>Espera entre 30 minutos y 2 horas para que los DNS se propaguen</li>
+                        <li>Nuestro sistema verificará automáticamente la configuración</li>
+                        <li>Una vez verificado, se generará automáticamente un certificado SSL gratuito</li>
+                        <li>Tu dominio personalizado estará activo y seguro con HTTPS</li>
+                      </ol>
+
+                      <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-4">
+                        <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                          ✅ <strong>¡Listo!</strong> Una vez completados estos pasos, tu restaurante estará accesible desde tu dominio personalizado con conexión segura HTTPS.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Help */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold mb-3">¿Necesitas Ayuda?</h3>
+                <p className="text-muted-foreground mb-4">
+                  Si tienes problemas con la configuración de tu dominio, nuestro equipo de soporte está aquí para ayudarte.
+                </p>
+                <Button variant="outline" asChild>
+                  <a href="/client/support">
+                    Contactar Soporte
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

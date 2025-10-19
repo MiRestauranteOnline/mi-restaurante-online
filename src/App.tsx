@@ -38,6 +38,7 @@ import ClientDashboard from "./pages/client/ClientDashboard";
 // import ClientSettingsPage from "./pages/client/ClientSettings";
 import ClientSubscription from "./pages/client/ClientSubscription";
 import ClientSupport from "./pages/client/ClientSupport";
+import ClientGuides from "./pages/client/ClientGuides";
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 import ClientAnalytics from "./pages/client/ClientAnalytics";
 import ClientReservations from "./pages/client/ClientReservations";
@@ -114,6 +115,7 @@ const AppContent = () => {
           <Route path="reservations/:clientId" element={<ClientReservations />} />
           <Route path="analytics/:clientId" element={<ClientAnalytics />} />
           <Route path="support/:clientId" element={<ClientSupport />} />
+          <Route path="guides" element={<ClientGuides />} />
           <Route path="subscription" element={<ClientSubscription />} />
         </Route>
         <Route path="*" element={<NotFound />} />
