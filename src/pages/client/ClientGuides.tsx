@@ -23,7 +23,7 @@ export default function ClientGuides() {
   
   // Map URL params to guide IDs
   const getGuideIdFromUrl = () => {
-    if (!category || !guide) return "intro";
+    if (!category || !guide) return "introduccion";
     return guide;
   };
   
@@ -66,7 +66,7 @@ export default function ClientGuides() {
 
   const renderGuideContent = () => {
     switch (activeGuide) {
-      case "intro":
+      case "introduccion":
         return (
           <Card>
             <CardHeader>
@@ -94,7 +94,7 @@ export default function ClientGuides() {
           </Card>
         );
       
-      case "custom-domain":
+      case "dominio-personalizado":
         return (
           <Card>
             <CardHeader>
@@ -319,7 +319,7 @@ export default function ClientGuides() {
           </Card>
         );
       
-      case "general":
+      case "informacion-general":
         return (
           <Card>
             <CardHeader>
@@ -394,7 +394,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "opening-hours":
+      case "horarios-apertura":
         return (
           <Card>
             <CardHeader>
@@ -468,7 +468,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "social-media":
+      case "redes-sociales":
         return (
           <Card>
             <CardHeader>
@@ -569,7 +569,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "delivery":
+      case "informacion-delivery":
         return (
           <Card>
             <CardHeader>
@@ -652,7 +652,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "branding":
+      case "marca-personalizacion":
         return (
           <Card>
             <CardHeader>
@@ -751,7 +751,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "content":
+      case "contenido-sitio":
         return (
           <Card>
             <CardHeader>
@@ -975,7 +975,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "faqs":
+      case "preguntas-frecuentes":
         return (
           <Card>
             <CardHeader>
@@ -1109,7 +1109,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "carousel":
+      case "carrusel-imagenes":
         return (
           <Card>
             <CardHeader>
@@ -1280,7 +1280,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "menu-categories":
+      case "categorias-menu":
         return (
           <Card>
             <CardHeader>
@@ -1370,7 +1370,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "menu-items":
+      case "elementos-menu":
         return (
           <Card>
             <CardHeader>
@@ -1530,7 +1530,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "team":
+      case "equipo":
         return (
           <Card>
             <CardHeader>
@@ -1634,7 +1634,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "reviews":
+      case "resenas":
         return (
           <Card>
             <CardHeader>
@@ -1746,7 +1746,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "email-config":
+      case "configuracion-email":
         return (
           <Card>
             <CardHeader>
@@ -1965,7 +1965,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "reservation-schedules":
+      case "horarios-reserva":
         return (
           <Card>
             <CardHeader>
@@ -2047,7 +2047,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "table-configuration":
+      case "configuracion-mesas":
         return (
           <Card>
             <CardHeader>
@@ -2145,7 +2145,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "reservation-availability":
+      case "disponibilidad-reservas":
         return (
           <Card>
             <CardHeader>
@@ -2233,7 +2233,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "reservation-list":
+      case "lista-reservas":
         return (
           <Card>
             <CardHeader>
@@ -2343,7 +2343,7 @@ export default function ClientGuides() {
           </Card>
         );
 
-      case "reservation-calendar":
+      case "calendario-reservas":
         return (
           <Card>
             <CardHeader>
