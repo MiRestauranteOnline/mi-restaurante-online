@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { getCurrentDateInTimezone, extractDateTimeFromUtc } from "@/lib/timezone";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Card, CardContent } from "@/components/ui/card";
+import { useReservationRealtime } from "@/hooks/useReservationRealtime";
 
 interface Reservation {
   id: string;
@@ -26,6 +27,7 @@ interface Reservation {
   customer_email: string;
   customer_phone: string;
   special_requests: string | null;
+  internal_notes: string | null;
   status: string;
   created_at: string;
 }
@@ -66,6 +68,7 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
+  const [internalNotes, setInternalNotes] = useState("");
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [reservationToDelete, setReservationToDelete] = useState<string | null>(null);
@@ -75,6 +78,9 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const [customDeclineReason, setCustomDeclineReason] = useState("");
   const [clientTimezone, setClientTimezone] = useState<string>("America/Lima");
   const isMobile = useIsMobile();
+
+  // Use real-time hook
+  useReservationRealtime(clientId, () => fetchReservations());
 
   useEffect(() => {
     fetchClientTimezone();
@@ -119,7 +125,7 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   const fetchReservations = async () => {
     try {
       const today = getCurrentDateInTimezone(clientTimezone);
-      const { data, error } = await (supabase as any)
+      const { data, error} = await (supabase as any)
         .from("reservations")
         .select("*")
         .eq("client_id", clientId)
@@ -176,6 +182,22 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
     } catch (error) {
       console.error("Error updating status:", error);
       toast.error("Error al actualizar el estado");
+    }
+  };
+
+  const handleSaveNotes = async () => {
+    if (!selectedReservation) return;
+    
+    const { error } = await supabase
+      .from("reservations")
+      .update({ internal_notes: internalNotes })
+      .eq("id", selectedReservation.id);
+
+    if (error) {
+      toast.error("Error al guardar las notas");
+    } else {
+      toast.success("Notas guardadas exitosamente");
+      fetchReservations();
     }
   };
 
@@ -620,6 +642,28 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                 </div>
               )}
               <div>
+                <Label htmlFor="internal_notes">Notas Internas (privadas)</Label>
+                <Textarea
+                  id="internal_notes"
+                  value={internalNotes}
+                  onChange={(e) => setInternalNotes(e.target.value)}
+                  placeholder="Ej: Mesa preferida cerca de la ventana, cliente VIP, alergias..."
+                  className="mt-1"
+                  rows={3}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Solo para uso interno, no visible para el cliente
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleSaveNotes} className="flex-1">
+                  Guardar Notas
+                </Button>
+                <Button variant="outline" onClick={() => setSelectedReservation(null)}>
+                  Cerrar
+                </Button>
+              </div>
+              <div className="pt-2 border-t">
                 <p className="text-xs text-muted-foreground">
                   Creada el {format(new Date(selectedReservation.created_at), "dd MMM yyyy 'a las' HH:mm", { locale: es })}
                 </p>

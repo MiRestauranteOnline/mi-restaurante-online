@@ -5,14 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, ArrowUp, ChevronDown, AlertCircle } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Loader2, Plus, ArrowUp, ChevronDown, AlertCircle, HelpCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { getCurrentDateInTimezone, combineDateTimeToUtc, extractDateTimeFromUtc } from "@/lib/timezone";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
+import { useReservationRealtime } from "@/hooks/useReservationRealtime";
 
 interface CustomTableConfig {
   table_name: string;
@@ -97,30 +99,13 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
     party_size: 2,
   });
 
+  // Use real-time hook
+  useReservationRealtime(clientId, () => fetchData());
+
   useEffect(() => {
-    fetchData();
-
-    // Subscribe to real-time reservation changes
-    const channel = supabase
-      .channel('reservations-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'reservations',
-          filter: `client_id=eq.${clientId}`
-        },
-        () => {
-          console.log('Reservation change detected, refetching data...');
-          fetchData();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    if (clientId) {
+      fetchData();
+    }
   }, [clientId]);
 
   useEffect(() => {
@@ -478,6 +463,14 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           <h3 className="text-base sm:text-lg font-semibold">Vista Rápida de Disponibilidad</h3>
           <p className="text-xs sm:text-sm text-muted-foreground">
             Capacidad disponible por tipo de mesa
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="inline-block h-4 w-4 ml-2 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm">
+                <p>La disponibilidad se actualiza automáticamente cuando se crean nuevas reservas.</p>
+              </TooltipContent>
+            </Tooltip>
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -488,6 +481,12 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             </Button>
           </DialogTrigger>
           <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Crear Reserva Manual</DialogTitle>
+              <DialogDescription>
+                Ingresa los datos del cliente y selecciona fecha/hora disponible
+              </DialogDescription>
+            </DialogHeader>
             <DialogHeader>
               <DialogTitle>Agregar Reserva Manual</DialogTitle>
             </DialogHeader>

@@ -5,6 +5,7 @@ import ReservationSchedules from "@/components/client/ReservationSchedules";
 import ReservationsList from "@/components/client/ReservationsList";
 import ReservationAvailability from "@/components/client/ReservationAvailability";
 import TableConfigurationManager from "@/components/client/TableConfigurationManager";
+import { ReservationCalendar } from "@/components/client/ReservationCalendar";
 import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
 
 
@@ -28,15 +29,22 @@ const ClientReservations = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="availability" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
+      <Tabs defaultValue="calendar" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1">
+          <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendario</TabsTrigger>
           <TabsTrigger value="availability" className="text-xs sm:text-sm">Disponibilidad</TabsTrigger>
           <TabsTrigger value="tables" className="text-xs sm:text-sm">Capacidad</TabsTrigger>
           <TabsTrigger value="schedules" className="text-xs sm:text-sm">Horarios</TabsTrigger>
           <TabsTrigger value="reservations" className="text-xs sm:text-sm">Reservas</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="availability" className="mt-6">
+          <TabsContent value="calendar" className="mt-6">
+            <Card className="p-6">
+              <ReservationCalendar clientId={clientId} />
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="availability" className="mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Disponibilidad en Tiempo Real</CardTitle>

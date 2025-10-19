@@ -1566,7 +1566,9 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          duration_minutes: number
           id: string
+          internal_notes: string | null
           party_size: number
           reservation_date: string
           reservation_time: string
@@ -1581,7 +1583,9 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          duration_minutes?: number
           id?: string
+          internal_notes?: string | null
           party_size: number
           reservation_date: string
           reservation_time: string
@@ -1596,7 +1600,9 @@ export type Database = {
           customer_email?: string
           customer_name?: string
           customer_phone?: string
+          duration_minutes?: number
           id?: string
+          internal_notes?: string | null
           party_size?: number
           reservation_date?: string
           reservation_time?: string
