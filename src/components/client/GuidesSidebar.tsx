@@ -153,7 +153,7 @@ export function GuidesSidebar({ activeGuide }: GuidesSidebarProps) {
               <div className="ml-2 mt-1 space-y-1">
                 {category.items.map((item) => {
                   const categorySlug = categoryToSlug[category.title];
-                  const guidePath = `/client/guias/${categorySlug}/${item.id}`;
+                  const guidePath = `/guias/${categorySlug}/${item.id}`;
                   
                   return (
                     <NavLink

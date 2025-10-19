@@ -144,7 +144,6 @@ export default function ClientDashboardLayout() {
     { href: `/client/reservations/${selectedClientId}`, icon: Calendar, label: t('nav.reservations') },
     { href: `/client/analytics/${selectedClientId}`, icon: BarChart3, label: 'Analíticas' },
     { href: `/client/support/${selectedClientId}`, icon: Shield, label: 'Soporte' },
-    { href: '/client/guias', icon: BookOpen, label: 'Guías' },
     { href: '/client/subscription', icon: CreditCard, label: t('nav.subscription') },
   ];
 
@@ -205,6 +204,17 @@ export default function ClientDashboardLayout() {
             {(sidebarOpen || isMobile) && <span className="ml-3">{item.label}</span>}
           </NavLink>
         ))}
+        
+        {/* External Guides Link */}
+        <a
+          href="/guias/primeros-pasos/introduccion"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center px-3 py-2 rounded-md text-sm transition-colors hover:bg-muted"
+        >
+          <BookOpen className="h-4 w-4 flex-shrink-0" />
+          {(sidebarOpen || isMobile) && <span className="ml-3">Guías</span>}
+        </a>
       </nav>
     </>
   );

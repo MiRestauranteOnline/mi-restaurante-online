@@ -39,6 +39,8 @@ import ClientDashboard from "./pages/client/ClientDashboard";
 import ClientSubscription from "./pages/client/ClientSubscription";
 import ClientSupport from "./pages/client/ClientSupport";
 import ClientGuides from "./pages/client/ClientGuides";
+// Reuse ClientGuides for public docs (renamed internally)
+const Guias = ClientGuides;
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 import ClientAnalytics from "./pages/client/ClientAnalytics";
 import ClientReservations from "./pages/client/ClientReservations";
@@ -115,10 +117,10 @@ const AppContent = () => {
           <Route path="reservations/:clientId" element={<ClientReservations />} />
           <Route path="analytics/:clientId" element={<ClientAnalytics />} />
           <Route path="support/:clientId" element={<ClientSupport />} />
-          <Route path="guias" element={<ClientGuides />} />
-          <Route path="guias/:category/:guide" element={<ClientGuides />} />
           <Route path="subscription" element={<ClientSubscription />} />
         </Route>
+        <Route path="/guias" element={<Guias />} />
+        <Route path="/guias/:category/:guide" element={<Guias />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!isDashboardRoute && <WhatsAppButton />}

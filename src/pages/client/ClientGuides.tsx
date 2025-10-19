@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Navigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Navigate, Link, useLocation } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailDNSConfigForm } from "@/components/client/EmailDNSConfigForm";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
 import namecheapStep1 from "@/assets/namecheap-step-1.webp";
 import namecheapStep2 from "@/assets/namecheap-step-2.webp";
 import namecheapStep3 from "@/assets/namecheap-step-3.webp";
@@ -92,14 +94,18 @@ const guideCategories = [
 export default function ClientGuides() {
   const { toast } = useToast();
   const { category, guide } = useParams<{ category?: string; guide?: string }>();
+  const location = useLocation();
   const navigate = useNavigate();
   const [copiedNS1, setCopiedNS1] = useState(false);
   const [copiedNS2, setCopiedNS2] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
   
+  // Check if we're on the public route
+  const isPublicRoute = location.pathname.startsWith('/guias');
+  
   // Redirect to introduction if no guide is specified
   if (!category || !guide) {
-    return <Navigate to="/client/guias/primeros-pasos/introduccion" replace />;
+    return <Navigate to="/guias/primeros-pasos/introduccion" replace />;
   }
   
   // Map URL params to guide IDs
@@ -181,7 +187,7 @@ export default function ClientGuides() {
                         return (
                           <Link
                             key={item.id}
-                            to={`/client/guias/${cat.slug}/${item.id}`}
+                            to={`/guias/${cat.slug}/${item.id}`}
                             className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-muted transition-colors group"
                           >
                             <Icon className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
@@ -3911,11 +3917,44 @@ export default function ClientGuides() {
         );
       
       default:
-        return null;
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Guía no encontrada</CardTitle>
+              <CardDescription>
+                La guía que buscas no está disponible o aún no ha sido creada
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">
+                Esta guía está en desarrollo o el enlace es incorrecto. Vuelve al inicio para explorar las guías disponibles.
+              </p>
+              <Link to="/guias/primeros-pasos/introduccion">
+                <Button>Volver al Inicio</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        );
     }
   };
 
-  return (
+  return isPublicRoute ? (
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
+      
+      <main className="flex-1 flex overflow-hidden">
+        <GuidesSidebar activeGuide={activeGuide} />
+        
+        <div className="flex-1 overflow-y-auto">
+          <div className="container mx-auto p-6 space-y-6 max-w-5xl">
+            {renderGuideContent()}
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  ) : (
     <div className="flex h-full w-full overflow-hidden">
       <GuidesSidebar activeGuide={activeGuide} />
       

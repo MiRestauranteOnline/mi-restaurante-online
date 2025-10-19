@@ -30,10 +30,16 @@ export const Footer = () => {
             <h3 className="font-semibold text-foreground mb-4">Enlaces Útiles</h3>
             <div className="space-y-2">
               <Link 
+                to="/guias/primeros-pasos/introduccion"
+                className="block text-muted-foreground hover:text-primary text-sm transition-colors"
+              >
+                Guías & Documentación
+              </Link>
+              <Link 
                 to="/guia"
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >
-                Guía Completa
+                Blog & Artículos
               </Link>
               <Link 
                 to="/acerca-de"
