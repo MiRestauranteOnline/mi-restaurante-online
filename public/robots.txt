@@ -22,4 +22,4 @@ Disallow: /registro
 Disallow: /signup
 
 # Sitemap location
-Sitemap: https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/generate-sitemap
+Sitemap: https://mirestaurante.online/sitemap.xml

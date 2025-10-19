@@ -50,6 +50,7 @@ import AdminMonitoring from "./pages/admin/AdminMonitoring";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentError from "./pages/PaymentError";
+import Sitemap from "./pages/Sitemap";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,7 @@ const AppContent = () => {
         <Route path="/acerca-de" element={<About />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/sitemap.xml" element={<Sitemap />} />
         <Route path="/guia" element={<Blog />} />
         <Route path="/guia/:category/:slug" element={<BlogPost />} />
         <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
