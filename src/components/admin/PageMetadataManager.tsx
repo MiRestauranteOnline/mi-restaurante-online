@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, CheckCircle2, Sparkles } from "lucide-react";
+import { AlertCircle, CheckCircle2, Sparkles, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PageMetadata {
@@ -37,6 +37,7 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
   const [metadata, setMetadata] = useState<Record<string, PageMetadata>>({});
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [regenerating, setRegenerating] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -126,6 +127,43 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
     }
   };
 
+  const handleRegenerate = async (pageType: string, fieldType: 'title' | 'description') => {
+    const key = `${pageType}-${fieldType}`;
+    setRegenerating((prev) => ({ ...prev, [key]: true }));
+
+    try {
+      const { data, error } = await supabase.functions.invoke('regenerate-page-metadata', {
+        body: {
+          clientId,
+          pageType,
+          fieldType: fieldType === 'title' ? 'title' : 'description',
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        const field = fieldType === 'title' ? 'meta_title' : 'meta_description';
+        updateMetadata(pageType, field, data[fieldType === 'title' ? 'title' : 'description']);
+        toast({
+          title: "Success",
+          description: `${fieldType === 'title' ? 'Title' : 'Description'} regenerated successfully`,
+        });
+      } else {
+        throw new Error(data.error || 'Failed to regenerate');
+      }
+    } catch (error) {
+      console.error('Error regenerating:', error);
+      toast({
+        title: "Error",
+        description: `Failed to regenerate ${fieldType}`,
+        variant: "destructive",
+      });
+    } finally {
+      setRegenerating((prev) => ({ ...prev, [key]: false }));
+    }
+  };
+
   const updateMetadata = (pageType: string, field: keyof PageMetadata, value: string) => {
     setMetadata((prev) => ({
       ...prev,
@@ -211,11 +249,32 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor={`${type.value}-title`}>Meta Title *</Label>
-                      <span className={`text-sm font-medium ${titleCheck.color}`}>
-                        {titleCheck.length}/60
-                        {titleCheck.length <= 57 && <CheckCircle2 className="inline ml-1 h-3 w-3" />}
-                        {titleCheck.isOverLimit && <AlertCircle className="inline ml-1 h-3 w-3" />}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleRegenerate(type.value, 'title')}
+                          disabled={regenerating[`${type.value}-title`]}
+                        >
+                          {regenerating[`${type.value}-title`] ? (
+                            <>
+                              <RefreshCw className="mr-1 h-3 w-3 animate-spin" />
+                              Regenerating...
+                            </>
+                          ) : (
+                            <>
+                              <RefreshCw className="mr-1 h-3 w-3" />
+                              Regenerate
+                            </>
+                          )}
+                        </Button>
+                        <span className={`text-sm font-medium ${titleCheck.color}`}>
+                          {titleCheck.length}/60
+                          {titleCheck.length <= 57 && <CheckCircle2 className="inline ml-1 h-3 w-3" />}
+                          {titleCheck.isOverLimit && <AlertCircle className="inline ml-1 h-3 w-3" />}
+                        </span>
+                      </div>
                     </div>
                     <Input
                       id={`${type.value}-title`}
@@ -235,11 +294,32 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor={`${type.value}-desc`}>Meta Description *</Label>
-                      <span className={`text-sm font-medium ${descCheck.color}`}>
-                        {descCheck.length}/155
-                        {descCheck.isOptimal && <CheckCircle2 className="inline ml-1 h-3 w-3" />}
-                        {descCheck.isOverLimit && <AlertCircle className="inline ml-1 h-3 w-3" />}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleRegenerate(type.value, 'description')}
+                          disabled={regenerating[`${type.value}-description`]}
+                        >
+                          {regenerating[`${type.value}-description`] ? (
+                            <>
+                              <RefreshCw className="mr-1 h-3 w-3 animate-spin" />
+                              Regenerating...
+                            </>
+                          ) : (
+                            <>
+                              <RefreshCw className="mr-1 h-3 w-3" />
+                              Regenerate
+                            </>
+                          )}
+                        </Button>
+                        <span className={`text-sm font-medium ${descCheck.color}`}>
+                          {descCheck.length}/155
+                          {descCheck.isOptimal && <CheckCircle2 className="inline ml-1 h-3 w-3" />}
+                          {descCheck.isOverLimit && <AlertCircle className="inline ml-1 h-3 w-3" />}
+                        </span>
+                      </div>
                     </div>
                     <Textarea
                       id={`${type.value}-desc`}
