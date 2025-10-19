@@ -130,14 +130,13 @@ export default function ClientGuides() {
                   <div className="space-y-3 flex-1">
                     <h3 className="text-xl font-semibold">Configurar los Nameservers</h3>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>Una vez que tengas tu dominio, debes configurar los nameservers para apuntar a Cloudflare:</p>
+                      <p>Una vez que hayas completado la compra de tu dominio, debes configurar los nameservers para apuntar a Cloudflare:</p>
                       <ol className="list-decimal list-inside space-y-2 ml-4">
-                        <li>Inicia sesión en tu cuenta de NameCheap</li>
-                        <li>Ve a tu "Domain List" (Lista de Dominios)</li>
-                        <li>Encuentra tu dominio y haz clic en el botón "Manage" (Administrar)</li>
-                        <li>En la página de gestión del dominio, busca la sección "Nameservers"</li>
-                        <li>Selecciona la opción "Custom DNS" en el menú desplegable</li>
-                        <li>Ingresa los siguientes nameservers en los campos correspondientes:</li>
+                        <li>Después de confirmar tu compra, desplázate hacia abajo hasta la sección "Domain Registration"</li>
+                        <li>Haz clic en el botón rojo grande que dice "Manage" (Administrar)</li>
+                        <li>En la página de gestión del dominio, desplázate hasta encontrar la sección "Nameservers"</li>
+                        <li>En el menú desplegable (que por defecto está configurado como "Namecheap BasicDNS"), selecciona "Custom DNS"</li>
+                        <li>Copia y pega los siguientes nameservers en los campos que aparecen:</li>
                       </ol>
 
                       <div className="space-y-3 mt-4">
@@ -183,9 +182,9 @@ export default function ClientGuides() {
                         </div>
                       </div>
 
-                      <ol start={7} className="list-decimal list-inside space-y-2 ml-4 mt-4">
-                        <li>Haz clic en el botón "✓" (checkmark) o "Save" para guardar los cambios</li>
-                        <li>NameCheap mostrará un mensaje de confirmación</li>
+                      <ol start={6} className="list-decimal list-inside space-y-2 ml-4 mt-4">
+                        <li>Haz clic en el botón verde de confirmación (✓) que aparece al lado derecho para guardar los cambios</li>
+                        <li>NameCheap mostrará un mensaje de confirmación indicando que los nameservers han sido actualizados</li>
                       </ol>
 
                       <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
