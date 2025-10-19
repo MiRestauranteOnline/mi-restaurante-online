@@ -2452,6 +2452,1358 @@ export default function ClientGuides() {
           </Card>
         );
       
+      case "introduccion-analiticas":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Introducción a Analíticas</CardTitle>
+              <CardDescription>
+                Comprende las métricas y estadísticas de tu sitio web
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué son las Analíticas?</h3>
+                <p className="text-muted-foreground">
+                  Las analíticas te permiten conocer el comportamiento de los visitantes en tu sitio web. Con esta información puedes tomar decisiones informadas sobre tu negocio.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro mis Analíticas?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Analíticas</strong> desde el menú principal de tu dashboard.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Información Disponible</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Visitantes</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Número total de personas que han visitado tu sitio web
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Páginas Vistas</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cantidad total de páginas que han sido vistas por tus visitantes
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Uso de Ancho de Banda</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cantidad de datos transferidos desde tu sitio web
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Límites de Plan</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Visualiza tu uso actual versus los límites de tu plan de suscripción
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Revisa tus analíticas regularmente para entender cuándo tu sitio recibe más tráfico y optimizar tus horarios y ofertas.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "metricas":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Entendiendo las Métricas</CardTitle>
+              <CardDescription>
+                Aprende a interpretar las diferentes métricas disponibles
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Métricas Principales</h3>
+                
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Visitantes Únicos vs Visitas Totales</h4>
+                    <ul className="list-disc list-inside space-y-2 ml-4 text-sm text-muted-foreground">
+                      <li><strong>Visitantes Únicos:</strong> Personas diferentes que visitan tu sitio (una persona = un visitante, sin importar cuántas veces entre)</li>
+                      <li><strong>Visitas Totales:</strong> Número total de veces que se accede a tu sitio (incluye visitas repetidas de la misma persona)</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Páginas Vistas</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Cada vez que alguien carga una página en tu sitio, se cuenta como una vista de página. Te ayuda a entender:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li>Qué páginas son más populares</li>
+                      <li>Cómo navegan los usuarios por tu sitio</li>
+                      <li>Nivel de interés en tu contenido</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Ancho de Banda</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Es la cantidad de datos transferidos cuando alguien visita tu sitio. Incluye:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li>Imágenes de tu menú y galería</li>
+                      <li>Contenido de texto</li>
+                      <li>Estilos y recursos del sitio</li>
+                    </ul>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Cada plan tiene un límite de ancho de banda mensual. Si lo superas, se aplicarán cargos por excedente según tu plan.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Tasa de Rebote</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Porcentaje de visitantes que entran a tu sitio y salen sin interactuar. Una tasa alta podría indicar que necesitas mejorar tu contenido o diseño.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Tiempo Promedio en el Sitio</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cuánto tiempo pasan los visitantes en tu sitio. Un tiempo mayor generalmente indica mayor interés en tu contenido.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Interpretación de Datos</h3>
+                <div className="space-y-3">
+                  <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+                    <h4 className="font-medium mb-2 text-green-900 dark:text-green-100">✅ Señales Positivas</h4>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-green-900 dark:text-green-100">
+                      <li>Aumento en visitantes mes a mes</li>
+                      <li>Tiempo promedio alto en el sitio (3-5+ minutos)</li>
+                      <li>Múltiples páginas vistas por sesión</li>
+                      <li>Tasa de rebote baja (menos del 40%)</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <h4 className="font-medium mb-2 text-amber-900 dark:text-amber-100">⚠️ Áreas de Mejora</h4>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-amber-900 dark:text-amber-100">
+                      <li>Tasa de rebote alta (más del 60%)</li>
+                      <li>Tiempo muy bajo en el sitio (menos de 1 minuto)</li>
+                      <li>Solo 1 página vista por sesión</li>
+                      <li>Disminución constante de visitantes</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> No te obsesiones con una sola métrica. Analiza el conjunto completo para obtener una visión real del rendimiento de tu sitio.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "estadisticas-uso":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Estadísticas de Uso</CardTitle>
+              <CardDescription>
+                Monitorea el uso de recursos de tu plan
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué son las Estadísticas de Uso?</h3>
+                <p className="text-muted-foreground">
+                  Las estadísticas de uso te muestran cuánto de los recursos incluidos en tu plan estás utilizando cada mes.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Recursos Monitoreados</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Visitas Mensuales</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Número de visitas incluidas en tu plan versus las utilizadas en el mes actual.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded">
+                      <p className="text-sm">Ejemplo: Si tu plan incluye 10,000 visitas y has usado 3,500, verás 35% de uso.</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Ancho de Banda</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      GB de transferencia de datos incluidos versus utilizados.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded">
+                      <p className="text-sm">Ejemplo: Plan con 50 GB, usado 12 GB = 24% de uso.</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Días Restantes del Ciclo</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cuántos días quedan hasta que se reinicien tus límites mensuales. Los contadores se resetean el día que corresponde a tu fecha de facturación.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Excedentes</h3>
+                <p className="text-muted-foreground">
+                  Si superas los límites de tu plan, se aplicarán cargos por excedente:
+                </p>
+                
+                <div className="space-y-3 mt-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Visitas Excedentes</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Se cobra una tarifa por cada 1,000 visitas adicionales sobre tu límite. El costo varía según tu plan.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Ancho de Banda Excedente</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Se cobra por cada GB adicional transferido sobre tu límite mensual.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                  <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                    ⚠️ <strong>Importante:</strong> Si regularmente superas tus límites, considera actualizar a un plan superior para ahorrar en costos de excedente.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Optimización del Uso</h3>
+                <p className="text-muted-foreground mb-3">
+                  Consejos para mantener tu uso dentro de los límites:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Optimiza el tamaño de las imágenes antes de subirlas</li>
+                  <li>Usa formatos de imagen modernos y comprimidos</li>
+                  <li>Revisa regularmente tus estadísticas para anticipar necesidades</li>
+                  <li>Considera actualizar tu plan si creces consistentemente</li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> El widget de uso en tu dashboard te alerta cuando te acercas al 80% de tus límites mensuales.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "como-obtener-soporte":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Cómo Obtener Soporte</CardTitle>
+              <CardDescription>
+                Aprende cómo contactarnos y obtener ayuda cuando la necesites
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Canales de Soporte Disponibles</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Sistema de Tickets (Recomendado)</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Crea tickets desde tu dashboard para soporte técnico y consultas. Este es el método más eficiente ya que:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li>Queda registro de toda la conversación</li>
+                      <li>Puedes adjuntar capturas de pantalla</li>
+                      <li>Recibes notificaciones de respuestas por email</li>
+                      <li>Puedes revisar el historial en cualquier momento</li>
+                    </ul>
+                    <div className="mt-3">
+                      <Button variant="outline" asChild>
+                        <a href="/client/support">Ir a Soporte</a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">WhatsApp</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Para consultas rápidas o emergencias urgentes, también puedes contactarnos por WhatsApp. Encontrarás el botón de WhatsApp en la esquina inferior derecha de tu sitio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Guías y Documentación</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Antes de contactarnos, revisa esta sección de guías. Muchas preguntas comunes están respondidas aquí con instrucciones paso a paso.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Horarios de Atención</h3>
+                <div className="p-4 border rounded-lg">
+                  <p className="text-sm text-muted-foreground">
+                    Nuestro equipo de soporte está disponible:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground mt-2">
+                    <li>Lunes a Viernes: 9:00 AM - 6:00 PM (hora local)</li>
+                    <li>Sábados: 10:00 AM - 2:00 PM</li>
+                    <li>Domingos y festivos: Cerrado</li>
+                  </ul>
+                  <p className="text-sm text-muted-foreground mt-3">
+                    Los tickets creados fuera de horario serán respondidos al inicio del siguiente día hábil.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Tiempos de Respuesta</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <span className="text-red-600">🔴</span> Urgente
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Sitio caído, errores críticos: Respuesta en 2-4 horas durante horario laboral
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <span className="text-amber-600">🟡</span> Normal
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Consultas generales, configuraciones: Respuesta en 24 horas
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <span className="text-blue-600">🔵</span> Baja Prioridad
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Sugerencias, mejoras: Respuesta en 48-72 horas
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Cuando crees un ticket, incluye toda la información relevante: qué estabas intentando hacer, qué sucedió, capturas de pantalla, etc. Esto nos ayuda a resolver tu problema más rápido.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "crear-tickets":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Crear Tickets de Soporte</CardTitle>
+              <CardDescription>
+                Guía paso a paso para crear tickets efectivos
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Cómo Crear un Ticket?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Soporte</strong> desde el menú principal y sigue estos pasos:
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    1
+                  </div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className="font-medium">Haz clic en "Crear Nuevo Ticket"</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Encontrarás este botón en la parte superior de la página de soporte.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    2
+                  </div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className="font-medium">Completa los Campos Requeridos</h4>
+                    <div className="space-y-3 mt-3">
+                      <div className="p-3 border rounded-lg">
+                        <h5 className="font-medium text-sm mb-1">Asunto *</h5>
+                        <p className="text-sm text-muted-foreground">
+                          Un título claro y descriptivo del problema o consulta
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-2 italic">
+                          Ejemplo: "Error al subir imágenes del menú" en lugar de solo "Ayuda"
+                        </p>
+                      </div>
+
+                      <div className="p-3 border rounded-lg">
+                        <h5 className="font-medium text-sm mb-1">Categoría *</h5>
+                        <p className="text-sm text-muted-foreground">
+                          Selecciona la categoría que mejor describe tu consulta:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground mt-2">
+                          <li>Técnico: Problemas con el sitio o funcionalidades</li>
+                          <li>Facturación: Consultas sobre pagos y suscripciones</li>
+                          <li>Configuración: Ayuda con ajustes del dashboard</li>
+                          <li>General: Otras consultas</li>
+                        </ul>
+                      </div>
+
+                      <div className="p-3 border rounded-lg">
+                        <h5 className="font-medium text-sm mb-1">Prioridad *</h5>
+                        <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                          <li><strong>Baja:</strong> Consultas generales, no urgentes</li>
+                          <li><strong>Normal:</strong> Problemas que afectan funcionalidad pero no bloquean</li>
+                          <li><strong>Alta:</strong> Problemas que impiden usar el sitio</li>
+                          <li><strong>Urgente:</strong> Sitio completamente caído o error crítico</li>
+                        </ul>
+                      </div>
+
+                      <div className="p-3 border rounded-lg">
+                        <h5 className="font-medium text-sm mb-1">Descripción *</h5>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Explica el problema en detalle. Incluye:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                          <li>Qué estabas intentando hacer</li>
+                          <li>Qué sucedió (el error o problema)</li>
+                          <li>Qué esperabas que sucediera</li>
+                          <li>Pasos para reproducir el problema</li>
+                          <li>Navegador y dispositivo que usas</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    3
+                  </div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className="font-medium">Adjunta Capturas de Pantalla (Opcional)</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Las imágenes nos ayudan a entender mejor el problema. Captura:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li>Mensajes de error completos</li>
+                      <li>La pantalla donde ocurre el problema</li>
+                      <li>Cualquier comportamiento inesperado</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    4
+                  </div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className="font-medium">Envía el Ticket</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Revisa que toda la información sea correcta y haz clic en "Crear Ticket". Recibirás una confirmación por email.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Ejemplo de Buen Ticket</h3>
+                <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg space-y-2">
+                  <p className="font-medium text-green-900 dark:text-green-100">Asunto:</p>
+                  <p className="text-sm text-green-900 dark:text-green-100">
+                    Error 500 al intentar actualizar horarios de apertura
+                  </p>
+                  
+                  <p className="font-medium text-green-900 dark:text-green-100 mt-3">Descripción:</p>
+                  <p className="text-sm text-green-900 dark:text-green-100">
+                    Hola, estoy intentando actualizar los horarios de apertura de mi restaurante desde Panel Principal → Configuración → Horarios.
+                    <br /><br />
+                    Cuando hago clic en "Guardar Cambios" después de modificar el horario del lunes, aparece un error 500 y los cambios no se guardan.
+                    <br /><br />
+                    Pasos para reproducir:
+                    <br />
+                    1. Ir a Panel Principal → Horarios
+                    <br />
+                    2. Cambiar hora de apertura del lunes de 10:00 a 11:00
+                    <br />
+                    3. Hacer clic en "Guardar Cambios"
+                    <br />
+                    4. Aparece error 500
+                    <br /><br />
+                    Navegador: Chrome, versión 120
+                    <br />
+                    Dispositivo: MacBook Pro
+                    <br /><br />
+                    Adjunto captura del error.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Cuanta más información proporciones, más rápido podremos resolver tu problema. No te preocupes por dar "demasiados" detalles.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "historial-tickets":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Historial de Tickets</CardTitle>
+              <CardDescription>
+                Cómo revisar y gestionar tus tickets de soporte
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Acceder a tu Historial</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Soporte</strong> desde el menú principal. Verás una lista de todos tus tickets anteriores y actuales.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Estados de Tickets</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                      <h4 className="font-medium">Abierto</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Ticket nuevo o en proceso de resolución. Nuestro equipo está trabajando en él.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                      <h4 className="font-medium">Esperando Respuesta</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      El equipo ha respondido y está esperando más información de tu parte.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      <h4 className="font-medium">Resuelto</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      El problema ha sido solucionado. Puedes reabrirlo si el problema persiste.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-gray-500"></div>
+                      <h4 className="font-medium">Cerrado</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Ticket finalizado. Si tienes un problema relacionado, crea un nuevo ticket.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Responder a un Ticket</h3>
+                <ol className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Haz clic en el ticket que deseas revisar</li>
+                  <li>Lee la respuesta del equipo de soporte</li>
+                  <li>Escribe tu respuesta en el campo de texto al final</li>
+                  <li>Puedes adjuntar archivos adicionales si es necesario</li>
+                  <li>Haz clic en "Enviar Respuesta"</li>
+                </ol>
+                <p className="text-muted-foreground mt-3">
+                  Recibirás un email cada vez que el equipo responda a tu ticket.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Filtrar y Buscar Tickets</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Por Estado</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Usa los filtros para ver solo tickets abiertos, resueltos o cerrados.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Por Fecha</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Los tickets más recientes aparecen primero. Puedes ordenar por fecha de creación o última actualización.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Búsqueda</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Usa la barra de búsqueda para encontrar tickets por palabras clave en el asunto o descripción.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Reabrir un Ticket Cerrado</h3>
+                <p className="text-muted-foreground">
+                  Si el problema persiste después de que un ticket fue marcado como resuelto:
+                </p>
+                <ol className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Abre el ticket desde tu historial</li>
+                  <li>Haz clic en "Reabrir Ticket"</li>
+                  <li>Explica por qué el problema aún no está resuelto</li>
+                  <li>Incluye información adicional si es relevante</li>
+                </ol>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Revisa tu historial de tickets antes de crear uno nuevo. Es posible que un problema similar ya haya sido resuelto anteriormente.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "gestionar-suscripcion":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Gestionar tu Suscripción</CardTitle>
+              <CardDescription>
+                Aprende a administrar tu plan y suscripción
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde gestiono mi suscripción?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Suscripción</strong> desde el menú principal de tu dashboard.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Información de tu Plan Actual</h3>
+                <p className="text-muted-foreground mb-3">
+                  En la página de suscripción verás:
+                </p>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Nombre del Plan</h4>
+                    <p className="text-sm text-muted-foreground">
+                      El plan que tienes actualmente contratado (Básico, Profesional, Premium, etc.)
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Estado de la Suscripción</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si tu suscripción está activa, pausada o cancelada
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Fecha de Renovación</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cuándo se realizará el próximo cobro automático
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Monto a Pagar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      El costo mensual o anual de tu plan actual
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Recursos Incluidos</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Límites de visitas mensuales, ancho de banda y otras características de tu plan
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Acciones Disponibles</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Cambiar de Plan</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Puedes actualizar o cambiar tu plan en cualquier momento:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li><strong>Upgrade:</strong> Si actualizas a un plan superior, el cambio es inmediato y se prorratea el costo</li>
+                      <li><strong>Downgrade:</strong> Si cambias a un plan inferior, el cambio se aplica en la próxima fecha de facturación</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Pausar Suscripción</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si necesitas pausar tu servicio temporalmente, puedes hacerlo. Tu sitio quedará desactivado pero conservarás toda tu información. No se realizarán cobros mientras esté pausada.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Cancelar Suscripción</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Puedes cancelar en cualquier momento. Seguirás teniendo acceso hasta el final del período pagado. Tus datos se conservarán por 90 días por si decides reactivar.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Actualizar Método de Pago</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Mantén tu información de pago actualizada para evitar interrupciones en el servicio.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Facturación y Recibos</h3>
+                <p className="text-muted-foreground mb-3">
+                  Desde la página de suscripción también puedes:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Descargar facturas anteriores</li>
+                  <li>Ver historial de pagos</li>
+                  <li>Actualizar información de facturación (nombre, dirección, RFC, etc.)</li>
+                  <li>Ver cargos por excedentes si los hubiera</li>
+                </ul>
+              </div>
+
+              <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                  ⚠️ <strong>Importante:</strong> Si tu pago falla, tendrás 3 días para actualizar tu método de pago antes de que el servicio se suspenda temporalmente.
+                </p>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Los planes anuales tienen un descuento significativo comparado con el pago mensual. Considera cambiar a facturación anual para ahorrar.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "metodos-pago":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Métodos de Pago</CardTitle>
+              <CardDescription>
+                Administra tus métodos de pago y configuración de facturación
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Métodos de Pago Aceptados</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">💳 Tarjetas de Crédito/Débito</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Aceptamos las principales tarjetas:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li>Visa</li>
+                      <li>Mastercard</li>
+                      <li>American Express</li>
+                      <li>Otras tarjetas locales</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🏦 Transferencia Bancaria</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Disponible para planes anuales. Contacta a soporte para obtener los datos bancarios.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Agregar o Actualizar Método de Pago</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Ve a <strong>Suscripción</strong> en el menú principal
+                  </li>
+                  <li>
+                    Busca la sección "Método de Pago" o "Información de Pago"
+                  </li>
+                  <li>
+                    Haz clic en "Actualizar Método de Pago" o "Agregar Tarjeta"
+                  </li>
+                  <li>
+                    Ingresa los datos de tu tarjeta:
+                    <ul className="list-disc list-inside ml-6 mt-2 space-y-1">
+                      <li>Número de tarjeta</li>
+                      <li>Nombre del titular</li>
+                      <li>Fecha de vencimiento (MM/AA)</li>
+                      <li>Código de seguridad (CVV)</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Haz clic en "Guardar" para confirmar
+                  </li>
+                </ol>
+
+                <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-4">
+                  <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                    🔒 <strong>Seguridad:</strong> Todos los datos de pago están encriptados y protegidos. Utilizamos procesadores de pago certificados PCI-DSS. Nunca almacenamos información completa de tarjetas en nuestros servidores.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Configuración de Facturación Automática</h3>
+                <p className="text-muted-foreground">
+                  Una vez que agregues un método de pago válido:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Los pagos se procesarán automáticamente cada mes/año según tu plan</li>
+                  <li>Recibirás un email de confirmación después de cada cargo</li>
+                  <li>Tu factura estará disponible en tu dashboard</li>
+                  <li>Si el pago falla, recibirás una notificación para actualizar tu método de pago</li>
+                </ul>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Problemas Comunes y Soluciones</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">❌ Pago Rechazado</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Si tu pago es rechazado, puede deberse a:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li>Fondos insuficientes</li>
+                      <li>Tarjeta vencida</li>
+                      <li>Datos incorrectos</li>
+                      <li>Límite de compras en línea alcanzado</li>
+                      <li>Bloqueo por seguridad del banco</li>
+                    </ul>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      <strong>Solución:</strong> Verifica con tu banco y actualiza tu método de pago.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔄 Cambiar Método de Pago</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Puedes cambiar tu método de pago en cualquier momento. El nuevo método se usará para el próximo cobro programado.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">📧 No Recibí mi Factura</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Las facturas se envían automáticamente por email. Revisa tu carpeta de spam. También puedes descargarlas desde la sección Suscripción → Historial de Facturas.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Reembolsos</h3>
+                <p className="text-muted-foreground">
+                  Los reembolsos se procesan según nuestra política:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Dentro de los primeros 7 días: Reembolso completo</li>
+                  <li>Después de 7 días: Prorrateado según uso</li>
+                  <li>Planes anuales: Reembolso de meses no utilizados</li>
+                </ul>
+                <p className="text-muted-foreground mt-3">
+                  Para solicitar un reembolso, crea un ticket en la sección de Soporte.
+                </p>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Configura recordatorios en tu calendario para revisar que tu tarjeta no esté por vencer, evitando interrupciones en el servicio.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "cambios-plan":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Cambios de Plan</CardTitle>
+              <CardDescription>
+                Cómo actualizar, cambiar o reducir tu plan de suscripción
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Tipos de Cambio de Plan</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">⬆️ Upgrade (Mejora de Plan)</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cambiar a un plan con más recursos y características (por ejemplo, de Básico a Profesional).
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">⬇️ Downgrade (Reducción de Plan)</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cambiar a un plan con menos recursos (por ejemplo, de Premium a Profesional).
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔄 Cambio de Periodicidad</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cambiar de facturación mensual a anual (o viceversa) manteniendo el mismo nivel de plan.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Hacer un Upgrade</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Ve a <strong>Suscripción</strong> en el menú principal</li>
+                  <li>Revisa los planes disponibles y sus características</li>
+                  <li>Selecciona el plan al que deseas actualizar</li>
+                  <li>Haz clic en "Actualizar Plan" o "Upgrade"</li>
+                  <li>Revisa el resumen de cambios y costos</li>
+                  <li>Confirma la actualización</li>
+                </ol>
+
+                <div className="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg mt-4">
+                  <h4 className="font-medium mb-2 text-blue-900 dark:text-blue-100">📊 Cómo Funciona el Cargo al Mejorar</h4>
+                  <p className="text-sm text-blue-900 dark:text-blue-100 mb-2">
+                    Cuando haces un upgrade, se aplica un <strong>prorrateo justo</strong>:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-blue-900 dark:text-blue-100">
+                    <li>Se calcula el tiempo restante de tu período actual</li>
+                    <li>Se acredita el monto no usado de tu plan actual</li>
+                    <li>Se cobra solo la diferencia para el nuevo plan</li>
+                    <li>El cambio es inmediato: accedes a las nuevas características de inmediato</li>
+                  </ul>
+                  <p className="text-sm text-blue-900 dark:text-blue-100 mt-2">
+                    <strong>Ejemplo:</strong> Si estás en el día 15 de tu ciclo mensual de un plan de $500 y cambias a uno de $1000, solo pagarás aproximadamente $250 (la mitad del mes del plan nuevo menos el crédito del plan anterior).
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Hacer un Downgrade</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Ve a <strong>Suscripción</strong> en el menú principal</li>
+                  <li>Selecciona el plan al que deseas cambiar (uno de menor costo)</li>
+                  <li>Haz clic en "Cambiar Plan" o "Downgrade"</li>
+                  <li>Revisa las características que perderás</li>
+                  <li>Confirma que entiendes los cambios</li>
+                  <li>Procede con la confirmación</li>
+                </ol>
+
+                <div className="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg mt-4">
+                  <h4 className="font-medium mb-2 text-amber-900 dark:text-amber-100">📅 Cuándo se Aplica un Downgrade</h4>
+                  <p className="text-sm text-amber-900 dark:text-amber-100 mb-2">
+                    Al reducir tu plan:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-amber-900 dark:text-amber-100">
+                    <li>El cambio NO es inmediato</li>
+                    <li>Conservas tu plan actual hasta el final del período pagado</li>
+                    <li>El nuevo plan (reducido) se activa en tu próxima fecha de renovación</li>
+                    <li>No hay reembolso de la diferencia del período actual</li>
+                    <li>Puedes cancelar el downgrade antes de que se aplique si cambias de opinión</li>
+                  </ul>
+                  <p className="text-sm text-amber-900 dark:text-amber-100 mt-2">
+                    <strong>Ejemplo:</strong> Si hoy es 15 de marzo y tu ciclo se renueva el 1 de abril, seguirás con tu plan actual hasta el 31 de marzo. El plan reducido comenzará el 1 de abril.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cambiar de Mensual a Anual</h3>
+                <p className="text-muted-foreground mb-3">
+                  Los planes anuales suelen tener un descuento significativo (típicamente 15-20% comparado con pago mensual).
+                </p>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-2">Proceso:</h4>
+                  <ol className="list-decimal list-inside space-y-2 ml-4 text-sm text-muted-foreground">
+                    <li>Ve a Suscripción y selecciona tu plan actual</li>
+                    <li>Cambia el toggle de "Mensual" a "Anual"</li>
+                    <li>Verás el ahorro anual comparado con el pago mensual</li>
+                    <li>Se cobrará el monto anual de inmediato</li>
+                    <li>Tu próxima renovación será en 12 meses</li>
+                  </ol>
+                </div>
+
+                <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-3">
+                  <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                    💰 <strong>Ahorro:</strong> Con facturación anual, típicamente ahorras el equivalente a 2 meses de servicio al año.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Consideraciones Importantes</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Límites de Recursos</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Al cambiar a un plan con menos recursos (downgrade), asegúrate de que tu uso actual esté dentro de los nuevos límites. Si excedes los límites del nuevo plan, se aplicarán cargos por excedentes.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Funcionalidades Premium</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Algunas funcionalidades (como analíticas avanzadas, reservas, email personalizado) solo están disponibles en ciertos planes. Al reducir tu plan, podrías perder acceso a estas características.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Cancelar Cambio Pendiente</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si programaste un downgrade pero cambias de opinión, puedes cancelarlo desde la página de Suscripción antes de que se aplique en tu próxima fecha de renovación.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿No Estás Seguro Qué Plan Elegir?</h3>
+                <p className="text-muted-foreground mb-3">
+                  Si tienes dudas sobre qué plan es el adecuado para tu negocio:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Revisa tus estadísticas de uso actuales en la sección Analíticas</li>
+                  <li>Considera tu crecimiento proyectado para los próximos meses</li>
+                  <li>Evalúa qué funcionalidades realmente necesitas</li>
+                  <li>Contacta a nuestro equipo de soporte para asesoramiento personalizado</li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Puedes cambiar de plan en cualquier momento. No hay penalizaciones ni períodos de permanencia obligatorios.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "informacion-facturacion":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Información de Facturación</CardTitle>
+              <CardDescription>
+                Gestiona tus datos fiscales y descarga facturas
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro mis Facturas?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Suscripción</strong> → sección <strong>"Historial de Facturación"</strong> o <strong>"Facturas"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Actualizar Información Fiscal</h3>
+                <p className="text-muted-foreground mb-3">
+                  Para que tus facturas incluyan tus datos fiscales correctos:
+                </p>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Ve a <strong>Suscripción</strong> → <strong>"Información de Facturación"</strong></li>
+                  <li>Haz clic en "Editar Información Fiscal"</li>
+                  <li>Completa o actualiza los siguientes campos:</li>
+                </ol>
+
+                <div className="space-y-3 mt-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Nombre o Razón Social *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Tu nombre completo (persona física) o nombre de la empresa (persona moral)
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">RFC *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Tu Registro Federal de Contribuyentes (13 caracteres para persona física, 12 para moral)
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Dirección Fiscal *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Calle, número, colonia, código postal, ciudad y estado
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Régimen Fiscal</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Por ejemplo: Persona Física con Actividad Empresarial, Régimen Simplificado de Confianza, etc.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Email de Facturación</h4>
+                    <p className="text-sm text-muted-foreground">
+                      El email donde deseas recibir tus facturas (puede ser diferente al email de tu cuenta)
+                    </p>
+                  </div>
+                </div>
+
+                <ol start={4} className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground mt-4">
+                  <li>Haz clic en "Guardar Cambios"</li>
+                  <li>La información se aplicará a futuras facturas</li>
+                </ol>
+
+                <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
+                  <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                    ⚠️ <strong>Importante:</strong> Los cambios en tu información fiscal solo se aplican a facturas futuras. Las facturas ya emitidas no pueden modificarse. Si necesitas corregir una factura reciente, contacta a soporte dentro de las primeras 72 horas.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Descargar Facturas</h3>
+                <p className="text-muted-foreground mb-3">
+                  Para descargar tus facturas:
+                </p>
+                <ol className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Ve a <strong>Suscripción</strong> → <strong>"Historial de Facturas"</strong></li>
+                  <li>Verás una lista de todas tus facturas ordenadas por fecha</li>
+                  <li>Cada factura muestra: fecha, concepto, monto y estado (pagada/pendiente)</li>
+                  <li>Haz clic en el botón "Descargar PDF" junto a la factura que deseas</li>
+                  <li>El archivo PDF se descargará a tu dispositivo</li>
+                </ol>
+
+                <div className="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg mt-4">
+                  <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                    💡 <strong>Tip:</strong> También recibes tus facturas automáticamente por email después de cada cobro.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Conceptos en tus Facturas</h3>
+                <p className="text-muted-foreground mb-3">
+                  Tus facturas pueden incluir los siguientes conceptos:
+                </p>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Suscripción Mensual/Anual</h4>
+                    <p className="text-sm text-muted-foreground">
+                      El costo de tu plan para el período correspondiente
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Excedente de Visitas</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cargo adicional si superaste el límite de visitas mensuales de tu plan
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Excedente de Ancho de Banda</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cargo adicional si superaste el límite de GB de transferencia de tu plan
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Servicios Adicionales</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cargos por servicios extras como soporte premium, desarrollo personalizado, etc.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Ajustes y Créditos</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Créditos por downgrades, reembolsos parciales o ajustes autorizados
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Facturación de Excedentes</h3>
+                <p className="text-muted-foreground mb-3">
+                  Si superas los límites de tu plan:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Los excedentes se calculan al final de cada mes</li>
+                  <li>Se agregan automáticamente a tu siguiente factura</li>
+                  <li>Puedes ver tu uso actual en tiempo real en la sección <strong>Analíticas</strong></li>
+                  <li>Recibirás alertas al alcanzar el 80% y 100% de tus límites</li>
+                </ul>
+
+                <div className="p-4 bg-muted rounded-lg mt-3">
+                  <p className="text-sm font-medium mb-2">Ejemplo de Factura con Excedentes:</p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Plan Profesional - Marzo 2025: $1,000</li>
+                    <li>• Excedente: 5,000 visitas adicionales: $250</li>
+                    <li>• Excedente: 15 GB adicionales: $75</li>
+                    <li className="font-medium pt-2 border-t">Total: $1,325</li>
+                  </ul>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Problemas con Facturas</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Datos Fiscales Incorrectos</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si una factura tiene datos incorrectos, tienes 72 horas desde la emisión para solicitar la corrección. Después de ese tiempo, solo podremos corregir facturas del período fiscal actual.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">No Recibí mi Factura</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Revisa tu carpeta de spam. Si no la encuentras, puedes descargarla desde tu dashboard o contactar a soporte.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Factura Duplicada</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si ves un cargo duplicado en tu estado de cuenta, contacta inmediatamente a soporte con los detalles de ambas transacciones.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Necesito Factura de Meses Anteriores</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Todas las facturas históricas están disponibles en tu dashboard. Puedes descargar facturas de cualquier período anterior.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                  ✅ <strong>Cumplimiento Fiscal:</strong> Todas nuestras facturas cumplen con los requisitos del SAT y son válidas para deducción de impuestos. Conserva tus facturas para tu contabilidad.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      
       default:
         return null;
     }

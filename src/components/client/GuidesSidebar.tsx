@@ -23,6 +23,9 @@ const categoryToSlug: Record<string, string> = {
   "Configuración de Dominio": "configuracion-dominio",
   "Configuración de Email": "configuracion-email",
   "Reservas": "reservas",
+  "Analíticas": "analiticas",
+  "Soporte": "soporte",
+  "Suscripción": "suscripcion",
 };
 
 const guideCategories: GuideCategory[] = [
@@ -71,6 +74,31 @@ const guideCategories: GuideCategory[] = [
       { id: "calendario-reservas", title: "Calendario", icon: FileText },
     ],
   },
+  {
+    title: "Analíticas",
+    items: [
+      { id: "introduccion-analiticas", title: "Introducción a Analíticas", icon: FileText },
+      { id: "metricas", title: "Entendiendo las Métricas", icon: FileText },
+      { id: "estadisticas-uso", title: "Estadísticas de Uso", icon: FileText },
+    ],
+  },
+  {
+    title: "Soporte",
+    items: [
+      { id: "como-obtener-soporte", title: "Cómo Obtener Soporte", icon: FileText },
+      { id: "crear-tickets", title: "Crear Tickets", icon: FileText },
+      { id: "historial-tickets", title: "Historial de Tickets", icon: FileText },
+    ],
+  },
+  {
+    title: "Suscripción",
+    items: [
+      { id: "gestionar-suscripcion", title: "Gestionar Suscripción", icon: FileText },
+      { id: "metodos-pago", title: "Métodos de Pago", icon: FileText },
+      { id: "cambios-plan", title: "Cambios de Plan", icon: FileText },
+      { id: "informacion-facturacion", title: "Información de Facturación", icon: FileText },
+    ],
+  },
 ];
 
 interface GuidesSidebarProps {
@@ -78,7 +106,7 @@ interface GuidesSidebarProps {
 }
 
 export function GuidesSidebar({ activeGuide }: GuidesSidebarProps) {
-  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos", "Panel Principal", "Configuración de Dominio", "Configuración de Email", "Reservas"]);
+  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos", "Panel Principal", "Configuración de Dominio", "Configuración de Email", "Reservas", "Analíticas", "Soporte", "Suscripción"]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
