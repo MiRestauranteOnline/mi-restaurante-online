@@ -287,6 +287,27 @@ export default function CustomDomainPage() {
                   {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Setup Domain"}
                 </Button>
               </div>
+              
+              {/* Detailed Process Explanation */}
+              <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
+                <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <AlertDescription className="text-sm space-y-3">
+                  <div>
+                    <strong className="text-blue-700 dark:text-blue-300">¿Cómo funciona el proceso de dominio personalizado?</strong>
+                  </div>
+                  <ol className="list-decimal list-inside space-y-2 ml-2">
+                    <li><strong>Configuración DNS automática:</strong> Al hacer clic en "Setup Domain", el sistema crea automáticamente una zona DNS en Cloudflare para tu dominio y genera nameservers únicos.</li>
+                    <li><strong>Actualización de nameservers:</strong> El cliente debe ir a su registrador de dominios (GoDaddy, Namecheap, etc.) y actualizar los nameservers con los proporcionados por Cloudflare.</li>
+                    <li><strong>Verificación de DNS:</strong> Una vez propagados los DNS (5-60 min), el sistema verifica la configuración y agrega el dominio a Vercel automáticamente.</li>
+                    <li><strong>Certificado SSL:</strong> Vercel emite un certificado SSL gratuito para el dominio. Este proceso toma 1-5 minutos y se hace automáticamente.</li>
+                    <li><strong>Dominio activo:</strong> El sitio web del cliente estará disponible en su dominio personalizado con HTTPS seguro.</li>
+                  </ol>
+                  <div className="pt-2 text-xs text-muted-foreground border-t border-blue-200 dark:border-blue-800 mt-3">
+                    <strong>Nota:</strong> El cliente necesitará acceso a su cuenta de registrador de dominios para completar el paso 2. Todo el proceso toma aproximadamente 15-30 minutos en total.
+                  </div>
+                </AlertDescription>
+              </Alert>
+              
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription className="text-xs">
