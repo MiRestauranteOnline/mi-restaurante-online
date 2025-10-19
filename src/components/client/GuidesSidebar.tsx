@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { ChevronDown, FileText, Globe, Mail, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -106,9 +106,31 @@ interface GuidesSidebarProps {
 }
 
 export function GuidesSidebar({ activeGuide }: GuidesSidebarProps) {
-  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos"]);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
+  
+  // Find which category contains the active guide
+  const getActiveCategoryTitle = () => {
+    for (const category of guideCategories) {
+      if (category.items.some(item => item.id === activeGuide)) {
+        return category.title;
+      }
+    }
+    return "Primeros Pasos"; // Default
+  };
+  
+  const [openCategories, setOpenCategories] = useState<string[]>([getActiveCategoryTitle()]);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Update open categories when active guide changes
+  useEffect(() => {
+    const activeCategoryTitle = getActiveCategoryTitle();
+    setOpenCategories(prev => {
+      if (!prev.includes(activeCategoryTitle)) {
+        return [...prev, activeCategoryTitle];
+      }
+      return prev;
+    });
+  }, [activeGuide]);
 
   const toggleCategory = (category: string) => {
     setOpenCategories((prev) =>
