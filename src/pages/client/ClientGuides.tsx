@@ -258,7 +258,7 @@ export default function ClientGuides() {
                   Si tienes problemas con la configuración de tu dominio, nuestro equipo de soporte está aquí para ayudarte.
                 </p>
                 <Button variant="outline" asChild>
-                  <a href="/client/support">
+                  <a href="/client/support" target="_blank" rel="noopener noreferrer">
                     Contactar Soporte
                   </a>
                 </Button>
