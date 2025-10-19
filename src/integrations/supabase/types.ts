@@ -895,6 +895,7 @@ export type Database = {
           phone_country_code: string | null
           plan_type: string | null
           referral_source: string | null
+          reservations_email: string | null
           restaurant_name: string
           social_media_links: Json | null
           ssl_issued_date: string | null
@@ -953,6 +954,7 @@ export type Database = {
           phone_country_code?: string | null
           plan_type?: string | null
           referral_source?: string | null
+          reservations_email?: string | null
           restaurant_name: string
           social_media_links?: Json | null
           ssl_issued_date?: string | null
@@ -1011,6 +1013,7 @@ export type Database = {
           phone_country_code?: string | null
           plan_type?: string | null
           referral_source?: string | null
+          reservations_email?: string | null
           restaurant_name?: string
           social_media_links?: Json | null
           ssl_issued_date?: string | null

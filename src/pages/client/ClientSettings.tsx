@@ -81,6 +81,7 @@ export default function ClientSettings() {
         .update({
           restaurant_name: formData.restaurant_name,
           email: formData.email,
+          reservations_email: formData.reservations_email,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
           address: formData.address,
@@ -187,6 +188,20 @@ export default function ClientSettings() {
                   value={formData.email || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="reservations_email">Email de Reservas</Label>
+                <Input
+                  id="reservations_email"
+                  type="email"
+                  value={formData.reservations_email || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, reservations_email: e.target.value }))}
+                  placeholder="reservas@mirestaurante.com"
+                />
+                <p className="text-sm text-muted-foreground mt-1">
+                  Email para notificaciones de reservas (si está vacío se usará el email general)
+                </p>
               </div>
 
               <div>
