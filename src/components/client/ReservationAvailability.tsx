@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getCurrentDateInTimezone, combineDateTimeToUtc, extractDateTimeFromUtc } from "@/lib/timezone";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
@@ -457,22 +457,27 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <div>
-          <h3 className="text-base sm:text-lg font-semibold">Vista Rápida de Disponibilidad</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Capacidad disponible por tipo de mesa
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="inline-block h-4 w-4 ml-2 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-sm">
-                <p>La disponibilidad se actualiza automáticamente cuando se crean nuevas reservas.</p>
-              </TooltipContent>
-            </Tooltip>
-          </p>
-        </div>
+    <TooltipProvider>
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+          <div>
+            <h3 className="text-base sm:text-lg font-semibold">Vista Rápida de Disponibilidad</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
+              Capacidad disponible por tipo de mesa
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary cursor-help">
+                    <HelpCircle className="h-3 w-3 text-primary-foreground" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <p><strong>Disponibilidad en Tiempo Real</strong></p>
+                  <p className="mt-1">La disponibilidad se actualiza automáticamente cuando se crean nuevas reservas.</p>
+                  <p className="mt-1">Muestra cuántas mesas de cada tipo están libres en cada horario.</p>
+                </TooltipContent>
+              </Tooltip>
+            </p>
+          </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="w-full sm:w-auto">
@@ -753,7 +758,8 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
       >
         <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
       </Button>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
 

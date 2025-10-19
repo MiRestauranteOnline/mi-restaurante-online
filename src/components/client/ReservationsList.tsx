@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { getCurrentDateInTimezone, extractDateTimeFromUtc } from "@/lib/timezone";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useReservationRealtime } from "@/hooks/useReservationRealtime";
 
 interface Reservation {
@@ -305,22 +305,25 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex items-center gap-2">
-          <p className="text-sm text-muted-foreground">
-            {filteredReservations.length} reserva(s)
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="inline-block h-4 w-4 ml-2 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-sm">
-                <p><strong>Gestión de Reservas</strong></p>
-                <p className="mt-1">Aquí ves todas las reservas recibidas. Puedes confirmar, rechazar o ver detalles de cada una.</p>
-                <p className="mt-1">Las notas internas son privadas - úsalas para preferencias, alergias, o recordatorios.</p>
-              </TooltipContent>
-            </Tooltip>
-          </p>
+    <TooltipProvider>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
+              {filteredReservations.length} reserva(s)
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary cursor-help">
+                    <HelpCircle className="h-3 w-3 text-primary-foreground" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <p><strong>Gestión de Reservas</strong></p>
+                  <p className="mt-1">Aquí ves todas las reservas recibidas. Puedes confirmar, rechazar o ver detalles de cada una.</p>
+                  <p className="mt-1">Las notas internas son privadas - úsalas para preferencias, alergias, o recordatorios.</p>
+                </TooltipContent>
+              </Tooltip>
+            </p>
           {pendingCount > 0 && (
             <Badge variant="default">{pendingCount} pendiente(s)</Badge>
           )}
@@ -754,7 +757,8 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
       >
         <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
       </Button>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
 

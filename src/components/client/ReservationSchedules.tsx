@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -308,23 +308,26 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <div>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            {schedules.length} horario(s) configurado(s)
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="inline-block h-4 w-4 ml-2 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-sm">
-                <p><strong>¿Para qué sirve esto?</strong></p>
-                <p className="mt-1">Los horarios definen cuándo aceptas reservas (ej: Lunes a Viernes 12:00-15:00, Sábados 19:00-23:00).</p>
-                <p className="mt-1">Puedes personalizar la capacidad y tipos de mesa para cada horario.</p>
-              </TooltipContent>
-            </Tooltip>
-          </p>
-        </div>
+    <TooltipProvider>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+          <div>
+            <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
+              {schedules.length} horario(s) configurado(s)
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary cursor-help">
+                    <HelpCircle className="h-3 w-3 text-primary-foreground" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <p><strong>¿Para qué sirve esto?</strong></p>
+                  <p className="mt-1">Los horarios definen cuándo aceptas reservas (ej: Lunes a Viernes 12:00-15:00, Sábados 19:00-23:00).</p>
+                  <p className="mt-1">Puedes personalizar la capacidad y tipos de mesa para cada horario.</p>
+                </TooltipContent>
+              </Tooltip>
+            </p>
+          </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => { setEditingSchedule(null); resetForm(); }} className="w-full sm:w-auto">
@@ -870,7 +873,8 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
 

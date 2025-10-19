@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import {
   Table,
@@ -235,24 +235,27 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <div>
-          <h3 className="text-base sm:text-lg font-semibold">Configuración de Mesas</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Define los tipos de mesas disponibles en tu restaurante
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="inline-block h-4 w-4 ml-2 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-sm">
-                <p><strong>¿Qué es esto?</strong></p>
-                <p className="mt-1">Define cuántas mesas de cada tipo tienes (ej: 5 mesas de 2 personas, 3 mesas de 4 personas).</p>
-                <p className="mt-1">Esto determina cuántas reservas puedes aceptar simultáneamente.</p>
-              </TooltipContent>
-            </Tooltip>
-          </p>
-        </div>
+    <TooltipProvider>
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+          <div>
+            <h3 className="text-base sm:text-lg font-semibold">Configuración de Mesas</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
+              Define los tipos de mesas disponibles en tu restaurante
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary cursor-help">
+                    <HelpCircle className="h-3 w-3 text-primary-foreground" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <p><strong>¿Qué es esto?</strong></p>
+                  <p className="mt-1">Define cuántas mesas de cada tipo tienes (ej: 5 mesas de 2 personas, 3 mesas de 4 personas).</p>
+                  <p className="mt-1">Esto determina cuántas reservas puedes aceptar simultáneamente.</p>
+                </TooltipContent>
+              </Tooltip>
+            </p>
+          </div>
         <Button
           onClick={() => {
             resetForm();
@@ -561,7 +564,8 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
 
