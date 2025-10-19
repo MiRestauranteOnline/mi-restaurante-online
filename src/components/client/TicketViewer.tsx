@@ -76,7 +76,7 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to fetch tickets",
+        description: "Error al cargar los tickets",
         variant: "destructive"
       });
     } finally {
@@ -98,7 +98,7 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to fetch responses", 
+        description: "Error al cargar las respuestas", 
         variant: "destructive"
       });
     }
@@ -122,8 +122,8 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Response added successfully"
+        title: "Éxito",
+        description: "Respuesta agregada exitosamente"
       });
 
       setNewResponse("");
@@ -132,7 +132,7 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to add response",
+        description: "Error al agregar respuesta",
         variant: "destructive"
       });
     } finally {
@@ -146,23 +146,23 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
   };
 
   if (loading) {
-    return <div className="flex justify-center p-8">Loading tickets...</div>;
+    return <div className="flex justify-center p-8">Cargando tickets...</div>;
   }
 
   return (
     <div className="container mx-auto max-w-6xl">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Your Support Tickets</h1>
+        <h1 className="text-3xl font-bold">Tus Tickets de Soporte</h1>
         <Button onClick={() => window.location.href = "/soporte"}>
           <Plus className="h-4 w-4 mr-2" />
-          New Ticket
+          Nuevo Ticket
         </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tickets List */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Your Tickets ({tickets.length})</h2>
+          <h2 className="text-xl font-semibold">Tus Tickets ({tickets.length})</h2>
           {tickets.map((ticket) => (
             <Card
               key={ticket.id}
@@ -196,11 +196,11 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
                 <div className="flex justify-between items-center text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    Created {format(new Date(ticket.created_at), "MMM d, yyyy")}
+                    Creado {format(new Date(ticket.created_at), "MMM d, yyyy")}
                   </div>
                   {ticket.last_response_at && (
                     <div className="flex items-center gap-1">
-                      Last response {format(new Date(ticket.last_response_at), "MMM d")}
+                      Última respuesta {format(new Date(ticket.last_response_at), "MMM d")}
                     </div>
                   )}
                 </div>
@@ -212,9 +212,9 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
             <Card>
               <CardContent className="p-6 text-center text-muted-foreground">
                 <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="mb-2">No support tickets yet</p>
+                <p className="mb-2">Aún no tienes tickets de soporte</p>
                 <Button onClick={() => window.location.href = "/soporte"}>
-                  Create your first ticket
+                  Crear tu primer ticket
                 </Button>
               </CardContent>
             </Card>
@@ -250,20 +250,20 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
                   </div>
                   <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    Created {format(new Date(selectedTicket.created_at), "PPpp")}
+                    Creado {format(new Date(selectedTicket.created_at), "PPpp")}
                   </div>
                 </div>
 
                 {/* Original Message */}
                 <div>
-                  <h4 className="font-medium mb-2">Your Message</h4>
+                  <h4 className="font-medium mb-2">Tu Mensaje</h4>
                   <p className="text-sm bg-muted p-3 rounded-lg">{selectedTicket.message}</p>
                 </div>
 
                 {/* Responses */}
                 {responses.length > 0 && (
                   <div>
-                    <h4 className="font-medium mb-2">Conversation ({responses.length})</h4>
+                    <h4 className="font-medium mb-2">Conversación ({responses.length})</h4>
                     <div className="space-y-3 max-h-60 overflow-y-auto">
                       {responses.map((response) => (
                         <div
@@ -277,8 +277,8 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
                           <div className="flex justify-between items-start mb-1">
                             <span className="text-sm font-medium">
                               {response.created_by_name === selectedTicket.customer_name 
-                                ? "You" 
-                                : "Support Team"
+                                ? "Tú" 
+                                : "Equipo de Soporte"
                               }
                             </span>
                             <span className="text-xs text-muted-foreground">
@@ -295,9 +295,9 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
                 {/* Add Response */}
                 {selectedTicket.status !== "closed" && (
                   <div>
-                    <h4 className="font-medium mb-2">Add Response</h4>
+                    <h4 className="font-medium mb-2">Agregar Respuesta</h4>
                     <Textarea
-                      placeholder="Type your response..."
+                      placeholder="Escribe tu respuesta..."
                       value={newResponse}
                       onChange={(e) => setNewResponse(e.target.value)}
                       className="mb-2"
@@ -307,7 +307,7 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
                         onClick={addResponse} 
                         disabled={!newResponse.trim() || addingResponse}
                       >
-                        {addingResponse ? "Adding..." : "Send Response"}
+                        {addingResponse ? "Enviando..." : "Enviar Respuesta"}
                       </Button>
                     </div>
                   </div>
@@ -315,7 +315,7 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
 
                 {selectedTicket.status === "closed" && (
                   <div className="p-3 bg-gray-50 rounded-lg text-center text-sm text-muted-foreground">
-                    This ticket has been closed. Create a new ticket if you need further assistance.
+                    Este ticket ha sido cerrado. Crea un nuevo ticket si necesitas más ayuda.
                   </div>
                 )}
               </CardContent>
@@ -323,7 +323,7 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
           ) : (
             <Card>
               <CardContent className="p-6 text-center text-muted-foreground">
-                Select a ticket to view details and responses
+                Selecciona un ticket para ver detalles y respuestas
               </CardContent>
             </Card>
           )}
