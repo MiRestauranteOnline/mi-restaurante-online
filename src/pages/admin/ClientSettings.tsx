@@ -1019,7 +1019,7 @@ const [faqForm, setFaqForm] = useState({
     header_logo_url: '',
     footer_logo_url: '',
     // Favicon
-    favicon_url: '/favicon.ico',
+    favicon_url: 'https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png',
     // Downloadable menu
     downloadable_menu_url: '',
     // Homepage CTA Section Fields
@@ -1157,7 +1157,7 @@ const [faqForm, setFaqForm] = useState({
         custom_cta_button_link: (data as any).custom_cta_button_link || '',
         show_whatsapp_popup: (data as any).show_whatsapp_popup || false,
         template_id: (data as any).template_id || '',
-        favicon_url: (data as any).favicon_url || '/favicon.ico',
+        favicon_url: (data as any).favicon_url || 'https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png',
         opening_hours: normalizedOpeningHours,
         social_media_links: {
           facebook: '',
@@ -3993,7 +3993,7 @@ setReviewForm({
                   <div>
                     <ImageUpload
                       label="Favicon"
-                      value={formData.favicon_url || '/favicon.ico'}
+                      value={formData.favicon_url || 'https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png'}
                       onChange={(url) => setFormData({...formData, favicon_url: url})}
                       clientId={clientId!}
                       context="favicon"
