@@ -204,6 +204,10 @@ export default function ClientGuides() {
                         </div>
                       </div>
 
+                      <p className="text-sm text-muted-foreground mt-4">
+                        La imagen a continuación muestra dónde debes pegar los nameservers en tu cuenta de NameCheap:
+                      </p>
+
                       <div className="border rounded-lg overflow-hidden my-4">
                         <img src={namecheapStep4} alt="Configuración de nameservers en NameCheap" className="w-full" />
                       </div>
