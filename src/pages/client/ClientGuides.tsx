@@ -965,6 +965,311 @@ export default function ClientGuides() {
           </Card>
         );
 
+      case "faqs":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Preguntas Frecuentes (FAQs)</CardTitle>
+              <CardDescription>
+                Gestiona las preguntas frecuentes que aparecen en tu sitio web
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>"FAQs"</strong> (o <strong>"Preguntas Frecuentes"</strong>)
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué son las FAQs?</h3>
+                <p className="text-muted-foreground">
+                  Las Preguntas Frecuentes (FAQs) te permiten responder de manera anticipada las dudas más comunes de tus clientes sobre tu restaurante, menú, horarios, reservas, etc. Esto reduce consultas repetitivas y mejora la experiencia del usuario.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Crear una Nueva FAQ</h3>
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Haz clic en el botón <strong>"Agregar FAQ"</strong> o <strong>"Nueva Pregunta"</strong></li>
+                  <li>En el campo <strong>"Pregunta"</strong>, escribe la pregunta que tus clientes suelen hacer</li>
+                  <li>En el campo <strong>"Respuesta"</strong>, proporciona una respuesta clara y completa</li>
+                  <li>Haz clic en <strong>"Guardar"</strong></li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Gestionar FAQs Existentes</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔄 Reordenar</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Cambia el orden en que aparecen las preguntas usando los botones de flechas arriba/abajo.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Consejo:</strong> Coloca las preguntas más importantes o frecuentes al principio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">✏️ Editar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón de editar (ícono de lápiz) para modificar tanto la pregunta como la respuesta de una FAQ existente.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Usa el botón de eliminar (ícono de basurero) para quitar una FAQ que ya no sea relevante.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Ejemplos de Buenas FAQs</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-muted/50">
+                    <p className="font-medium text-sm mb-1">❓ ¿Aceptan reservas?</p>
+                    <p className="text-sm text-muted-foreground">
+                      ✅ Sí, aceptamos reservas por teléfono al [tu número] o a través de nuestro formulario en línea. Recomendamos reservar con al menos 24 horas de anticipación.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/50">
+                    <p className="font-medium text-sm mb-1">❓ ¿Tienen opciones vegetarianas/veganas?</p>
+                    <p className="text-sm text-muted-foreground">
+                      ✅ Sí, ofrecemos varias opciones vegetarianas y veganas en nuestro menú. Consulta la sección "Vegetariano" en nuestro menú o pregunta a tu mesero.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/50">
+                    <p className="font-medium text-sm mb-1">❓ ¿Cuál es el horario de atención?</p>
+                    <p className="text-sm text-muted-foreground">
+                      ✅ Abrimos de lunes a sábado de 12:00 PM a 11:00 PM. Los domingos abrimos de 12:00 PM a 9:00 PM. Cerrados los martes.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/50">
+                    <p className="font-medium text-sm mb-1">❓ ¿Tienen estacionamiento?</p>
+                    <p className="text-sm text-muted-foreground">
+                      ✅ Sí, contamos con estacionamiento gratuito para nuestros clientes en la parte trasera del restaurante.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Mostrar/Ocultar Sección de FAQs</h3>
+                <p className="text-muted-foreground">
+                  Puedes controlar si la sección de FAQs aparece en tu página de inicio desde la pestaña <strong>"Contenido"</strong> → <strong>"Controles de Visibilidad"</strong> → <strong>"Mostrar sección de FAQ en página principal"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Mantén las preguntas cortas y directas (máximo 1-2 líneas)</li>
+                  <li>Las respuestas deben ser claras, completas pero concisas</li>
+                  <li>Actualiza las FAQs basándote en las preguntas que recibes frecuentemente</li>
+                  <li>Incluye información práctica: horarios, métodos de pago, políticas</li>
+                  <li>Evita jerga o términos técnicos - escribe para que todos entiendan</li>
+                  <li>Revisa y actualiza las FAQs cada 3-6 meses</li>
+                  <li>Entre 5-10 FAQs es un buen número - ni muy pocas ni demasiadas</li>
+                  <li>Si una pregunta ya no es frecuente, elimínala</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "carousel":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Carrusel de Imágenes</CardTitle>
+              <CardDescription>
+                Gestiona el carrusel de imágenes rotatorio en tu sitio web
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>"Carousel"</strong> o <strong>"Carrusel de Imágenes"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué es el Carrusel?</h3>
+                <p className="text-muted-foreground">
+                  El carrusel es una sección que muestra múltiples imágenes rotando automáticamente en tu página de inicio. Es ideal para destacar platos especiales, el ambiente de tu restaurante, eventos especiales, o promociones.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Configuración del Carrusel</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔄 Activar/Desactivar el Carrusel</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Usa el switch <strong>"Habilitar Carousel"</strong> para mostrar u ocultar completamente el carrusel de tu sitio.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Nota:</strong> Cuando está desactivado, el carrusel no aparece en ninguna parte del sitio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">📍 Orden de Visualización</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      El campo <strong>"Display Order"</strong> controla en qué posición aparece el carrusel en tu página de inicio.
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                      <li>Número más bajo = aparece más arriba en la página</li>
+                      <li>Por ejemplo: 1 = primera sección, 2 = segunda sección, etc.</li>
+                      <li>Puedes colocarlo después del hero, antes del menú, etc.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Agregar Imágenes al Carrusel</h3>
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Busca el área de <strong>"Subir Imagen"</strong> o <strong>"Agregar Imagen al Carousel"</strong></li>
+                  <li>Haz clic en el botón de carga o arrastra una imagen</li>
+                  <li>Selecciona una imagen de alta calidad desde tu computadora</li>
+                  <li>Espera a que la imagen se suba correctamente</li>
+                  <li>La imagen aparecerá automáticamente en la lista de imágenes del carrusel</li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Gestionar Imágenes del Carrusel</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">👀 Vista Previa</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Todas las imágenes subidas se muestran en miniatura para que puedas ver qué hay en tu carrusel.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🗑️ Eliminar Imágenes</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cada imagen tiene un botón de eliminar (ícono de basurero o "X"). Haz clic para quitar la imagen del carrusel.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔄 Rotación Automática</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Las imágenes rotan automáticamente cada pocos segundos. Los visitantes también pueden navegar manualmente con flechas o puntos indicadores.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Recomendaciones de Imágenes</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                    <h4 className="font-medium mb-2">📐 Dimensiones</h4>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                      <li><strong>Ancho recomendado:</strong> 1920px</li>
+                      <li><strong>Alto recomendado:</strong> 800-1080px</li>
+                      <li><strong>Proporción:</strong> 16:9 o similar (horizontal)</li>
+                      <li>Todas las imágenes deberían tener dimensiones similares para evitar saltos visuales</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                    <h4 className="font-medium mb-2">📸 Calidad</h4>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                      <li>Usa imágenes de alta resolución y bien iluminadas</li>
+                      <li>Evita imágenes borrosas o pixeladas</li>
+                      <li>Comprime las imágenes antes de subirlas (no más de 500KB por imagen)</li>
+                      <li>Formato recomendado: JPG para fotos, PNG para gráficos</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                    <h4 className="font-medium mb-2">🎨 Contenido Visual</h4>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                      <li>Muestra tus mejores platos con buena presentación</li>
+                      <li>Incluye imágenes del ambiente y decoración del restaurante</li>
+                      <li>Fotografías de eventos especiales o celebraciones</li>
+                      <li>Imágenes del equipo o chef en acción</li>
+                      <li>Evita imágenes con mucho texto superpuesto</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Cuántas Imágenes Subir?</h3>
+                <div className="p-4 border rounded-lg">
+                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                    <li><strong>Mínimo recomendado:</strong> 3-4 imágenes para tener variedad</li>
+                    <li><strong>Ideal:</strong> 5-8 imágenes para un carrusel dinámico</li>
+                    <li><strong>Máximo sugerido:</strong> 10 imágenes (más puede ralentizar el sitio)</li>
+                    <li>Menos es más: elige calidad sobre cantidad</li>
+                  </ul>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Actualiza las imágenes del carrusel regularmente (cada 2-3 meses)</li>
+                  <li>Usa imágenes que cuenten una historia sobre tu restaurante</li>
+                  <li>Mantén un estilo visual coherente entre todas las imágenes</li>
+                  <li>Evita imágenes muy oscuras que no se vean bien en pantallas móviles</li>
+                  <li>Prueba el carrusel en tu teléfono después de agregar imágenes</li>
+                  <li>Considera la temporada: actualiza para fechas especiales (Navidad, etc.)</li>
+                  <li>No sobrecargues el carrusel - 5-7 imágenes es perfecto</li>
+                  <li>Si desactivas el carrusel, considera activar otra sección destacada</li>
+                  <li>Guarda tus mejores imágenes para el carrusel - es lo primero que ven</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
       case "menu-categories":
         return (
           <Card>

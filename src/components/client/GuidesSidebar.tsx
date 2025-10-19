@@ -32,6 +32,8 @@ const guideCategories: GuideCategory[] = [
       { id: "delivery", title: "Información de Delivery", icon: FileText },
       { id: "branding", title: "Marca y Personalización", icon: FileText },
       { id: "content", title: "Contenido del Sitio", icon: FileText },
+      { id: "faqs", title: "Preguntas Frecuentes", icon: FileText },
+      { id: "carousel", title: "Carrusel de Imágenes", icon: FileText },
       { id: "menu-categories", title: "Categorías del Menú", icon: FileText },
       { id: "menu-items", title: "Elementos del Menú", icon: FileText },
       { id: "team", title: "Equipo", icon: FileText },
