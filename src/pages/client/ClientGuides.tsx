@@ -455,7 +455,7 @@ export default function ClientGuides() {
                       <p className="font-medium mb-2">Opciones para acceder a tu correo:</p>
                       
                       <div className="space-y-3">
-                        <div className="bg-secondary/50 rounded-lg p-4">
+                        <div className="bg-teal-600 text-white rounded-lg p-4">
                           <p className="font-medium mb-2">Opción 1: Webmail de NameCheap</p>
                           <ul className="list-disc list-inside space-y-1 text-sm ml-4">
                             <li>
@@ -464,7 +464,7 @@ export default function ClientGuides() {
                                 href="https://privateemail.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-primary hover:underline inline-flex items-center gap-1"
+                                className="text-white underline hover:text-teal-100 inline-flex items-center gap-1"
                               >
                                 privateemail.com
                                 <ExternalLink className="w-3 h-3" />
@@ -475,7 +475,7 @@ export default function ClientGuides() {
                           </ul>
                         </div>
 
-                        <div className="bg-secondary/50 rounded-lg p-4">
+                        <div className="bg-teal-600 text-white rounded-lg p-4">
                           <p className="font-medium mb-2">Opción 2: Configurar en tu aplicación de correo</p>
                           <p className="text-sm mb-2">Configuración IMAP (recomendado):</p>
                           <ul className="list-disc list-inside space-y-1 text-sm ml-4">
