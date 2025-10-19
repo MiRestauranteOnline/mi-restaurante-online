@@ -326,6 +326,24 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         return;
       }
 
+      // Find the matching schedule to get duration_minutes
+      const selectedDate = new Date(formData.reservation_date);
+      const dayOfWeek = selectedDate.getDay();
+      const matchingSchedule = schedules.find((schedule) => {
+        if (schedule.day_of_week !== dayOfWeek) return false;
+        
+        // Check if reservation time falls within this schedule's range
+        const [schedStartHour, schedStartMin] = schedule.start_time.split(':').map(Number);
+        const [schedEndHour, schedEndMin] = schedule.end_time.split(':').map(Number);
+        const [resHour, resMin] = formData.reservation_time.split(':').map(Number);
+        
+        const schedStart = schedStartHour * 60 + schedStartMin;
+        const schedEnd = schedEndHour * 60 + schedEndMin;
+        const resTime = resHour * 60 + resMin;
+        
+        return resTime >= schedStart && resTime < schedEnd;
+      });
+
       // Store date and time in client's local timezone (not UTC)
       // This keeps date/time fields consistent with the client's timezone
       const { error } = await supabase.from("reservations").insert({
@@ -337,6 +355,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
         reservation_time: formData.reservation_time,
         party_size: formData.party_size,
         table_config_id: tableConfigId,
+        duration_minutes: matchingSchedule?.duration_minutes || 90, // Fallback to 90 if not found
         status: "confirmed",
       });
 
