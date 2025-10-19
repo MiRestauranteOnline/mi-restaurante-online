@@ -6053,12 +6053,14 @@ setReviewForm({
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label htmlFor="item_image_url">{t('menu.imageUrl')}</Label>
-                <Input
-                  id="item_image_url"
+              <div className="md:col-span-2">
+                <ImageUpload
+                  label={t('menu.imageUrl')}
                   value={menuItemForm.image_url}
-                  onChange={(e) => setMenuItemForm({...menuItemForm, image_url: e.target.value})}
+                  onChange={(url) => setMenuItemForm({...menuItemForm, image_url: url})}
+                  clientId={clientId || ''}
+                  context="menu-item"
+                  description={`menu item photo - ${menuItemForm.name || 'dish'}`}
                 />
               </div>
             </div>

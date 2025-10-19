@@ -1,4 +1,5 @@
 import { useOutletContext } from 'react-router-dom';
+import { ImageUpload } from '@/components/ImageUpload';
 import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -334,7 +335,7 @@ export default function UnifiedDashboard() {
   const [showMenuItemDialog, setShowMenuItemDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [menuItemImageUrl, setMenuItemImageUrl] = useState<string>('');
   const [uploading, setUploading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -789,46 +790,11 @@ export default function UnifiedDashboard() {
     }
   };
 
-  // Menu item handlers
-  const uploadImage = async (file: File): Promise<string | null> => {
-    setUploading(true);
-    try {
-      const fileName = `${selectedClientId}/menu-items/${Date.now()}-${file.name}`;
-      
-      const { data, error } = await supabase.storage
-        .from('client-assets')
-        .upload(fileName, file);
-        
-      if (error) {
-        toast.error('Error al subir imagen');
-        return null;
-      }
-      
-      const { data: { publicUrl } } = supabase.storage
-        .from('client-assets')
-        .getPublicUrl(fileName);
-        
-      return publicUrl;
-    } catch (error) {
-      toast.error('Error al subir imagen');
-      return null;
-    } finally {
-      setUploading(false);
-    }
-  };
 
   const onMenuItemSubmit = async (data: MenuItemFormData) => {
     setSaving(true);
     try {
-      let imageUrl = editingMenuItem?.image_url || '';
-
-      // Upload image if selected
-      if (selectedFile) {
-        const uploadedUrl = await uploadImage(selectedFile);
-        if (uploadedUrl) {
-          imageUrl = uploadedUrl;
-        }
-      }
+      const imageUrl = menuItemImageUrl || editingMenuItem?.image_url || '';
 
       // Check homepage limit
       if (data.show_on_homepage && !editingMenuItem) {
@@ -889,7 +855,7 @@ export default function UnifiedDashboard() {
 
       setShowMenuItemDialog(false);
       setEditingMenuItem(null);
-      setSelectedFile(null);
+      setMenuItemImageUrl('');
       menuItemForm.reset();
       fetchMenuItems();
       fetchStats();
@@ -912,7 +878,7 @@ export default function UnifiedDashboard() {
       show_image_menu: item.show_image_menu,
       show_on_homepage: item.show_on_homepage,
     });
-    setSelectedFile(null);
+    setMenuItemImageUrl(item.image_url || '');
     setShowMenuItemDialog(true);
   };
 
@@ -942,7 +908,7 @@ export default function UnifiedDashboard() {
 
   const handleNewMenuItem = () => {
     setEditingMenuItem(null);
-    setSelectedFile(null);
+    setMenuItemImageUrl('');
     menuItemForm.reset({
       name: '',
       description: '',
@@ -1775,38 +1741,16 @@ export default function UnifiedDashboard() {
               />
 
               {/* Image Upload */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Imagen del Plato</label>
-                <div className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                    />
-                  </div>
-                  {(editingMenuItem?.image_url || selectedFile) && (
-                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted">
-                      {selectedFile ? (
-                        <img 
-                          src={URL.createObjectURL(selectedFile)} 
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : editingMenuItem?.image_url ? (
-                        <img 
-                          src={editingMenuItem.image_url} 
-                          alt="Current"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+              <div>
+                <ImageUpload
+                  label="Imagen del Plato (Opcional)"
+                  value={menuItemImageUrl}
+                  onChange={setMenuItemImageUrl}
+                  clientId={selectedClientId}
+                  context="menu-item"
+                  description={`menu item photo - ${menuItemForm.watch('name') || 'dish'}`}
+                  onProcessingChange={setUploading}
+                />
               </div>
 
               {/* Toggles */}
