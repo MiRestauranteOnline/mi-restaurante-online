@@ -19,7 +19,13 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const openAIKey = Deno.env.get('chatgpt')!;
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+    
+    if (!lovableApiKey) {
+      console.error('Lovable API key not found in environment');
+      throw new Error('Lovable API key not configured');
+    }
+    
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Fetch client data
@@ -38,7 +44,7 @@ serve(async (req) => {
       .from('admin_content')
       .select('*')
       .eq('client_id', clientId)
-      .single();
+      .maybeSingle();
 
     // Create page-specific context
     const pageContext = getPageContext(pageType, client, adminContent);
@@ -73,15 +79,15 @@ Requirements:
 Return ONLY the meta description, no explanations.`;
     }
 
-    // Call OpenAI to regenerate
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Call Lovable AI Gateway (Gemini) to regenerate
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-mini-2025-08-07',
+        model: 'google/gemini-2.5-flash',
         messages: [
           {
             role: 'system',
@@ -92,23 +98,23 @@ Return ONLY the meta description, no explanations.`;
             content: prompt
           }
         ],
-        max_completion_tokens: 100,
+        max_tokens: 200,
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('Lovable AI Gateway error:', response.status, errorText);
+      throw new Error(`AI Gateway error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI full response:', JSON.stringify(data, null, 2));
+    console.log('AI Gateway full response:', JSON.stringify(data, null, 2));
     
     const generatedText = data.choices?.[0]?.message?.content?.trim();
     
     if (!generatedText) {
-      console.error('Empty or invalid response from OpenAI');
+      console.error('Empty or invalid response from AI Gateway');
       throw new Error('Generated text is empty');
     }
     
