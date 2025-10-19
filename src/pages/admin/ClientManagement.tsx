@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Settings, Eye, Users } from "lucide-react";
+import { Loader2, Settings, Eye, Users, Check, ChevronsUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface Client {
   id: string;
@@ -29,6 +31,7 @@ export default function ClientManagement() {
   const [selectedClientId, setSelectedClientId] = useState<string>('');
   const [clientStats, setClientStats] = useState<Record<string, ClientStats>>({});
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -114,18 +117,50 @@ export default function ClientManagement() {
           <CardTitle>Select Client</CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={selectedClientId} onValueChange={setSelectedClientId}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Choose a client to manage" />
-            </SelectTrigger>
-            <SelectContent>
-              {clients.map((client) => (
-                <SelectItem key={client.id} value={client.id}>
-                  {client.restaurant_name} ({client.subdomain})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-full justify-between"
+              >
+                {selectedClientId
+                  ? clients.find((client) => client.id === selectedClientId)?.restaurant_name + 
+                    ` (${clients.find((client) => client.id === selectedClientId)?.subdomain})`
+                  : "Choose a client to manage"}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Search clients..." />
+                <CommandList>
+                  <CommandEmpty>No client found.</CommandEmpty>
+                  <CommandGroup>
+                    {clients.map((client) => (
+                      <CommandItem
+                        key={client.id}
+                        value={`${client.restaurant_name} ${client.subdomain}`}
+                        onSelect={() => {
+                          setSelectedClientId(client.id);
+                          setOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedClientId === client.id ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {client.restaurant_name} ({client.subdomain})
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </CardContent>
       </Card>
 
