@@ -86,14 +86,18 @@ serve(async (req) => {
 
 Context: ${pageContext}
 
-Requisitos:
-- Máximo 57 caracteres (límite estricto: 60)
+Requisitos CRÍTICOS:
+- LÍMITE ABSOLUTO: 60 caracteres (preferible 57 o menos)
+- Cuenta cada carácter incluyendo espacios y símbolos
+- Si excede 60 caracteres, acorta hasta cumplir el límite
 - Incluir: tipo de cocina, ubicación, nombre del restaurante (cuando tenga sentido)
 - Rico en palabras clave y descriptivo
 - Natural y atractivo${keywordRequirement}
-- Ejemplo: "Mejor Comida India en Miraflores | ${client.restaurant_name}"
+- Ejemplo corto: "Menú de Comida India | ${client.restaurant_name.substring(0, 20)}"
 
-Devuelve SOLO el meta título en español, sin explicaciones.`;
+IMPORTANTE: El título DEBE ser de 60 caracteres o menos. Si tu primera versión es muy larga, acórtala inmediatamente.
+
+Devuelve SOLO el meta título en español de máximo 60 caracteres, sin explicaciones.`;
     } else {
       // Build page-specific keyword requirements for descriptions
       let keywordRequirement = '';
@@ -173,11 +177,33 @@ Devuelve SOLO la meta descripción en español, sin explicaciones.`;
     const data = await response.json();
     console.log('OpenAI full response:', JSON.stringify(data, null, 2));
     
-    const generatedText = data.choices?.[0]?.message?.content?.trim();
+    let generatedText = data.choices?.[0]?.message?.content?.trim();
     
     if (!generatedText) {
       console.error('Empty or invalid response from OpenAI');
       throw new Error('Generated text is empty');
+    }
+    
+    // Validate and enforce character limits
+    if (fieldType === 'title' && generatedText.length > 60) {
+      console.warn(`Generated title too long (${generatedText.length} chars): "${generatedText}"`);
+      // Truncate to 60 characters at word boundary
+      generatedText = generatedText.substring(0, 57).trim();
+      const lastSpace = generatedText.lastIndexOf(' ');
+      if (lastSpace > 40) {
+        generatedText = generatedText.substring(0, lastSpace);
+      }
+      console.log(`Truncated to ${generatedText.length} chars: "${generatedText}"`);
+    }
+    
+    if (fieldType === 'description' && generatedText.length > 155) {
+      console.warn(`Generated description too long (${generatedText.length} chars)`);
+      generatedText = generatedText.substring(0, 152).trim();
+      const lastSpace = generatedText.lastIndexOf(' ');
+      if (lastSpace > 130) {
+        generatedText = generatedText.substring(0, lastSpace);
+      }
+      console.log(`Truncated to ${generatedText.length} chars`);
     }
     
     console.log(`Successfully generated ${fieldType}:`, generatedText);

@@ -311,23 +311,23 @@ serve(async (req) => {
       },
       "seoMetadata": {
         "home": {
-          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars, límite duro 60) con tipo de comida, ubicación y nombre. Ejemplo: Mejor Comida India en Miraflores | ${restaurantName}",
+          "meta_title": "Título SEO EN ESPAÑOL - MÁXIMO 60 caracteres (preferible 57) con tipo de comida, ubicación, nombre. Si excede, ACORTA. Ejemplo: Comida India en Miraflores | ${restaurantName.substring(0, 15)}",
           "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword principal, beneficios en MAYÚSCULAS o emojis ✓★, urgencia. ${seoConstraints} Ejemplo: ★ Comida India AUTÉNTICA ★ Ingredientes frescos. Sabores tradicionales. ¡Visita HOY!"
         },
         "about": {
-          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars)",
+          "meta_title": "Título SEO EN ESPAÑOL - MÁXIMO 60 caracteres (preferible 57). Si excede, ACORTA inmediatamente",
           "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
         },
         "menu": {
-          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars) - DEBE incluir palabra 'Menú' o 'Carta'",
+          "meta_title": "Título SEO EN ESPAÑOL - MÁXIMO 60 caracteres - DEBE incluir 'Menú' o 'Carta'. Si excede, ACORTA",
           "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) - DEBE incluir 'menú' o 'carta', beneficios destacados, urgencia${seoConstraints}"
         },
         "contact": {
-          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars) - DEBE incluir palabra 'Contacto'",
+          "meta_title": "Título SEO EN ESPAÑOL - MÁXIMO 60 caracteres - DEBE incluir 'Contacto'. Si excede, ACORTA",
           "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) - DEBE incluir 'contacto' o 'contáctanos', beneficios destacados, urgencia${seoConstraints}"
         },
         "reviews": {
-          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars) - DEBE incluir palabra 'Reseñas' o 'Testimonios'",
+          "meta_title": "Título SEO EN ESPAÑOL - MÁXIMO 60 caracteres - DEBE incluir 'Reseñas' o 'Testimonios'. Si excede, ACORTA",
           "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) - DEBE incluir 'reseñas' o 'testimonios', beneficios destacados, urgencia${seoConstraints}"
         }
       }
