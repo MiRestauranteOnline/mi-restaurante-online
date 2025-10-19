@@ -11,6 +11,7 @@
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Sitemap - Mi Restaurante Online</title>
+        <link rel="icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png" type="image/png"/>
         <style>
           * {
             margin: 0;
