@@ -41,10 +41,23 @@ const statusColors = {
   closed: "bg-gray-500"
 };
 
+const statusLabels = {
+  new: "Nuevo",
+  "in-progress": "En Progreso",
+  resolved: "Resuelto",
+  closed: "Cerrado"
+};
+
 const priorityColors = {
   low: "bg-green-100 text-green-800",
   medium: "bg-yellow-100 text-yellow-800",
   high: "bg-red-100 text-red-800"
+};
+
+const priorityLabels = {
+  low: "Baja",
+  medium: "Media",
+  high: "Alta"
 };
 
 interface TicketViewerProps {
@@ -232,10 +245,10 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
                       {ticket.ticket_number}
                     </Badge>
                     <Badge className={statusColors[ticket.status as keyof typeof statusColors]}>
-                      {ticket.status}
+                      {statusLabels[ticket.status as keyof typeof statusLabels]}
                     </Badge>
                     <Badge variant="outline" className={priorityColors[ticket.priority as keyof typeof priorityColors]}>
-                      {ticket.priority}
+                      {priorityLabels[ticket.priority as keyof typeof priorityLabels]}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -286,7 +299,7 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
                     <p className="text-sm text-muted-foreground mt-1">{selectedTicket.subject}</p>
                   </div>
                   <Badge className={statusColors[selectedTicket.status as keyof typeof statusColors]}>
-                    {selectedTicket.status}
+                    {statusLabels[selectedTicket.status as keyof typeof statusLabels]}
                   </Badge>
                 </div>
               </CardHeader>
