@@ -106,7 +106,7 @@ interface GuidesSidebarProps {
 }
 
 export function GuidesSidebar({ activeGuide }: GuidesSidebarProps) {
-  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos", "Panel Principal", "Configuración de Dominio", "Configuración de Email", "Reservas", "Analíticas", "Soporte", "Suscripción"]);
+  const [openCategories, setOpenCategories] = useState<string[]>(["Primeros Pasos"]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 

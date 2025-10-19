@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate, Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Copy, Check, ExternalLink } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailDNSConfigForm } from "@/components/client/EmailDNSConfigForm";
@@ -13,6 +13,82 @@ import namecheapStep2 from "@/assets/namecheap-step-2.webp";
 import namecheapStep3 from "@/assets/namecheap-step-3.webp";
 import namecheapStep4 from "@/assets/namecheap-step-4.webp";
 
+// Guide categories structure
+const guideCategories = [
+  {
+    title: "Primeros Pasos",
+    slug: "primeros-pasos",
+    items: [{ id: "introduccion", title: "Introducción", icon: FileText }],
+  },
+  {
+    title: "Panel Principal",
+    slug: "panel-principal",
+    items: [
+      { id: "informacion-general", title: "Información General", icon: FileText },
+      { id: "horarios-apertura", title: "Horarios de Apertura", icon: FileText },
+      { id: "redes-sociales", title: "Redes Sociales", icon: FileText },
+      { id: "informacion-delivery", title: "Información de Delivery", icon: FileText },
+      { id: "marca-personalizacion", title: "Marca y Personalización", icon: FileText },
+      { id: "contenido-sitio", title: "Contenido del Sitio", icon: FileText },
+      { id: "preguntas-frecuentes", title: "Preguntas Frecuentes", icon: FileText },
+      { id: "carrusel-imagenes", title: "Carrusel de Imágenes", icon: FileText },
+      { id: "categorias-menu", title: "Categorías del Menú", icon: FileText },
+      { id: "elementos-menu", title: "Elementos del Menú", icon: FileText },
+      { id: "equipo", title: "Equipo", icon: FileText },
+      { id: "resenas", title: "Reseñas", icon: FileText },
+    ],
+  },
+  {
+    title: "Configuración de Dominio",
+    slug: "configuracion-dominio",
+    items: [{ id: "dominio-personalizado", title: "Dominio Personalizado", icon: Globe }],
+  },
+  {
+    title: "Configuración de Email",
+    slug: "configuracion-email",
+    items: [{ id: "configuracion-email", title: "Correo Electrónico", icon: Mail }],
+  },
+  {
+    title: "Reservas",
+    slug: "reservas",
+    items: [
+      { id: "horarios-reserva", title: "Horarios de Reserva", icon: FileText },
+      { id: "configuracion-mesas", title: "Configuración de Mesas", icon: FileText },
+      { id: "disponibilidad-reservas", title: "Disponibilidad", icon: FileText },
+      { id: "lista-reservas", title: "Lista de Reservas", icon: FileText },
+      { id: "calendario-reservas", title: "Calendario", icon: FileText },
+    ],
+  },
+  {
+    title: "Analíticas",
+    slug: "analiticas",
+    items: [
+      { id: "introduccion-analiticas", title: "Introducción a Analíticas", icon: FileText },
+      { id: "metricas", title: "Entendiendo las Métricas", icon: FileText },
+      { id: "estadisticas-uso", title: "Estadísticas de Uso", icon: FileText },
+    ],
+  },
+  {
+    title: "Soporte",
+    slug: "soporte",
+    items: [
+      { id: "como-obtener-soporte", title: "Cómo Obtener Soporte", icon: FileText },
+      { id: "crear-tickets", title: "Crear Tickets", icon: FileText },
+      { id: "historial-tickets", title: "Historial de Tickets", icon: FileText },
+    ],
+  },
+  {
+    title: "Suscripción",
+    slug: "suscripcion",
+    items: [
+      { id: "gestionar-suscripcion", title: "Gestionar Suscripción", icon: FileText },
+      { id: "metodos-pago", title: "Métodos de Pago", icon: FileText },
+      { id: "cambios-plan", title: "Cambios de Plan", icon: FileText },
+      { id: "informacion-facturacion", title: "Información de Facturación", icon: FileText },
+    ],
+  },
+];
+
 export default function ClientGuides() {
   const { toast } = useToast();
   const { category, guide } = useParams<{ category?: string; guide?: string }>();
@@ -21,9 +97,13 @@ export default function ClientGuides() {
   const [copiedNS2, setCopiedNS2] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
   
+  // Redirect to introduction if no guide is specified
+  if (!category || !guide) {
+    return <Navigate to="/client/guias/primeros-pasos/introduccion" replace />;
+  }
+  
   // Map URL params to guide IDs
   const getGuideIdFromUrl = () => {
-    if (!category || !guide) return "introduccion";
     return guide;
   };
   
@@ -68,30 +148,56 @@ export default function ClientGuides() {
     switch (activeGuide) {
       case "introduccion":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Bienvenido a las Guías de Mi Restaurante Online</CardTitle>
-              <CardDescription>
-                Todo lo que necesitas saber para gestionar tu restaurante online
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-muted-foreground">
-                En esta sección encontrarás guías detalladas para configurar y gestionar todos los aspectos de tu restaurante online.
-              </p>
-              <div className="space-y-2">
-                <h3 className="font-semibold">Guías Disponibles:</h3>
-                <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
-                  <li>Configuración de dominio personalizado</li>
-                  <li>Configuración de correo electrónico profesional</li>
-                  <li>Y muchas más guías próximamente...</li>
-                </ul>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Selecciona una guía del menú lateral para comenzar.
-              </p>
-            </CardContent>
-          </Card>
+          <div className="space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-3xl">Bienvenido a las Guías de Mi Restaurante Online</CardTitle>
+                <CardDescription className="text-base">
+                  Todo lo que necesitas saber para gestionar tu restaurante online
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <p className="text-muted-foreground leading-relaxed">
+                  En esta sección encontrarás guías detalladas para configurar y gestionar todos los aspectos de tu restaurante online. 
+                  Explora las diferentes categorías a continuación para encontrar la información que necesitas.
+                </p>
+              </CardContent>
+            </Card>
+
+            {guideCategories.map((cat) => {
+              const CategoryIcon = cat.items[0]?.icon;
+              return (
+                <Card key={cat.slug}>
+                  <CardHeader>
+                    <CardTitle className="text-xl flex items-center gap-2">
+                      {CategoryIcon && <CategoryIcon className="h-5 w-5" />}
+                      {cat.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-3">
+                      {cat.items.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={item.id}
+                            to={`/client/guias/${cat.slug}/${item.id}`}
+                            className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-muted transition-colors group"
+                          >
+                            <Icon className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+                            <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                              {item.title}
+                            </span>
+                            <ExternalLink className="h-3 w-3 ml-auto text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         );
       
       case "dominio-personalizado":
