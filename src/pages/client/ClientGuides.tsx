@@ -413,96 +413,14 @@ export default function ClientGuides() {
               {clientId && (
                 <div className="space-y-4">
                   <EmailDNSConfigForm clientId={clientId} />
-                  
-                  <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-2">
-                      — O si prefieres, configura manualmente en Cloudflare —
-                    </p>
-                  </div>
                 </div>
               )}
 
-              {/* Step 4: Configure Cloudflare (Manual Option) */}
+              {/* Step 4: Verify Configuration */}
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     4
-                  </div>
-                  <div className="space-y-3 flex-1">
-                    <h3 className="text-xl font-semibold">Configurar DNS en Cloudflare (Manual)</h3>
-                    <div className="space-y-2 text-muted-foreground">
-                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
-                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                          ℹ️ <strong>Configuración Manual:</strong> Si prefieres configurar manualmente o la configuración automática falló, sigue estos pasos para agregar los registros DNS en Cloudflare.
-                        </p>
-                      </div>
-                      <p>Ahora debes agregar los registros DNS en Cloudflare:</p>
-                      <ol className="list-decimal list-inside space-y-2 ml-4">
-                        <li>
-                          Inicia sesión en{" "}
-                          <a
-                            href="https://dash.cloudflare.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline inline-flex items-center gap-1"
-                          >
-                            Cloudflare
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
-                        </li>
-                        <li>Selecciona tu dominio</li>
-                        <li>Ve a la sección "DNS" en el menú lateral</li>
-                        <li>Haz clic en "Add record" (Agregar registro)</li>
-                      </ol>
-
-                      <div className="bg-secondary/50 rounded-lg p-4 mt-4 space-y-4">
-                        <div>
-                          <p className="font-medium mb-2">Agregar registros MX:</p>
-                          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
-                            <li>Type: MX</li>
-                            <li>Name: @ (o tu dominio)</li>
-                            <li>Mail server: mx1.privateemail.com</li>
-                            <li>Priority: 10</li>
-                            <li>TTL: Auto</li>
-                          </ul>
-                          <p className="text-sm mt-2">Repite para mx2.privateemail.com con Priority: 10</p>
-                        </div>
-
-                        <div>
-                          <p className="font-medium mb-2">Agregar registro SPF (TXT):</p>
-                          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
-                            <li>Type: TXT</li>
-                            <li>Name: @</li>
-                            <li>Content: v=spf1 include:spf.privateemail.com ~all</li>
-                            <li>TTL: Auto</li>
-                          </ul>
-                        </div>
-
-                        <div>
-                          <p className="font-medium mb-2">Agregar registro DKIM (TXT):</p>
-                          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
-                            <li>Type: TXT</li>
-                            <li>Name: (el que te proporcione NameCheap, generalmente "default._domainkey")</li>
-                            <li>Content: (el valor DKIM que te proporcione NameCheap)</li>
-                            <li>TTL: Auto</li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      <ol start={5} className="list-decimal list-inside space-y-2 ml-4 mt-4">
-                        <li>Haz clic en "Save" para cada registro</li>
-                        <li>Espera entre 15 minutos y 24 horas para que los DNS se propaguen</li>
-                      </ol>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 5: Verify Configuration */}
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                    5
                   </div>
                   <div className="space-y-3 flex-1">
                     <h3 className="text-xl font-semibold">Verificar Configuración</h3>
@@ -525,11 +443,11 @@ export default function ClientGuides() {
                 </div>
               </div>
 
-              {/* Step 6: Access Your Email */}
+              {/* Step 5: Access Your Email */}
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                    6
+                    5
                   </div>
                   <div className="space-y-3 flex-1">
                     <h3 className="text-xl font-semibold">Acceder a tu Correo</h3>
