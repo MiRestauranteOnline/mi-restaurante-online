@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { MessageSquare, Clock, User, Mail, Calendar, Plus } from "lucide-react";
+import { MessageSquare, Clock, User, Mail, Calendar, Plus, MessageCircle } from "lucide-react";
 import { format } from "date-fns";
+import { businessData } from "@/config/businessData";
 
 interface SupportTicket {
   id: string;
@@ -57,11 +58,39 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
   const [newResponse, setNewResponse] = useState("");
   const [loading, setLoading] = useState(true);
   const [addingResponse, setAddingResponse] = useState(false);
+  const [clientData, setClientData] = useState<any>(null);
+  const [premiumFeatures, setPremiumFeatures] = useState<any>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchTickets();
+    fetchClientData();
   }, [clientId]);
+
+  const fetchClientData = async () => {
+    try {
+      const { data: client, error: clientError } = await supabase
+        .from("clients")
+        .select("*")
+        .eq("id", clientId)
+        .single();
+
+      if (clientError) throw clientError;
+      setClientData(client);
+
+      const { data: premium, error: premiumError } = await supabase
+        .from("premium_features")
+        .select("unique_support_pin")
+        .eq("client_id", clientId)
+        .maybeSingle();
+
+      if (!premiumError) {
+        setPremiumFeatures(premium);
+      }
+    } catch (error: any) {
+      console.error("Error fetching client data:", error);
+    }
+  };
 
   const fetchTickets = async () => {
     try {
@@ -145,18 +174,43 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
     fetchTicketResponses(ticket.id);
   };
 
+  const handleWhatsAppSupport = () => {
+    let message = `Hola, soy cliente de ${clientData?.restaurant_name || 'Mi Restaurante Online'}.`;
+    message += `\n\nMi email es: ${clientData?.email || ''}`;
+    
+    if (clientData?.plan_type === 'advanced' && premiumFeatures?.unique_support_pin) {
+      message += `\nMi PIN único de soporte es: ${premiumFeatures.unique_support_pin}`;
+      message += `\n\nTengo el plan Avanzado y necesito ayuda.`;
+    } else {
+      message += `\n\nNecesito ayuda con mi sitio web.`;
+    }
+
+    const whatsappUrl = `${businessData.contact.whatsapp.url}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   if (loading) {
     return <div className="flex justify-center p-8">Cargando tickets...</div>;
   }
 
   return (
     <div className="container mx-auto max-w-6xl">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-3xl font-bold">Tus Tickets de Soporte</h1>
-        <Button onClick={() => window.location.href = "/soporte"}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nuevo Ticket
-        </Button>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button 
+            onClick={handleWhatsAppSupport}
+            variant="outline"
+            className="flex-1 sm:flex-initial"
+          >
+            <MessageCircle className="h-4 w-4 mr-2" />
+            Soporte WhatsApp
+          </Button>
+          <Button onClick={() => window.location.href = "/soporte"} className="flex-1 sm:flex-initial">
+            <Plus className="h-4 w-4 mr-2" />
+            Nuevo Ticket
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
