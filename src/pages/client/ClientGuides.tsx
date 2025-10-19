@@ -155,17 +155,16 @@ export default function ClientGuides() {
                     <div className="space-y-2 text-muted-foreground">
                       <p>Una vez que hayas completado la compra de tu dominio, debes configurar los nameservers para apuntar a Cloudflare:</p>
                       <ol className="list-decimal list-inside space-y-2 ml-4">
-                        <li>Después de confirmar tu compra, desplázate hacia abajo hasta la sección "Domain Registration"</li>
-                        <li>Haz clic en el botón rojo grande que dice "Manage" (Administrar)</li>
+                        <li>Después de confirmar tu compra, desplázate hacia abajo hasta la sección "Domain Registration" y haz clic en el botón rojo grande que dice "Manage" (Administrar)</li>
                         <li>En la página de gestión del dominio, desplázate hasta encontrar la sección "Nameservers"</li>
                         <li>En el menú desplegable (que por defecto está configurado como "Namecheap BasicDNS"), selecciona "Custom DNS"</li>
-                        <li>Copia y pega los siguientes nameservers en los campos que aparecen:</li>
+                        <li>Copia los siguientes nameservers de esta página y pégalos en los campos correspondientes de NameCheap:</li>
                       </ol>
 
                       <div className="space-y-3 mt-4">
-                        <div className="bg-secondary/50 rounded-lg p-4 space-y-3">
+                        <div className="bg-primary rounded-lg p-4 space-y-3">
                           <div>
-                            <label className="text-sm font-medium block mb-2">Nameserver 1:</label>
+                            <label className="text-sm font-medium block mb-2 text-white">Nameserver 1:</label>
                             <div className="flex gap-2">
                               <code className="flex-1 bg-background border rounded px-3 py-2 font-mono text-sm">
                                 {nameserver1}
@@ -184,7 +183,7 @@ export default function ClientGuides() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-sm font-medium block mb-2">Nameserver 2:</label>
+                            <label className="text-sm font-medium block mb-2 text-white">Nameserver 2:</label>
                             <div className="flex gap-2">
                               <code className="flex-1 bg-background border rounded px-3 py-2 font-mono text-sm">
                                 {nameserver2}
@@ -209,7 +208,7 @@ export default function ClientGuides() {
                         <img src={namecheapStep4} alt="Configuración de nameservers en NameCheap" className="w-full" />
                       </div>
 
-                      <ol start={6} className="list-decimal list-inside space-y-2 ml-4 mt-4">
+                      <ol start={5} className="list-decimal list-inside space-y-2 ml-4 mt-4">
                         <li>Haz clic en el botón verde de confirmación (✓) que aparece al lado derecho para guardar los cambios</li>
                         <li>NameCheap mostrará un mensaje de confirmación indicando que los nameservers han sido actualizados</li>
                       </ol>
