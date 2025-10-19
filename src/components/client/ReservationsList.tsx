@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Search, Filter, Phone, Mail, MessageSquare, Trash2, ArrowUp } from "lucide-react";
+import { Calendar as CalendarIcon, Search, Filter, Phone, Mail, MessageSquare, Trash2, ArrowUp, Download, CheckCircle2, XCircle } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -247,6 +247,36 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
     }
   };
 
+  const exportToCSV = () => {
+    const headers = ["Fecha", "Hora", "Cliente", "Email", "Teléfono", "Personas", "Estado", "Solicitudes Especiales"];
+    const rows = filteredReservations.map(r => [
+      r.reservation_date,
+      r.reservation_time,
+      r.customer_name,
+      r.customer_email,
+      r.customer_phone,
+      r.party_size,
+      STATUS_OPTIONS.find(o => o.value === r.status)?.label || r.status,
+      r.special_requests || ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `reservas_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Reservas exportadas correctamente");
+  };
+
   if (loading) {
     return <div className="p-4 text-center">Cargando reservas...</div>;
   }
@@ -286,18 +316,32 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
               ))}
             </SelectContent>
           </Select>
+          <Button 
+            variant="outline" 
+            onClick={exportToCSV}
+            disabled={filteredReservations.length === 0}
+            className="w-full sm:w-auto"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Exportar
+          </Button>
         </div>
       </div>
 
       {filteredReservations.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+        <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/20">
           <CalendarIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-base sm:text-lg font-semibold mb-2">No hay reservas</h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground mb-4">
             {searchTerm || statusFilter !== "all"
               ? "No se encontraron reservas con los filtros aplicados."
-              : "Las reservas de tus clientes aparecerán aquí."}
+              : "Las reservas de tus clientes aparecerán aquí una vez que comiencen a llegar."}
           </p>
+          {!searchTerm && statusFilter === "all" && (
+            <p className="text-xs text-muted-foreground">
+              💡 Asegúrate de configurar tus horarios y capacidad en las pestañas "Horarios" y "Capacidad"
+            </p>
+          )}
         </div>
       ) : (
         <>
@@ -324,34 +368,64 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                       </div>
 
                       <div className="space-y-1 text-xs">
-                        <div className="flex items-center gap-2 text-muted-foreground">
+                        <a 
+                          href={`tel:${reservation.customer_phone}`}
+                          className="flex items-center gap-2 text-primary hover:underline"
+                        >
                           <Phone className="w-3 h-3" />
                           <span>{reservation.customer_phone}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
+                        </a>
+                        <a 
+                          href={`mailto:${reservation.customer_email}`}
+                          className="flex items-center gap-2 text-primary hover:underline"
+                        >
                           <Mail className="w-3 h-3" />
                           <span className="truncate">{reservation.customer_email}</span>
-                        </div>
+                        </a>
                         <div className="font-medium">
                           {reservation.party_size} persona{reservation.party_size !== 1 ? 's' : ''}
                         </div>
                       </div>
 
                       <div className="flex gap-2 pt-3 border-t">
-                        <Select
-                          value={reservation.status}
-                          onValueChange={(value) => handleStatusChange(reservation.id, value)}
-                        >
-                          <SelectTrigger className="flex-1 h-8 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pendiente</SelectItem>
-                            <SelectItem value="confirmed">Confirmado</SelectItem>
-                            <SelectItem value="cancelled">Cancelado</SelectItem>
-                            <SelectItem value="completed">Completado</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        {reservation.status === "pending" && (
+                          <>
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={() => handleStatusChange(reservation.id, "confirmed")}
+                              className="flex-1 h-8 text-xs"
+                            >
+                              <CheckCircle2 className="w-3 h-3 mr-1" />
+                              Confirmar
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleStatusChange(reservation.id, "cancelled")}
+                              className="flex-1 h-8 text-xs"
+                            >
+                              <XCircle className="w-3 h-3 mr-1" />
+                              Rechazar
+                            </Button>
+                          </>
+                        )}
+                        {reservation.status !== "pending" && (
+                          <Select
+                            value={reservation.status}
+                            onValueChange={(value) => handleStatusChange(reservation.id, value)}
+                          >
+                            <SelectTrigger className="flex-1 h-8 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">Pendiente</SelectItem>
+                              <SelectItem value="confirmed">Confirmado</SelectItem>
+                              <SelectItem value="cancelled">Cancelado</SelectItem>
+                              <SelectItem value="completed">Completado</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
@@ -412,37 +486,54 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                       <TableCell className="font-medium text-sm">{reservation.customer_name}</TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-1 text-xs">
-                          <div className="flex items-center gap-1">
+                          <a 
+                            href={`tel:${reservation.customer_phone}`}
+                            className="flex items-center gap-1 text-primary hover:underline"
+                          >
                             <Phone className="w-3 h-3 flex-shrink-0" />
                             <span className="truncate">{reservation.customer_phone}</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-muted-foreground">
+                          </a>
+                          <a 
+                            href={`mailto:${reservation.customer_email}`}
+                            className="flex items-center gap-1 text-primary hover:underline"
+                          >
                             <Mail className="w-3 h-3 flex-shrink-0" />
                             <span className="truncate">{reservation.customer_email}</span>
-                          </div>
+                          </a>
                         </div>
                       </TableCell>
                       <TableCell className="text-sm">{reservation.party_size}</TableCell>
                       <TableCell>
-                        <Select
-                          value={reservation.status}
-                          onValueChange={(value) => handleStatusChange(reservation.id, value)}
-                        >
-                          <SelectTrigger className="w-[110px] h-8">
-                            <Badge 
-                              variant={STATUS_COLORS[reservation.status] || "outline"}
-                              className={`text-xs ${reservation.status === "pending" ? "border-orange-500 text-orange-500" : ""}`}
-                            >
-                              <SelectValue />
-                            </Badge>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pendiente</SelectItem>
-                            <SelectItem value="confirmed">Confirmado</SelectItem>
-                            <SelectItem value="cancelled">Cancelado</SelectItem>
-                            <SelectItem value="completed">Completado</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <div className="flex gap-2 items-center">
+                          <Badge 
+                            variant={STATUS_COLORS[reservation.status] || "outline"}
+                            className={`text-xs ${reservation.status === "pending" ? "border-orange-500 text-orange-500" : ""}`}
+                          >
+                            {STATUS_OPTIONS.find(o => o.value === reservation.status)?.label}
+                          </Badge>
+                          {reservation.status === "pending" && (
+                            <div className="flex gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleStatusChange(reservation.id, "confirmed")}
+                                className="h-7 w-7 p-0"
+                                title="Confirmar"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleStatusChange(reservation.id, "cancelled")}
+                                className="h-7 w-7 p-0"
+                                title="Rechazar"
+                              >
+                                <XCircle className="w-3.5 h-3.5 text-red-600" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex justify-end gap-1">

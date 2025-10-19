@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash2, Clock } from "lucide-react";
+import { Plus, Edit, Trash2, Clock, Copy } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -271,6 +271,35 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
 
   const getDayName = (dayOfWeek: number) => {
     return DAYS_OF_WEEK.find((d) => d.value === dayOfWeek)?.label || "";
+  };
+
+  const duplicateSchedule = async (schedule: ReservationSchedule) => {
+    try {
+      const { error } = await (supabase as any)
+        .from("reservation_schedules")
+        .insert({
+          client_id: clientId,
+          day_of_week: schedule.day_of_week,
+          start_time: schedule.start_time,
+          end_time: schedule.end_time,
+          capacity: schedule.capacity,
+          is_active: true,
+          duration_minutes: schedule.duration_minutes,
+          min_party_size: schedule.min_party_size,
+          max_party_size: schedule.max_party_size,
+          special_groups_enabled: schedule.special_groups_enabled,
+          special_groups_condition: schedule.special_groups_condition,
+          special_groups_contact_method: schedule.special_groups_contact_method,
+          custom_table_configs: schedule.custom_table_configs,
+        });
+
+      if (error) throw error;
+      toast.success("Horario duplicado correctamente");
+      fetchSchedules();
+    } catch (error) {
+      console.error("Error duplicating schedule:", error);
+      toast.error("Error al duplicar el horario");
+    }
   };
 
   if (loading) {
@@ -606,11 +635,14 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
       </div>
 
       {schedules.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+        <div className="text-center py-12 border-2 border-dashed rounded-lg bg-muted/20">
           <Clock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
           <h3 className="text-lg font-semibold mb-2">No hay horarios configurados</h3>
           <p className="text-muted-foreground mb-4">
             Comienza agregando los días y horarios en los que aceptas reservas.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            💡 Define horarios para cada día de la semana, personaliza la duración de reservas y capacidad.
           </p>
         </div>
       ) : (
@@ -671,6 +703,16 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                           className="flex-1 text-xs"
                         >
                           {schedule.is_active ? "Desactivar" : "Activar"}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => duplicateSchedule(schedule)}
+                          className="flex-1 text-xs"
+                          title="Duplicar horario"
+                        >
+                          <Copy className="w-3 h-3 mr-1" />
+                          Duplicar
                         </Button>
                         <Button
                           variant="ghost"
@@ -761,6 +803,15 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                             className="h-8 text-xs"
                           >
                             {schedule.is_active ? "Desactivar" : "Activar"}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => duplicateSchedule(schedule)}
+                            className="h-8 w-8 p-0"
+                            title="Duplicar horario"
+                          >
+                            <Copy className="w-3 h-3" />
                           </Button>
                           <Button
                             variant="ghost"

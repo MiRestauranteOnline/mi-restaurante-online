@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, ArrowUp, ChevronDown } from "lucide-react";
+import { Loader2, Plus, ArrowUp, ChevronDown, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getCurrentDateInTimezone, combineDateTimeToUtc, extractDateTimeFromUtc } from "@/lib/timezone";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
@@ -605,7 +606,28 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
           </CardContent>
         </Card>
       ) : (
-        <Accordion type="single" collapsible className="space-y-2">
+        <>
+          {/* Capacity Warnings */}
+          {Object.entries(groupedByDate).some(([_, slots]) => {
+            const availableSlots = slots.filter(s => s.totalAvailable > 0).length;
+            return availableSlots === 0 || availableSlots <= slots.length * 0.2;
+          }) && (
+            <Alert className="mb-4 border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/10">
+              <AlertCircle className="h-4 w-4 text-yellow-600" />
+              <AlertDescription className="text-sm">
+                <span className="font-medium">Atención:</span> La disponibilidad es limitada en varios días. 
+                {Object.entries(groupedByDate)
+                  .filter(([_, slots]) => slots.filter(s => s.totalAvailable > 0).length === 0)
+                  .length > 0 && (
+                    <span className="block mt-1">
+                      Algunos días están completamente llenos. Considera agregar más mesas o horarios.
+                    </span>
+                  )}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <Accordion type="single" collapsible className="space-y-2">
           {dateLabels.map((date) => {
             const slots = groupedByDate[date];
             const totalSlotsAvailable = slots.filter(s => s.totalAvailable > 0).length;
@@ -703,6 +725,7 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             );
           })}
         </Accordion>
+        </>
       )}
       
       <Button
