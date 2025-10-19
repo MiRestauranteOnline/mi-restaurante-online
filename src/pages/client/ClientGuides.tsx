@@ -389,19 +389,19 @@ export default function ClientGuides() {
                     3
                   </div>
                   <div className="space-y-3 flex-1">
-                    <h3 className="text-xl font-semibold">Obtener Registros DNS de NameCheap</h3>
+                    <h3 className="text-xl font-semibold">Obtener el Registro DKIM de NameCheap</h3>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>Para configurar el correo con Cloudflare, necesitas los registros DNS:</p>
+                      <p>Para la configuración automática, solo necesitas el valor DKIM:</p>
                       <ol className="list-decimal list-inside space-y-2 ml-4">
                         <li>En el panel de Private Email de NameCheap, haz clic en "Settings" (Configuración)</li>
                         <li>Ve a la sección "DNS Records" o "Mail Settings"</li>
-                        <li>Anota los registros MX, TXT (SPF), y DKIM que aparecen</li>
-                        <li>Los registros MX generalmente son: mx1.privateemail.com y mx2.privateemail.com</li>
+                        <li>Busca el registro DKIM (empieza con "v=DKIM1;")</li>
+                        <li>Copia el valor completo del registro DKIM</li>
                       </ol>
 
                       <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
                         <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                          📋 <strong>Importante:</strong> Copia exactamente estos registros ya que los necesitarás para configurar Cloudflare en el siguiente paso.
+                          📋 <strong>Importante:</strong> Solo necesitas copiar el valor DKIM. Los registros MX y SPF se configurarán automáticamente.
                         </p>
                       </div>
                     </div>
