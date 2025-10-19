@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Copy, Check, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailDNSConfigForm } from "@/components/client/EmailDNSConfigForm";
+import { GuidesSidebar } from "@/components/client/GuidesSidebar";
 import namecheapStep1 from "@/assets/namecheap-step-1.webp";
 import namecheapStep2 from "@/assets/namecheap-step-2.webp";
 import namecheapStep3 from "@/assets/namecheap-step-3.webp";
@@ -16,6 +16,7 @@ export default function ClientGuides() {
   const [copiedNS1, setCopiedNS1] = useState(false);
   const [copiedNS2, setCopiedNS2] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
+  const [activeGuide, setActiveGuide] = useState("custom-domain");
 
   useEffect(() => {
     const fetchClientId = async () => {
@@ -52,22 +53,38 @@ export default function ClientGuides() {
     });
   };
 
-  return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Guías y Tutoriales</h1>
-        <p className="text-muted-foreground">
-          Aprende cómo configurar y gestionar tu restaurante online
-        </p>
-      </div>
-
-      <Tabs defaultValue="custom-domain" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-grid">
-          <TabsTrigger value="custom-domain">Configurar Dominio Personalizado</TabsTrigger>
-          <TabsTrigger value="email-config">Configurar Correo Electrónico</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="custom-domain" className="space-y-6">
+  const renderGuideContent = () => {
+    switch (activeGuide) {
+      case "intro":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Bienvenido a las Guías de Mi Restaurante Online</CardTitle>
+              <CardDescription>
+                Todo lo que necesitas saber para gestionar tu restaurante online
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">
+                En esta sección encontrarás guías detalladas para configurar y gestionar todos los aspectos de tu restaurante online.
+              </p>
+              <div className="space-y-2">
+                <h3 className="font-semibold">Guías Disponibles:</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
+                  <li>Configuración de dominio personalizado</li>
+                  <li>Configuración de correo electrónico profesional</li>
+                  <li>Y muchas más guías próximamente...</li>
+                </ul>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Selecciona una guía del menú lateral para comenzar.
+              </p>
+            </CardContent>
+          </Card>
+        );
+      
+      case "custom-domain":
+        return (
           <Card>
             <CardHeader>
               <CardTitle>Cómo Configurar tu Dominio Personalizado con NameCheap</CardTitle>
@@ -289,9 +306,10 @@ export default function ClientGuides() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="email-config" className="space-y-6">
+        );
+      
+      case "email-config":
+        return (
           <Card>
             <CardHeader>
               <CardTitle>Cómo Configurar tu Correo Electrónico Profesional</CardTitle>
@@ -507,8 +525,22 @@ export default function ClientGuides() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        );
+      
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="flex h-full w-full overflow-hidden">
+      <GuidesSidebar activeGuide={activeGuide} onGuideChange={setActiveGuide} />
+      
+      <div className="flex-1 overflow-y-auto">
+        <div className="container mx-auto p-6 space-y-6">
+          {renderGuideContent()}
+        </div>
+      </div>
     </div>
   );
 }
