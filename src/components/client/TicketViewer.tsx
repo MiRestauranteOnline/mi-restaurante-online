@@ -211,14 +211,16 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-3xl font-bold">Tus Tickets de Soporte</h1>
         <div className="flex gap-2 w-full sm:w-auto">
-          <Button 
-            onClick={handleWhatsAppSupport}
-            variant="outline"
-            className="flex-1 sm:flex-initial"
-          >
-            <MessageCircle className="h-4 w-4 mr-2" />
-            Soporte WhatsApp
-          </Button>
+          {clientData?.plan_type === 'advanced' && (
+            <Button 
+              onClick={handleWhatsAppSupport}
+              variant="outline"
+              className="flex-1 sm:flex-initial"
+            >
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Soporte WhatsApp
+            </Button>
+          )}
           <Button onClick={() => window.location.href = "/soporte"} className="flex-1 sm:flex-initial">
             <Plus className="h-4 w-4 mr-2" />
             Nuevo Ticket
