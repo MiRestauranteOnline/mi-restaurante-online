@@ -1019,7 +1019,7 @@ const [faqForm, setFaqForm] = useState({
     header_logo_url: '',
     footer_logo_url: '',
     // Favicon
-    favicon_url: '/logo.svg',
+    favicon_url: '/favicon.ico',
     // Downloadable menu
     downloadable_menu_url: '',
     // Homepage CTA Section Fields
@@ -1157,7 +1157,7 @@ const [faqForm, setFaqForm] = useState({
         custom_cta_button_link: (data as any).custom_cta_button_link || '',
         show_whatsapp_popup: (data as any).show_whatsapp_popup || false,
         template_id: (data as any).template_id || '',
-        favicon_url: (data as any).favicon_url || '/logo.svg',
+        favicon_url: (data as any).favicon_url || '/favicon.ico',
         opening_hours: normalizedOpeningHours,
         social_media_links: {
           facebook: '',
@@ -3969,7 +3969,7 @@ setReviewForm({
 
               <div className="space-y-4 border-t pt-4">
                 <h4 className="text-lg font-medium">{t('branding.logoSettings')}</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <ImageUpload
                       label={t('branding.headerLogo')}
@@ -3990,21 +3990,19 @@ setReviewForm({
                       description="restaurant footer logo"
                     />
                   </div>
-                </div>
-                
-                {/* Favicon Upload */}
-                <div className="mt-6">
-                  <ImageUpload
-                    label="Favicon"
-                    value={formData.favicon_url || '/logo.svg'}
-                    onChange={(url) => setFormData({...formData, favicon_url: url})}
-                    clientId={clientId!}
-                    context="favicon"
-                    description={`favicon for ${formData.restaurant_name || 'restaurant'} website`}
-                  />
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Formato recomendado: PNG o ICO, tamaño 32x32 o 512x512 píxeles. La imagen se optimizará automáticamente.
-                  </p>
+                  <div>
+                    <ImageUpload
+                      label="Favicon"
+                      value={formData.favicon_url || '/favicon.ico'}
+                      onChange={(url) => setFormData({...formData, favicon_url: url})}
+                      clientId={clientId!}
+                      context="favicon"
+                      description={`favicon for ${formData.restaurant_name || 'restaurant'} website`}
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      PNG/ICO, 32x32 o 512x512px
+                    </p>
+                  </div>
                 </div>
               </div>
 
