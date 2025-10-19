@@ -42,8 +42,9 @@ export default function ClientGuides() {
       </div>
 
       <Tabs defaultValue="custom-domain" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 lg:w-auto lg:inline-grid">
+        <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-grid">
           <TabsTrigger value="custom-domain">Configurar Dominio Personalizado</TabsTrigger>
+          <TabsTrigger value="email-config">Configurar Correo Electrónico</TabsTrigger>
         </TabsList>
 
         <TabsContent value="custom-domain" className="space-y-6">
@@ -259,6 +260,285 @@ export default function ClientGuides() {
                 <h3 className="text-lg font-semibold mb-3">¿Necesitas Ayuda?</h3>
                 <p className="text-muted-foreground mb-4">
                   Si tienes problemas con la configuración de tu dominio, nuestro equipo de soporte está aquí para ayudarte.
+                </p>
+                <Button variant="outline" asChild>
+                  <a href="/client/support" target="_blank" rel="noopener noreferrer">
+                    Contactar Soporte
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="email-config" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Cómo Configurar tu Correo Electrónico Profesional</CardTitle>
+              <CardDescription>
+                Aprende a configurar correos electrónicos profesionales para tu dominio con NameCheap y Cloudflare
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              {/* Video Tutorial Placeholder */}
+              <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center border-2 border-dashed">
+                <div className="text-center">
+                  <p className="text-lg font-medium mb-2">Video Tutorial Próximamente</p>
+                  <p className="text-sm text-muted-foreground">
+                    Aquí aparecerá un video tutorial completo del proceso
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 1: Buy Email Service */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    1
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Comprar Servicio de Email en NameCheap</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>NameCheap ofrece correo electrónico profesional desde $0.99 USD al mes (facturado anualmente):</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>
+                          Ve a{" "}
+                          <a
+                            href="https://www.namecheap.com/hosting/email/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline inline-flex items-center gap-1"
+                          >
+                            NameCheap Email Hosting
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </li>
+                        <li>Selecciona el plan "Starter" que cuesta $0.99/mes (facturado anualmente a $11.88/año)</li>
+                        <li>Ingresa el nombre de dominio para el cual quieres crear cuentas de correo</li>
+                        <li>Haz clic en "Add to Cart" y completa el proceso de compra</li>
+                        <li>Después de la compra, recibirás un correo de confirmación con instrucciones de acceso</li>
+                      </ol>
+
+                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
+                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          💡 <strong>Consejo:</strong> El plan Starter incluye 3 buzones de correo con 5GB de almacenamiento cada uno. Si necesitas más buzones, puedes actualizar a planes superiores.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 2: Create Email Accounts */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    2
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Crear Cuentas de Correo</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>Una vez que hayas comprado el servicio:</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>Inicia sesión en tu cuenta de NameCheap</li>
+                        <li>Ve a "Products" {">"} "Private Email"</li>
+                        <li>Haz clic en "Manage" para tu dominio</li>
+                        <li>Haz clic en "Create New Mailbox" (Crear nuevo buzón)</li>
+                        <li>Ingresa el nombre de usuario (ej: info, contacto, ventas)</li>
+                        <li>Crea una contraseña segura para el buzón</li>
+                        <li>Haz clic en "Create Mailbox"</li>
+                      </ol>
+
+                      <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-4">
+                        <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                          ✅ <strong>Ejemplos comunes:</strong> info@tudominio.com, contacto@tudominio.com, ventas@tudominio.com, reservas@tudominio.com
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3: Get DNS Records */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    3
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Obtener Registros DNS de NameCheap</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>Para configurar el correo con Cloudflare, necesitas los registros DNS:</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>En el panel de Private Email de NameCheap, haz clic en "Settings" (Configuración)</li>
+                        <li>Ve a la sección "DNS Records" o "Mail Settings"</li>
+                        <li>Anota los registros MX, TXT (SPF), y DKIM que aparecen</li>
+                        <li>Los registros MX generalmente son: mx1.privateemail.com y mx2.privateemail.com</li>
+                      </ol>
+
+                      <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
+                        <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                          📋 <strong>Importante:</strong> Copia exactamente estos registros ya que los necesitarás para configurar Cloudflare en el siguiente paso.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 4: Configure Cloudflare */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    4
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Configurar DNS en Cloudflare</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>Ahora debes agregar los registros DNS en Cloudflare:</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>
+                          Inicia sesión en{" "}
+                          <a
+                            href="https://dash.cloudflare.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline inline-flex items-center gap-1"
+                          >
+                            Cloudflare
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </li>
+                        <li>Selecciona tu dominio</li>
+                        <li>Ve a la sección "DNS" en el menú lateral</li>
+                        <li>Haz clic en "Add record" (Agregar registro)</li>
+                      </ol>
+
+                      <div className="bg-secondary/50 rounded-lg p-4 mt-4 space-y-4">
+                        <div>
+                          <p className="font-medium mb-2">Agregar registros MX:</p>
+                          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                            <li>Type: MX</li>
+                            <li>Name: @ (o tu dominio)</li>
+                            <li>Mail server: mx1.privateemail.com</li>
+                            <li>Priority: 10</li>
+                            <li>TTL: Auto</li>
+                          </ul>
+                          <p className="text-sm mt-2">Repite para mx2.privateemail.com con Priority: 10</p>
+                        </div>
+
+                        <div>
+                          <p className="font-medium mb-2">Agregar registro SPF (TXT):</p>
+                          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                            <li>Type: TXT</li>
+                            <li>Name: @</li>
+                            <li>Content: v=spf1 include:spf.privateemail.com ~all</li>
+                            <li>TTL: Auto</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <p className="font-medium mb-2">Agregar registro DKIM (TXT):</p>
+                          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                            <li>Type: TXT</li>
+                            <li>Name: (el que te proporcione NameCheap, generalmente "default._domainkey")</li>
+                            <li>Content: (el valor DKIM que te proporcione NameCheap)</li>
+                            <li>TTL: Auto</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <ol start={5} className="list-decimal list-inside space-y-2 ml-4 mt-4">
+                        <li>Haz clic en "Save" para cada registro</li>
+                        <li>Espera entre 15 minutos y 24 horas para que los DNS se propaguen</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 5: Verify Configuration */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    5
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Verificar Configuración</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>Para confirmar que tu correo está funcionando correctamente:</p>
+                      <ol className="list-decimal list-inside space-y-2 ml-4">
+                        <li>Ve al panel de Private Email en NameCheap</li>
+                        <li>Verifica que aparezca un check verde o mensaje de "DNS Verified"</li>
+                        <li>Envía un correo de prueba desde tu nueva dirección de correo</li>
+                        <li>Envía un correo a tu nueva dirección para verificar la recepción</li>
+                      </ol>
+
+                      <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-4">
+                        <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                          ✅ <strong>¡Configuración Completa!</strong> Ahora puedes acceder a tu correo desde el webmail de NameCheap en privateemail.com o configurarlo en tu aplicación de correo favorita (Gmail, Outlook, etc.).
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 6: Access Your Email */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                    6
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-xl font-semibold">Acceder a tu Correo</h3>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p className="font-medium mb-2">Opciones para acceder a tu correo:</p>
+                      
+                      <div className="space-y-3">
+                        <div className="bg-secondary/50 rounded-lg p-4">
+                          <p className="font-medium mb-2">Opción 1: Webmail de NameCheap</p>
+                          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                            <li>
+                              Ve a{" "}
+                              <a
+                                href="https://privateemail.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline inline-flex items-center gap-1"
+                              >
+                                privateemail.com
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </li>
+                            <li>Ingresa tu dirección de correo completa</li>
+                            <li>Ingresa la contraseña que creaste</li>
+                          </ul>
+                        </div>
+
+                        <div className="bg-secondary/50 rounded-lg p-4">
+                          <p className="font-medium mb-2">Opción 2: Configurar en tu aplicación de correo</p>
+                          <p className="text-sm mb-2">Configuración IMAP (recomendado):</p>
+                          <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                            <li>Servidor entrante (IMAP): mail.privateemail.com</li>
+                            <li>Puerto IMAP: 993 (SSL)</li>
+                            <li>Servidor saliente (SMTP): mail.privateemail.com</li>
+                            <li>Puerto SMTP: 465 (SSL) o 587 (TLS)</li>
+                            <li>Usuario: tu dirección de correo completa</li>
+                            <li>Contraseña: la contraseña que creaste</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Help */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold mb-3">¿Necesitas Ayuda?</h3>
+                <p className="text-muted-foreground mb-4">
+                  Si tienes problemas con la configuración de tu correo electrónico, nuestro equipo de soporte está aquí para ayudarte.
                 </p>
                 <Button variant="outline" asChild>
                   <a href="/client/support" target="_blank" rel="noopener noreferrer">
