@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Navigate, Link, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -14,6 +15,160 @@ import namecheapStep1 from "@/assets/namecheap-step-1.webp";
 import namecheapStep2 from "@/assets/namecheap-step-2.webp";
 import namecheapStep3 from "@/assets/namecheap-step-3.webp";
 import namecheapStep4 from "@/assets/namecheap-step-4.webp";
+
+// SEO metadata for each guide
+const guideMetadata: Record<string, { title: string; description: string; category: string }> = {
+  "introduccion": {
+    title: "Introducción - Guías de Mi Restaurante Online",
+    description: "Aprende a gestionar tu restaurante online con nuestras guías completas. Descubre cómo configurar tu sitio web, menú digital, reservas y más.",
+    category: "Primeros Pasos"
+  },
+  "informacion-general": {
+    title: "Información General del Restaurante - Guía Completa",
+    description: "Configura la información básica de tu restaurante: nombre, descripción, ubicación y datos de contacto. Guía paso a paso.",
+    category: "Panel Principal"
+  },
+  "horarios-apertura": {
+    title: "Configurar Horarios de Apertura - Guía de Restaurantes",
+    description: "Aprende a establecer los horarios de apertura de tu restaurante para que tus clientes sepan cuándo visitarte.",
+    category: "Panel Principal"
+  },
+  "redes-sociales": {
+    title: "Integrar Redes Sociales en tu Restaurante Online",
+    description: "Conecta tus perfiles de redes sociales a tu sitio web de restaurante para aumentar tu presencia digital.",
+    category: "Panel Principal"
+  },
+  "informacion-delivery": {
+    title: "Configurar Información de Delivery - Guía para Restaurantes",
+    description: "Gestiona la información de delivery de tu restaurante: zonas de entrega, costos y tiempos estimados.",
+    category: "Panel Principal"
+  },
+  "marca-personalizacion": {
+    title: "Personalizar la Marca de tu Restaurante Online",
+    description: "Personaliza los colores, logo y estilo de tu sitio web para reflejar la identidad única de tu restaurante.",
+    category: "Panel Principal"
+  },
+  "contenido-sitio": {
+    title: "Gestionar el Contenido de tu Sitio Web de Restaurante",
+    description: "Edita y actualiza el contenido de tu sitio web: textos, imágenes y secciones principales.",
+    category: "Panel Principal"
+  },
+  "preguntas-frecuentes": {
+    title: "Configurar Preguntas Frecuentes (FAQs) - Guía para Restaurantes",
+    description: "Crea una sección de preguntas frecuentes para responder las dudas más comunes de tus clientes.",
+    category: "Panel Principal"
+  },
+  "carrusel-imagenes": {
+    title: "Gestionar el Carrusel de Imágenes de tu Restaurante",
+    description: "Sube y organiza las imágenes del carrusel principal de tu sitio web de restaurante.",
+    category: "Panel Principal"
+  },
+  "categorias-menu": {
+    title: "Crear Categorías del Menú Digital - Guía Restaurantes",
+    description: "Organiza tu menú digital creando categorías como Entrantes, Platos Principales, Postres y Bebidas.",
+    category: "Panel Principal"
+  },
+  "elementos-menu": {
+    title: "Agregar Elementos al Menú Digital de tu Restaurante",
+    description: "Añade platos, bebidas y productos a tu menú digital con precios, descripciones y fotos.",
+    category: "Panel Principal"
+  },
+  "equipo": {
+    title: "Presentar el Equipo de tu Restaurante Online",
+    description: "Muestra a tu equipo de trabajo en el sitio web: chefs, gerentes y personal destacado.",
+    category: "Panel Principal"
+  },
+  "resenas": {
+    title: "Gestionar Reseñas y Testimonios de Clientes",
+    description: "Administra las reseñas y testimonios de tus clientes para construir confianza y credibilidad.",
+    category: "Panel Principal"
+  },
+  "dominio-personalizado": {
+    title: "Configurar Dominio Personalizado para tu Restaurante",
+    description: "Guía paso a paso para conectar tu dominio personalizado (ej: turestaurante.com) con NameCheap y Cloudflare.",
+    category: "Configuración de Dominio"
+  },
+  "configuracion-email": {
+    title: "Configurar Correo Electrónico Profesional para Restaurantes",
+    description: "Configura un correo electrónico profesional con tu dominio personalizado para tu restaurante.",
+    category: "Configuración de Email"
+  },
+  "horarios-reserva": {
+    title: "Configurar Horarios de Reservas Online",
+    description: "Establece los horarios en los que tu restaurante acepta reservas online de clientes.",
+    category: "Reservas"
+  },
+  "configuracion-mesas": {
+    title: "Configurar Mesas para Sistema de Reservas",
+    description: "Gestiona la configuración de mesas de tu restaurante para optimizar las reservas online.",
+    category: "Reservas"
+  },
+  "disponibilidad-reservas": {
+    title: "Gestionar Disponibilidad de Reservas en tu Restaurante",
+    description: "Controla la disponibilidad de reservas por día y horario para tu restaurante.",
+    category: "Reservas"
+  },
+  "lista-reservas": {
+    title: "Ver y Gestionar Lista de Reservas del Restaurante",
+    description: "Accede a la lista completa de reservas de tu restaurante y gestiona cada solicitud.",
+    category: "Reservas"
+  },
+  "calendario-reservas": {
+    title: "Calendario de Reservas para Restaurantes",
+    description: "Visualiza todas las reservas de tu restaurante en un calendario interactivo y organizado.",
+    category: "Reservas"
+  },
+  "introduccion-analiticas": {
+    title: "Introducción a las Analíticas de Restaurantes Online",
+    description: "Descubre cómo usar las analíticas para mejorar el rendimiento de tu restaurante online.",
+    category: "Analíticas"
+  },
+  "metricas": {
+    title: "Entender las Métricas de tu Restaurante Online",
+    description: "Aprende a interpretar las métricas clave de tu sitio web: visitas, conversiones y más.",
+    category: "Analíticas"
+  },
+  "estadisticas-uso": {
+    title: "Estadísticas de Uso de tu Restaurante Online",
+    description: "Consulta las estadísticas detalladas de uso de tu sitio web y plataforma de gestión.",
+    category: "Analíticas"
+  },
+  "como-obtener-soporte": {
+    title: "Cómo Obtener Soporte Técnico para tu Restaurante Online",
+    description: "Conoce los canales de soporte disponibles y cómo contactarnos para resolver tus dudas.",
+    category: "Soporte"
+  },
+  "crear-tickets": {
+    title: "Crear Tickets de Soporte - Guía Restaurantes",
+    description: "Aprende a crear tickets de soporte para resolver problemas técnicos de tu restaurante online.",
+    category: "Soporte"
+  },
+  "historial-tickets": {
+    title: "Consultar Historial de Tickets de Soporte",
+    description: "Accede al historial completo de tus tickets de soporte y seguimiento de solicitudes.",
+    category: "Soporte"
+  },
+  "gestionar-suscripcion": {
+    title: "Gestionar tu Suscripción de Restaurante Online",
+    description: "Administra tu suscripción: cambia de plan, actualiza métodos de pago y más.",
+    category: "Suscripción"
+  },
+  "metodos-pago": {
+    title: "Configurar Métodos de Pago para tu Suscripción",
+    description: "Añade y gestiona los métodos de pago para tu suscripción de restaurante online.",
+    category: "Suscripción"
+  },
+  "cambios-plan": {
+    title: "Cambiar de Plan de Suscripción - Guía Restaurantes",
+    description: "Aprende cómo cambiar tu plan de suscripción para acceder a más funcionalidades.",
+    category: "Suscripción"
+  },
+  "informacion-facturacion": {
+    title: "Información de Facturación y Pagos - Restaurantes",
+    description: "Consulta tu información de facturación, historial de pagos y descarga facturas.",
+    category: "Suscripción"
+  }
+};
 
 // Guide categories structure
 const guideCategories = [
@@ -114,6 +269,33 @@ export default function ClientGuides() {
   };
   
   const activeGuide = getGuideIdFromUrl();
+  
+  // Get current guide metadata
+  const currentMetadata = guideMetadata[activeGuide] || {
+    title: "Guías - Mi Restaurante Online",
+    description: "Guías completas para gestionar tu restaurante online.",
+    category: "Guías"
+  };
+
+  // Get breadcrumb path
+  const getBreadcrumbPath = () => {
+    const items = [];
+    items.push({ name: "Inicio", url: "/" });
+    items.push({ name: "Guías", url: "/guias/primeros-pasos/introduccion" });
+    if (category && guide) {
+      const cat = guideCategories.find(c => c.slug === category);
+      if (cat) {
+        items.push({ name: cat.title, url: `/guias/${category}/${guide}` });
+        const item = cat.items.find(i => i.id === guide);
+        if (item && guide !== "introduccion") {
+          items.push({ name: item.title, url: `/guias/${category}/${guide}` });
+        }
+      }
+    }
+    return items;
+  };
+
+  const breadcrumbPath = getBreadcrumbPath();
 
   useEffect(() => {
     const fetchClientId = async () => {
@@ -3940,22 +4122,100 @@ export default function ClientGuides() {
     }
   };
 
-  return isPublicRoute ? (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
-      
-      <main className="flex-1 flex overflow-hidden pt-32">
-        <GuidesSidebar activeGuide={activeGuide} />
-        
-        <div className="flex-1 overflow-y-auto">
-          <div className="container mx-auto p-6 space-y-6 max-w-5xl">
-            {renderGuideContent()}
-          </div>
-        </div>
-      </main>
+  // Generate JSON-LD structured data
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "headline": currentMetadata.title,
+        "description": currentMetadata.description,
+        "author": {
+          "@type": "Organization",
+          "name": "Mi Restaurante Online",
+          "url": "https://mirestauranteonline.com"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Mi Restaurante Online",
+          "url": "https://mirestauranteonline.com"
+        },
+        "datePublished": "2025-01-01",
+        "dateModified": new Date().toISOString().split('T')[0],
+        "inLanguage": "es-PE",
+        "articleSection": currentMetadata.category
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": breadcrumbPath.map((item, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": item.name,
+          "item": `https://mirestauranteonline.com${item.url}`
+        }))
+      },
+      {
+        "@type": "WebPage",
+        "name": currentMetadata.title,
+        "description": currentMetadata.description,
+        "url": `https://mirestauranteonline.com/guias/${category}/${guide}`,
+        "breadcrumb": {
+          "@id": "#breadcrumb"
+        }
+      }
+    ]
+  };
 
-      <Footer />
-    </div>
+  return isPublicRoute ? (
+    <>
+      <Helmet>
+        {/* Primary Meta Tags */}
+        <title>{currentMetadata.title}</title>
+        <meta name="title" content={currentMetadata.title} />
+        <meta name="description" content={currentMetadata.description} />
+        <link rel="canonical" href={`https://mirestauranteonline.com/guias/${category}/${guide}`} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://mirestauranteonline.com/guias/${category}/${guide}`} />
+        <meta property="og:title" content={currentMetadata.title} />
+        <meta property="og:description" content={currentMetadata.description} />
+        <meta property="og:site_name" content="Mi Restaurante Online" />
+        <meta property="og:locale" content="es_PE" />
+        
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={`https://mirestauranteonline.com/guias/${category}/${guide}`} />
+        <meta property="twitter:title" content={currentMetadata.title} />
+        <meta property="twitter:description" content={currentMetadata.description} />
+        
+        {/* Additional SEO */}
+        <meta name="robots" content="index, follow" />
+        <meta name="language" content="Spanish" />
+        <meta name="author" content="Mi Restaurante Online" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+      
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        
+        <main className="flex-1 flex overflow-hidden pt-32">
+          <GuidesSidebar activeGuide={activeGuide} />
+          
+          <div className="flex-1 overflow-y-auto">
+            <div className="container mx-auto p-6 space-y-6 max-w-5xl">
+              {renderGuideContent()}
+            </div>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    </>
   ) : (
     <div className="flex h-full w-full overflow-hidden">
       <GuidesSidebar activeGuide={activeGuide} />
