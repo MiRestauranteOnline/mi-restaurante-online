@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Copy, Check, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -308,6 +309,438 @@ export default function ClientGuides() {
           </Card>
         );
       
+      case "general":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Información General del Restaurante</CardTitle>
+              <CardDescription>
+                Cómo configurar la información básica de tu restaurante
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Configuración</strong> → sección <strong>"Información Básica"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Campos Disponibles</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Nombre del Restaurante *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      El nombre de tu restaurante que aparecerá en todo el sitio web. Este campo es obligatorio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Teléfono</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Número de teléfono de contacto. Formato sugerido: +51 123 456 789
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Email</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Correo electrónico de contacto para tu restaurante. Debe ser un email válido.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">WhatsApp</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Número de WhatsApp para que los clientes puedan contactarte directamente. Formato: +51 987 654 321
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Dirección</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Dirección completa de tu restaurante. Este campo acepta múltiples líneas para mayor claridad.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Asegúrate de que todos los datos de contacto estén actualizados</li>
+                  <li>Usa el formato internacional para teléfonos (+51 para Perú)</li>
+                  <li>El nombre del restaurante aparecerá en el título de la página y en el encabezado</li>
+                  <li>No olvides hacer clic en "Guardar Configuración" después de realizar cambios</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "opening-hours":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Horarios de Apertura</CardTitle>
+              <CardDescription>
+                Configura los horarios de atención de tu restaurante
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Configuración</strong> → sección <strong>"Horarios de Atención"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Configurar</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Para cada día de la semana:</h4>
+                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                      <li>Usa el switch para marcar si el restaurante está <strong>Abierto</strong> o <strong>Cerrado</strong></li>
+                      <li>Si está abierto, selecciona la <strong>hora de apertura</strong> (primer campo de tiempo)</li>
+                      <li>Selecciona la <strong>hora de cierre</strong> (segundo campo de tiempo)</li>
+                      <li>Los horarios se muestran en formato 24 horas</li>
+                    </ol>
+                  </div>
+
+                  <div className="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
+                    <h4 className="font-medium mb-2 text-blue-900 dark:text-blue-100">📌 Ejemplo</h4>
+                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                      <strong>Lunes:</strong> Switch en "Abierto" → Apertura: 09:00 → Cierre: 22:00
+                      <br />
+                      <strong>Domingo:</strong> Switch en "Cerrado"
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Días de la Semana</h3>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• Lunes</li>
+                  <li>• Martes</li>
+                  <li>• Miércoles</li>
+                  <li>• Jueves</li>
+                  <li>• Viernes</li>
+                  <li>• Sábado</li>
+                  <li>• Domingo</li>
+                </ul>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Los horarios aparecerán automáticamente en tu sitio web</li>
+                  <li>Actualiza los horarios para días festivos o eventos especiales</li>
+                  <li>Si tienes horarios de almuerzo y cena separados, usa el horario más amplio</li>
+                  <li>No olvides guardar los cambios haciendo clic en "Guardar Configuración"</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "social-media":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Redes Sociales</CardTitle>
+              <CardDescription>
+                Conecta tus perfiles de redes sociales a tu sitio web
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Redes Sociales</strong> → sección <strong>"Redes Sociales"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Plataformas Disponibles</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Facebook</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace completo a tu página de Facebook
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://facebook.com/mirestaurante
+                    </code>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Instagram</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace completo a tu perfil de Instagram
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://instagram.com/mirestaurante
+                    </code>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">X (Twitter)</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace completo a tu perfil de X (anteriormente Twitter)
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://x.com/mirestaurante
+                    </code>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">LinkedIn</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace a tu página de empresa en LinkedIn
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://linkedin.com/company/mirestaurante
+                    </code>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">YouTube</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace a tu canal de YouTube
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://youtube.com/@mirestaurante
+                    </code>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">TikTok</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace a tu perfil de TikTok
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://tiktok.com/@mirestaurante
+                    </code>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Usa URLs completas (incluyendo https://)</li>
+                  <li>Solo aparecerán iconos para las redes sociales que hayas configurado</li>
+                  <li>Verifica que los enlaces funcionen antes de guardar</li>
+                  <li>Los iconos de redes sociales aparecerán automáticamente en el footer de tu sitio</li>
+                  <li>Mantén actualizados tus enlaces si cambias de usuario o perfil</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "delivery":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Información de Delivery</CardTitle>
+              <CardDescription>
+                Conecta tus perfiles en plataformas de delivery
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Redes Sociales</strong> → sección <strong>"Plataformas de Delivery"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Plataformas Disponibles</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Rappi</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace completo a tu perfil de restaurante en Rappi
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://www.rappi.com.pe/restaurantes/tu-restaurante
+                    </code>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">PedidosYa</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace completo a tu perfil de restaurante en PedidosYa
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://www.pedidosya.com.pe/restaurantes/tu-restaurante
+                    </code>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">DiDi Food</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Enlace completo a tu perfil de restaurante en DiDi Food
+                    </p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      Ejemplo: https://food.didiglobal.com/pe/restaurant/tu-restaurante
+                    </code>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Obtener el Enlace</h3>
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Abre la app o sitio web de la plataforma de delivery</li>
+                  <li>Busca tu restaurante como lo harían tus clientes</li>
+                  <li>Copia la URL completa de la página de tu restaurante</li>
+                  <li>Pégala en el campo correspondiente en el panel</li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Usa URLs completas (incluyendo https://)</li>
+                  <li>Los enlaces de delivery aparecerán como botones en tu sitio web</li>
+                  <li>Prueba los enlaces después de guardarlos para verificar que funcionen</li>
+                  <li>Solo configura las plataformas donde realmente tengas presencia</li>
+                  <li>Mantén los enlaces actualizados si cambias de ubicación o nombre</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "branding":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Marca y Personalización</CardTitle>
+              <CardDescription>
+                Personaliza los colores y la moneda de tu restaurante
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Configuración</strong> → sección <strong>"Personalización"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Opciones Disponibles</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Color Principal</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      El color principal de tu marca que se usará en todo el sitio web (botones, enlaces, etc.)
+                    </p>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Cómo seleccionar:</p>
+                      <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
+                        <li>Usa el selector de color (cuadrado de color) para elegir visualmente</li>
+                        <li>O ingresa un código de color hexadecimal manualmente (ej: #22c55e)</li>
+                        <li>El color se actualizará en tiempo real en el selector</li>
+                      </ol>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Moneda</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Símbolo de moneda que aparecerá junto a los precios en todo el sitio
+                    </p>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Ejemplos comunes:</p>
+                      <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                        <li><code className="bg-muted px-2 py-1 rounded">S/</code> - Soles peruanos</li>
+                        <li><code className="bg-muted px-2 py-1 rounded">$</code> - Dólares</li>
+                        <li><code className="bg-muted px-2 py-1 rounded">€</code> - Euros</li>
+                        <li><code className="bg-muted px-2 py-1 rounded">MXN$</code> - Pesos mexicanos</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">⚠️ Advertencia Importante</h3>
+                <div className="p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                  <h4 className="font-medium mb-2 text-yellow-900 dark:text-yellow-100">
+                    Al cambiar el color principal, aparecerá un popup de confirmación
+                  </h4>
+                  <p className="text-sm text-yellow-800 dark:text-yellow-200 mb-3">
+                    <strong>¿Por qué?</strong> Cambiar el color principal puede afectar significativamente la apariencia de tu sitio web.
+                  </p>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">El popup te pedirá confirmación porque:</p>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800 dark:text-yellow-200">
+                      <li>El color se aplicará a todos los botones del sitio</li>
+                      <li>Afectará los enlaces y elementos interactivos</li>
+                      <li>Cambiará la identidad visual de tu marca en línea</li>
+                      <li>Los cambios son inmediatos y visibles para tus clientes</li>
+                    </ul>
+                  </div>
+                  <p className="text-sm text-yellow-800 dark:text-yellow-200 mt-3">
+                    <strong>Recomendación:</strong> Visualiza cómo se verá el nuevo color antes de confirmar y asegúrate de que combine bien con tus imágenes y contenido.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Elige un color que represente bien tu marca y sea fácil de leer</li>
+                  <li>Asegúrate de que el color tenga buen contraste con el blanco/negro</li>
+                  <li>Puedes cambiar el color cuando quieras, pero piénsalo bien antes</li>
+                  <li>La moneda solo necesita configurarse una vez, a menos que cambies de país</li>
+                  <li>Guarda los cambios haciendo clic en "Guardar Configuración"</li>
+                  <li>Revisa tu sitio web después de guardar para ver cómo se ve el nuevo color</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
       case "email-config":
         return (
           <Card>
