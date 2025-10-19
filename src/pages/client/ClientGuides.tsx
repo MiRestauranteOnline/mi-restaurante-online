@@ -313,8 +313,11 @@ export default function ClientGuides() {
                             <ExternalLink className="w-3 h-3" />
                           </a>
                         </li>
-                        <li>Selecciona el plan "Starter" que cuesta $0.99/mes (facturado anualmente a $11.88/año)</li>
-                        <li>Ingresa el nombre de dominio para el cual quieres crear cuentas de correo</li>
+                        <li>Selecciona el plan "Starter" que cuesta $0.99/mes (facturado anualmente a $11.88/año). También puedes elegir otros planes si necesitas más buzones y/o almacenamiento</li>
+                        <li>
+                          <strong>Consejo:</strong> Si eres nuevo en NameCheap, puedes usar el código de descuento que aparece en la tabla de precios
+                        </li>
+                        <li>Ingresa el nombre de dominio para el cual quieres crear cuentas de correo. Si compraste el dominio con NameCheap, haz clic en "Use a domain I own with Namecheap" y selecciona tu dominio de la lista</li>
                         <li>Haz clic en "Add to Cart" y completa el proceso de compra</li>
                         <li>Después de la compra, recibirás un correo de confirmación con instrucciones de acceso</li>
                       </ol>
@@ -395,6 +398,11 @@ export default function ClientGuides() {
                   <div className="space-y-3 flex-1">
                     <h3 className="text-xl font-semibold">Configurar DNS en Cloudflare</h3>
                     <div className="space-y-2 text-muted-foreground">
+                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          ℹ️ <strong>Importante sobre DNS:</strong> Si tu sitio web usa nameservers personalizados de Cloudflare (como configuraste en la pestaña "Conectar Dominio"), los registros DNS de NameCheap ya no se utilizan. Debes agregar todos los registros de correo en Cloudflare para que funcionen correctamente.
+                        </p>
+                      </div>
                       <p>Ahora debes agregar los registros DNS en Cloudflare:</p>
                       <ol className="list-decimal list-inside space-y-2 ml-4">
                         <li>
