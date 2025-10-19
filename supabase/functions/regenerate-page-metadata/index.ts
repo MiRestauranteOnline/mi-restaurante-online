@@ -103,15 +103,25 @@ Return ONLY the meta description, no explanations.`;
     }
 
     const data = await response.json();
-    const generatedText = data.choices[0].message.content.trim();
+    console.log('OpenAI full response:', JSON.stringify(data, null, 2));
     
-    console.log(`Generated ${fieldType}:`, generatedText);
+    const generatedText = data.choices?.[0]?.message?.content?.trim();
+    
+    if (!generatedText) {
+      console.error('Empty or invalid response from OpenAI');
+      throw new Error('Generated text is empty');
+    }
+    
+    console.log(`Successfully generated ${fieldType}:`, generatedText);
+
+    const responseData = fieldType === 'title' 
+      ? { success: true, title: generatedText }
+      : { success: true, description: generatedText };
+    
+    console.log('Sending response:', responseData);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        [fieldType]: generatedText 
-      }),
+      JSON.stringify(responseData),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 

@@ -140,11 +140,27 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
         },
       });
 
-      if (error) throw error;
+      console.log('Function response:', { data, error });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error('No data received from function');
+      }
 
       if (data.success) {
+        const generatedValue = fieldType === 'title' ? data.title : data.description;
+        
+        if (!generatedValue) {
+          throw new Error('Generated value is empty');
+        }
+
         const field = fieldType === 'title' ? 'meta_title' : 'meta_description';
-        updateMetadata(pageType, field, data[fieldType === 'title' ? 'title' : 'description']);
+        updateMetadata(pageType, field, generatedValue);
+        
         toast({
           title: "Success",
           description: `${fieldType === 'title' ? 'Title' : 'Description'} regenerated successfully`,
@@ -156,7 +172,7 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
       console.error('Error regenerating:', error);
       toast({
         title: "Error",
-        description: `Failed to regenerate ${fieldType}`,
+        description: error instanceof Error ? error.message : `Failed to regenerate ${fieldType}`,
         variant: "destructive",
       });
     } finally {
