@@ -52,7 +52,12 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
         .select("*")
         .eq("client_id", clientId);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching metadata:", error);
+        throw error;
+      }
+
+      console.log("Fetched metadata for client:", clientId, data);
 
       const metadataMap: Record<string, PageMetadata> = {};
       data?.forEach((item) => {
@@ -161,9 +166,12 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
         const field = fieldType === 'title' ? 'meta_title' : 'meta_description';
         updateMetadata(pageType, field, generatedValue);
         
+        // Auto-save after regeneration
+        await autoSaveMetadata(pageType, field, generatedValue);
+        
         toast({
           title: "Success",
-          description: `${fieldType === 'title' ? 'Title' : 'Description'} regenerated successfully`,
+          description: `${fieldType === 'title' ? 'Title' : 'Description'} regenerated and saved successfully`,
         });
       } else {
         throw new Error(data.error || 'Failed to regenerate');
@@ -177,6 +185,34 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
       });
     } finally {
       setRegenerating((prev) => ({ ...prev, [key]: false }));
+    }
+  };
+
+  const autoSaveMetadata = async (pageType: string, field: string, value: string) => {
+    const pageMetadata = metadata[pageType];
+    const fieldData = field === 'meta_title' 
+      ? { meta_title: value, meta_description: pageMetadata?.meta_description || '' }
+      : { meta_title: pageMetadata?.meta_title || '', meta_description: value };
+
+    try {
+      const { error } = await supabase.from("page_metadata").upsert({
+        id: pageMetadata?.id,
+        client_id: clientId,
+        page_type: pageType,
+        ...fieldData,
+        og_title: fieldData.meta_title,
+        og_description: fieldData.meta_description,
+        twitter_title: fieldData.meta_title,
+        twitter_description: fieldData.meta_description,
+      });
+
+      if (error) throw error;
+      
+      // Refresh data after save
+      await fetchMetadata();
+    } catch (error) {
+      console.error('Error auto-saving metadata:', error);
+      throw error;
     }
   };
 

@@ -93,11 +93,12 @@ Requisitos CRÍTICOS:
 - Incluir: tipo de cocina, ubicación, nombre del restaurante (cuando tenga sentido)
 - Rico en palabras clave y descriptivo
 - Natural y atractivo${keywordRequirement}
-- Ejemplo corto: "Menú de Comida India | ${client.restaurant_name.substring(0, 20)}"
+- NO uses comillas ni símbolos de citación alrededor del título
+- Ejemplo corto: Menú de Comida India | ${client.restaurant_name.substring(0, 20)}
 
 IMPORTANTE: El título DEBE ser de 60 caracteres o menos. Si tu primera versión es muy larga, acórtala inmediatamente.
 
-Devuelve SOLO el meta título en español de máximo 60 caracteres, sin explicaciones.`;
+Devuelve SOLO el meta título en español de máximo 60 caracteres, sin comillas, sin explicaciones.`;
     } else {
       // Build page-specific keyword requirements for descriptions
       let keywordRequirement = '';
@@ -134,14 +135,16 @@ Requisitos:
         constraints += '\n- NO mencionar delivery ni entrega a domicilio';
       }
 
-      constraints += '\n- Llamado a la acción convincente\n- Ejemplo: "★ Comida India AUTÉNTICA ★ Ingredientes frescos diario. Sabores que te transportan. ¡Descubre HOY!"';
+      constraints += '\n- Llamado a la acción convincente\n- NO uses comillas alrededor de la descripción\n- Ejemplo: ★ Comida India AUTÉNTICA ★ Ingredientes frescos diario. Sabores que te transportan. ¡Descubre HOY!';
 
       prompt = `Genera una meta descripción SEO optimizada en ESPAÑOL para la página ${pageType} de ${client.restaurant_name}.
 
 Context: ${pageContext}
 ${constraints}
 
-Devuelve SOLO la meta descripción en español, sin explicaciones.`;
+IMPORTANTE: NO uses comillas alrededor de la descripción.
+
+Devuelve SOLO la meta descripción en español, sin comillas, sin explicaciones.`;
     }
 
     // Call OpenAI to regenerate using gpt-4o-mini (cheaper, stable, no reasoning overhead)
@@ -182,6 +185,12 @@ Devuelve SOLO la meta descripción en español, sin explicaciones.`;
     if (!generatedText) {
       console.error('Empty or invalid response from OpenAI');
       throw new Error('Generated text is empty');
+    }
+    
+    // Remove surrounding quotes if present
+    if ((generatedText.startsWith('"') && generatedText.endsWith('"')) ||
+        (generatedText.startsWith("'") && generatedText.endsWith("'"))) {
+      generatedText = generatedText.slice(1, -1).trim();
     }
     
     // Validate and enforce character limits
