@@ -15,6 +15,7 @@ interface PageMetadata {
   page_type: string;
   meta_title: string;
   meta_description: string;
+  keywords?: string;
   og_title?: string;
   og_description?: string;
   twitter_title?: string;
@@ -107,6 +108,7 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
         page_type: pageType,
         meta_title: pageMetadata.meta_title,
         meta_description: pageMetadata.meta_description,
+        keywords: pageMetadata.keywords || "",
         og_title: pageMetadata.og_title || pageMetadata.meta_title,
         og_description: pageMetadata.og_description || pageMetadata.meta_description,
         twitter_title: pageMetadata.twitter_title || pageMetadata.meta_title,
@@ -188,11 +190,55 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
     }
   };
 
+  const handleRegenerateKeywords = async (pageType: string) => {
+    const key = `${pageType}-keywords`;
+    setRegenerating((prev) => ({ ...prev, [key]: true }));
+
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "regenerate-page-metadata",
+        {
+          body: { clientId, pageType, fieldType: "keywords" },
+        }
+      );
+
+      if (error) throw error;
+
+      if (data?.success && data?.keywords) {
+        const generatedValue = data.keywords;
+        updateMetadata(pageType, 'keywords', generatedValue);
+        
+        // Auto-save after regeneration
+        await autoSaveMetadata(pageType, 'keywords', generatedValue);
+        
+        toast({
+          title: "Success",
+          description: "Keywords regenerated and saved successfully",
+        });
+      } else {
+        throw new Error(data.error || 'Failed to regenerate');
+      }
+    } catch (error: any) {
+      console.error('Error regenerating keywords:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to regenerate keywords",
+        variant: "destructive",
+      });
+    } finally {
+      setRegenerating((prev) => ({ ...prev, [key]: false }));
+    }
+  };
+
   const autoSaveMetadata = async (pageType: string, field: string, value: string) => {
     const pageMetadata = metadata[pageType];
-    const fieldData = field === 'meta_title' 
-      ? { meta_title: value, meta_description: pageMetadata?.meta_description || '' }
-      : { meta_title: pageMetadata?.meta_title || '', meta_description: value };
+    const fieldData: any = {
+      meta_title: pageMetadata?.meta_title || '',
+      meta_description: pageMetadata?.meta_description || '',
+      keywords: pageMetadata?.keywords || ''
+    };
+    
+    fieldData[field] = value;
 
     try {
       const { error } = await supabase.from("page_metadata").upsert({
@@ -387,6 +433,40 @@ export const PageMetadataManager = ({ clientId }: PageMetadataManagerProps) => {
                     {descCheck.isOverLimit && (
                       <p className="text-xs text-destructive">Must be 155 characters or less</p>
                     )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`${type.value}-keywords`}>
+                      Keywords
+                    </Label>
+                    <div className="flex gap-2">
+                      <Textarea
+                        id={`${type.value}-keywords`}
+                        value={pageMetadata.keywords || ""}
+                        onChange={(e) =>
+                          updateMetadata(type.value, "keywords", e.target.value)
+                        }
+                        placeholder="palabras clave, separadas por, comas"
+                        className="min-h-[80px]"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleRegenerateKeywords(type.value)}
+                        disabled={regenerating[`${type.value}-keywords`]}
+                        className="flex-shrink-0"
+                      >
+                        {regenerating[`${type.value}-keywords`] ? (
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Sparkles className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      5-8 palabras clave relevantes separadas por comas
+                    </p>
                   </div>
 
                   <div className="space-y-2">

@@ -17,6 +17,14 @@ serve(async (req) => {
     
     console.log(`Regenerating ${fieldType} for ${pageType} page of client ${clientId}`);
 
+    if (!clientId || !pageType || !fieldType) {
+      throw new Error('Missing required parameters');
+    }
+
+    if (!['title', 'description', 'keywords'].includes(fieldType)) {
+      throw new Error('Invalid fieldType. Must be title, description, or keywords');
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const openAIKey = Deno.env.get('chatgpt');
@@ -57,17 +65,33 @@ serve(async (req) => {
     const hasReservations = adminContent?.homepage_reservations_section_visible !== false;
     const hasDelivery = client.delivery?.rappi || client.delivery?.pedidosya || client.delivery?.uber_eats;
     const hasContactSection = adminContent?.homepage_contact_section_visible !== false;
+    
+    const features = { hasReservations, hasDelivery, hasContactSection };
 
     // Create page-specific context with content awareness
     const pageContext = getPageContext(
       pageType, 
       client, 
       adminContent, 
-      { hasReservations, hasDelivery, hasContactSection }
+      features
     );
 
     let prompt = '';
-    if (fieldType === 'title') {
+    if (fieldType === 'keywords') {
+      // Generate page-specific keywords based on search intent
+      const keywordContext = getKeywordContext(pageType, client, adminContent, features);
+      
+      prompt = `Genera palabras clave SEO en ESPAÑOL para la página ${pageType} de ${client.restaurant_name}.
+
+Context: ${pageContext}
+
+${keywordContext}
+
+FORMATO: Devuelve SOLO una lista de 5-8 palabras clave separadas por comas, sin numeración, sin explicaciones.
+EJEMPLO: restaurante indio lima, comida india auténtica, curry vegetariano, tandoori chicken, delivery comida india
+
+Devuelve SOLO las palabras clave en español, separadas por comas.`;
+    } else if (fieldType === 'title') {
       // Build page-specific keyword requirements
       let keywordRequirement = '';
       switch (pageType) {
@@ -193,6 +217,24 @@ Devuelve SOLO la meta descripción en español, sin comillas, sin explicaciones.
       generatedText = generatedText.slice(1, -1).trim();
     }
     
+    // Trim and validate
+    generatedText = generatedText.trim();
+    console.log(`Successfully generated ${fieldType}:`, generatedText);
+
+    // For keywords, ensure proper format and validation
+    if (fieldType === 'keywords') {
+      // Clean up any numbering or extra formatting
+      generatedText = generatedText
+        .replace(/^\d+\.\s*/gm, '') // Remove numbered lists
+        .replace(/^[-•]\s*/gm, '')  // Remove bullet points
+        .split(',')
+        .map((k: string) => k.trim())
+        .filter((k: string) => k.length > 0)
+        .join(', ');
+      
+      console.log('Cleaned keywords:', generatedText);
+    }
+
     // Validate and enforce character limits
     if (fieldType === 'title' && generatedText.length > 60) {
       console.warn(`Generated title too long (${generatedText.length} chars): "${generatedText}"`);
@@ -214,12 +256,11 @@ Devuelve SOLO la meta descripción en español, sin comillas, sin explicaciones.
       }
       console.log(`Truncated to ${generatedText.length} chars`);
     }
-    
-    console.log(`Successfully generated ${fieldType}:`, generatedText);
 
-    const responseData = fieldType === 'title' 
-      ? { success: true, title: generatedText }
-      : { success: true, description: generatedText };
+    const responseData = 
+      fieldType === 'title' ? { success: true, title: generatedText } :
+      fieldType === 'description' ? { success: true, description: generatedText } :
+      { success: true, keywords: generatedText };
     
     console.log('Sending response:', responseData);
 
@@ -242,6 +283,59 @@ Devuelve SOLO la meta descripción en español, sin comillas, sin explicaciones.
     );
   }
 });
+
+function getKeywordContext(pageType: string, client: any, adminContent: any, features: { hasReservations: boolean; hasDelivery: boolean; hasContactSection: boolean }): string {
+  const cuisineType = client.restaurant_name?.toLowerCase().includes('india') ? 'india' : 
+                      client.restaurant_name?.toLowerCase().includes('italian') ? 'italiana' : 
+                      client.restaurant_name?.toLowerCase().includes('chino') ? 'china' : 
+                      client.restaurant_name?.toLowerCase().includes('japan') ? 'japonesa' : 
+                      'gourmet';
+  
+  const location = client.address?.toLowerCase().includes('miraflores') ? 'miraflores' :
+                   client.address?.toLowerCase().includes('barranco') ? 'barranco' :
+                   client.address?.toLowerCase().includes('san isidro') ? 'san isidro' : 'lima';
+
+  switch (pageType) {
+    case 'home':
+      return `INTENCIÓN DE BÚSQUEDA: Usuario busca un restaurante para comer ahora o pronto
+- Palabras clave principales: nombre del restaurante, tipo de cocina, ubicación
+- Incluir: "${client.restaurant_name}", "restaurante ${cuisineType}", "${location}"
+${features.hasReservations ? '- Incluir: "reservas", "reservar mesa"' : ''}
+${features.hasDelivery ? '- Incluir: "delivery", "pedido online"' : ''}
+- Enfoque: búsquedas generales de restaurante`;
+
+    case 'menu':
+      return `INTENCIÓN DE BÚSQUEDA: Usuario quiere ver el menú antes de decidir
+- Palabras clave principales: "menú", tipo de cocina, platos específicos populares
+- Incluir: "menú ${cuisineType}", "carta", "platos"
+- Ejemplos específicos: "curry", "tandoori", "biryani" (para india), etc.
+- Enfoque: búsquedas de menú y platos específicos`;
+
+    case 'about':
+      return `INTENCIÓN DE BÚSQUEDA: Usuario quiere conocer más sobre el restaurante
+- Palabras clave principales: nombre del restaurante, historia, chef
+- Incluir: "sobre nosotros", "historia", "chef", "filosofía"
+- Enfoque: búsquedas informacionales sobre el restaurante`;
+
+    case 'contact':
+      return `INTENCIÓN DE BÚSQUEDA: Usuario busca contactar o ubicar el restaurante
+- Palabras clave principales: ubicación, contacto, dirección, teléfono
+- Incluir: "${location}", "dirección", "contacto", "teléfono", "ubicación"
+${features.hasReservations ? '- Incluir: "reservar", "hacer reserva"' : ''}
+${features.hasDelivery ? '- Incluir: "delivery", "pedidos"' : ''}
+- Enfoque: búsquedas transaccionales de contacto`;
+
+    case 'reviews':
+      return `INTENCIÓN DE BÚSQUEDA: Usuario busca opiniones antes de visitar
+- Palabras clave principales: reseñas, opiniones, testimonios
+- Incluir: "reseñas", "opiniones", "testimonios", "experiencias"
+- Incluir: nombre del restaurante + "opiniones"
+- Enfoque: búsquedas de validación social`;
+
+    default:
+      return `Contexto general del restaurante ${client.restaurant_name}`;
+  }
+}
 
 function getPageContext(
   pageType: string, 
