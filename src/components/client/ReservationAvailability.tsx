@@ -49,6 +49,7 @@ interface Reservation {
   party_size: number;
   status: string;
   table_config_id: string | null;
+  duration_minutes?: number;
 }
 
 interface TableAvailability {
@@ -232,9 +233,8 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             const resMin = parseInt(res.reservation_time.substring(3, 5));
             const resStartMinutes = resHour * 60 + resMin;
             
-            // Use schedule duration if specified, otherwise use table config default duration
-            const resTableConfig = tableConfigs.find(tc => tc.id === res.table_config_id);
-            const resDuration = schedule.duration_minutes || resTableConfig?.duration_minutes || 120;
+            // Use the duration that was stored when the reservation was created
+            const resDuration = res.duration_minutes || 120;
             const resEndMinutes = resStartMinutes + resDuration;
             
             const slotEndMinutes = slotStart + slotInterval;
