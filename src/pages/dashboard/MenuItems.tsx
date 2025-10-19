@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Plus, Edit, Trash2, Upload, Eye, Home, Save, Loader2, Image as ImageIcon, GripVertical, ChevronDown, ChevronRight, FolderPlus, Trash, Power, PowerOff, ArrowUp, ArrowDown } from 'lucide-react';
+import { ImageUpload } from '@/components/ImageUpload';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DndContext,
@@ -412,7 +413,7 @@ export default function MenuItems() {
   const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [itemImageUrl, setItemImageUrl] = useState<string>('');
   const [uploading, setUploading] = useState(false);
   const [openCategories, setOpenCategories] = useState<Set<string>>(new Set());
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -498,40 +499,11 @@ export default function MenuItems() {
     }
   };
 
-  const uploadImage = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `menu-items/${selectedClientId}/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('menu-items')
-      .upload(filePath, file);
-
-    if (uploadError) {
-      console.error('Error uploading image:', uploadError);
-      return null;
-    }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('menu-items')
-      .getPublicUrl(filePath);
-
-    return publicUrl;
-  };
 
   const onSubmitItem = async (data: MenuItemFormData) => {
     setSaving(true);
     try {
-      let imageUrl = editingItem?.image_url || '';
-
-      if (selectedFile) {
-        setUploading(true);
-        const uploadedUrl = await uploadImage(selectedFile);
-        if (uploadedUrl) {
-          imageUrl = uploadedUrl;
-        }
-        setUploading(false);
-      }
+      const imageUrl = itemImageUrl || editingItem?.image_url || '';
 
       if (editingItem) {
         // Update existing item
@@ -590,7 +562,7 @@ export default function MenuItems() {
 
       setIsItemDialogOpen(false);
       setEditingItem(null);
-      setSelectedFile(null);
+      setItemImageUrl('');
       itemForm.reset();
       fetchData();
     } catch (error) {
@@ -675,7 +647,7 @@ export default function MenuItems() {
       show_image_menu: item.show_image_menu,
       show_on_homepage: item.show_on_homepage,
     });
-    setSelectedFile(null);
+    setItemImageUrl(item.image_url || '');
     setIsItemDialogOpen(true);
   };
 
@@ -698,7 +670,7 @@ export default function MenuItems() {
 
   const handleNewItem = (categoryName?: string) => {
     setEditingItem(null);
-    setSelectedFile(null);
+    setItemImageUrl('');
     itemForm.reset({
       name: '',
       description: '',
@@ -1149,24 +1121,15 @@ export default function MenuItems() {
               />
 
               <div>
-                <FormLabel>Imagen del Plato</FormLabel>
-                <div className="mt-2">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                    className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
-                  />
-                  {editingItem?.image_url && !selectedFile && (
-                    <div className="mt-2">
-                      <img
-                        src={editingItem.image_url}
-                        alt="Imagen actual"
-                        className="w-20 h-20 object-cover rounded"
-                      />
-                    </div>
-                  )}
-                </div>
+                <ImageUpload
+                  label="Imagen del Plato (Opcional)"
+                  value={itemImageUrl}
+                  onChange={setItemImageUrl}
+                  clientId={selectedClientId}
+                  context="menu-item"
+                  description={`menu item photo - ${itemForm.watch('name') || 'dish'}`}
+                  onProcessingChange={setUploading}
+                />
               </div>
 
               <div className="space-y-4">
