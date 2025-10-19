@@ -170,7 +170,9 @@ export default function ClientGuides() {
               </CardContent>
             </Card>
 
-            {guideCategories.map((cat) => {
+            {guideCategories
+              .filter(cat => !(cat.slug === "primeros-pasos" && activeGuide === "introduccion"))
+              .map((cat) => {
               const CategoryIcon = cat.items[0]?.icon;
               return (
                 <Card key={cat.slug}>
@@ -3942,7 +3944,7 @@ export default function ClientGuides() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       
-      <main className="flex-1 flex overflow-hidden">
+      <main className="flex-1 flex overflow-hidden pt-16">
         <GuidesSidebar activeGuide={activeGuide} />
         
         <div className="flex-1 overflow-y-auto">
