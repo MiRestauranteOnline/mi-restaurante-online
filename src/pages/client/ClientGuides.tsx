@@ -4,6 +4,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Copy, Check, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import namecheapStep1 from "@/assets/namecheap-step-1.webp";
+import namecheapStep2 from "@/assets/namecheap-step-2.webp";
+import namecheapStep3 from "@/assets/namecheap-step-3.webp";
+import namecheapStep4 from "@/assets/namecheap-step-4.webp";
 
 export default function ClientGuides() {
   const { toast } = useToast();
@@ -86,13 +90,32 @@ export default function ClientGuides() {
                         </li>
                         <li>En la barra de búsqueda de la página principal, escribe el nombre de dominio que deseas (ej: mirestaurante.com)</li>
                         <li>Haz clic en el botón "Search" para verificar la disponibilidad</li>
-                        <li>Si el dominio está disponible, verás un botón "Add to Cart" (Agregar al carrito)</li>
-                        <li>Selecciona la extensión que prefieras (.com, .pe, .restaurant, etc.) y agrégalo al carrito</li>
+                      </ol>
+                      
+                      <div className="border rounded-lg overflow-hidden my-4">
+                        <img src={namecheapStep1} alt="Barra de búsqueda de NameCheap" className="w-full" />
+                      </div>
+
+                      <ol start={4} className="list-decimal list-inside space-y-2 ml-4">
+                        <li>Si el dominio está disponible, verás un botón "Add to Cart" (Agregar al carrito). Si muestra "TAKEN" (Ocupado), el dominio no está disponible y debes buscar otro nombre</li>
+                      </ol>
+
+                      <div className="border rounded-lg overflow-hidden my-4">
+                        <img src={namecheapStep2} alt="Dominio ocupado (TAKEN)" className="w-full" />
+                      </div>
+
+                      <ol start={5} className="list-decimal list-inside space-y-2 ml-4">
+                        <li>Cuando encuentres un dominio disponible, selecciona la extensión que prefieras (.com, .pe, .restaurant, etc.) y haz clic en "Add to cart"</li>
                         <li>Completa el proceso de compra siguiendo las instrucciones en pantalla</li>
                       </ol>
+
+                      <div className="border rounded-lg overflow-hidden my-4">
+                        <img src={namecheapStep3} alt="Dominio disponible con botón Add to cart" className="w-full" />
+                      </div>
+
                       <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
                         <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                          💡 <strong>Consejo:</strong> Los dominios .com son los más populares, pero puedes elegir otras extensiones como .pe (Perú), .restaurant, .food, etc. según tu preferencia y disponibilidad.
+                          💡 <strong>Consejo:</strong> Si es la primera vez que compras un dominio con NameCheap, es posible que veas un código de descuento disponible (como se muestra en la imagen). Los dominios .com son los más populares, pero puedes elegir otras extensiones según tu preferencia y disponibilidad.
                         </p>
                       </div>
                     </div>
@@ -180,6 +203,10 @@ export default function ClientGuides() {
                             </div>
                           </div>
                         </div>
+                      </div>
+
+                      <div className="border rounded-lg overflow-hidden my-4">
+                        <img src={namecheapStep4} alt="Configuración de nameservers en NameCheap" className="w-full" />
                       </div>
 
                       <ol start={6} className="list-decimal list-inside space-y-2 ml-4 mt-4">
