@@ -68,6 +68,20 @@ serve(async (req) => {
 
     let prompt = '';
     if (fieldType === 'title') {
+      // Build page-specific keyword requirements
+      let keywordRequirement = '';
+      switch (pageType) {
+        case 'menu':
+          keywordRequirement = '\n- DEBE incluir la palabra "Menú" o "Carta"';
+          break;
+        case 'contact':
+          keywordRequirement = '\n- DEBE incluir la palabra "Contacto"';
+          break;
+        case 'reviews':
+          keywordRequirement = '\n- DEBE incluir la palabra "Reseñas" o "Testimonios"';
+          break;
+      }
+
       prompt = `Genera un meta título SEO optimizado en ESPAÑOL para la página ${pageType} de ${client.restaurant_name}.
 
 Context: ${pageContext}
@@ -76,16 +90,30 @@ Requisitos:
 - Máximo 57 caracteres (límite estricto: 60)
 - Incluir: tipo de cocina, ubicación, nombre del restaurante (cuando tenga sentido)
 - Rico en palabras clave y descriptivo
-- Natural y atractivo
+- Natural y atractivo${keywordRequirement}
 - Ejemplo: "Mejor Comida India en Miraflores | ${client.restaurant_name}"
 
 Devuelve SOLO el meta título en español, sin explicaciones.`;
     } else {
+      // Build page-specific keyword requirements for descriptions
+      let keywordRequirement = '';
+      switch (pageType) {
+        case 'menu':
+          keywordRequirement = '\n- DEBE incluir la palabra "menú" o "carta"';
+          break;
+        case 'contact':
+          keywordRequirement = '\n- DEBE incluir la palabra "contacto" o "contáctanos"';
+          break;
+        case 'reviews':
+          keywordRequirement = '\n- DEBE incluir la palabra "reseñas" o "testimonios"';
+          break;
+      }
+
       // Build content-aware constraints for description
       let constraints = `
 Requisitos:
 - Máximo 155 caracteres (límite estricto)
-- Incluir keyword principal de forma natural
+- Incluir keyword principal de forma natural${keywordRequirement}
 - Usar MAYÚSCULAS o emojis (✓, ➤, ★) para destacar beneficios
 - Crear sensación de urgencia o curiosidad`;
 

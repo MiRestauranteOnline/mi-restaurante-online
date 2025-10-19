@@ -319,16 +319,16 @@ serve(async (req) => {
           "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
         },
         "menu": {
-          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars)",
-          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
+          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars) - DEBE incluir palabra 'Menú' o 'Carta'",
+          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) - DEBE incluir 'menú' o 'carta', beneficios destacados, urgencia${seoConstraints}"
         },
         "contact": {
-          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars)",
-          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
+          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars) - DEBE incluir palabra 'Contacto'",
+          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) - DEBE incluir 'contacto' o 'contáctanos', beneficios destacados, urgencia${seoConstraints}"
         },
         "reviews": {
-          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars)",
-          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
+          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars) - DEBE incluir palabra 'Reseñas' o 'Testimonios'",
+          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) - DEBE incluir 'reseñas' o 'testimonios', beneficios destacados, urgencia${seoConstraints}"
         }
       }
     }
