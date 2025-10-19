@@ -78,9 +78,12 @@ export const ReservationCalendar = ({ clientId }: ReservationCalendarProps) => {
   });
 
   const getReservationsForDate = (date: Date) => {
-    return reservations.filter(res => 
-      isSameDay(new Date(res.reservation_date), date)
-    );
+    return reservations.filter(res => {
+      // Parse the date string in local timezone context (YYYY-MM-DD)
+      // The reservation_date is already stored in the client's timezone
+      const resDate = new Date(res.reservation_date + 'T00:00:00');
+      return isSameDay(resDate, date);
+    });
   };
 
   const selectedReservations = selectedDate ? getReservationsForDate(selectedDate) : [];

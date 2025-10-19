@@ -223,8 +223,25 @@ const ReservationAvailability = ({ clientId }: ReservationAvailabilityProps) => 
             const resDuration = res.duration_minutes || 120;
             const resEndMinutes = resStartMinutes + resDuration;
             
-            const slotEndMinutes = slotStart + slotInterval;
-            return (slotStart < resEndMinutes && slotEndMinutes > resStartMinutes);
+            // Find the schedule duration for this time slot to check backward blocking
+            const matchingSchedule = schedules.find(s => {
+              if (s.day_of_week !== dayOfWeek) return false;
+              const [schedStartHour, schedStartMin] = s.start_time.split(':').map(Number);
+              const [schedEndHour, schedEndMin] = s.end_time.split(':').map(Number);
+              const schedStart = schedStartHour * 60 + schedStartMin;
+              const schedEnd = schedEndHour * 60 + schedEndMin;
+              return slotStart >= schedStart && slotStart < schedEnd;
+            });
+            
+            const slotDuration = matchingSchedule?.duration_minutes || 120;
+            const slotEndIfBooked = slotStart + slotDuration;
+            
+            // Bi-directional blocking:
+            // 1. Forward: Current slot extends into existing reservation
+            // 2. Backward: Existing reservation extends into/past current slot
+            return (
+              (slotStart < resEndMinutes && slotEndIfBooked > resStartMinutes)
+            );
           });
 
           const tableAvailability: TableAvailability[] = activeTableConfigs.map((config) => {
