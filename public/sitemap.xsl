@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" 
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:sitemap="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <xsl:output method="html" encoding="UTF-8" indent="yes"/>
+  
+  <xsl:template match="/">
+    <html lang="es">
+      <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Sitemap - Mi Restaurante Online</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 2rem;
+            min-height: 100vh;
+          }
+          
+          .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+          }
+          
+          h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #FFD700;
+            text-align: center;
+          }
+          
+          .subtitle {
+            text-align: center;
+            color: #b0b0b0;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+          }
+          
+          .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+          }
+          
+          .stat {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+          }
+          
+          .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD700;
+          }
+          
+          .stat-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+            margin-top: 0.25rem;
+          }
+          
+          .section {
+            margin-bottom: 2rem;
+          }
+          
+          .section-title {
+            font-size: 1.5rem;
+            color: #FFD700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+          }
+          
+          .url-list {
+            display: grid;
+            gap: 0.75rem;
+          }
+          
+          .url-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #FFD700;
+            transition: all 0.3s ease;
+          }
+          
+          .url-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+          }
+          
+          .url-link {
+            color: #4da6ff;
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+          }
+          
+          .url-link:hover {
+            color: #66b3ff;
+            text-decoration: underline;
+          }
+          
+          .url-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #888;
+            flex-wrap: wrap;
+          }
+          
+          .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+          }
+          
+          .priority-high { color: #4ade80; }
+          .priority-medium { color: #fbbf24; }
+          .priority-low { color: #94a3b8; }
+          
+          @media (max-width: 768px) {
+            body {
+              padding: 1rem;
+            }
+            
+            .container {
+              padding: 1.5rem;
+            }
+            
+            h1 {
+              font-size: 2rem;
+            }
+            
+            .stats {
+              gap: 1rem;
+            }
+            
+            .stat {
+              padding: 0.75rem 1.5rem;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>🗺️ Sitemap</h1>
+          <p class="subtitle">XML Sitemap for Mi Restaurante Online</p>
+          
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-number">
+                <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/>
+              </div>
+              <div class="stat-label">Total URLs</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">
+                <xsl:value-of select="count(sitemap:urlset/sitemap:url[sitemap:priority='1.0' or sitemap:priority='0.9' or sitemap:priority='0.8'])"/>
+              </div>
+              <div class="stat-label">High Priority</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">
+                <xsl:value-of select="count(sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guia/')])"/>
+              </div>
+              <div class="stat-label">Blog Posts</div>
+            </div>
+          </div>
+          
+          <div class="section">
+            <h2 class="section-title">📄 Main Pages</h2>
+            <div class="url-list">
+              <xsl:for-each select="sitemap:urlset/sitemap:url[not(contains(sitemap:loc, '/guia/'))]">
+                <xsl:sort select="sitemap:priority" order="descending"/>
+                <div class="url-item">
+                  <a class="url-link" href="{sitemap:loc}">
+                    <xsl:value-of select="sitemap:loc"/>
+                  </a>
+                  <div class="url-meta">
+                    <span class="meta-item">
+                      <xsl:attribute name="class">
+                        <xsl:choose>
+                          <xsl:when test="sitemap:priority &gt;= 0.8">meta-item priority-high</xsl:when>
+                          <xsl:when test="sitemap:priority &gt;= 0.5">meta-item priority-medium</xsl:when>
+                          <xsl:otherwise>meta-item priority-low</xsl:otherwise>
+                        </xsl:choose>
+                      </xsl:attribute>
+                      Priority: <xsl:value-of select="sitemap:priority"/>
+                    </span>
+                    <span class="meta-item">
+                      Update: <xsl:value-of select="sitemap:changefreq"/>
+                    </span>
+                    <span class="meta-item">
+                      Modified: <xsl:value-of select="sitemap:lastmod"/>
+                    </span>
+                  </div>
+                </div>
+              </xsl:for-each>
+            </div>
+          </div>
+          
+          <xsl:if test="count(sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guia/')]) &gt; 0">
+            <div class="section">
+              <h2 class="section-title">📝 Blog Articles</h2>
+              <div class="url-list">
+                <xsl:for-each select="sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guia/')]">
+                  <xsl:sort select="sitemap:lastmod" order="descending"/>
+                  <div class="url-item">
+                    <a class="url-link" href="{sitemap:loc}">
+                      <xsl:value-of select="sitemap:loc"/>
+                    </a>
+                    <div class="url-meta">
+                      <span class="meta-item priority-medium">
+                        Priority: <xsl:value-of select="sitemap:priority"/>
+                      </span>
+                      <span class="meta-item">
+                        Update: <xsl:value-of select="sitemap:changefreq"/>
+                      </span>
+                      <span class="meta-item">
+                        Modified: <xsl:value-of select="sitemap:lastmod"/>
+                      </span>
+                    </div>
+                  </div>
+                </xsl:for-each>
+              </div>
+            </div>
+          </xsl:if>
+        </div>
+      </body>
+    </html>
+  </xsl:template>
+</xsl:stylesheet>

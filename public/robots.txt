@@ -13,4 +13,13 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://mirestauranteonline.com/sitemap.xml
+# Block dashboard and admin pages from indexing
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /client/
+Disallow: /auth
+Disallow: /registro
+Disallow: /signup
+
+# Sitemap location
+Sitemap: https://mirestaurante.online/sitemap.xml

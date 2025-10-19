@@ -16,14 +16,14 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Base URL for the site
-    const baseUrl = 'https://mirestauranteonline.com';
+    const baseUrl = 'https://mirestaurante.online';
 
     // Static pages with their priorities and change frequencies
     const staticPages = [
       { url: '/', priority: '1.0', changefreq: 'daily' },
-      { url: '/about', priority: '0.8', changefreq: 'monthly' },
-      { url: '/contact', priority: '0.8', changefreq: 'monthly' },
-      { url: '/blog', priority: '0.9', changefreq: 'daily' },
+      { url: '/acerca-de', priority: '0.8', changefreq: 'monthly' },
+      { url: '/contacto', priority: '0.8', changefreq: 'monthly' },
+      { url: '/guia', priority: '0.9', changefreq: 'daily' },
       { url: '/soporte', priority: '0.7', changefreq: 'monthly' },
       { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
       { url: '/terms', priority: '0.3', changefreq: 'yearly' },
@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
     // Fetch all published blog articles
     const { data: articles, error } = await supabase
       .from('generated_articles')
-      .select('slug, updated_at, publish_date')
+      .select('slug, category, updated_at, publish_date')
       .eq('status', 'published')
       .order('publish_date', { ascending: false });
 
@@ -41,9 +41,13 @@ Deno.serve(async (req) => {
       throw error;
     }
 
-    // Build XML sitemap
+    // Build XML sitemap with XSLT styling
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    xml += '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ';
+    xml += 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ';
+    xml += 'xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 ';
+    xml += 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">\n';
 
     // Add static pages
     for (const page of staticPages) {
@@ -59,7 +63,7 @@ Deno.serve(async (req) => {
     if (articles && articles.length > 0) {
       for (const article of articles) {
         xml += '  <url>\n';
-        xml += `    <loc>${baseUrl}/blog/${article.slug}</loc>\n`;
+        xml += `    <loc>${baseUrl}/guia/${article.category}/${article.slug}</loc>\n`;
         xml += `    <lastmod>${new Date(article.updated_at).toISOString().split('T')[0]}</lastmod>\n`;
         xml += '    <changefreq>monthly</changefreq>\n';
         xml += '    <priority>0.7</priority>\n';
