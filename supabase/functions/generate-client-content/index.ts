@@ -146,9 +146,29 @@ serve(async (req) => {
     // Step 1: Get client data for trusted sources
     const { data: clientData } = await supabase
       .from('clients')
-      .select('social_media_links, domain, email, phone, whatsapp')
+      .select('social_media_links, domain, email, phone, whatsapp, delivery')
       .eq('id', clientId)
       .single();
+    
+    // Get admin_content to check enabled features
+    const { data: adminContent } = await supabase
+      .from('admin_content')
+      .select('homepage_reservations_section_visible, homepage_contact_section_visible')
+      .eq('client_id', clientId)
+      .maybeSingle();
+
+    // Determine enabled features for content-aware generation
+    const hasReservations = adminContent?.homepage_reservations_section_visible !== false;
+    const hasDelivery = clientData?.delivery?.rappi || clientData?.delivery?.pedidosya || clientData?.delivery?.uber_eats;
+
+    // Build content-aware constraints for SEO metadata
+    let seoConstraints = '';
+    if (!hasReservations) {
+      seoConstraints += '\n- NO mencionar reservas ni "reservar mesa" en las descripciones';
+    }
+    if (!hasDelivery) {
+      seoConstraints += '\n- NO mencionar delivery ni entrega a domicilio en las descripciones';
+    }
 
     // Step 2: Generate client profile and content with ChatGPT using trusted sources
     const contentPrompt = `
@@ -291,24 +311,24 @@ serve(async (req) => {
       },
       "seoMetadata": {
         "home": {
-          "meta_title": "Título SEO optimizado (max 57 chars) con tipo de comida, ubicación y nombre del restaurante. Ejemplo: Best Indian Food in Miraflores | ${restaurantName}",
-          "meta_description": "Descripción SEO (max 155 chars) con keyword principal, beneficios en MAYÚSCULAS o con emojis ✓★, y llamado a acción urgente. Ejemplo: ★ AUTÉNTICA comida india ★ Ingredientes frescos. Saborea la VERDADERA tradición. ¡Reserva HOY!"
+          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars, límite duro 60) con tipo de comida, ubicación y nombre. Ejemplo: Mejor Comida India en Miraflores | ${restaurantName}",
+          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword principal, beneficios en MAYÚSCULAS o emojis ✓★, urgencia. ${seoConstraints} Ejemplo: ★ Comida India AUTÉNTICA ★ Ingredientes frescos. Sabores tradicionales. ¡Visita HOY!"
         },
         "about": {
-          "meta_title": "Título SEO optimizado (max 57 chars)",
-          "meta_description": "Descripción SEO (max 155 chars) con keyword, beneficios destacados y urgencia"
+          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars)",
+          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
         },
         "menu": {
-          "meta_title": "Título SEO optimizado (max 57 chars)",
-          "meta_description": "Descripción SEO (max 155 chars) con keyword, beneficios destacados y urgencia"
+          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars)",
+          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
         },
         "contact": {
-          "meta_title": "Título SEO optimizado (max 57 chars)",
-          "meta_description": "Descripción SEO (max 155 chars) con keyword, beneficios destacados y urgencia"
+          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars)",
+          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
         },
         "reviews": {
-          "meta_title": "Título SEO optimizado (max 57 chars)",
-          "meta_description": "Descripción SEO (max 155 chars) con keyword, beneficios destacados y urgencia"
+          "meta_title": "Título SEO optimizado EN ESPAÑOL (máx 57 chars)",
+          "meta_description": "Descripción SEO EN ESPAÑOL (máx 155 chars) con keyword, beneficios destacados, urgencia${seoConstraints}"
         }
       }
     }
@@ -323,7 +343,8 @@ serve(async (req) => {
     7. NO AFIRMES HECHOS NO VERIFICABLES: Evita declaraciones como "el mejor", "número 1", "ganador de", "fundado en [año específico]" si no están en el briefing
 
     IMPORTANTE:
-    - Todo el contenido debe estar en español
+    - Todo el contenido debe estar en ESPAÑOL
+    - SEO metadata debe estar en ESPAÑOL
     - TÍTULOS DIVIDIDOS: Los campos "_first_line" y "_second_line" NO son dos títulos separados. Son UN SOLO título SEO optimizado que se divide en dos partes equilibradas sin romper palabras
     - Optimiza para SEO local de Lima, Perú (o la ubicación especificada)
     - Usa el tono de marca apropiado para el tipo de restaurante
@@ -338,6 +359,7 @@ serve(async (req) => {
     - WHATSAPP: Usa el número real del cliente si está disponible
     - RESERVAS: El título y descripción deben ser claros y motivadores
     - CONSISTENCIA: Todo el contenido debe mantener el mismo tono y personalidad de marca
+    - SEO: Solo menciona características activas (reservas solo si enabled, delivery solo si configurado)${seoConstraints}
     `;
 
     console.log('Calling OpenAI API...');

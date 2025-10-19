@@ -28,10 +28,10 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Fetch client data
+    // Fetch client data and settings
     const { data: client, error: clientError } = await supabase
       .from('clients')
-      .select('restaurant_name, address, subdomain')
+      .select('restaurant_name, address, subdomain, delivery')
       .eq('id', clientId)
       .single();
 
@@ -46,37 +46,70 @@ serve(async (req) => {
       .eq('client_id', clientId)
       .maybeSingle();
 
-    // Create page-specific context
-    const pageContext = getPageContext(pageType, client, adminContent);
+    // Fetch client_settings to check enabled features
+    const { data: clientSettings } = await supabase
+      .from('client_settings')
+      .select('*')
+      .eq('client_id', clientId)
+      .maybeSingle();
+
+    // Determine enabled features
+    const hasReservations = adminContent?.homepage_reservations_section_visible !== false;
+    const hasDelivery = client.delivery?.rappi || client.delivery?.pedidosya || client.delivery?.uber_eats;
+    const hasContactSection = adminContent?.homepage_contact_section_visible !== false;
+
+    // Create page-specific context with content awareness
+    const pageContext = getPageContext(
+      pageType, 
+      client, 
+      adminContent, 
+      { hasReservations, hasDelivery, hasContactSection }
+    );
 
     let prompt = '';
     if (fieldType === 'title') {
-      prompt = `Generate an SEO-optimized meta title for the ${pageType} page of ${client.restaurant_name}.
+      prompt = `Genera un meta título SEO optimizado en ESPAÑOL para la página ${pageType} de ${client.restaurant_name}.
 
 Context: ${pageContext}
 
-Requirements:
-- Maximum 57 characters (hard limit: 60)
-- Include: type of cuisine, location, restaurant name (where it makes sense)
-- Keyword-rich and descriptive
-- Natural and compelling
-- Example structure: "Best [Cuisine] in [Location] | [Restaurant Name]"
+Requisitos:
+- Máximo 57 caracteres (límite estricto: 60)
+- Incluir: tipo de cocina, ubicación, nombre del restaurante (cuando tenga sentido)
+- Rico en palabras clave y descriptivo
+- Natural y atractivo
+- Ejemplo: "Mejor Comida India en Miraflores | ${client.restaurant_name}"
 
-Return ONLY the meta title, no explanations.`;
+Devuelve SOLO el meta título en español, sin explicaciones.`;
     } else {
-      prompt = `Generate an SEO-optimized meta description for the ${pageType} page of ${client.restaurant_name}.
+      // Build content-aware constraints for description
+      let constraints = `
+Requisitos:
+- Máximo 155 caracteres (límite estricto)
+- Incluir keyword principal de forma natural
+- Usar MAYÚSCULAS o emojis (✓, ➤, ★) para destacar beneficios
+- Crear sensación de urgencia o curiosidad`;
+
+      // Add feature-specific constraints
+      if (hasReservations) {
+        constraints += '\n- Puedes mencionar reservas/reservar mesa si es relevante';
+      } else {
+        constraints += '\n- NO mencionar reservas ni reservar mesa';
+      }
+
+      if (hasDelivery) {
+        constraints += '\n- Puedes mencionar delivery/entrega a domicilio si es relevante';
+      } else {
+        constraints += '\n- NO mencionar delivery ni entrega a domicilio';
+      }
+
+      constraints += '\n- Llamado a la acción convincente\n- Ejemplo: "★ Comida India AUTÉNTICA ★ Ingredientes frescos diario. Sabores que te transportan. ¡Descubre HOY!"';
+
+      prompt = `Genera una meta descripción SEO optimizada en ESPAÑOL para la página ${pageType} de ${client.restaurant_name}.
 
 Context: ${pageContext}
+${constraints}
 
-Requirements:
-- Maximum 155 characters (strict limit)
-- Include main keyword naturally
-- Use ALL CAPS or emojis (✓, ➤, ★) to highlight benefits
-- Add urgency or curiosity: "See why thousands choose...", "Limited spots available"
-- Compelling call-to-action
-- Example: "★ AUTHENTIC Indian Cuisine ★ Fresh ingredients daily. Experience flavors that transport you. Reserve your table NOW!"
-
-Return ONLY the meta description, no explanations.`;
+Devuelve SOLO la meta descripción en español, sin explicaciones.`;
     }
 
     // Call OpenAI to regenerate using gpt-4o-mini (cheaper, stable, no reasoning overhead)
@@ -91,7 +124,7 @@ Return ONLY the meta description, no explanations.`;
         messages: [
           {
             role: 'system',
-            content: 'You are an expert SEO copywriter specializing in restaurant marketing. Generate compelling, keyword-rich metadata that drives clicks while staying within character limits.'
+            content: 'Eres un experto copywriter SEO especializado en marketing para restaurantes. Genera contenido persuasivo y rico en palabras clave que impulse clics, siempre respetando los límites de caracteres. Todo en ESPAÑOL.'
           },
           {
             role: 'user',
@@ -147,21 +180,31 @@ Return ONLY the meta description, no explanations.`;
   }
 });
 
-function getPageContext(pageType: string, client: any, adminContent: any): string {
-  const baseContext = `Restaurant: ${client.restaurant_name}, Location: ${client.address || 'Peru'}`;
+function getPageContext(
+  pageType: string, 
+  client: any, 
+  adminContent: any, 
+  features: { hasReservations: boolean; hasDelivery: boolean; hasContactSection: boolean }
+): string {
+  const baseContext = `Restaurante: ${client.restaurant_name}, Ubicación: ${client.address || 'Perú'}`;
+  
+  let featuresContext = '\nCaracterísticas activas:';
+  if (features.hasReservations) featuresContext += ' reservas';
+  if (features.hasDelivery) featuresContext += ' delivery';
+  if (features.hasContactSection) featuresContext += ' contacto';
   
   switch (pageType) {
     case 'home':
-      return `${baseContext}. This is the main landing page showcasing the restaurant's unique value proposition and main offerings.`;
+      return `${baseContext}${featuresContext}. Página principal mostrando la propuesta de valor única del restaurante.`;
     case 'about':
-      return `${baseContext}. Page about the restaurant's story, mission, and team. ${adminContent?.about_story || ''}`;
+      return `${baseContext}${featuresContext}. Página sobre la historia, misión y equipo del restaurante. ${adminContent?.about_story || ''}`;
     case 'menu':
-      return `${baseContext}. Full menu page displaying all dishes and categories. Culinary offerings and specialties.`;
+      return `${baseContext}${featuresContext}. Página del menú completo mostrando todos los platos y categorías. Especialidades culinarias.`;
     case 'contact':
-      return `${baseContext}. Contact and reservation page. Location: ${client.address}, Website: ${client.subdomain}.mirestauranteonline.com`;
+      return `${baseContext}${featuresContext}. Página de contacto${features.hasReservations ? ' y reservas' : ''}. Ubicación: ${client.address}, Web: ${client.subdomain}.mirestauranteonline.com`;
     case 'reviews':
-      return `${baseContext}. Customer testimonials and reviews page showing social proof and customer satisfaction.`;
+      return `${baseContext}${featuresContext}. Página de testimonios y reseñas mostrando prueba social y satisfacción del cliente.`;
     default:
-      return baseContext;
+      return `${baseContext}${featuresContext}`;
   }
 }
