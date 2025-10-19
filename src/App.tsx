@@ -115,8 +115,8 @@ const AppContent = () => {
           <Route path="reservations/:clientId" element={<ClientReservations />} />
           <Route path="analytics/:clientId" element={<ClientAnalytics />} />
           <Route path="support/:clientId" element={<ClientSupport />} />
-          <Route path="guides" element={<ClientGuides />} />
-          <Route path="guides/:category/:guide" element={<ClientGuides />} />
+          <Route path="guias" element={<ClientGuides />} />
+          <Route path="guias/:category/:guide" element={<ClientGuides />} />
           <Route path="subscription" element={<ClientSubscription />} />
         </Route>
         <Route path="*" element={<NotFound />} />
