@@ -3944,7 +3944,7 @@ export default function ClientGuides() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       
-      <main className="flex-1 flex overflow-hidden pt-16">
+      <main className="flex-1 flex overflow-hidden pt-32">
         <GuidesSidebar activeGuide={activeGuide} />
         
         <div className="flex-1 overflow-y-auto">
