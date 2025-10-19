@@ -296,7 +296,7 @@ export default function CustomDomainPage() {
                     <strong className="text-blue-700 dark:text-blue-300">¿Cómo funciona el proceso de dominio personalizado?</strong>
                   </div>
                   <ol className="list-decimal list-inside space-y-2 ml-2">
-                    <li><strong>Configuración DNS automática:</strong> Al hacer clic en "Setup Domain", el sistema crea automáticamente una zona DNS en Cloudflare para tu dominio y genera nameservers únicos.</li>
+                    <li><strong>Configuración DNS automática:</strong> Al hacer clic en "Setup Domain", el sistema crea automáticamente una zona DNS en Cloudflare para este dominio y obtiene los nameservers asignados por Cloudflare.</li>
                     <li><strong>Actualización de nameservers:</strong> El cliente debe ir a su registrador de dominios (GoDaddy, Namecheap, etc.) y actualizar los nameservers con los proporcionados por Cloudflare.</li>
                     <li><strong>Verificación de DNS:</strong> Una vez propagados los DNS (5-60 min), el sistema verifica la configuración y agrega el dominio a Vercel automáticamente.</li>
                     <li><strong>Certificado SSL:</strong> Vercel emite un certificado SSL gratuito para el dominio. Este proceso toma 1-5 minutos y se hace automáticamente.</li>
