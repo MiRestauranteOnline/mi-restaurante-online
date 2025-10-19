@@ -49,6 +49,7 @@ import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
 import { ClientDiscountAssignments } from '@/components/admin/ClientDiscountAssignments';
 import { DomainManagementTab } from '@/components/admin/DomainManagementTab';
+import { PageMetadataManager } from '@/components/admin/PageMetadataManager';
 import { useAdminImpersonation } from '@/hooks/useAdminImpersonation';
 import { UserCog } from 'lucide-react';
 import { timezones } from '@/data/timezones';
@@ -3274,6 +3275,7 @@ setReviewForm({
           <TabsList>
             {showTab('basic') && <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>}
             {showTab('domain') && <TabsTrigger value="domain">Dominio</TabsTrigger>}
+            {showTab('metadata') && <TabsTrigger value="metadata">SEO Metadata</TabsTrigger>}
             {showTab('hours') && <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>}
             {showTab('social') && <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>}
             {showTab('delivery') && <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>}
@@ -3571,6 +3573,10 @@ setReviewForm({
               </div>
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="metadata">
+          <PageMetadataManager clientId={effectiveClientId!} />
         </TabsContent>
 
         <TabsContent value="hours">

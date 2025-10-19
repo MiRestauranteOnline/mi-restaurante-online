@@ -1509,6 +1509,56 @@ export type Database = {
           },
         ]
       }
+      page_metadata: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          meta_description: string
+          meta_title: string
+          og_description: string | null
+          og_title: string | null
+          page_type: string
+          twitter_description: string | null
+          twitter_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          meta_description: string
+          meta_title: string
+          og_description?: string | null
+          og_title?: string | null
+          page_type: string
+          twitter_description?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          meta_description?: string
+          meta_title?: string
+          og_description?: string | null
+          og_title?: string | null
+          page_type?: string
+          twitter_description?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_metadata_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       premium_features: {
         Row: {
           analytics_enabled: boolean | null

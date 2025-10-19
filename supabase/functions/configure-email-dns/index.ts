@@ -144,7 +144,8 @@ const handler = async (req: Request): Promise<Response> => {
         }
       } catch (error) {
         console.error("Error creating DNS record:", record.type, error);
-        errors.push(`${record.type} (${record.name}): ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        errors.push(`${record.type} (${record.name}): ${errorMessage}`);
       }
     }
 

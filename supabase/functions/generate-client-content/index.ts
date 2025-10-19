@@ -288,6 +288,28 @@ serve(async (req) => {
         "menu_page_hero_background": "Prompt para imagen del hero del menú - enfócate en platos principales, presentación de comida, ingredientes frescos, detalles gastronómicos",
         "contact_page_hero_background": "Prompt para imagen del hero de contacto - enfócate en ambiente acogedor, mesa con comida, detalles del servicio, sin mostrar restaurante específico",
         "reviews_page_hero_background": "Prompt para imagen del hero de reviews - enfócate en clientes satisfechos disfrutando la comida, momentos de felicidad, ambiente familiar"
+      },
+      "seoMetadata": {
+        "home": {
+          "meta_title": "Título SEO optimizado (max 57 chars) con tipo de comida, ubicación y nombre del restaurante. Ejemplo: Best Indian Food in Miraflores | ${restaurantName}",
+          "meta_description": "Descripción SEO (max 155 chars) con keyword principal, beneficios en MAYÚSCULAS o con emojis ✓★, y llamado a acción urgente. Ejemplo: ★ AUTÉNTICA comida india ★ Ingredientes frescos. Saborea la VERDADERA tradición. ¡Reserva HOY!"
+        },
+        "about": {
+          "meta_title": "Título SEO optimizado (max 57 chars)",
+          "meta_description": "Descripción SEO (max 155 chars) con keyword, beneficios destacados y urgencia"
+        },
+        "menu": {
+          "meta_title": "Título SEO optimizado (max 57 chars)",
+          "meta_description": "Descripción SEO (max 155 chars) con keyword, beneficios destacados y urgencia"
+        },
+        "contact": {
+          "meta_title": "Título SEO optimizado (max 57 chars)",
+          "meta_description": "Descripción SEO (max 155 chars) con keyword, beneficios destacados y urgencia"
+        },
+        "reviews": {
+          "meta_title": "Título SEO optimizado (max 57 chars)",
+          "meta_description": "Descripción SEO (max 155 chars) con keyword, beneficios destacados y urgencia"
+        }
       }
     }
 
@@ -366,9 +388,36 @@ serve(async (req) => {
       throw new Error('Failed to parse AI response as JSON');
     }
 
+    // Step 4: Save metadata to page_metadata table
+    if (generatedContent.seoMetadata) {
+      console.log('Saving SEO metadata...');
+      
+      const metadataEntries = Object.entries(generatedContent.seoMetadata).map(([pageType, meta]: [string, any]) => ({
+        client_id: clientId,
+        page_type: pageType,
+        meta_title: meta.meta_title,
+        meta_description: meta.meta_description,
+        og_title: meta.meta_title,
+        og_description: meta.meta_description,
+        twitter_title: meta.meta_title,
+        twitter_description: meta.meta_description,
+      }));
+
+      const { error: metadataError } = await supabase
+        .from('page_metadata')
+        .upsert(metadataEntries, { onConflict: 'client_id,page_type' });
+
+      if (metadataError) {
+        console.error('Failed to save metadata:', metadataError);
+        // Don't fail the entire operation, just log the error
+      } else {
+        console.log('SEO metadata saved successfully');
+      }
+    }
+
     console.log('Content generated and fact-checked successfully');
 
-    // Step 2: Save TEXT content immediately (no images yet)
+    // Step 5: Save TEXT content immediately (no images yet)
     const textUpdate = {
       ...generatedContent.content,
       updated_at: new Date().toISOString(),
