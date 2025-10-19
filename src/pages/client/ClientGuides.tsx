@@ -741,6 +741,472 @@ export default function ClientGuides() {
           </Card>
         );
 
+      case "menu-categories":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Categorías del Menú</CardTitle>
+              <CardDescription>
+                Organiza tu menú con categorías personalizadas
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Menú</strong> → sección <strong>"Categorías"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué son las Categorías?</h3>
+                <p className="text-muted-foreground">
+                  Las categorías te permiten organizar los elementos de tu menú en grupos lógicos como "Entradas", "Platos Principales", "Bebidas", "Postres", etc.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Crear una Nueva Categoría</h3>
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Haz clic en el botón <strong>"Nueva Categoría"</strong></li>
+                  <li>Ingresa el nombre de la categoría (ej: "Platos Principales")</li>
+                  <li>Usa el switch para marcar si la categoría está activa o no</li>
+                  <li>Haz clic en <strong>"Crear"</strong></li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Gestionar Categorías Existentes</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔄 Reordenar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Arrastra y suelta las categorías usando el ícono de líneas verticales para cambiar el orden en que aparecen en tu sitio web.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">✏️ Editar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón de editar (ícono de lápiz) para modificar el nombre de la categoría.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔘 Activar/Desactivar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Usa el switch para activar o desactivar categorías sin eliminarlas. Las categorías inactivas no aparecen en el sitio web.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón de eliminar (ícono de basura). Se te pedirá confirmación antes de eliminar.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Crea las categorías antes de agregar elementos del menú</li>
+                  <li>Usa nombres descriptivos y claros para tus categorías</li>
+                  <li>El orden de las categorías afecta cómo se muestra tu menú</li>
+                  <li>Mantén solo las categorías activas que estés usando</li>
+                  <li>Ejemplos de categorías: "Entradas", "Sopas", "Platos Principales", "Bebidas", "Postres"</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "menu-items":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Elementos del Menú</CardTitle>
+              <CardDescription>
+                Agrega y gestiona los platos y bebidas de tu restaurante
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Menú</strong> → sección <strong>"Elementos del Menú"</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Crear un Nuevo Elemento</h3>
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Haz clic en el botón <strong>"Nuevo Elemento"</strong></li>
+                  <li>Completa el formulario con la información del plato</li>
+                  <li>Haz clic en <strong>"Crear"</strong></li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Campos del Formulario</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Nombre del Plato *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Nombre del plato o bebida (ej: "Lomo Saltado"). Campo obligatorio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Precio *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Precio del elemento. Solo números (ej: 25.50). Campo obligatorio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Categoría *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Selecciona la categoría a la que pertenece este elemento. Si no ves categorías, créalas primero.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Descripción</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Descripción detallada del plato, ingredientes, preparación, etc. (Opcional)
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Imagen del Plato</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Sube una foto del plato. Se optimizará automáticamente. (Opcional pero recomendado)
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Opciones de Visualización</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Elemento Activo</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Los elementos inactivos no aparecen en el sitio web. Útil para platos temporalmente no disponibles.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Mostrar en Página de Inicio</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Marca los platos destacados que quieres mostrar en la página principal. <strong>Máximo 8 elementos.</strong>
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Mostrar Imagen en Menú</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si está activado, la imagen del plato aparece en la página del menú completo.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Mostrar Imagen en Inicio</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si está activado, la imagen aparece cuando el plato se muestra en la página de inicio.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Gestionar Elementos</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔍 Buscar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Usa el cuadro de búsqueda para encontrar elementos por nombre, descripción o categoría.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🔄 Reordenar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Arrastra y suelta elementos dentro de cada categoría para cambiar su orden de aparición.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">✏️ Editar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón de editar para modificar cualquier información del elemento.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón rojo de eliminar. Se te pedirá confirmación.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Usa fotos de alta calidad para tus platos principales</li>
+                  <li>Escribe descripciones atractivas que hagan querer ordenar</li>
+                  <li>Actualiza los precios regularmente</li>
+                  <li>Selecciona tus mejores 8 platos para la página de inicio</li>
+                  <li>Usa la opción "inactivo" en lugar de eliminar platos de temporada</li>
+                  <li>Agrupa elementos similares en la misma categoría</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "team":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Gestión del Equipo</CardTitle>
+              <CardDescription>
+                Presenta a tu equipo en tu sitio web
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Equipo</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Agregar un Miembro del Equipo</h3>
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Haz clic en el botón <strong>"Agregar Miembro del Equipo"</strong></li>
+                  <li>Completa el formulario con la información</li>
+                  <li>Sube una foto del miembro (opcional pero recomendado)</li>
+                  <li>Haz clic en <strong>"Guardar"</strong></li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Información del Miembro</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Nombre *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Nombre completo del miembro del equipo. Campo obligatorio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Cargo *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Posición o rol en el restaurante (ej: "Chef Ejecutivo", "Sommelier", "Gerente"). Campo obligatorio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Biografía</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Una breve descripción sobre el miembro, su experiencia y especialidades. (Opcional)
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Foto</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Foto profesional del miembro del equipo. Se optimizará automáticamente.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Gestionar Miembros</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">✏️ Editar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón de editar para actualizar la información de un miembro.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón de eliminar. Se te pedirá confirmación antes de proceder.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Usa fotos profesionales con fondo neutro o uniforme</li>
+                  <li>Presenta solo al personal clave (chef, sommelier, gerente)</li>
+                  <li>Escribe biografías breves pero informativas (2-3 oraciones)</li>
+                  <li>Destaca experiencia relevante y especialidades</li>
+                  <li>Mantén un tono profesional pero cercano</li>
+                  <li>Actualiza cuando haya cambios en el equipo</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "reviews":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Reseñas de Clientes</CardTitle>
+              <CardDescription>
+                Muestra testimonios y reseñas en tu sitio web
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+                <p className="text-muted-foreground">
+                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Reseñas</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Agregar una Reseña</h3>
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Haz clic en el botón <strong>"Agregar Reseña"</strong></li>
+                  <li>Completa el formulario con los datos de la reseña</li>
+                  <li>Selecciona la calificación (1-5 estrellas)</li>
+                  <li>Haz clic en <strong>"Guardar"</strong></li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Información de la Reseña</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Nombre del Cliente *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Nombre del cliente que dejó la reseña. Campo obligatorio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Calificación *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Número de estrellas (1 a 5). Campo obligatorio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Comentario *</h4>
+                    <p className="text-sm text-muted-foreground">
+                      El texto completo de la reseña o testimonio. Campo obligatorio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Fecha</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Se registra automáticamente la fecha en que se agregó la reseña.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Gestionar Reseñas</h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">✏️ Editar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón de editar para actualizar la información de una reseña.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Haz clic en el botón de eliminar. Se te pedirá confirmación.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">👁️ Visualización</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Las reseñas aparecen en tu sitio web ordenadas por fecha, mostrando las más recientes primero.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Solicita permiso a los clientes antes de publicar sus reseñas</li>
+                  <li>Puedes copiar reseñas de Google, TripAdvisor o redes sociales (con permiso)</li>
+                  <li>Enfócate en reseñas de 4-5 estrellas para mostrar lo mejor</li>
+                  <li>Incluye reseñas que mencionen platos específicos o el servicio</li>
+                  <li>Mantén entre 5-10 reseñas visibles para no saturar</li>
+                  <li>Actualiza regularmente con nuevas reseñas</li>
+                  <li>Verifica que los comentarios sean auténticos y representativos</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
       case "email-config":
         return (
           <Card>

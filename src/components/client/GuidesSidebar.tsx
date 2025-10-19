@@ -31,6 +31,10 @@ const guideCategories: GuideCategory[] = [
       { id: "social-media", title: "Redes Sociales", icon: FileText },
       { id: "delivery", title: "Información de Delivery", icon: FileText },
       { id: "branding", title: "Marca y Personalización", icon: FileText },
+      { id: "menu-categories", title: "Categorías del Menú", icon: FileText },
+      { id: "menu-items", title: "Elementos del Menú", icon: FileText },
+      { id: "team", title: "Equipo", icon: FileText },
+      { id: "reviews", title: "Reseñas", icon: FileText },
     ],
   },
   {
