@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -239,6 +241,16 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
           <h3 className="text-base sm:text-lg font-semibold">Configuración de Mesas</h3>
           <p className="text-xs sm:text-sm text-muted-foreground">
             Define los tipos de mesas disponibles en tu restaurante
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="inline-block h-4 w-4 ml-2 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm">
+                <p><strong>¿Qué es esto?</strong></p>
+                <p className="mt-1">Define cuántas mesas de cada tipo tienes (ej: 5 mesas de 2 personas, 3 mesas de 4 personas).</p>
+                <p className="mt-1">Esto determina cuántas reservas puedes aceptar simultáneamente.</p>
+              </TooltipContent>
+            </Tooltip>
           </p>
         </div>
         <Button

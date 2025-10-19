@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Search, Filter, Phone, Mail, MessageSquare, Trash2, ArrowUp, Download, CheckCircle2, XCircle } from "lucide-react";
+import { Calendar as CalendarIcon, Search, Filter, Phone, Mail, MessageSquare, Trash2, ArrowUp, Download, CheckCircle2, XCircle, HelpCircle } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { getCurrentDateInTimezone, extractDateTimeFromUtc } from "@/lib/timezone";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Card, CardContent } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useReservationRealtime } from "@/hooks/useReservationRealtime";
 
 interface Reservation {
@@ -309,6 +310,16 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
         <div className="flex items-center gap-2">
           <p className="text-sm text-muted-foreground">
             {filteredReservations.length} reserva(s)
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="inline-block h-4 w-4 ml-2 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm">
+                <p><strong>Gestión de Reservas</strong></p>
+                <p className="mt-1">Aquí ves todas las reservas recibidas. Puedes confirmar, rechazar o ver detalles de cada una.</p>
+                <p className="mt-1">Las notas internas son privadas - úsalas para preferencias, alergias, o recordatorios.</p>
+              </TooltipContent>
+            </Tooltip>
           </p>
           {pendingCount > 0 && (
             <Badge variant="default">{pendingCount} pendiente(s)</Badge>

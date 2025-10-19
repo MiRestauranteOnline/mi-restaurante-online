@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash2, Clock, Copy } from "lucide-react";
+import { Plus, Edit, Trash2, Clock, Copy, HelpCircle } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -309,9 +310,21 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <p className="text-xs sm:text-sm text-muted-foreground">
-          {schedules.length} horario(s) configurado(s)
-        </p>
+        <div>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {schedules.length} horario(s) configurado(s)
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="inline-block h-4 w-4 ml-2 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm">
+                <p><strong>¿Para qué sirve esto?</strong></p>
+                <p className="mt-1">Los horarios definen cuándo aceptas reservas (ej: Lunes a Viernes 12:00-15:00, Sábados 19:00-23:00).</p>
+                <p className="mt-1">Puedes personalizar la capacidad y tipos de mesa para cada horario.</p>
+              </TooltipContent>
+            </Tooltip>
+          </p>
+        </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => { setEditingSchedule(null); resetForm(); }} className="w-full sm:w-auto">
