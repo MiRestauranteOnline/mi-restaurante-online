@@ -25,9 +25,6 @@ interface CreateClientForm {
   password: string;
   restaurantName: string;
   subdomain: string;
-  phone: string;
-  address: string;
-  whatsapp: string;
 }
 
 export default function AdminDashboard() {
@@ -43,10 +40,7 @@ export default function AdminDashboard() {
     email: '',
     password: '',
     restaurantName: '',
-    subdomain: '',
-    phone: '',
-    address: '',
-    whatsapp: ''
+    subdomain: ''
   });
 
   useEffect(() => {
@@ -123,10 +117,7 @@ export default function AdminDashboard() {
         email: '',
         password: '',
         restaurantName: '',
-        subdomain: '',
-        phone: '',
-        address: '',
-        whatsapp: ''
+        subdomain: ''
       });
       setShowForm(false);
       fetchClients();
@@ -196,33 +187,13 @@ export default function AdminDashboard() {
             <form onSubmit={handleCreateClient} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="email">{t('general.email')}</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="password">{t('general.password')}</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    required
-                    minLength={6}
-                  />
-                </div>
-                <div>
                   <Label htmlFor="restaurantName">{t('general.restaurantName')}</Label>
                   <Input
                     id="restaurantName"
                     value={formData.restaurantName}
                     onChange={(e) => setFormData({...formData, restaurantName: e.target.value})}
                     required
+                    placeholder="Restaurant name"
                   />
                 </div>
                 <div>
@@ -236,30 +207,28 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="phone">{t('general.phone')}</Label>
+                  <Label htmlFor="email">{t('general.email')}</Label>
                   <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    required
+                    placeholder="owner@email.com"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="whatsapp">WhatsApp</Label>
+                  <Label htmlFor="password">{t('general.password')}</Label>
                   <Input
-                    id="whatsapp"
-                    value={formData.whatsapp}
-                    onChange={(e) => setFormData({...formData, whatsapp: e.target.value})}
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    required
+                    minLength={6}
+                    placeholder="Min. 6 characters"
                   />
                 </div>
-              </div>
-              <div>
-                <Label htmlFor="address">{t('general.address')}</Label>
-                <Textarea
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
-                  rows={3}
-                />
               </div>
               <Button type="submit" disabled={creating}>
                 {creating ? (
