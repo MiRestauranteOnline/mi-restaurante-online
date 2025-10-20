@@ -21,7 +21,7 @@ import Signup from "./pages/Signup";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import UnifiedDashboard from "./pages/dashboard/UnifiedDashboard";
 import ClientManagement from "./pages/admin/ClientManagement";
-import ClientSettings from "./pages/admin/ClientSettings";
+import AdminClientSettings from "./pages/admin/ClientSettings";
 import ProjectConfiguration from "./pages/admin/ProjectConfiguration";
 import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
 import CouponManagement from "./pages/admin/CouponManagement";
@@ -35,7 +35,7 @@ import TemplatesManagement from "./pages/admin/TemplatesManagement";
 import CustomDomainPage from "./pages/admin/CustomDomainPage";
 import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
 import ClientDashboard from "./pages/client/ClientDashboard";
-// import ClientSettingsPage from "./pages/client/ClientSettings";
+import ClientSettingsPage from "./pages/client/ClientSettings";
 import ClientSubscription from "./pages/client/ClientSubscription";
 import ClientSupport from "./pages/client/ClientSupport";
 import ClientGuides from "./pages/client/ClientGuides";
@@ -104,7 +104,7 @@ const AppContent = () => {
           <Route path="tickets" element={<TicketManagement />} />
           <Route path="client-images" element={<ClientImages />} />
           <Route path="marketing-analytics" element={<MarketingAnalytics />} />
-          <Route path="client-settings/:clientId" element={<ClientSettings />} />
+          <Route path="client-settings/:clientId" element={<AdminClientSettings />} />
           <Route path="project-config" element={<ProjectConfiguration />} />
           <Route path="subscription-management" element={<SubscriptionManagement />} />
           <Route path="coupon-management" element={<CouponManagement />} />
@@ -113,7 +113,7 @@ const AppContent = () => {
         </Route>
         <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
           <Route index element={<ClientDashboard />} />
-          <Route path="dashboard/:clientId" element={<ClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","faqs","carousel","custom-images"]} />} />
+          <Route path="dashboard/:clientId" element={<ClientSettingsPage allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","faqs","carousel","custom-images"]} />} />
           <Route path="reservations/:clientId" element={<ClientReservations />} />
           <Route path="analytics/:clientId" element={<ClientAnalytics />} />
           <Route path="support/:clientId" element={<ClientSupport />} />

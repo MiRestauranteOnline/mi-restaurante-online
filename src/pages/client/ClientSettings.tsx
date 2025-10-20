@@ -23,7 +23,11 @@ interface ClientContext {
   selectedClient: any;
 }
 
-export default function ClientSettings() {
+interface ClientSettingsProps {
+  allowedTabs?: string[];
+}
+
+export default function ClientSettings({ allowedTabs }: ClientSettingsProps) {
   const { selectedClientId } = useOutletContext<ClientContext>();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
