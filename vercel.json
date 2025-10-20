@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/serve-sitemap"
+    }
+  ]
+}

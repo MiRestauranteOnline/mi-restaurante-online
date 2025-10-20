@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.update-static-sitemap]
 verify_jwt = false
+
+[functions.serve-sitemap]
+verify_jwt = false
