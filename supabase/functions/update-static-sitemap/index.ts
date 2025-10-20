@@ -32,8 +32,9 @@ Deno.serve(async (req) => {
     // Fetch published blog articles
     const { data: articles, error } = await supabase
       .from('generated_articles')
-      .select('slug, category, updated_at')
+      .select('slug, category, updated_at, publish_date')
       .eq('status', 'published')
+      .not('publish_date', 'is', null)
       .order('publish_date', { ascending: false });
 
     if (error) {

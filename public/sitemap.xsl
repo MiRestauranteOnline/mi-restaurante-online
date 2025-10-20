@@ -21,8 +21,8 @@
           
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #fafafa;
             padding: 2rem;
             min-height: 100vh;
           }
@@ -30,23 +30,28 @@
           .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(70, 167, 158, 0.05);
             border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(70, 167, 158, 0.15);
+            border: 1px solid rgba(70, 167, 158, 0.2);
             backdrop-filter: blur(10px);
           }
           
           h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            color: #FFD700;
+            background: linear-gradient(45deg, #46a79e, #5bc0b5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center;
+            font-weight: 600;
           }
           
           .subtitle {
             text-align: center;
-            color: #b0b0b0;
+            color: #a3a3a3;
             margin-bottom: 2rem;
             font-size: 1.1rem;
           }
@@ -60,21 +65,21 @@
           }
           
           .stat {
-            background: rgba(255, 215, 0, 0.1);
+            background: rgba(70, 167, 158, 0.1);
             padding: 1rem 2rem;
             border-radius: 8px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            border: 1px solid rgba(70, 167, 158, 0.3);
           }
           
           .stat-number {
             font-size: 2rem;
             font-weight: bold;
-            color: #FFD700;
+            color: #46a79e;
           }
           
           .stat-label {
             font-size: 0.9rem;
-            color: #b0b0b0;
+            color: #a3a3a3;
             margin-top: 0.25rem;
           }
           
@@ -84,10 +89,10 @@
           
           .section-title {
             font-size: 1.5rem;
-            color: #FFD700;
+            color: #46a79e;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            border-bottom: 2px solid rgba(70, 167, 158, 0.3);
           }
           
           .url-list {
@@ -99,24 +104,25 @@
             background: rgba(255, 255, 255, 0.03);
             padding: 1rem;
             border-radius: 8px;
-            border-left: 3px solid #FFD700;
+            border-left: 3px solid #46a79e;
             transition: all 0.3s ease;
           }
           
           .url-item:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(70, 167, 158, 0.1);
             transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(70, 167, 158, 0.2);
           }
           
           .url-link {
-            color: #4da6ff;
+            color: #5bc0b5;
             text-decoration: none;
             font-weight: 500;
             word-break: break-all;
           }
           
           .url-link:hover {
-            color: #66b3ff;
+            color: #6dd5c9;
             text-decoration: underline;
           }
           
@@ -135,8 +141,8 @@
             gap: 0.25rem;
           }
           
-          .priority-high { color: #4ade80; }
-          .priority-medium { color: #fbbf24; }
+          .priority-high { color: #46a79e; }
+          .priority-medium { color: #d4af37; }
           .priority-low { color: #94a3b8; }
           
           @media (max-width: 768px) {
