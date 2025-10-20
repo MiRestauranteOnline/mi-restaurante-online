@@ -39,7 +39,6 @@ import ClientDashboard from "./pages/client/ClientDashboard";
 import ClientSubscription from "./pages/client/ClientSubscription";
 import ClientSupport from "./pages/client/ClientSupport";
 import ClientGuides from "./pages/client/ClientGuides";
-import Sitemap from "./pages/Sitemap";
 // Reuse ClientGuides for public docs (renamed internally)
 const Guias = ClientGuides;
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
@@ -120,7 +119,6 @@ const AppContent = () => {
           <Route path="support/:clientId" element={<ClientSupport />} />
           <Route path="subscription" element={<ClientSubscription />} />
         </Route>
-        <Route path="/sitemap.xml" element={<Sitemap />} />
         <Route path="/guias" element={<Guias />} />
         <Route path="/guias/:category/:guide" element={<Guias />} />
         <Route path="*" element={<NotFound />} />
