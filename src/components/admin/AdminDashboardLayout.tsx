@@ -183,7 +183,7 @@ export default function AdminDashboardLayout() {
                 <div className="flex flex-col">
                   <h2 className="font-semibold text-sm">Admin Panel</h2>
                   <p className="text-xs text-muted-foreground">
-                    {selectedClient ? selectedClient.restaurant_name : 'Mi Restaurante Online'}
+                    Global Admin View
                   </p>
                 </div>
               )}
@@ -198,23 +198,6 @@ export default function AdminDashboardLayout() {
             </div>
           </div>
 
-          {/* Restaurant Selector for Admin */}
-          {sidebarOpen && clients.length > 1 && (
-            <div className="p-4 border-b">
-              <Select value={selectedClientId} onValueChange={setSelectedClientId}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select restaurant" />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients.map((client) => (
-                    <SelectItem key={client.client_id} value={client.client_id}>
-                      {client.clients.restaurant_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
 
           {/* Navigation */}
           <nav className="flex-1 p-2">
@@ -247,21 +230,8 @@ export default function AdminDashboardLayout() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <h1 className="text-lg font-semibold">
-                  {selectedClient ? selectedClient.restaurant_name : 'Admin Dashboard'}
+                  Admin Dashboard
                 </h1>
-                {selectedClient && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span>•</span>
-                    <a 
-                      href={`https://${selectedClient.subdomain}.mirestaurante.online`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-primary"
-                    >
-                      {selectedClient.subdomain}.mirestaurante.online
-                    </a>
-                  </div>
-                )}
               </div>
               
               <div className="flex items-center gap-4">
