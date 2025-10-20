@@ -1199,6 +1199,36 @@ export type Database = {
         }
         Relationships: []
       }
+      documentation_pages: {
+        Row: {
+          changefreq: string
+          created_at: string
+          id: string
+          is_active: boolean
+          path: string
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path: string
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path?: string
+          priority?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_dns_requests: {
         Row: {
           client_id: string
@@ -1784,6 +1814,36 @@ export type Database = {
           review_text?: string
           reviewer_name?: string
           star_rating?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_pages: {
+        Row: {
+          changefreq: string
+          created_at: string
+          id: string
+          is_active: boolean
+          path: string
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path: string
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          changefreq?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          path?: string
+          priority?: number
           updated_at?: string
         }
         Relationships: []

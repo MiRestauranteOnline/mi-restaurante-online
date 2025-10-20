@@ -18,57 +18,29 @@ Deno.serve(async (req) => {
     // Base URL for the site
     const baseUrl = 'https://mirestaurante.online';
 
-    // Static pages
-    const staticPages = [
-      { url: '/', priority: '1.0', changefreq: 'daily' },
-      { url: '/acerca-de', priority: '0.8', changefreq: 'monthly' },
-      { url: '/contacto', priority: '0.8', changefreq: 'monthly' },
-      { url: '/blog', priority: '0.9', changefreq: 'daily' },
-      { url: '/soporte', priority: '0.7', changefreq: 'monthly' },
-      { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
-      { url: '/terms', priority: '0.3', changefreq: 'yearly' },
-    ];
+    // Fetch site pages from database
+    const { data: sitePages, error: sitePagesError } = await supabase
+      .from('site_pages')
+      .select('path, priority, changefreq')
+      .eq('is_active', true)
+      .order('priority', { ascending: false });
 
-    // Documentation pages
-    const documentationPages = [
-      // Primeros Pasos
-      { url: '/guias/primeros-pasos/introduccion', priority: '0.8', changefreq: 'monthly' },
-      // Panel Principal
-      { url: '/guias/panel-principal/informacion-general', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/horarios-apertura', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/redes-sociales', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/informacion-delivery', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/marca-personalizacion', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/contenido-sitio', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/preguntas-frecuentes', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/carrusel-imagenes', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/categorias-menu', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/elementos-menu', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/equipo', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/panel-principal/resenas', priority: '0.7', changefreq: 'monthly' },
-      // Configuración
-      { url: '/guias/configuracion-dominio/dominio-personalizado', priority: '0.8', changefreq: 'monthly' },
-      { url: '/guias/configuracion-email/configuracion-email', priority: '0.8', changefreq: 'monthly' },
-      // Reservas
-      { url: '/guias/reservas/horarios-reserva', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/reservas/configuracion-mesas', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/reservas/disponibilidad-reservas', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/reservas/lista-reservas', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/reservas/calendario-reservas', priority: '0.7', changefreq: 'monthly' },
-      // Analíticas
-      { url: '/guias/analiticas/introduccion-analiticas', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/analiticas/metricas', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/analiticas/estadisticas-uso', priority: '0.7', changefreq: 'monthly' },
-      // Soporte
-      { url: '/guias/soporte/como-obtener-soporte', priority: '0.8', changefreq: 'monthly' },
-      { url: '/guias/soporte/crear-tickets', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/soporte/historial-tickets', priority: '0.7', changefreq: 'monthly' },
-      // Suscripción
-      { url: '/guias/suscripcion/gestionar-suscripcion', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/suscripcion/metodos-pago', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/suscripcion/cambios-plan', priority: '0.7', changefreq: 'monthly' },
-      { url: '/guias/suscripcion/informacion-facturacion', priority: '0.7', changefreq: 'monthly' },
-    ];
+    if (sitePagesError) {
+      console.error('Error fetching site pages:', sitePagesError);
+      throw sitePagesError;
+    }
+
+    // Fetch documentation pages from database
+    const { data: documentationPages, error: docPagesError } = await supabase
+      .from('documentation_pages')
+      .select('path, priority, changefreq')
+      .eq('is_active', true)
+      .order('path', { ascending: true });
+
+    if (docPagesError) {
+      console.error('Error fetching documentation pages:', docPagesError);
+      throw docPagesError;
+    }
 
     // Fetch published blog articles
     const { data: articles, error } = await supabase
@@ -91,24 +63,28 @@ Deno.serve(async (req) => {
     xml += 'xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 ';
     xml += 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">\n';
 
-    // Add static pages
-    for (const page of staticPages) {
-      xml += '  <url>\n';
-      xml += `    <loc>${baseUrl}${page.url}</loc>\n`;
-      xml += `    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n`;
-      xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
-      xml += `    <priority>${page.priority}</priority>\n`;
-      xml += '  </url>\n';
+    // Add site pages
+    if (sitePages && sitePages.length > 0) {
+      for (const page of sitePages) {
+        xml += '  <url>\n';
+        xml += `    <loc>${baseUrl}${page.path}</loc>\n`;
+        xml += `    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n`;
+        xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
+        xml += `    <priority>${page.priority}</priority>\n`;
+        xml += '  </url>\n';
+      }
     }
 
     // Add documentation pages
-    for (const page of documentationPages) {
-      xml += '  <url>\n';
-      xml += `    <loc>${baseUrl}${page.url}</loc>\n`;
-      xml += `    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n`;
-      xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
-      xml += `    <priority>${page.priority}</priority>\n`;
-      xml += '  </url>\n';
+    if (documentationPages && documentationPages.length > 0) {
+      for (const page of documentationPages) {
+        xml += '  <url>\n';
+        xml += `    <loc>${baseUrl}${page.path}</loc>\n`;
+        xml += `    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n`;
+        xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
+        xml += `    <priority>${page.priority}</priority>\n`;
+        xml += '  </url>\n';
+      }
     }
 
     // Add blog posts
@@ -140,16 +116,16 @@ Deno.serve(async (req) => {
       throw uploadError;
     }
 
-    console.log(`Updated sitemap with ${staticPages.length} static pages, ${documentationPages.length} documentation pages, and ${articles?.length || 0} blog posts`);
+    console.log(`Updated sitemap with ${sitePages?.length || 0} site pages, ${documentationPages?.length || 0} documentation pages, and ${articles?.length || 0} blog posts`);
 
     return new Response(
       JSON.stringify({
         success: true,
         message: 'Sitemap updated successfully',
-        urls: staticPages.length + documentationPages.length + (articles?.length || 0),
+        urls: (sitePages?.length || 0) + (documentationPages?.length || 0) + (articles?.length || 0),
         breakdown: {
-          static: staticPages.length,
-          documentation: documentationPages.length,
+          site: sitePages?.length || 0,
+          documentation: documentationPages?.length || 0,
           blog: articles?.length || 0
         }
       }),
