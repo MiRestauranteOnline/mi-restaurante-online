@@ -114,7 +114,7 @@ const AppContent = () => {
         </Route>
         <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
           <Route index element={<ClientDashboard />} />
-          <Route path="dashboard/:clientId" element={<ClientSettingsPage />} />
+          <Route path="dashboard/:clientId" element={<AdminClientSettings allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","faqs","carousel","custom-images"]} />} />
           <Route path="email-dns/:clientId" element={<ClientEmailDNS />} />
           <Route path="reservations/:clientId" element={<ClientReservations />} />
           <Route path="analytics/:clientId" element={<ClientAnalytics />} />
