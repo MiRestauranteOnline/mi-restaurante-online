@@ -40,6 +40,7 @@ import ClientSubscription from "./pages/client/ClientSubscription";
 import ClientSupport from "./pages/client/ClientSupport";
 import ClientGuides from "./pages/client/ClientGuides";
 import Sitemap from "./pages/Sitemap";
+import RegenerateSitemap from "./pages/admin/RegenerateSitemap";
 // Reuse ClientGuides for public docs (renamed internally)
 const Guias = ClientGuides;
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
@@ -111,6 +112,7 @@ const AppContent = () => {
           <Route path="coupon-management" element={<CouponManagement />} />
           <Route path="plan-management" element={<PlanManagement />} />
           <Route path="templates-management" element={<TemplatesManagement />} />
+          <Route path="regenerate-sitemap" element={<RegenerateSitemap />} />
         </Route>
         <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
           <Route index element={<ClientDashboard />} />
