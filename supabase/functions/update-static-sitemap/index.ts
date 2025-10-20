@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
       .upload('sitemap.xml', new Blob([xml], { type: 'application/xml' }), {
         contentType: 'application/xml',
         upsert: true,
-        cacheControl: '3600'
+        cacheControl: '0'
       });
 
     if (uploadError) {

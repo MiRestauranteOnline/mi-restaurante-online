@@ -6,17 +6,19 @@ export default function Sitemap() {
     // Fetch and serve the sitemap from storage
     const fetchSitemap = async () => {
       try {
-        const { data, error } = await supabase.storage
+        // Prefer a cache-busted public URL to avoid CDN caching
+        const { data: pub } = supabase.storage
           .from('client-assets')
-          .download('sitemap.xml');
+          .getPublicUrl('sitemap.xml');
 
-        if (error) {
-          console.error('Error fetching sitemap:', error);
+        const cacheBustedUrl = `${pub.publicUrl}?cb=${Date.now()}`;
+        const resp = await fetch(cacheBustedUrl, { cache: 'no-store' });
+        if (!resp.ok) {
+          console.error('HTTP error fetching sitemap:', resp.status, resp.statusText);
           return;
         }
 
-        // Read the blob as text
-        const text = await data.text();
+        const text = await resp.text();
         
         // Replace the entire document with the XML
         document.open();
