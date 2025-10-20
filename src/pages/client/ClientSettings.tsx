@@ -14,6 +14,7 @@ import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { timezones } from '@/data/timezones';
 import { countries } from '@/data/countries';
+import { EmailDNSConfigForm } from '@/components/client/EmailDNSConfigForm';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -159,6 +160,7 @@ export default function ClientSettings() {
               <SelectItem value="general">{t('settings.general')}</SelectItem>
               <SelectItem value="appearance">{t('settings.appearance')}</SelectItem>
               <SelectItem value="contact">{t('settings.contact')}</SelectItem>
+              <SelectItem value="email">Email DNS</SelectItem>
               <SelectItem value="analytics">Analíticas</SelectItem>
             </SelectContent>
           </Select>
@@ -404,16 +406,28 @@ export default function ClientSettings() {
             </CardContent>
           </Card>
         </TabsContent>
-      <TabsContent value="analytics" className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Analíticas</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <AnalyticsOverview clientId={selectedClientId} />
-          </CardContent>
-        </Card>
-      </TabsContent>
+
+        <TabsContent value="email" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Configuración de DNS para Email</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <EmailDNSConfigForm clientId={selectedClientId} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Analíticas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AnalyticsOverview clientId={selectedClientId} />
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
