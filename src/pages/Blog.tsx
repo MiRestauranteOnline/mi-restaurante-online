@@ -190,7 +190,7 @@ const Blog = () => {
                                </div>
                                <CardTitle className="line-clamp-2">
                                  <Link 
-                                   to={`/guia/${article.category}/${article.slug}`}
+                                   to={`/blog/${article.category}/${article.slug}`}
                                    className="hover:text-primary transition-colors"
                                  >
                                    {article.title}
@@ -203,7 +203,7 @@ const Blog = () => {
                              <CardContent>
                                <div className="flex items-center justify-between">
                                  <span className="text-sm text-muted-foreground">{article.publishDate}</span>
-                                 <Link to={`/guia/${article.category}/${article.slug}`}>
+                                 <Link to={`/blog/${article.category}/${article.slug}`}>
                                    <Button variant="outline" size="sm">
                                      Leer Más
                                    </Button>

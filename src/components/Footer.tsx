@@ -36,7 +36,7 @@ export const Footer = () => {
                 Guías & Documentación
               </Link>
               <Link 
-                to="/guia"
+                to="/blog"
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >
                 Blog & Artículos

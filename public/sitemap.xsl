@@ -188,16 +188,22 @@
             </div>
             <div class="stat">
               <div class="stat-number">
-                <xsl:value-of select="count(sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guia/')])"/>
+                <xsl:value-of select="count(sitemap:urlset/sitemap:url[contains(sitemap:loc, '/blog/')])"/>
               </div>
               <div class="stat-label">Blog Posts</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">
+                <xsl:value-of select="count(sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guias/')])"/>
+              </div>
+              <div class="stat-label">Documentation</div>
             </div>
           </div>
           
           <div class="section">
             <h2 class="section-title">📄 Main Pages</h2>
             <div class="url-list">
-              <xsl:for-each select="sitemap:urlset/sitemap:url[not(contains(sitemap:loc, '/guia/'))]">
+              <xsl:for-each select="sitemap:urlset/sitemap:url[not(contains(sitemap:loc, '/blog/')) and not(contains(sitemap:loc, '/guias/'))]">
                 <xsl:sort select="sitemap:priority" order="descending"/>
                 <div class="url-item">
                   <a class="url-link" href="{sitemap:loc}">
@@ -226,12 +232,39 @@
             </div>
           </div>
           
-          <xsl:if test="count(sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guia/')]) &gt; 0">
+          <xsl:if test="count(sitemap:urlset/sitemap:url[contains(sitemap:loc, '/blog/')]) &gt; 0">
             <div class="section">
               <h2 class="section-title">📝 Blog Articles</h2>
               <div class="url-list">
-                <xsl:for-each select="sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guia/')]">
+                <xsl:for-each select="sitemap:urlset/sitemap:url[contains(sitemap:loc, '/blog/')]">
                   <xsl:sort select="sitemap:lastmod" order="descending"/>
+                  <div class="url-item">
+                    <a class="url-link" href="{sitemap:loc}">
+                      <xsl:value-of select="sitemap:loc"/>
+                    </a>
+                    <div class="url-meta">
+                      <span class="meta-item priority-medium">
+                        Priority: <xsl:value-of select="sitemap:priority"/>
+                      </span>
+                      <span class="meta-item">
+                        Update: <xsl:value-of select="sitemap:changefreq"/>
+                      </span>
+                      <span class="meta-item">
+                        Modified: <xsl:value-of select="sitemap:lastmod"/>
+                      </span>
+                    </div>
+                  </div>
+                </xsl:for-each>
+              </div>
+            </div>
+          </xsl:if>
+          
+          <xsl:if test="count(sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guias/')]) &gt; 0">
+            <div class="section">
+              <h2 class="section-title">📚 Documentation Guides</h2>
+              <div class="url-list">
+                <xsl:for-each select="sitemap:urlset/sitemap:url[contains(sitemap:loc, '/guias/')]">
+                  <xsl:sort select="sitemap:loc" order="ascending"/>
                   <div class="url-item">
                     <a class="url-link" href="{sitemap:loc}">
                       <xsl:value-of select="sitemap:loc"/>

@@ -82,8 +82,8 @@ const AppContent = () => {
         <Route path="/acerca-de" element={<About />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
-        <Route path="/guia" element={<Blog />} />
-        <Route path="/guia/:category/:slug" element={<BlogPost />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:category/:slug" element={<BlogPost />} />
         <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/registro" element={<Signup />} />

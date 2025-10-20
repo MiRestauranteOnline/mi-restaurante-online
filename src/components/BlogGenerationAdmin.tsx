@@ -565,7 +565,7 @@ const BlogGenerationAdmin: React.FC = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => window.open(`/guia/${article.category}/${article.slug}`, '_blank')}
+                      onClick={() => window.open(`/blog/${article.category}/${article.slug}`, '_blank')}
                     >
                       View
                     </Button>

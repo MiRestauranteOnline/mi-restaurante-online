@@ -81,7 +81,7 @@ const BlogPost = () => {
       "dateModified": article.publishDate,
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://mirestauranteonline.com/guia/${article.category}/${article.slug}`
+        "@id": `https://mirestauranteonline.com/blog/${article.category}/${article.slug}`
       },
       "keywords": article.keywords.join(", "),
       "wordCount": article.content.split(' ').filter(word => word.length > 0).length,
@@ -108,19 +108,19 @@ const BlogPost = () => {
           "@type": "ListItem",
           "position": 2,
           "name": "Guía",
-          "item": "https://mirestauranteonline.com/guia"
+          "item": "https://mirestauranteonline.com/blog"
         },
         {
           "@type": "ListItem",
           "position": 3,
           "name": categoryLabels[article.category as keyof typeof categoryLabels],
-          "item": `https://mirestauranteonline.com/guia?category=${article.category}`
+          "item": `https://mirestauranteonline.com/blog?category=${article.category}`
         },
         {
           "@type": "ListItem",
           "position": 4,
           "name": article.title,
-          "item": `https://mirestauranteonline.com/guia/${article.category}/${article.slug}`
+          "item": `https://mirestauranteonline.com/blog/${article.category}/${article.slug}`
         }
       ]
     };
@@ -173,7 +173,7 @@ const BlogPost = () => {
 
   // NOW we can do conditional rendering AFTER all hooks are called
   if (!category || !slug) {
-    return <Navigate to="/guia" replace />;
+    return <Navigate to="/blog" replace />;
   }
 
   if (loading) {
@@ -190,7 +190,7 @@ const BlogPost = () => {
   }
 
   if (!article) {
-    return <Navigate to="/guia" replace />;
+    return <Navigate to="/blog" replace />;
   }
 
   return (
@@ -209,14 +209,14 @@ const BlogPost = () => {
             </li>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
             <li>
-              <Link to="/guia" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">
                 Guía
               </Link>
             </li>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
             <li>
               <Link 
-                to={`/guia?category=${article.category}`}
+                to={`/blog?category=${article.category}`}
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 {categoryLabels[article.category as keyof typeof categoryLabels]}
@@ -396,7 +396,7 @@ const BlogPost = () => {
                       </div>
                       <CardTitle className="line-clamp-2">
                         <Link 
-                          to={`/guia/${relatedArticle.category}/${relatedArticle.slug}`}
+                          to={`/blog/${relatedArticle.category}/${relatedArticle.slug}`}
                           className="hover:text-primary transition-colors"
                         >
                           {relatedArticle.title}
@@ -409,7 +409,7 @@ const BlogPost = () => {
                     <CardContent>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">{relatedArticle.publishDate}</span>
-                        <Link to={`/guia/${relatedArticle.category}/${relatedArticle.slug}`}>
+                        <Link to={`/blog/${relatedArticle.category}/${relatedArticle.slug}`}>
                           <Button variant="outline" size="sm">
                             Leer Más
                           </Button>
@@ -432,7 +432,7 @@ const BlogPost = () => {
             Descubre más guías y consejos para hacer crecer tu restaurante online.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/guia">
+            <Link to="/blog">
               <Button variant="outline" className="flex items-center">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Ver Todos los Artículos
