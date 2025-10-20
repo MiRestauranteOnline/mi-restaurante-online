@@ -146,7 +146,12 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         message: 'Sitemap updated successfully',
-        urls: staticPages.length + documentationPages.length + (articles?.length || 0)
+        urls: staticPages.length + documentationPages.length + (articles?.length || 0),
+        breakdown: {
+          static: staticPages.length,
+          documentation: documentationPages.length,
+          blog: articles?.length || 0
+        }
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
