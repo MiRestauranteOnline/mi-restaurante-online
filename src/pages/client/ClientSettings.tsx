@@ -14,7 +14,6 @@ import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { timezones } from '@/data/timezones';
 import { countries } from '@/data/countries';
-import { EmailDNSConfigForm } from '@/components/client/EmailDNSConfigForm';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -23,11 +22,7 @@ interface ClientContext {
   selectedClient: any;
 }
 
-interface ClientSettingsProps {
-  allowedTabs?: string[];
-}
-
-export default function ClientSettings({ allowedTabs }: ClientSettingsProps) {
+export default function ClientSettings() {
   const { selectedClientId } = useOutletContext<ClientContext>();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -164,7 +159,6 @@ export default function ClientSettings({ allowedTabs }: ClientSettingsProps) {
               <SelectItem value="general">{t('settings.general')}</SelectItem>
               <SelectItem value="appearance">{t('settings.appearance')}</SelectItem>
               <SelectItem value="contact">{t('settings.contact')}</SelectItem>
-              <SelectItem value="email">Email DNS</SelectItem>
               <SelectItem value="analytics">Analíticas</SelectItem>
             </SelectContent>
           </Select>
@@ -407,17 +401,6 @@ export default function ClientSettings({ allowedTabs }: ClientSettingsProps) {
                   />
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="email" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Configuración de DNS para Email</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <EmailDNSConfigForm clientId={selectedClientId} />
             </CardContent>
           </Card>
         </TabsContent>

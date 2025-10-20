@@ -44,6 +44,7 @@ const Guias = ClientGuides;
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 import ClientAnalytics from "./pages/client/ClientAnalytics";
 import ClientReservations from "./pages/client/ClientReservations";
+import ClientEmailDNS from "./pages/client/ClientEmailDNS";
 import UsageMonitoring from "./pages/admin/UsageMonitoring";
 import BillingInvoicing from "./pages/admin/BillingInvoicing";
 import AdminMonitoring from "./pages/admin/AdminMonitoring";
@@ -113,7 +114,8 @@ const AppContent = () => {
         </Route>
         <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
           <Route index element={<ClientDashboard />} />
-          <Route path="dashboard/:clientId" element={<ClientSettingsPage allowedTabs={["basic","hours","social","delivery","branding","content","menu","team","reviews","faqs","carousel","custom-images"]} />} />
+          <Route path="dashboard/:clientId" element={<ClientSettingsPage />} />
+          <Route path="email-dns/:clientId" element={<ClientEmailDNS />} />
           <Route path="reservations/:clientId" element={<ClientReservations />} />
           <Route path="analytics/:clientId" element={<ClientAnalytics />} />
           <Route path="support/:clientId" element={<ClientSupport />} />
