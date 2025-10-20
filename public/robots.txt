@@ -22,4 +22,4 @@ Disallow: /registro
 Disallow: /signup
 
 # Sitemap location
-Sitemap: https://mirestaurante.online/sitemap.xml
+Sitemap: https://ptzcetvcccnojdbzzlyt.supabase.co/storage/v1/object/public/client-assets/sitemap.xml
