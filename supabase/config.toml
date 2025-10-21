@@ -53,3 +53,6 @@ verify_jwt = false
 
 [functions.serve-sitemap]
 verify_jwt = false
+
+[functions.copy-client-data]
+verify_jwt = false
