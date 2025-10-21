@@ -1748,7 +1748,7 @@ export default function UnifiedDashboard() {
                   onChange={setMenuItemImageUrl}
                   clientId={selectedClientId}
                   context="menu-item"
-                  description={`menu item photo - ${menuItemForm.watch('name') || 'dish'}`}
+                  description={menuItemForm.watch('name') || ''}
                   onProcessingChange={setUploading}
                 />
               </div>
