@@ -33,6 +33,7 @@ import MarketingAnalytics from "./pages/admin/MarketingAnalytics";
 import PlanManagement from "./pages/admin/PlanManagement";
 import TemplatesManagement from "./pages/admin/TemplatesManagement";
 import CustomDomainPage from "./pages/admin/CustomDomainPage";
+import DataCopyTool from "./pages/admin/DataCopyTool";
 import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
 import ClientDashboard from "./pages/client/ClientDashboard";
 import ClientSettingsPage from "./pages/client/ClientSettings";
@@ -111,6 +112,7 @@ const AppContent = () => {
           <Route path="coupon-management" element={<CouponManagement />} />
           <Route path="plan-management" element={<PlanManagement />} />
           <Route path="templates-management" element={<TemplatesManagement />} />
+          <Route path="data-copy" element={<DataCopyTool />} />
         </Route>
         <Route path="/client" element={<DashboardLanguageProvider><ClientDashboardLayout /></DashboardLanguageProvider>}>
           <Route index element={<ClientDashboard />} />
