@@ -271,6 +271,9 @@ serve(async (req) => {
           const dataUrl = `data:image/jpeg;base64,${base64Image}`;
 
           const aiAttempt = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
+            const controller = new AbortController();
+            const perRequestTimeoutMs = 9000; // hard cap per AI call
+            const t = setTimeout(() => controller.abort(), perRequestTimeoutMs);
             try {
               const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
                 method: "POST",
@@ -284,13 +287,17 @@ serve(async (req) => {
                     {
                       role: "user",
                       content: [
-                        { type: "text", text: `Compress this image aggressively to WebP format at ${width}px width and quality ${q}. Target file size: ${targetKB}KB maximum. Strip all metadata.` },
+                        {
+                          type: "text",
+                          text: `You are an image optimizer. Convert the provided image to strict WebP format at exactly ${width}px max-width (preserve aspect ratio) and quality ${q}. Target size <= ${targetKB}KB. Remove all metadata. Return ONLY a data URL (data:image/webp;base64,...) of the optimized image.`
+                        },
                         { type: "image_url", image_url: { url: dataUrl } }
                       ]
                     }
                   ],
                   modalities: ["image"]
-                })
+                }),
+                signal: controller.signal,
               });
               
               if (!resp.ok) {
@@ -299,12 +306,18 @@ serve(async (req) => {
               }
               
               const data = await resp.json();
-              const editedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+              const editedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url as string | undefined;
               if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
-                const b64 = editedImageUrl.split(',')[1];
+                const [header, b64] = editedImageUrl.split(',');
+                // Prefer webp output, otherwise ignore
+                if (!header.includes('image/webp')) {
+                  console.warn(`AI returned non-webp format (${header}), ignoring result`);
+                  return null;
+                }
                 const bin = atob(b64);
                 const bytes = new Uint8Array(bin.length);
                 for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                // Validate RIFF WEBP signature
                 if (bytes.length > 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
                   return { buffer: bytes.buffer, size: bytes.byteLength };
                 }
@@ -313,6 +326,8 @@ serve(async (req) => {
             } catch (e) {
               console.warn(`AI attempt failed (w=${width}, q=${q}):`, e);
               return null;
+            } finally {
+              clearTimeout(t);
             }
           };
 
@@ -352,6 +367,31 @@ serve(async (req) => {
             optimizedBuffer = aiResults[0].buffer;
             optimizedSize = aiResults[0].size;
             console.log(`Using best AI result: ${(optimizedSize / 1024).toFixed(1)} KB`);
+          }
+
+          // Force second pass if still above target: try smaller widths/qualities deterministically
+          if (optimizedBuffer && optimizedSize && optimizedSize > targetKB * 1024) {
+            console.log(`Second pass compression needed (current ${(optimizedSize/1024).toFixed(1)} KB > target ${targetKB} KB)`);
+            const forceWidths = context === 'menu-item' ? [500, 400, 320, 256] : [Math.min(maxWidth, 900), 700, 500, 400];
+            const forceQualities = [35, 30, 25, 20];
+            let best: { buffer: ArrayBuffer; size: number } | null = null;
+            outerForce: for (const w of forceWidths) {
+              for (const q of forceQualities) {
+                const r = await aiAttempt(q, w);
+                if (r) {
+                  console.log(`✓ Second pass: w=${w}, q=${q} → ${(r.size/1024).toFixed(1)} KB`);
+                  if (!best || r.size < best.size) best = r;
+                  if (r.size <= targetKB * 1024) { best = r; break outerForce; }
+                }
+              }
+            }
+            if (best) {
+              optimizedBuffer = best.buffer;
+              optimizedSize = best.size;
+              console.log(`Second pass result: ${(optimizedSize/1024).toFixed(1)} KB`);
+            } else {
+              console.warn('Second pass produced no result; keeping first AI result');
+            }
           }
 
           // Final fallback: use original only if all methods failed
