@@ -57,15 +57,21 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Check if user has admin role
-    const { data: roleCheck } = await supabaseClient
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .single();
+    // Check if user has admin role using security definer function to bypass RLS safely
+    const { data: isAdmin, error: roleCheckError } = await supabaseClient.rpc('has_role', {
+      _user_id: user.id,
+      _role: 'admin'
+    });
 
-    if (!roleCheck) {
+    if (roleCheckError) {
+      console.error('Role check error:', roleCheckError);
+      return new Response(
+        JSON.stringify({ error: 'Role check failed' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!isAdmin) {
       console.error('User is not admin');
       return new Response(
         JSON.stringify({ error: 'Insufficient permissions' }),
