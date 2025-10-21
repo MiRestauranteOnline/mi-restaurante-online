@@ -204,8 +204,8 @@ serve(async (req) => {
       let widthCandidates: number[];
       let qCandidatesBase: number[];
       if (context === 'menu-item') {
-        widthCandidates = [Math.min(maxWidth, 800), 700, 600];
-        qCandidatesBase = [70, 60, 50, 40, 35];
+        widthCandidates = [Math.min(maxWidth, 800), 700, 600, 500];
+        qCandidatesBase = [65, 55, 45, 35];
       } else if (context === 'hero-background') {
         widthCandidates = [maxWidth, 1600, 1400];
         qCandidatesBase = [70, 60, 50];
@@ -219,7 +219,7 @@ serve(async (req) => {
       qCandidatesBase = qCandidatesBase.filter((q) => q >= Math.max(35, minQuality));
       const results: Array<{ size: number; q: number; w: number; buffer: ArrayBuffer }> = [];
       const start = Date.now();
-      const maxMs = 15000;
+      const maxMs = 10000; // Tighter 10s budget for Supabase transforms
 
       outer: for (const w of widthCandidates) {
         for (const q of qCandidatesBase) {
@@ -231,17 +231,18 @@ serve(async (req) => {
             const r = await attemptTransform(q, w);
             if (r) {
               results.push({ size: r.size, q, w, buffer: r.buffer });
-              console.log(`Transform attempt: width=${w}, q=${q} → ${(r.size / 1024).toFixed(1)} KB`);
+              console.log(`✓ Transform: width=${w}, q=${q} → ${(r.size / 1024).toFixed(1)} KB`);
               if (r.size <= targetKB * 1024) {
                 optimizedBuffer = r.buffer;
                 optimizedSize = r.size;
+                console.log(`✓ Target reached with Supabase transform!`);
                 break outer;
               }
             } else {
-              console.warn(`Transform attempt failed to return data (w=${w}, q=${q})`);
+              console.warn(`✗ Transform failed (w=${w}, q=${q})`);
             }
           } catch (e) {
-            console.warn(`Transform attempt error (w=${w}, q=${q}):`, e);
+            console.warn(`✗ Transform error (w=${w}, q=${q}):`, e);
           }
         }
       }
@@ -252,14 +253,17 @@ serve(async (req) => {
           results.sort((a, b) => a.size - b.size);
           optimizedBuffer = results[0].buffer;
           optimizedSize = results[0].size;
+          console.log(`Using best Supabase result: ${(optimizedSize / 1024).toFixed(1)} KB`);
         } else {
+          console.warn('No valid Supabase transforms, will try AI fallback');
           optimizedBuffer = undefined;
           optimizedSize = undefined;
         }
       }
 
-      // If still above target or no valid transform, try Lovable AI fallback once (skip for menu-item)
-      if (context !== 'menu-item' && (!optimizedBuffer || optimizedSize! > targetKB * 1024)) {
+      // AI fallback for ALL contexts if above target or no valid transform
+      if (!optimizedBuffer || optimizedSize === undefined || optimizedSize > targetKB * 1024) {
+        console.log(`Attempting AI compression (current: ${optimizedSize ? (optimizedSize / 1024).toFixed(1) : 'N/A'} KB, target: ${targetKB} KB)...`);
         try {
           const base64Image = btoa(
             new Uint8Array(imageBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
@@ -267,86 +271,123 @@ serve(async (req) => {
           const dataUrl = `data:image/jpeg;base64,${base64Image}`;
 
           const aiAttempt = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
-            const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${Deno.env.get('LOVABLE_API_KEY')}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                model: "google/gemini-2.5-flash-image-preview",
-                messages: [
-                  {
-                    role: "user",
-                    content: [
-                      { type: "text", text: `Resize to width ${width}px (keep aspect). Re-encode as WebP with quality ${q}. Strip all metadata. Max size ${targetKB} KB.` },
-                      { type: "image_url", image_url: { url: dataUrl } }
-                    ]
-                  }
-                ],
-                modalities: ["image"]
-              })
-            });
-            const data = await resp.json();
-            const editedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-            if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
-              const b64 = editedImageUrl.split(',')[1];
-              const bin = atob(b64);
-              const bytes = new Uint8Array(bin.length);
-              for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-              if (bytes.length > 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
-                return { buffer: bytes.buffer, size: bytes.byteLength };
+            try {
+              const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${Deno.env.get('LOVABLE_API_KEY')}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  model: "google/gemini-2.5-flash-image-preview",
+                  messages: [
+                    {
+                      role: "user",
+                      content: [
+                        { type: "text", text: `Compress this image aggressively to WebP format at ${width}px width and quality ${q}. Target file size: ${targetKB}KB maximum. Strip all metadata.` },
+                        { type: "image_url", image_url: { url: dataUrl } }
+                      ]
+                    }
+                  ],
+                  modalities: ["image"]
+                })
+              });
+              
+              if (!resp.ok) {
+                console.warn(`AI API error: ${resp.status}`);
+                return null;
               }
+              
+              const data = await resp.json();
+              const editedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+              if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
+                const b64 = editedImageUrl.split(',')[1];
+                const bin = atob(b64);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                if (bytes.length > 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
+                  return { buffer: bytes.buffer, size: bytes.byteLength };
+                }
+              }
+              return null;
+            } catch (e) {
+              console.warn(`AI attempt failed (w=${width}, q=${q}):`, e);
+              return null;
             }
-            return null;
           };
 
-          const aiWidths = [maxWidth, Math.floor(maxWidth * 0.9), Math.floor(maxWidth * 0.8), 700, 600, 500];
-          const aiQualities = [60, 50, 40, 35];
+          const aiWidths = context === 'menu-item' 
+            ? [800, 700, 600, 500, 400] 
+            : [maxWidth, Math.floor(maxWidth * 0.9), Math.floor(maxWidth * 0.8), 700, 600];
+          const aiQualities = context === 'menu-item' 
+            ? [50, 40, 35, 30] 
+            : [60, 50, 40, 35];
           const aiResults: Array<{ size: number; q: number; w: number; buffer: ArrayBuffer }> = [];
+          const aiStart = Date.now();
+          const aiMaxMs = 12000; // 12s budget for AI attempts
 
           outerAI: for (const w of aiWidths) {
             for (const q of aiQualities) {
+              if (Date.now() - aiStart > aiMaxMs) {
+                console.warn('AI attempts timed out');
+                break outerAI;
+              }
               const r = await aiAttempt(q, w);
               if (r) {
                 aiResults.push({ size: r.size, q, w, buffer: r.buffer });
-                console.log(`AI attempt: width=${w}, q=${q} → ${(r.size / 1024).toFixed(1)} KB`);
+                console.log(`✓ AI compress: width=${w}, q=${q} → ${(r.size / 1024).toFixed(1)} KB`);
                 if (r.size <= targetKB * 1024) {
                   optimizedBuffer = r.buffer;
                   optimizedSize = r.size;
+                  console.log(`✓ Target reached with AI compression!`);
                   break outerAI;
                 }
               }
             }
           }
 
+          // Pick smallest AI result if target not hit
+          if ((!optimizedBuffer || (optimizedSize && optimizedSize > targetKB * 1024)) && aiResults.length > 0) {
+            aiResults.sort((a, b) => a.size - b.size);
+            optimizedBuffer = aiResults[0].buffer;
+            optimizedSize = aiResults[0].size;
+            console.log(`Using best AI result: ${(optimizedSize / 1024).toFixed(1)} KB`);
+          }
+
+          // Final fallback: use original only if all methods failed
           if (!optimizedBuffer || optimizedSize === undefined) {
-            if (aiResults.length > 0) {
-              aiResults.sort((a, b) => a.size - b.size);
-              optimizedBuffer = aiResults[0].buffer;
-              optimizedSize = aiResults[0].size;
-            } else {
-              optimizedBuffer = imageBuffer;
-              optimizedSize = originalSize;
-            }
+            console.warn('All compression methods failed, using original');
+            optimizedBuffer = imageBuffer;
+            optimizedSize = originalSize;
           }
         } catch (e) {
-          console.warn('AI fallback failed, using original image:', e);
-          optimizedBuffer = imageBuffer;
-          optimizedSize = originalSize;
+          console.error('AI fallback crashed:', e);
+          // Use best result so far or original
+          if (!optimizedBuffer || optimizedSize === undefined) {
+            optimizedBuffer = imageBuffer;
+            optimizedSize = originalSize;
+          }
         }
       }
 
-      console.log(`Final optimized size: ${(optimizedSize! / 1024).toFixed(1)} KB (target ${targetKB} KB)`);
+      // Safety guard: ensure we have valid values before logging
+      const safeOptimizedSize = optimizedSize ?? originalSize;
+      const safeOptimizedBuffer = optimizedBuffer ?? imageBuffer;
+      
+      console.log(`=== Compression Summary ===`);
+      console.log(`Original: ${(originalSize / 1024).toFixed(1)} KB`);
+      console.log(`Final: ${(safeOptimizedSize / 1024).toFixed(1)} KB`);
+      console.log(`Target: ${targetKB} KB`);
+      console.log(`Success: ${safeOptimizedSize <= targetKB * 1024 ? '✓' : '✗'} (${safeOptimizedSize > targetKB * 1024 ? 'ABOVE' : 'at/below'} target)`);
     } catch (error) {
-      console.error('Image processing failed, using original:', error);
+      console.error('Image processing crashed:', error);
       optimizedBuffer = imageBuffer;
       optimizedSize = originalSize;
     }
 
-    // Ensure safe values for next steps
+    // Ensure safe values for next steps - final guard
     const finalBuffer: ArrayBuffer = optimizedBuffer ?? imageBuffer;
-    const finalSize: number = optimizedSize ?? originalSize;
+    const finalSize: number = (optimizedSize !== undefined && !isNaN(optimizedSize)) ? optimizedSize : originalSize;
 
     // Create a unique, cache-busting filename using a short content hash
     const hashBuf = await crypto.subtle.digest('SHA-1', imageBuffer);

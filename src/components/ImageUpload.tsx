@@ -157,7 +157,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
         imageDescription = contextMap[context] || `restaurant image - ${fileName}`;
       }
       
-      const maxWait = context === 'menu-item' ? 20000 : 30000;
+      const maxWait = context === 'menu-item' ? 25000 : 35000; // Increased timeout for AI compression
       cancelledRef.current = false;
       const invokePromise = supabase.functions.invoke('optimize-user-image', {
         body: {
@@ -173,25 +173,39 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
         cancelledRef.current = true;
         reject(new Error('Optimization timed out'));
       }, maxWait));
-      const optimizeResponse: any = await Promise.race([invokePromise, timeoutPromise]);
+      
+      // Show AI compression stage if it takes longer
+      const aiStageTimer = setTimeout(() => {
+        if (!cancelledRef.current) {
+          setProgressLabel('Compresión AI...');
+        }
+      }, 8000);
+      
+      try {
+        const optimizeResponse: any = await Promise.race([invokePromise, timeoutPromise]);
+        clearTimeout(aiStageTimer);
 
-      if (optimizeResponse.error) {
-        throw new Error(optimizeResponse.error.message || 'Failed to optimize image');
+        if (optimizeResponse.error) {
+          throw new Error(optimizeResponse.error.message || 'Failed to optimize image');
+        }
+
+        const { optimizedUrl, altText, originalSizeKB, optimizedSizeKB, compressionRatio } = optimizeResponse.data;
+        
+        // Step 3: The temp file is automatically deleted by the optimize-user-image function
+        // to save storage space, so no cleanup needed here
+
+        // Step 4: Update the component with optimized image
+        onChange(optimizedUrl);
+        stopProgress(100);
+        
+        toast({
+          title: "Image Optimized Successfully",
+          description: `Converted to WebP format. ${originalSizeKB > optimizedSizeKB ? `Reduced from ${originalSizeKB}KB to ${optimizedSizeKB}KB (${compressionRatio}% compression)` : `Final size: ${optimizedSizeKB}KB`}`,
+        });
+      } catch (innerError: any) {
+        clearTimeout(aiStageTimer);
+        throw innerError;
       }
-
-      const { optimizedUrl, altText, originalSizeKB, optimizedSizeKB, compressionRatio } = optimizeResponse.data;
-      
-      // Step 3: The temp file is automatically deleted by the optimize-user-image function
-      // to save storage space, so no cleanup needed here
-
-      // Step 4: Update the component with optimized image
-      onChange(optimizedUrl);
-      stopProgress(100);
-      
-      toast({
-        title: "Image Optimized Successfully",
-        description: `Converted to WebP format. ${originalSizeKB > optimizedSizeKB ? `Reduced from ${originalSizeKB}KB to ${optimizedSizeKB}KB (${compressionRatio}% compression)` : `Final size: ${optimizedSizeKB}KB`}`,
-      });
       
     } catch (error: any) {
       stopProgress(0);
