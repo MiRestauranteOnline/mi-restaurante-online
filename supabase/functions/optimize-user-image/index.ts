@@ -174,13 +174,23 @@ serve(async (req) => {
         }
       };
 
-      const attemptTransform = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
-        const url = buildRenderUrl(width, q);
-        const resp = await fetch(url);
-        if (!resp.ok) return null;
-        const buf = await resp.arrayBuffer();
-        return { buffer: buf, size: buf.byteLength };
-      };
+        const attemptTransform = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
+          const isLikelyWebP = (buf: ArrayBuffer) => {
+            const b = new Uint8Array(buf);
+            // 'RIFF' (52 49 46 46) then at 8..11 'WEBP' (57 45 42 50)
+            return b.length > 12 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50;
+          };
+
+          const url = buildRenderUrl(width, q);
+          const resp = await fetch(url);
+          if (!resp.ok) return null;
+          const buf = await resp.arrayBuffer();
+          if (!isLikelyWebP(buf)) {
+            console.warn(`Transform returned non-WebP bytes (w=${width}, q=${q}), ignoring.`);
+            return null;
+          }
+          return { buffer: buf, size: buf.byteLength };
+        };
 
       // Iteratively try qualities first, then reduce width if still above target
       const widthCandidates: number[] = [maxWidth, Math.floor(maxWidth * 0.9), Math.floor(maxWidth * 0.8), Math.floor(maxWidth * 0.7)];
@@ -216,7 +226,86 @@ serve(async (req) => {
           optimizedBuffer = results[0].buffer;
           optimizedSize = results[0].size;
         } else {
-          // Fallback to original if transforms failed
+          optimizedBuffer = undefined;
+          optimizedSize = undefined;
+        }
+      }
+
+      // If still above target or no valid transform, try Lovable AI fallback once
+      if (!optimizedBuffer || optimizedSize! > targetKB * 1024) {
+        try {
+          const base64Image = btoa(
+            new Uint8Array(imageBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+          );
+          const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+
+          const aiAttempt = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
+            const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${Deno.env.get('LOVABLE_API_KEY')}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                model: "google/gemini-2.5-flash-image-preview",
+                messages: [
+                  {
+                    role: "user",
+                    content: [
+                      { type: "text", text: `Resize to width ${width}px (keep aspect). Re-encode as WebP with quality ${q}. Strip all metadata. Max size ${targetKB} KB. Prioritize strong compression with acceptable visual quality for web menus.` },
+                      { type: "image_url", image_url: { url: dataUrl } }
+                    ]
+                  }
+                ],
+                modalities: ["image"]
+              })
+            });
+            const data = await resp.json();
+            const editedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+            if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
+              const b64 = editedImageUrl.split(',')[1];
+              const bin = atob(b64);
+              const bytes = new Uint8Array(bin.length);
+              for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+              // validate WebP header
+              if (bytes.length > 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
+                return { buffer: bytes.buffer, size: bytes.byteLength };
+              }
+            }
+            return null;
+          };
+
+          const aiWidths = [maxWidth, Math.floor(maxWidth * 0.9), Math.floor(maxWidth * 0.8), 700, 600, 500];
+          const aiQualities = [60, 50, 40, 35];
+          const aiResults: Array<{ size: number; q: number; w: number; buffer: ArrayBuffer }> = [];
+
+          outerAI: for (const w of aiWidths) {
+            for (const q of aiQualities) {
+              const r = await aiAttempt(q, w);
+              if (r) {
+                aiResults.push({ size: r.size, q, w, buffer: r.buffer });
+                console.log(`AI attempt: width=${w}, q=${q} → ${(r.size / 1024).toFixed(1)} KB`);
+                if (r.size <= targetKB * 1024) {
+                  optimizedBuffer = r.buffer;
+                  optimizedSize = r.size;
+                  break outerAI;
+                }
+              }
+            }
+          }
+
+          if (!optimizedBuffer || optimizedSize === undefined) {
+            if (aiResults.length > 0) {
+              aiResults.sort((a, b) => a.size - b.size);
+              optimizedBuffer = aiResults[0].buffer;
+              optimizedSize = aiResults[0].size;
+            } else {
+              optimizedBuffer = imageBuffer;
+              optimizedSize = originalSize;
+            }
+          }
+        } catch (e) {
+          console.warn('AI fallback failed, using original image:', e);
           optimizedBuffer = imageBuffer;
           optimizedSize = originalSize;
         }
