@@ -152,8 +152,8 @@ serve(async (req) => {
     console.log(`Max width for context "${context}": ${maxWidth}px, quality start: ${initialQuality}, target: ${targetKB}KB`);
 
     // Step 4: Use Lovable AI Gateway to resize and compress with iterative attempts
-    let optimizedBuffer: ArrayBuffer;
-    let optimizedSize: number;
+    let optimizedBuffer: ArrayBuffer | undefined;
+    let optimizedSize: number | undefined;
     
     try {
       const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
@@ -184,13 +184,11 @@ serve(async (req) => {
                   content: [
                     {
                       type: "text",
-                      text: `Resize to a maximum width of ${width}px (maintain aspect ratio). Re-encode as WebP with quality ${q} with a high compression effort and strip all metadata. Optimize for web use and aim for file size under ${targetKB} KB while preserving reasonable visual quality.`,
+                      text: `Resize to a maximum width of ${width}px (maintain aspect ratio). Re-encode as WebP with quality ${q} and high compression effort, strip all metadata. Optimize for web use and aim for file size under ${targetKB} KB while preserving reasonable visual quality.`,
                     },
                     {
                       type: "image_url",
-                      image_url: {
-                        url: originalDataUrl,
-                      },
+                      image_url: { url: originalDataUrl },
                     },
                   ],
                 },
@@ -238,17 +236,14 @@ serve(async (req) => {
             console.warn(`Optimization attempt ${i + 1} failed:`, e);
           }
 
-          // Adjust parameters for next attempt
           if (q > minQuality) {
             q = Math.max(minQuality, q - 10);
           } else {
-            // Reduce width by ~10% but not below 70% of original target width
             w = Math.max(Math.floor(maxWidth * 0.7), Math.floor(w * 0.9));
           }
         }
 
-        // Choose the best result (smallest size), even if above target
-        if (!optimizedBuffer) {
+        if (!optimizedBuffer || optimizedSize === undefined) {
           if (results.length > 0) {
             results.sort((a, b) => a.size - b.size);
             optimizedBuffer = results[0].buffer;
@@ -260,14 +255,17 @@ serve(async (req) => {
           }
         }
 
-        console.log(`Final optimized size: ${(optimizedSize / 1024).toFixed(1)} KB (target ${targetKB} KB)`);
+        console.log(`Final optimized size: ${(optimizedSize! / 1024).toFixed(1)} KB (target ${targetKB} KB)`);
       }
-    } catch (error) {
     } catch (error) {
       console.error('Image processing failed, using original:', error);
       optimizedBuffer = imageBuffer;
       optimizedSize = originalSize;
     }
+
+    // Ensure safe values for next steps
+    const finalBuffer: ArrayBuffer = optimizedBuffer ?? imageBuffer;
+    const finalSize: number = optimizedSize ?? originalSize;
 
     // Create a unique, cache-busting filename using a short content hash
     const hashBuf = await crypto.subtle.digest('SHA-1', imageBuffer);
@@ -282,7 +280,7 @@ serve(async (req) => {
 
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('client-assets')
-      .upload(uploadPath, optimizedBuffer, {
+      .upload(uploadPath, finalBuffer, {
         contentType: 'image/webp',
         cacheControl: '31536000',
         upsert: true
@@ -335,7 +333,7 @@ serve(async (req) => {
                 alt_text: altText,
                 original_filename: originalFilename || filename,
                 upload_context: context,
-                file_size_kb: Math.round(optimizedSize / 1024),
+                file_size_kb: Math.round(finalSize / 1024),
                 temp_client_id: clientId,
                 created_at: new Date().toISOString()
               }
@@ -351,7 +349,7 @@ serve(async (req) => {
               alt_text: altText,
               original_filename: originalFilename || filename,
               upload_context: context,
-              file_size_kb: Math.round(optimizedSize / 1024)
+              file_size_kb: Math.round(finalSize / 1024)
             });
           console.log('Image stored in client_images table');
         }
@@ -374,7 +372,7 @@ serve(async (req) => {
             filename: optimizedFilename,
             alt_text: altText,
             original_size_kb: Math.round(originalSize / 1024),
-            optimized_size_kb: Math.round(optimizedSize / 1024),
+            optimized_size_kb: Math.round(finalSize / 1024),
             client_id: clientId,
             description: description
           }
@@ -390,8 +388,8 @@ serve(async (req) => {
       filename: optimizedFilename,
       altText,
       originalSizeKB: Math.round(originalSize / 1024),
-      optimizedSizeKB: Math.round(optimizedSize / 1024),
-      compressionRatio: Math.round((1 - optimizedSize / originalSize) * 100),
+      optimizedSizeKB: Math.round(finalSize / 1024),
+      compressionRatio: Math.round((1 - finalSize / originalSize) * 100),
       message: 'Image optimized and stored successfully'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
