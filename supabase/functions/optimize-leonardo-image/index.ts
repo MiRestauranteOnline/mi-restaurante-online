@@ -104,9 +104,79 @@ serve(async (req) => {
     const originalSize = imageBuffer.byteLength;
     console.log(`Original image size: ${(originalSize / 1024).toFixed(2)} KB`);
 
-    // Step 3: Convert to WebP using Deno's built-in image processing
-    // For now, we'll upload the original and let Supabase handle optimization
-    // In the future, this could be enhanced with actual WebP conversion
+    // Step 3: Resize and compress - blog images should be max 1200px wide  
+    const maxWidth = 1200;
+    const quality = 80;
+    let optimizedBuffer: ArrayBuffer;
+    let optimizedSize: number;
+    
+    try {
+      const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+      
+      if (!lovableApiKey) {
+        console.warn('LOVABLE_API_KEY not found, using original image');
+        optimizedBuffer = imageBuffer;
+        optimizedSize = originalSize;
+      } else {
+        // Convert image to base64
+        const base64Image = btoa(
+          new Uint8Array(imageBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
+        const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+        
+        const resizeResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${lovableApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-image-preview",
+            messages: [
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text: `Resize this image to a maximum width of ${maxWidth}px while maintaining aspect ratio. Optimize for web use with WebP format at ${quality}% quality.`
+                  },
+                  {
+                    type: "image_url",
+                    image_url: { url: dataUrl }
+                  }
+                ]
+              }
+            ],
+            modalities: ["image"]
+          })
+        });
+        
+        const resizeData = await resizeResponse.json();
+        const editedImageUrl = resizeData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        
+        if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
+          const base64Data = editedImageUrl.split(',')[1];
+          const binaryString = atob(base64Data);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          optimizedBuffer = bytes.buffer;
+          optimizedSize = optimizedBuffer.byteLength;
+          
+          console.log(`Optimized image size: ${(optimizedSize / 1024).toFixed(2)} KB`);
+          console.log(`Compression ratio: ${Math.round((1 - optimizedSize / originalSize) * 100)}%`);
+        } else {
+          optimizedBuffer = imageBuffer;
+          optimizedSize = originalSize;
+        }
+      }
+    } catch (error) {
+      console.error('Image processing failed, using original:', error);
+      optimizedBuffer = imageBuffer;
+      optimizedSize = originalSize;
+    }
+    
     const optimizedFilename = `${filename}.webp`;
     
     // Step 4: Upload to Supabase Storage
@@ -152,6 +222,7 @@ serve(async (req) => {
           filename: optimizedFilename,
           alt_text: altText,
           original_size_kb: Math.round(originalSize / 1024),
+          optimized_size_kb: Math.round(optimizedSize / 1024),
           optimization_prompt: originalPrompt
         }
       });
@@ -162,6 +233,8 @@ serve(async (req) => {
       filename: optimizedFilename,
       altText,
       originalSizeKB: Math.round(originalSize / 1024),
+      optimizedSizeKB: Math.round(optimizedSize / 1024),
+      compressionRatio: Math.round((1 - optimizedSize / originalSize) * 100),
       message: 'Image optimized and stored successfully'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

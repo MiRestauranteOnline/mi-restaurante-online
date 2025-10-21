@@ -118,22 +118,98 @@ serve(async (req) => {
     const originalSize = imageBuffer.byteLength;
     console.log(`Original image size: ${(originalSize / 1024).toFixed(2)} KB`);
 
-    // Step 3: Optimize image using an external service (like TinyPNG or CloudFlare)
-    // For this implementation, we'll use a simple approach and upload as-is for now
-    // but you could integrate with services like:
-    // - TinyPNG API for compression
-    // - CloudFlare Image Resizing
-    // - ImageKit.io
-    // - Or build a custom image processing service
-
-    let optimizedBuffer = imageBuffer;
-    let optimizedSize = originalSize;
+    // Step 3: Determine max width based on context and call image optimization API
+    const contextMaxWidths: Record<string, number> = {
+      'hero-background': 1920,
+      'carousel': 1000,
+      'menu-item': 800,
+      'logo': 512,
+      'favicon': 32,
+      'team-member': 600,
+      'custom_upload': 1200,
+      'restaurant content': 1200, // default
+    };
     
-    // If the image is too large, we can use a compression service
-    if (originalSize > 300 * 1024) { // If larger than 300KB
-      console.log('Image is larger than 300KB, should be compressed');
-      // TODO: Implement actual compression here
-      // For now, we'll just log this and proceed
+    const maxWidth = contextMaxWidths[context] || 1200;
+    const quality = context === 'logo' || context === 'favicon' ? 90 : 
+                   context === 'hero-background' ? 75 : 80;
+    
+    console.log(`Max width for context "${context}": ${maxWidth}px, quality: ${quality}`);
+
+    // Step 4: Use Lovable AI Gateway to resize and compress
+    let optimizedBuffer: ArrayBuffer;
+    let optimizedSize: number;
+    
+    try {
+      // Use the AI gateway to edit/resize the image
+      const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+      
+      if (!lovableApiKey) {
+        console.warn('LOVABLE_API_KEY not found, using original image');
+        optimizedBuffer = imageBuffer;
+        optimizedSize = originalSize;
+      } else {
+        // First, convert image to base64 for the API
+        const base64Image = btoa(
+          new Uint8Array(imageBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
+        const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+        
+        const resizeResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${lovableApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-image-preview",
+            messages: [
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text: `Resize this image to a maximum width of ${maxWidth}px while maintaining aspect ratio. Optimize for web use with WebP format at ${quality}% quality. Keep all visual content intact.`
+                  },
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: dataUrl
+                    }
+                  }
+                ]
+              }
+            ],
+            modalities: ["image"]
+          })
+        });
+        
+        const resizeData = await resizeResponse.json();
+        const editedImageUrl = resizeData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        
+        if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
+          // Convert base64 back to ArrayBuffer
+          const base64Data = editedImageUrl.split(',')[1];
+          const binaryString = atob(base64Data);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          optimizedBuffer = bytes.buffer;
+          optimizedSize = optimizedBuffer.byteLength;
+          
+          console.log(`Optimized image size: ${(optimizedSize / 1024).toFixed(2)} KB`);
+          console.log(`Compression ratio: ${Math.round((1 - optimizedSize / originalSize) * 100)}%`);
+        } else {
+          console.warn('Image optimization failed, using original');
+          optimizedBuffer = imageBuffer;
+          optimizedSize = originalSize;
+        }
+      }
+    } catch (error) {
+      console.error('Image processing failed, using original:', error);
+      optimizedBuffer = imageBuffer;
+      optimizedSize = originalSize;
     }
 
     // Create a unique, cache-busting filename using a short content hash
@@ -142,36 +218,7 @@ serve(async (req) => {
     const hash8 = hashArr.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 8);
     const optimizedFilename = `${filename}-${hash8}.webp`;
 
-    // Additionally, keep the ORIGINAL upload stored under the client folder
-    let originalPublicUrl = '';
-    try {
-      const originalExt = (imageUrl.split('?')[0].split('.').pop() || 'jpg').toLowerCase();
-      const originalContentType = originalExt === 'png' ? 'image/png' : originalExt === 'webp' ? 'image/webp' : 'image/jpeg';
-      const originalFilename = `${filename}-${hash8}.${originalExt}`;
-      const originalUploadPath = clientId
-        ? `clients/${clientId}/original-images/${originalFilename}`
-        : `original-images/${originalFilename}`;
-
-      const { error: originalUploadError } = await supabase.storage
-        .from('client-assets')
-        .upload(originalUploadPath, imageBuffer, {
-          contentType: originalContentType,
-          cacheControl: '31536000',
-          upsert: true,
-        });
-      if (originalUploadError && originalUploadError.message?.includes('already exists') === false) {
-        console.warn('Failed to upload original image copy:', originalUploadError.message);
-      }
-
-      const { data: originalUrlData } = supabase.storage
-        .from('client-assets')
-        .getPublicUrl(originalUploadPath);
-      originalPublicUrl = originalUrlData.publicUrl;
-    } catch (e) {
-      console.warn('Could not persist original image copy:', e);
-    }
-    
-    // Step 4: Upload optimized image to Supabase Storage
+    // Step 5: Upload optimized image to Supabase Storage
     const uploadPath = clientId 
       ? `clients/${clientId}/optimized-images/${optimizedFilename}` 
       : `optimized-images/${optimizedFilename}`;
@@ -188,14 +235,14 @@ serve(async (req) => {
       throw new Error(`Failed to upload optimized image: ${uploadError.message}`);
     }
 
-    // Step 5: Get the public URL
+    // Step 6: Get the public URL
     const { data: { publicUrl } } = supabase.storage
       .from('client-assets')
       .getPublicUrl(uploadPath);
 
     console.log('Optimized image uploaded successfully:', publicUrl);
 
-    // Step 6: Store in client_images table if requested (for signup custom uploads)
+    // Step 7: Store in client_images table if requested (for signup custom uploads)
     if (storeInDatabase && clientId) {
       try {
         // Handle temporary client IDs during signup differently
@@ -236,9 +283,6 @@ serve(async (req) => {
         // Don't fail the entire process for database storage issues
       }
     }
-
-    // Step 7: If there was an original temp upload, we could delete it here
-    // This would be the case if we're doing background optimization
 
     // Step 8: Log the optimization
     try {
