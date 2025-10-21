@@ -258,8 +258,8 @@ serve(async (req) => {
         }
       }
 
-      // If still above target or no valid transform, try Lovable AI fallback once
-      if (!optimizedBuffer || optimizedSize! > targetKB * 1024) {
+      // If still above target or no valid transform, try Lovable AI fallback once (skip for menu-item)
+      if (context !== 'menu-item' && (!optimizedBuffer || optimizedSize! > targetKB * 1024)) {
         try {
           const base64Image = btoa(
             new Uint8Array(imageBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
@@ -279,7 +279,7 @@ serve(async (req) => {
                   {
                     role: "user",
                     content: [
-                      { type: "text", text: `Resize to width ${width}px (keep aspect). Re-encode as WebP with quality ${q}. Strip all metadata. Max size ${targetKB} KB. Prioritize strong compression with acceptable visual quality for web menus.` },
+                      { type: "text", text: `Resize to width ${width}px (keep aspect). Re-encode as WebP with quality ${q}. Strip all metadata. Max size ${targetKB} KB.` },
                       { type: "image_url", image_url: { url: dataUrl } }
                     ]
                   }
@@ -294,7 +294,6 @@ serve(async (req) => {
               const bin = atob(b64);
               const bytes = new Uint8Array(bin.length);
               for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-              // validate WebP header
               if (bytes.length > 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
                 return { buffer: bytes.buffer, size: bytes.byteLength };
               }

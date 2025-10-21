@@ -36,6 +36,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
   const [showProgress, setShowProgress] = useState(false);
   const [progressLabel, setProgressLabel] = useState('');
   const progressTimerRef = useRef<number | null>(null);
+  const cancelledRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -138,7 +139,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
       setOptimizing(true);
       setProgress(35);
       setProgressLabel(t('imageUpload.optimizing'));
-      startProgress(90, 150);
+      startProgress(98, 200);
       
       // Create a description based on context, custom description, or file name
       let imageDescription = description;
@@ -156,7 +157,9 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
         imageDescription = contextMap[context] || `restaurant image - ${fileName}`;
       }
       
-      const optimizeResponse = await supabase.functions.invoke('optimize-user-image', {
+      const maxWait = context === 'menu-item' ? 20000 : 30000;
+      cancelledRef.current = false;
+      const invokePromise = supabase.functions.invoke('optimize-user-image', {
         body: {
           imageUrl: data.publicUrl,
           description: imageDescription,
@@ -166,6 +169,11 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
           originalFilename: file.name
         }
       });
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => {
+        cancelledRef.current = true;
+        reject(new Error('Optimization timed out'));
+      }, maxWait));
+      const optimizeResponse: any = await Promise.race([invokePromise, timeoutPromise]);
 
       if (optimizeResponse.error) {
         throw new Error(optimizeResponse.error.message || 'Failed to optimize image');
