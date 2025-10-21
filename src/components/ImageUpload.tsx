@@ -146,27 +146,34 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
   // Generate SEO-friendly filename based on context and description
   const generateFileName = (context: string, description?: string): string => {
     const timestamp = Date.now();
-    let baseName = '';
-    
-    if (description) {
-      // Use description if provided (e.g., plate name, person name)
-      baseName = description
+
+    const slugify = (str: string) =>
+      str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // remove accents
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
-    } else {
-      // Use context-based naming
-      const contextNames: Record<string, string> = {
-        'menu-item': 'dish',
-        'team-member': 'team',
-        'hero-background': 'hero',
-        'carousel': 'banner',
-        'restaurant content': 'image'
-      };
-      baseName = contextNames[context] || context.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    }
-    
-    return `clients/${clientId}/optimized-images/${baseName}-${timestamp}.webp`;
+
+    const contextNames: Record<string, string> = {
+      'menu-item': 'dish',
+      'team-member': 'team',
+      'hero-background': 'hero',
+      'carousel': 'banner',
+      'restaurant content': 'image',
+    };
+
+    const baseFromContext = contextNames[context] || slugify(context);
+    const fromDescription = description ? slugify(description) : '';
+
+    const baseName = fromDescription || baseFromContext;
+
+    // For team members, keep a clean, stable filename without timestamp when we have a proper name
+    const includeTimestamp = context !== 'team-member' || !fromDescription;
+
+    const finalName = includeTimestamp ? `${baseName}-${timestamp}` : baseName;
+
+    return `clients/${clientId}/optimized-images/${finalName}.webp`;
   };
 
   const handleFileUpload = async (file: File) => {

@@ -141,12 +141,14 @@ export const SignupStep5 = ({ onComplete, onBack, initialData }: SignupStep5Prop
                         <FormItem className="md:col-span-2">
                           <FormLabel>Foto del Miembro (Opcional)</FormLabel>
                           <FormControl>
-                            <ImageUpload
-                              label=""
-                              value={field.value || ""}
-                              onChange={field.onChange}
-                              clientId="signup"
-                            />
+                              <ImageUpload
+                                label=""
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                                clientId="signup"
+                                context="team-member"
+                                description={form.watch(`teamMembers.${index}.name`) || ''}
+                              />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
