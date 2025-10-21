@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, X, Link, Image as ImageIcon } from "lucide-react";
@@ -31,9 +32,33 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
   const [uploading, setUploading] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showProgress, setShowProgress] = useState(false);
+  const [progressLabel, setProgressLabel] = useState('');
+  const progressTimerRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  // Progress helpers
+  const startProgress = (target: number, stepMs = 150) => {
+    if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
+    progressTimerRef.current = window.setInterval(() => {
+      setProgress((prev) => (prev < target ? Math.min(target, prev + 1) : prev));
+    }, stepMs);
+  };
+
+  const stopProgress = (final = 100) => {
+    if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
+    progressTimerRef.current = null;
+    setProgress(final);
+    setTimeout(() => setShowProgress(false), 500);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
+    };
+  }, []);
   // Helper function to get translation with fallback
   const t = (key: string): string => {
     const keys = key.split('.');
@@ -83,6 +108,10 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
   const handleFileUpload = async (file: File) => {
     setUploading(true);
     onProcessingChange?.(true);
+    setShowProgress(true);
+    setProgress(5);
+    setProgressLabel(t('imageUpload.uploading'));
+    startProgress(30, 120);
     
     // Delete old files before uploading new one
     if (value) {
@@ -107,6 +136,9 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
       // Step 2: Optimize the uploaded image
       setUploading(false);
       setOptimizing(true);
+      setProgress(35);
+      setProgressLabel(t('imageUpload.optimizing'));
+      startProgress(90, 150);
       
       // Create a description based on context, custom description, or file name
       let imageDescription = description;
@@ -146,6 +178,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
 
       // Step 4: Update the component with optimized image
       onChange(optimizedUrl);
+      stopProgress(100);
       
       toast({
         title: "Image Optimized Successfully",
@@ -153,6 +186,7 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
       });
       
     } catch (error: any) {
+      stopProgress(0);
       toast({
         title: "Upload Failed",
         description: error.message || "Failed to upload and optimize image",
@@ -201,6 +235,17 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
               </>
             )}
           </div>
+        </div>
+      )}
+      
+      {/* Progress bar */}
+      {showProgress && (
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>{progressLabel}</span>
+            <span>{progress}%</span>
+          </div>
+          <Progress value={progress} />
         </div>
       )}
       

@@ -177,29 +177,56 @@ serve(async (req) => {
         const attemptTransform = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
           const isLikelyWebP = (buf: ArrayBuffer) => {
             const b = new Uint8Array(buf);
-            // 'RIFF' (52 49 46 46) then at 8..11 'WEBP' (57 45 42 50)
             return b.length > 12 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50;
           };
 
           const url = buildRenderUrl(width, q);
-          const resp = await fetch(url);
-          if (!resp.ok) return null;
-          const buf = await resp.arrayBuffer();
-          if (!isLikelyWebP(buf)) {
-            console.warn(`Transform returned non-WebP bytes (w=${width}, q=${q}), ignoring.`);
-            return null;
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          try {
+            const resp = await fetch(url, { signal: controller.signal });
+            if (!resp.ok) return null;
+            const buf = await resp.arrayBuffer();
+            if (resp.headers.get('content-type')?.includes('image/webp') !== true) {
+              console.warn(`Transform content-type not webp (w=${width}, q=${q}) => ${resp.headers.get('content-type')}`);
+            }
+            if (!isLikelyWebP(buf)) {
+              console.warn(`Transform returned non-WebP bytes (w=${width}, q=${q}), ignoring.`);
+              return null;
+            }
+            return { buffer: buf, size: buf.byteLength };
+          } finally {
+            clearTimeout(timeoutId);
           }
-          return { buffer: buf, size: buf.byteLength };
         };
 
       // Iteratively try qualities first, then reduce width if still above target
-      const widthCandidates: number[] = [maxWidth, Math.floor(maxWidth * 0.9), Math.floor(maxWidth * 0.8), Math.floor(maxWidth * 0.7)];
-      const qStart = initialQuality;
-      const qCandidatesBase: number[] = [qStart, qStart - 10, minQuality, Math.max(40, minQuality - 10), 35].filter(q => q > 0);
+      let widthCandidates: number[];
+      let qCandidatesBase: number[];
+      if (context === 'menu-item') {
+        widthCandidates = [Math.min(maxWidth, 800), 700, 600];
+        qCandidatesBase = [70, 60, 50, 40, 35];
+      } else if (context === 'hero-background') {
+        widthCandidates = [maxWidth, 1600, 1400];
+        qCandidatesBase = [70, 60, 50];
+      } else if (context === 'carousel') {
+        widthCandidates = [maxWidth, 900, 800];
+        qCandidatesBase = [70, 60, 50];
+      } else {
+        widthCandidates = [maxWidth, Math.floor(maxWidth * 0.9), Math.floor(maxWidth * 0.8)];
+        qCandidatesBase = [75, 65, 55, 45];
+      }
+      qCandidatesBase = qCandidatesBase.filter((q) => q >= Math.max(35, minQuality));
       const results: Array<{ size: number; q: number; w: number; buffer: ArrayBuffer }> = [];
+      const start = Date.now();
+      const maxMs = 15000;
 
       outer: for (const w of widthCandidates) {
         for (const q of qCandidatesBase) {
+          if (Date.now() - start > maxMs) {
+            console.warn('Transform attempts timed out by total budget');
+            break outer;
+          }
           try {
             const r = await attemptTransform(q, w);
             if (r) {
