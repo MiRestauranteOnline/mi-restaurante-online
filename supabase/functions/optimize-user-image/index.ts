@@ -151,112 +151,78 @@ serve(async (req) => {
     
     console.log(`Max width for context "${context}": ${maxWidth}px, quality start: ${initialQuality}, target: ${targetKB}KB`);
 
-    // Step 4: Use Lovable AI Gateway to resize and compress with iterative attempts
+    // Step 4: Resize/compress via Supabase Image Transformations with strict size caps
     let optimizedBuffer: ArrayBuffer | undefined;
     let optimizedSize: number | undefined;
-    
+
     try {
-      const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
-      
-      if (!lovableApiKey) {
-        console.warn('LOVABLE_API_KEY not found, using original image');
-        optimizedBuffer = imageBuffer;
-        optimizedSize = originalSize;
-      } else {
-        // Convert original image to data URL once for reuse
-        const base64Image = btoa(
-          new Uint8Array(imageBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
-        );
-        const originalDataUrl = `data:image/jpeg;base64,${base64Image}`;
+      // Build a render URL from the original public object URL
+      const buildRenderUrl = (width: number, quality: number) => {
+        try {
+          const u = new URL(imageUrl);
+          u.pathname = u.pathname.replace('/object/', '/render/image/');
+          u.searchParams.set('width', String(width));
+          u.searchParams.set('format', 'webp');
+          u.searchParams.set('quality', String(quality));
+          u.searchParams.set('resize', 'contain');
+          return u.toString();
+        } catch {
+          // Fallback string replace
+          const base = imageUrl.replace('/object/', '/render/image/');
+          const sep = base.includes('?') ? '&' : '?';
+          return `${base}${sep}width=${width}&format=webp&quality=${quality}&resize=contain`;
+        }
+      };
 
-        const attemptOptimize = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
-          const resizeResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${lovableApiKey}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              model: "google/gemini-2.5-flash-image-preview",
-              messages: [
-                {
-                  role: "user",
-                  content: [
-                    {
-                      type: "text",
-                      text: `Resize to a maximum width of ${width}px (maintain aspect ratio). Re-encode as WebP with quality ${q} and high compression effort, strip all metadata. Optimize for web use and aim for file size under ${targetKB} KB while preserving reasonable visual quality.`,
-                    },
-                    {
-                      type: "image_url",
-                      image_url: { url: originalDataUrl },
-                    },
-                  ],
-                },
-              ],
-              modalities: ["image"],
-            }),
-          });
+      const attemptTransform = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
+        const url = buildRenderUrl(width, q);
+        const resp = await fetch(url);
+        if (!resp.ok) return null;
+        const buf = await resp.arrayBuffer();
+        return { buffer: buf, size: buf.byteLength };
+      };
 
-          const resizeData = await resizeResponse.json();
-          const editedImageUrl = resizeData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      // Iteratively try qualities first, then reduce width if still above target
+      const widthCandidates: number[] = [maxWidth, Math.floor(maxWidth * 0.9), Math.floor(maxWidth * 0.8), Math.floor(maxWidth * 0.7)];
+      const qStart = initialQuality;
+      const qCandidatesBase: number[] = [qStart, qStart - 10, minQuality, Math.max(40, minQuality - 10), 35].filter(q => q > 0);
+      const results: Array<{ size: number; q: number; w: number; buffer: ArrayBuffer }> = [];
 
-          if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
-            const base64Data = editedImageUrl.split(',')[1];
-            const binaryString = atob(base64Data);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-              bytes[i] = binaryString.charCodeAt(i);
-            }
-            return { buffer: bytes.buffer, size: bytes.byteLength };
-          }
-
-          return null;
-        };
-
-        let q = initialQuality;
-        let w = maxWidth;
-        const maxAttempts = 3;
-        const results: Array<{ size: number; q: number; w: number; buffer: ArrayBuffer }> = [];
-
-        for (let i = 0; i < maxAttempts; i++) {
+      outer: for (const w of widthCandidates) {
+        for (const q of qCandidatesBase) {
           try {
-            const res = await attemptOptimize(q, w);
-            if (res) {
-              results.push({ size: res.size, q, w, buffer: res.buffer });
-              console.log(`Optimization attempt ${i + 1}: width=${w}, q=${q} → ${(res.size / 1024).toFixed(1)} KB`);
-              if (res.size <= targetKB * 1024) {
-                optimizedBuffer = res.buffer;
-                optimizedSize = res.size;
-                break;
+            const r = await attemptTransform(q, w);
+            if (r) {
+              results.push({ size: r.size, q, w, buffer: r.buffer });
+              console.log(`Transform attempt: width=${w}, q=${q} → ${(r.size / 1024).toFixed(1)} KB`);
+              if (r.size <= targetKB * 1024) {
+                optimizedBuffer = r.buffer;
+                optimizedSize = r.size;
+                break outer;
               }
             } else {
-              console.warn(`Optimization attempt ${i + 1} returned no image`);
+              console.warn(`Transform attempt failed to return data (w=${w}, q=${q})`);
             }
           } catch (e) {
-            console.warn(`Optimization attempt ${i + 1} failed:`, e);
-          }
-
-          if (q > minQuality) {
-            q = Math.max(minQuality, q - 10);
-          } else {
-            w = Math.max(Math.floor(maxWidth * 0.7), Math.floor(w * 0.9));
+            console.warn(`Transform attempt error (w=${w}, q=${q}):`, e);
           }
         }
-
-        if (!optimizedBuffer || optimizedSize === undefined) {
-          if (results.length > 0) {
-            results.sort((a, b) => a.size - b.size);
-            optimizedBuffer = results[0].buffer;
-            optimizedSize = results[0].size;
-          } else {
-            console.warn('Image optimization failed, using original');
-            optimizedBuffer = imageBuffer;
-            optimizedSize = originalSize;
-          }
-        }
-
-        console.log(`Final optimized size: ${(optimizedSize! / 1024).toFixed(1)} KB (target ${targetKB} KB)`);
       }
+
+      // Choose smallest result if target not reached
+      if (!optimizedBuffer || optimizedSize === undefined) {
+        if (results.length > 0) {
+          results.sort((a, b) => a.size - b.size);
+          optimizedBuffer = results[0].buffer;
+          optimizedSize = results[0].size;
+        } else {
+          // Fallback to original if transforms failed
+          optimizedBuffer = imageBuffer;
+          optimizedSize = originalSize;
+        }
+      }
+
+      console.log(`Final optimized size: ${(optimizedSize! / 1024).toFixed(1)} KB (target ${targetKB} KB)`);
     } catch (error) {
       console.error('Image processing failed, using original:', error);
       optimizedBuffer = imageBuffer;
