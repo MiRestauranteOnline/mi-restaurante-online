@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, X, Link, Image as ImageIcon } from "lucide-react";
-import { ImagePool } from '@squoosh/lib';
+import imageCompression from 'browser-image-compression';
 
 interface ImageUploadProps {
   label: string;
@@ -107,8 +107,8 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
     }
   };
 
-  // Compress image using Squoosh WebP encoder
-  const compressImageWithSquoosh = async (file: File): Promise<{ blob: Blob; originalSizeKB: number; compressedSizeKB: number }> => {
+  // Compress image using browser-image-compression
+  const compressImageWithBrowser = async (file: File): Promise<{ blob: Blob; originalSizeKB: number; compressedSizeKB: number }> => {
     const originalSizeKB = Math.round(file.size / 1024);
     
     // Target sizes based on context
@@ -117,73 +117,28 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
     // Max dimensions based on context
     const maxWidth = context === 'menu-item' ? 800 : context === 'hero-background' ? 1920 : context === 'carousel' ? 1000 : 1200;
     
-    const imagePool = new ImagePool(4); // 4 workers
+    const options = {
+      maxSizeMB: targetKB / 1024, // Convert KB to MB
+      maxWidthOrHeight: maxWidth,
+      useWebWorker: true,
+      fileType: 'image/webp' as const,
+      initialQuality: 0.7
+    };
     
     try {
-      // Read file as ArrayBuffer
-      const arrayBuffer = await file.arrayBuffer();
-      const image = imagePool.ingestImage(new Uint8Array(arrayBuffer));
-      const decoded = await image.decoded;
+      console.log(`Compressing image: original ${originalSizeKB}KB, target ${targetKB}KB, maxWidth ${maxWidth}px`);
+      const compressedFile = await imageCompression(file, options);
+      const compressedSizeKB = Math.round(compressedFile.size / 1024);
       
-      // Resize if needed
-      const { bitmap } = decoded;
-      if (bitmap.width > maxWidth) {
-        const newHeight = Math.round((bitmap.height * maxWidth) / bitmap.width);
-        await image.preprocess({
-          resize: {
-            width: maxWidth,
-            height: newHeight
-          }
-        });
-      }
-      
-      // Try different quality settings to hit target size
-      let bestBlob: Blob | null = null;
-      let bestSize = Infinity;
-      const qualities = [75, 65, 55, 45, 35, 25];
-      
-      for (const quality of qualities) {
-        await image.encode({
-          webp: {
-            quality
-          }
-        });
-        
-        const encodedImage = await image.encodedWith.webp;
-        // Create a new Uint8Array to ensure we get a regular ArrayBuffer
-        const uint8 = new Uint8Array(encodedImage.binary);
-        const blob = new Blob([uint8], { type: 'image/webp' });
-        const sizeKB = blob.size / 1024;
-        
-        console.log(`Squoosh compression: quality=${quality}, size=${sizeKB.toFixed(1)}KB`);
-        
-        // If under target, use this
-        if (sizeKB <= targetKB) {
-          bestBlob = blob;
-          bestSize = sizeKB;
-          break;
-        }
-        
-        // Track smallest result
-        if (sizeKB < bestSize) {
-          bestBlob = blob;
-          bestSize = sizeKB;
-        }
-      }
-      
-      await imagePool.close();
-      
-      if (!bestBlob) {
-        throw new Error('Compression failed');
-      }
+      console.log(`Compression complete: ${originalSizeKB}KB → ${compressedSizeKB}KB`);
       
       return {
-        blob: bestBlob,
+        blob: compressedFile,
         originalSizeKB,
-        compressedSizeKB: Math.round(bestSize)
+        compressedSizeKB
       };
     } catch (error) {
-      await imagePool.close();
+      console.error('Compression error:', error);
       throw error;
     }
   };
@@ -202,10 +157,10 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
     }
     
     try {
-      // Step 1: Compress image client-side with Squoosh
-      const { blob: compressedBlob, originalSizeKB, compressedSizeKB } = await compressImageWithSquoosh(file);
+      // Step 1: Compress image client-side with browser-image-compression
+      const { blob: compressedBlob, originalSizeKB, compressedSizeKB } = await compressImageWithBrowser(file);
       
-      console.log(`Squoosh compression complete: ${originalSizeKB}KB → ${compressedSizeKB}KB`);
+      console.log(`Browser compression complete: ${originalSizeKB}KB → ${compressedSizeKB}KB`);
       
       // Step 2: Upload compressed image
       setProgress(45);
