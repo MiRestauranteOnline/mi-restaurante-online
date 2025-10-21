@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, X, Link, Image as ImageIcon } from "lucide-react";
+import { ImagePool } from '@squoosh/lib';
 
 interface ImageUploadProps {
   label: string;
@@ -106,13 +107,94 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
     }
   };
 
+  // Compress image using Squoosh WebP encoder
+  const compressImageWithSquoosh = async (file: File): Promise<{ blob: Blob; originalSizeKB: number; compressedSizeKB: number }> => {
+    const originalSizeKB = Math.round(file.size / 1024);
+    
+    // Target sizes based on context
+    const targetKB = context === 'menu-item' ? 60 : context === 'hero-background' ? 300 : context === 'carousel' ? 140 : 200;
+    
+    // Max dimensions based on context
+    const maxWidth = context === 'menu-item' ? 800 : context === 'hero-background' ? 1920 : context === 'carousel' ? 1000 : 1200;
+    
+    const imagePool = new ImagePool(4); // 4 workers
+    
+    try {
+      // Read file as ArrayBuffer
+      const arrayBuffer = await file.arrayBuffer();
+      const image = imagePool.ingestImage(new Uint8Array(arrayBuffer));
+      const decoded = await image.decoded;
+      
+      // Resize if needed
+      const { bitmap } = decoded;
+      if (bitmap.width > maxWidth) {
+        const newHeight = Math.round((bitmap.height * maxWidth) / bitmap.width);
+        await image.preprocess({
+          resize: {
+            width: maxWidth,
+            height: newHeight
+          }
+        });
+      }
+      
+      // Try different quality settings to hit target size
+      let bestBlob: Blob | null = null;
+      let bestSize = Infinity;
+      const qualities = [75, 65, 55, 45, 35, 25];
+      
+      for (const quality of qualities) {
+        await image.encode({
+          webp: {
+            quality
+          }
+        });
+        
+        const encodedImage = await image.encodedWith.webp;
+        // Create a new Uint8Array to ensure we get a regular ArrayBuffer
+        const uint8 = new Uint8Array(encodedImage.binary);
+        const blob = new Blob([uint8], { type: 'image/webp' });
+        const sizeKB = blob.size / 1024;
+        
+        console.log(`Squoosh compression: quality=${quality}, size=${sizeKB.toFixed(1)}KB`);
+        
+        // If under target, use this
+        if (sizeKB <= targetKB) {
+          bestBlob = blob;
+          bestSize = sizeKB;
+          break;
+        }
+        
+        // Track smallest result
+        if (sizeKB < bestSize) {
+          bestBlob = blob;
+          bestSize = sizeKB;
+        }
+      }
+      
+      await imagePool.close();
+      
+      if (!bestBlob) {
+        throw new Error('Compression failed');
+      }
+      
+      return {
+        blob: bestBlob,
+        originalSizeKB,
+        compressedSizeKB: Math.round(bestSize)
+      };
+    } catch (error) {
+      await imagePool.close();
+      throw error;
+    }
+  };
+
   const handleFileUpload = async (file: File) => {
     setUploading(true);
     onProcessingChange?.(true);
     setShowProgress(true);
     setProgress(5);
-    setProgressLabel(t('imageUpload.uploading'));
-    startProgress(30, 120);
+    setProgressLabel('Comprimiendo...');
+    startProgress(40, 80);
     
     // Delete old files before uploading new one
     if (value) {
@@ -120,98 +202,49 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
     }
     
     try {
-      // Step 1: Upload original file temporarily
-      const fileExt = file.name.split('.').pop();
-      const tempFileName = `temp/${clientId}/${Date.now()}-original.${fileExt}`;
+      // Step 1: Compress image client-side with Squoosh
+      const { blob: compressedBlob, originalSizeKB, compressedSizeKB } = await compressImageWithSquoosh(file);
+      
+      console.log(`Squoosh compression complete: ${originalSizeKB}KB → ${compressedSizeKB}KB`);
+      
+      // Step 2: Upload compressed image
+      setProgress(45);
+      setProgressLabel('Subiendo...');
+      startProgress(90, 100);
+      
+      const fileName = `clients/${clientId}/optimized-images/${Date.now()}.webp`;
       
       const { error: uploadError } = await supabase.storage
         .from('client-assets')
-        .upload(tempFileName, file);
+        .upload(fileName, compressedBlob, {
+          contentType: 'image/webp',
+          cacheControl: '31536000',
+          upsert: true
+        });
 
       if (uploadError) throw uploadError;
 
       const { data } = supabase.storage
         .from('client-assets')
-        .getPublicUrl(tempFileName);
+        .getPublicUrl(fileName);
 
-      // Step 2: Optimize the uploaded image
-      setUploading(false);
-      setOptimizing(true);
-      setProgress(35);
-      setProgressLabel(t('imageUpload.optimizing'));
-      startProgress(98, 200);
+      // Step 3: Update the component with optimized image
+      onChange(data.publicUrl);
+      stopProgress(100);
       
-      // Create a description based on context, custom description, or file name
-      let imageDescription = description;
-      if (!imageDescription) {
-        const fileName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
-        const contextMap: Record<string, string> = {
-          'carousel': `carousel image for restaurant showcase - ${fileName}`,
-          'menu-item': `menu item photo - ${fileName}`,
-          'team-member': `team member profile photo - ${fileName}`,
-          'hero-background': `hero background image - ${fileName}`,
-          'about-section': `about section image - ${fileName}`,
-          'logo': `restaurant logo - ${fileName}`,
-          'restaurant content': `restaurant content image - ${fileName}`
-        };
-        imageDescription = contextMap[context] || `restaurant image - ${fileName}`;
-      }
+      const compressionRatio = Math.round((1 - compressedSizeKB / originalSizeKB) * 100);
       
-      const maxWait = context === 'menu-item' ? 25000 : 35000; // Increased timeout for AI compression
-      cancelledRef.current = false;
-      const invokePromise = supabase.functions.invoke('optimize-user-image', {
-        body: {
-          imageUrl: data.publicUrl,
-          description: imageDescription,
-          clientId: clientId,
-          context: context,
-          storeInDatabase: storeInDatabase,
-          originalFilename: file.name
-        }
+      toast({
+        title: "Imagen Optimizada",
+        description: `WebP format. ${originalSizeKB}KB → ${compressedSizeKB}KB (${compressionRatio}% compresión)`,
       });
-      const timeoutPromise = new Promise((_, reject) => setTimeout(() => {
-        cancelledRef.current = true;
-        reject(new Error('Optimization timed out'));
-      }, maxWait));
-      
-      // Show AI compression stage if it takes longer
-      const aiStageTimer = setTimeout(() => {
-        if (!cancelledRef.current) {
-          setProgressLabel('Compresión AI...');
-        }
-      }, 8000);
-      
-      try {
-        const optimizeResponse: any = await Promise.race([invokePromise, timeoutPromise]);
-        clearTimeout(aiStageTimer);
-
-        if (optimizeResponse.error) {
-          throw new Error(optimizeResponse.error.message || 'Failed to optimize image');
-        }
-
-        const { optimizedUrl, altText, originalSizeKB, optimizedSizeKB, compressionRatio } = optimizeResponse.data;
-        
-        // Step 3: The temp file is automatically deleted by the optimize-user-image function
-        // to save storage space, so no cleanup needed here
-
-        // Step 4: Update the component with optimized image
-        onChange(optimizedUrl);
-        stopProgress(100);
-        
-        toast({
-          title: "Image Optimized Successfully",
-          description: `Converted to WebP format. ${originalSizeKB > optimizedSizeKB ? `Reduced from ${originalSizeKB}KB to ${optimizedSizeKB}KB (${compressionRatio}% compression)` : `Final size: ${optimizedSizeKB}KB`}`,
-        });
-      } catch (innerError: any) {
-        clearTimeout(aiStageTimer);
-        throw innerError;
-      }
       
     } catch (error: any) {
       stopProgress(0);
+      console.error('Upload/compression error:', error);
       toast({
-        title: "Upload Failed",
-        description: error.message || "Failed to upload and optimize image",
+        title: "Error de Carga",
+        description: error.message || "Falló la compresión u optimización de la imagen",
         variant: "destructive"
       });
     } finally {
