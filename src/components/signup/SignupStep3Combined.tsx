@@ -566,7 +566,7 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
                               onChange={field.onChange}
                               clientId="signup"
                               context="team-member"
-                              description={`team member profile photo - ${form.watch(`teamMembers.${index}.name`) || 'staff member'}`}
+                              description={form.watch(`teamMembers.${index}.name`) || ''}
                             />
                           </FormControl>
                           <FormMessage />
