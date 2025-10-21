@@ -1127,7 +1127,7 @@ export default function MenuItems() {
                   onChange={setItemImageUrl}
                   clientId={selectedClientId}
                   context="menu-item"
-                  description={`menu item photo - ${itemForm.watch('name') || 'dish'}`}
+                  description={itemForm.watch('name') || ''}
                   onProcessingChange={setUploading}
                 />
               </div>

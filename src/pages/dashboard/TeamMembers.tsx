@@ -563,7 +563,7 @@ export default function TeamMembers() {
                           onChange={(url) => field.onChange(url)}
                           clientId={selectedClientId}
                           context="team-member"
-                          description="team member profile photo"
+                          description={form.watch('name') || ''}
                         />
                       </FormControl>
                       <FormMessage />
