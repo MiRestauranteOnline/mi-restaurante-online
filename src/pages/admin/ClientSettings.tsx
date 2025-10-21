@@ -6177,6 +6177,8 @@ setReviewForm({
                 value={teamMemberForm.image_url}
                 onChange={(url) => setTeamMemberForm({...teamMemberForm, image_url: url})}
                 clientId={clientId || ''}
+                context="team-member"
+                description={teamMemberForm.name || ''}
               />
             </div>
             
