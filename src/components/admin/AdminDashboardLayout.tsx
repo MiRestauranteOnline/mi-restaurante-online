@@ -24,7 +24,8 @@ import {
   Globe,
   BarChart3,
   Receipt,
-  Monitor
+  Monitor,
+  Copy
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -150,6 +151,7 @@ export default function AdminDashboardLayout() {
     { href: '/admin/subscription-management', label: t('subscriptions'), icon: CreditCard },
     { href: '/admin/coupon-management', label: 'Cupones', icon: Tag },
     { href: '/admin/plan-management', label: 'Planes', icon: Store },
+    { href: '/admin/data-copy', label: 'Copiar Datos', icon: Copy },
   ];
 
   if (loading) {
