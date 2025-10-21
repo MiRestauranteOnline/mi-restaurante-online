@@ -242,6 +242,26 @@ serve(async (req) => {
 
     console.log('Optimized image uploaded successfully:', publicUrl);
 
+    // Step 6.5: Delete the original temp file to save storage space
+    try {
+      const tempPathMatch = imageUrl.match(/client-assets\/(.+)$/);
+      if (tempPathMatch && tempPathMatch[1].startsWith('temp/')) {
+        const tempPath = tempPathMatch[1];
+        const { error: deleteError } = await supabase.storage
+          .from('client-assets')
+          .remove([tempPath]);
+        
+        if (deleteError) {
+          console.warn('Failed to delete temp file:', tempPath, deleteError);
+        } else {
+          console.log('Deleted temp file:', tempPath);
+        }
+      }
+    } catch (cleanupError) {
+      console.warn('Error during temp file cleanup:', cleanupError);
+      // Don't fail the entire process if cleanup fails
+    }
+
     // Step 7: Store in client_images table if requested (for signup custom uploads)
     if (storeInDatabase && clientId) {
       try {

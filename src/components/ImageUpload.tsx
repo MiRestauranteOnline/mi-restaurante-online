@@ -141,9 +141,8 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
 
       const { optimizedUrl, altText, originalSizeKB, optimizedSizeKB, compressionRatio } = optimizeResponse.data;
       
-      // Step 3: Keep the original temporary file as requested (do not delete)
-      // Previously we deleted the temp file to save space.
-      // await supabase.storage.from('client-assets').remove([tempFileName]);
+      // Step 3: The temp file is automatically deleted by the optimize-user-image function
+      // to save storage space, so no cleanup needed here
 
       // Step 4: Update the component with optimized image
       onChange(optimizedUrl);
