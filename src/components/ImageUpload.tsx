@@ -43,9 +43,52 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
     return key;
   };
 
+  // Helper to delete old storage files before uploading new one
+  const deleteOldStorageFiles = async (oldUrl: string) => {
+    if (!oldUrl || !clientId) return;
+    
+    try {
+      // Delete all files for this client (temp and optimized)
+      const { data: files, error: listError } = await supabase.storage
+        .from('client-assets')
+        .list(`clients/${clientId}`, {
+          limit: 1000,
+          search: ''
+        });
+
+      if (!listError && files && files.length > 0) {
+        const filePaths = files.map(f => `clients/${clientId}/${f.name}`);
+        await supabase.storage.from('client-assets').remove(filePaths);
+      }
+
+      // Also check temp folder
+      const { data: tempFiles, error: tempListError } = await supabase.storage
+        .from('client-assets')
+        .list(`temp/${clientId}`, {
+          limit: 1000,
+          search: ''
+        });
+
+      if (!tempListError && tempFiles && tempFiles.length > 0) {
+        const tempPaths = tempFiles.map(f => `temp/${clientId}/${f.name}`);
+        await supabase.storage.from('client-assets').remove(tempPaths);
+      }
+
+      console.log('Deleted old storage files for client:', clientId);
+    } catch (error) {
+      console.warn('Failed to delete old storage files:', error);
+    }
+  };
+
   const handleFileUpload = async (file: File) => {
     setUploading(true);
     onProcessingChange?.(true);
+    
+    // Delete old files before uploading new one
+    if (value) {
+      await deleteOldStorageFiles(value);
+    }
+    
     try {
       // Step 1: Upload original file temporarily
       const fileExt = file.name.split('.').pop();
@@ -177,7 +220,11 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
             variant="destructive"
             size="sm"
             className="absolute top-2 right-2 z-10"
-            onClick={() => onChange('')}
+            onClick={async () => {
+              // Delete storage files before clearing the URL
+              await deleteOldStorageFiles(value);
+              onChange('');
+            }}
           >
             <X className="h-3 w-3" />
           </Button>
