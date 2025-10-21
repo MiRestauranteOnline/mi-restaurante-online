@@ -131,17 +131,31 @@ serve(async (req) => {
     };
     
     const maxWidth = contextMaxWidths[context] || 1200;
-    const quality = context === 'logo' || context === 'favicon' ? 90 : 
-                   context === 'hero-background' ? 75 : 80;
     
-    console.log(`Max width for context "${context}": ${maxWidth}px, quality: ${quality}`);
+    // Define target sizes (in KB) and minimum acceptable qualities per context
+    const contextTargets: Record<string, { targetKB: number; minQuality: number }> = {
+      'hero-background': { targetKB: 300, minQuality: 60 },
+      'carousel': { targetKB: 140, minQuality: 60 },
+      'menu-item': { targetKB: 60, minQuality: 55 }, // aggressive for menu items
+      'logo': { targetKB: 80, minQuality: 75 },
+      'favicon': { targetKB: 20, minQuality: 80 },
+      'team-member': { targetKB: 120, minQuality: 60 },
+      'custom_upload': { targetKB: 300, minQuality: 60 },
+      'restaurant content': { targetKB: 300, minQuality: 60 }, // default
+    };
 
-    // Step 4: Use Lovable AI Gateway to resize and compress
+    const { targetKB, minQuality } = contextTargets[context] || contextTargets['restaurant content'];
+    const initialQuality = context === 'menu-item' ? 68 
+      : context === 'hero-background' ? 70 
+      : (context === 'logo' || context === 'favicon' ? 85 : 75);
+    
+    console.log(`Max width for context "${context}": ${maxWidth}px, quality start: ${initialQuality}, target: ${targetKB}KB`);
+
+    // Step 4: Use Lovable AI Gateway to resize and compress with iterative attempts
     let optimizedBuffer: ArrayBuffer;
     let optimizedSize: number;
     
     try {
-      // Use the AI gateway to edit/resize the image
       const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
       
       if (!lovableApiKey) {
@@ -149,63 +163,106 @@ serve(async (req) => {
         optimizedBuffer = imageBuffer;
         optimizedSize = originalSize;
       } else {
-        // First, convert image to base64 for the API
+        // Convert original image to data URL once for reuse
         const base64Image = btoa(
           new Uint8Array(imageBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
         );
-        const dataUrl = `data:image/jpeg;base64,${base64Image}`;
-        
-        const resizeResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${lovableApiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-2.5-flash-image-preview",
-            messages: [
-              {
-                role: "user",
-                content: [
-                  {
-                    type: "text",
-                    text: `Resize this image to a maximum width of ${maxWidth}px while maintaining aspect ratio. Optimize for web use with WebP format at ${quality}% quality. Keep all visual content intact.`
-                  },
-                  {
-                    type: "image_url",
-                    image_url: {
-                      url: dataUrl
-                    }
-                  }
-                ]
-              }
-            ],
-            modalities: ["image"]
-          })
-        });
-        
-        const resizeData = await resizeResponse.json();
-        const editedImageUrl = resizeData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-        
-        if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
-          // Convert base64 back to ArrayBuffer
-          const base64Data = editedImageUrl.split(',')[1];
-          const binaryString = atob(base64Data);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
+        const originalDataUrl = `data:image/jpeg;base64,${base64Image}`;
+
+        const attemptOptimize = async (q: number, width: number): Promise<{ buffer: ArrayBuffer; size: number } | null> => {
+          const resizeResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${lovableApiKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-2.5-flash-image-preview",
+              messages: [
+                {
+                  role: "user",
+                  content: [
+                    {
+                      type: "text",
+                      text: `Resize to a maximum width of ${width}px (maintain aspect ratio). Re-encode as WebP with quality ${q} with a high compression effort and strip all metadata. Optimize for web use and aim for file size under ${targetKB} KB while preserving reasonable visual quality.`,
+                    },
+                    {
+                      type: "image_url",
+                      image_url: {
+                        url: originalDataUrl,
+                      },
+                    },
+                  ],
+                },
+              ],
+              modalities: ["image"],
+            }),
+          });
+
+          const resizeData = await resizeResponse.json();
+          const editedImageUrl = resizeData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+          if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
+            const base64Data = editedImageUrl.split(',')[1];
+            const binaryString = atob(base64Data);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            return { buffer: bytes.buffer, size: bytes.byteLength };
           }
-          optimizedBuffer = bytes.buffer;
-          optimizedSize = optimizedBuffer.byteLength;
-          
-          console.log(`Optimized image size: ${(optimizedSize / 1024).toFixed(2)} KB`);
-          console.log(`Compression ratio: ${Math.round((1 - optimizedSize / originalSize) * 100)}%`);
-        } else {
-          console.warn('Image optimization failed, using original');
-          optimizedBuffer = imageBuffer;
-          optimizedSize = originalSize;
+
+          return null;
+        };
+
+        let q = initialQuality;
+        let w = maxWidth;
+        const maxAttempts = 3;
+        const results: Array<{ size: number; q: number; w: number; buffer: ArrayBuffer }> = [];
+
+        for (let i = 0; i < maxAttempts; i++) {
+          try {
+            const res = await attemptOptimize(q, w);
+            if (res) {
+              results.push({ size: res.size, q, w, buffer: res.buffer });
+              console.log(`Optimization attempt ${i + 1}: width=${w}, q=${q} → ${(res.size / 1024).toFixed(1)} KB`);
+              if (res.size <= targetKB * 1024) {
+                optimizedBuffer = res.buffer;
+                optimizedSize = res.size;
+                break;
+              }
+            } else {
+              console.warn(`Optimization attempt ${i + 1} returned no image`);
+            }
+          } catch (e) {
+            console.warn(`Optimization attempt ${i + 1} failed:`, e);
+          }
+
+          // Adjust parameters for next attempt
+          if (q > minQuality) {
+            q = Math.max(minQuality, q - 10);
+          } else {
+            // Reduce width by ~10% but not below 70% of original target width
+            w = Math.max(Math.floor(maxWidth * 0.7), Math.floor(w * 0.9));
+          }
         }
+
+        // Choose the best result (smallest size), even if above target
+        if (!optimizedBuffer) {
+          if (results.length > 0) {
+            results.sort((a, b) => a.size - b.size);
+            optimizedBuffer = results[0].buffer;
+            optimizedSize = results[0].size;
+          } else {
+            console.warn('Image optimization failed, using original');
+            optimizedBuffer = imageBuffer;
+            optimizedSize = originalSize;
+          }
+        }
+
+        console.log(`Final optimized size: ${(optimizedSize / 1024).toFixed(1)} KB (target ${targetKB} KB)`);
       }
+    } catch (error) {
     } catch (error) {
       console.error('Image processing failed, using original:', error);
       optimizedBuffer = imageBuffer;
