@@ -68,3 +68,6 @@ verify_jwt = false
 
 [functions.quality-check-article]
 verify_jwt = false
+
+[functions.create-internal-links]
+verify_jwt = false

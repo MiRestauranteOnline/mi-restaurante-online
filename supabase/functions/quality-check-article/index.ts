@@ -185,6 +185,23 @@ Return JSON format:
         .eq('id', articleId);
       
       console.log('Article passed quality check and has been published');
+
+      // Create internal links for the newly published article
+      console.log('Creating internal links for article:', articleId);
+      try {
+        const linkingResponse = await supabase.functions.invoke('create-internal-links', {
+          body: { articleId }
+        });
+        
+        if (linkingResponse.error) {
+          console.warn('Internal linking failed:', linkingResponse.error.message);
+        } else {
+          console.log('Internal linking completed:', linkingResponse.data);
+        }
+      } catch (linkingError) {
+        console.warn('Internal linking error:', linkingError);
+        // Don't fail the publish if linking fails
+      }
     } else {
       console.log('Article failed quality check, keeping as draft');
     }
