@@ -26,21 +26,36 @@ Deno.serve(async (req) => {
     const openaiApiKey = Deno.env.get('chatgpt')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { articleId } = await req.json();
+    const { articleId, slug, category } = await req.json();
 
-    if (!articleId) {
-      throw new Error('Article ID is required');
+    if (!articleId && (!slug || !category)) {
+      throw new Error('Article ID or (slug + category) is required');
     }
 
-    console.log(`Creating internal links for article: ${articleId}`);
+    // Resolve target article
+    let newArticle: any = null;
+    let newArticleError: any = null;
 
-    // Get the new article
-    const { data: newArticle, error: newArticleError } = await supabase
-      .from('generated_articles')
-      .select('*')
-      .eq('id', articleId)
-      .eq('status', 'published')
-      .single();
+    if (articleId) {
+      console.log(`Creating internal links for article by id: ${articleId}`);
+      const res = await supabase
+        .from('generated_articles')
+        .select('*')
+        .eq('id', articleId)
+        .eq('status', 'published')
+        .single();
+      newArticle = res.data; newArticleError = res.error;
+    } else {
+      console.log(`Creating internal links for article by slug: ${category}/${slug}`);
+      const res = await supabase
+        .from('generated_articles')
+        .select('*')
+        .eq('slug', slug)
+        .eq('category', category)
+        .eq('status', 'published')
+        .single();
+      newArticle = res.data; newArticleError = res.error;
+    }
 
     if (newArticleError || !newArticle) {
       throw new Error(`Article not found or not published: ${newArticleError?.message}`);
@@ -51,7 +66,7 @@ Deno.serve(async (req) => {
       .from('generated_articles')
       .select('id, title, slug, category, content, excerpt, keywords')
       .eq('status', 'published')
-      .neq('id', articleId)
+      .neq('id', newArticle.id)
       .order('publish_date', { ascending: false });
 
     if (existingError || !existingArticles || existingArticles.length === 0) {
@@ -85,8 +100,8 @@ Deno.serve(async (req) => {
 
     // Step 4: Insert links into the new article
     let updatedNewContent = sanitizeContent(newArticle.content);
-    
-    // Add internal links to other articles
+
+    // Add internal links to other articles (one per target max)
     for (const targetArticle of articlesToLinkTo) {
       updatedNewContent = await insertInternalLink(
         updatedNewContent,
@@ -96,7 +111,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Add external links
+    // Add external links (up to 2 and at most one per paragraph)
     for (const externalLink of externalLinks) {
       updatedNewContent = await insertExternalLink(
         updatedNewContent,
@@ -109,7 +124,7 @@ Deno.serve(async (req) => {
     const { error: updateNewError } = await supabase
       .from('generated_articles')
       .update({ content: updatedNewContent, updated_at: new Date().toISOString() })
-      .eq('id', articleId);
+      .eq('id', newArticle.id);
 
     if (updateNewError) {
       console.error('Error updating new article:', updateNewError);
@@ -117,7 +132,7 @@ Deno.serve(async (req) => {
 
     // Step 5: Insert links FROM other articles TO the new article
     for (const sourceArticle of articlesToLinkFrom) {
-    const sanitizedSource = sanitizeContent(sourceArticle.content);
+      const sanitizedSource = sanitizeContent(sourceArticle.content);
       let updatedContent = await insertInternalLink(
         sanitizedSource,
         newArticle,
@@ -141,8 +156,8 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         linksAdded: {
-          inNewArticle: articlesToLinkTo.length + externalLinks.length,
-          toNewArticle: articlesToLinkFrom.length,
+          inNewArticle: (articlesToLinkTo?.length || 0) + (externalLinks?.length || 0),
+          toNewArticle: (articlesToLinkFrom?.length || 0),
         },
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -165,13 +180,13 @@ async function findRelevantArticles(
   const prompt = `Given this article:
 Title: ${targetArticle.title}
 Category: ${targetArticle.category}
-Keywords: ${targetArticle.keywords.join(', ')}
+Keywords: ${(targetArticle.keywords || []).join(', ')}
 Excerpt: ${targetArticle.excerpt}
 
 From the following articles, identify the ${count} most relevant ones to link to/from:
-${articles.map((a, i) => `${i + 1}. "${a.title}" (${a.category}) - Keywords: ${a.keywords.join(', ')}`).join('\n')}
+${articles.map((a, i) => `${i + 1}. "${a.title}" (${a.category}) - Keywords: ${(a.keywords || []).join(', ')}`).join('\n')}
 
-Return ONLY a JSON array of ${count} article indices (0-based) in order of relevance.`;
+Return ONLY a JSON array with key "indices" containing ${count} article indices (0-based) in order of relevance.`;
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -184,7 +199,7 @@ Return ONLY a JSON array of ${count} article indices (0-based) in order of relev
       messages: [
         {
           role: 'system',
-          content: 'You are an SEO expert specializing in internal linking. Return only valid JSON arrays.',
+          content: 'You are an SEO expert specializing in internal linking. Return only valid JSON objects.',
         },
         { role: 'user', content: prompt },
       ],
@@ -200,7 +215,7 @@ Return ONLY a JSON array of ${count} article indices (0-based) in order of relev
   const content = data.choices[0].message.content;
   const parsed = JSON.parse(content);
   const indices = parsed.indices || parsed.articles || Object.values(parsed);
-  
+
   return indices.slice(0, count).map((idx: number) => articles[idx]).filter(Boolean);
 }
 
@@ -210,7 +225,7 @@ async function findExternalLinks(
 ): Promise<Array<{ url: string; anchorText: string; topic: string }>> {
   const prompt = `For this article about "${article.title}" in category ${article.category}, suggest 2 authoritative external sources to link to.
 
-Keywords: ${article.keywords.join(', ')}
+Keywords: ${(article.keywords || []).join(', ')}
 Excerpt: ${article.excerpt}
 
 Suggest authoritative sites like government agencies, educational institutions, well-known industry publications, or established organizations relevant to restaurants, food, and hospitality in Peru/Latin America.
@@ -249,25 +264,33 @@ Return a JSON object with format:
   const data = await response.json();
   const content = data.choices[0].message.content;
   const parsed = JSON.parse(content);
-  
+
   return parsed.links || [];
 }
 
 async function insertInternalLink(
   content: string,
   targetArticle: Article,
-  sourceArticle: Article,
+  _sourceArticle: Article,
   apiKey: string
 ): Promise<string> {
-  // Always link using existing native text only (wrap exact substring)
-  const contentPlain = content.replace(/<[^>]*>/g, '');
-  const previewPlain = contentPlain.substring(0, 2000);
+  const segments = collectSegments(content);
+  const keywords = [
+    ...(targetArticle.keywords || []),
+    ...targetArticle.title.split(/\s+/)
+  ].map((s) => s.toLowerCase());
 
-  const prompt = `You are an SEO internal linking assistant. From the article text below, pick ONE short phrase (2-5 words) that ALREADY EXISTS verbatim in the text and would naturally link to the topic "${targetArticle.title}". The phrase must be exactly as it appears in the text.
+  const candidate = pickBestSegment(segments, keywords);
+  if (!candidate) return content;
 
-Return JSON only: {"anchorText":"exact substring from the text"}
+  const targetHref = `/blog/${targetArticle.category}/${targetArticle.slug}`;
+  if (candidate.html.includes(`href="${targetHref}"`)) return content; // already linked here
+  if (/data-autolink="true"/.test(candidate.html)) return content; // avoid stacking
 
-Article text (first 2000 chars):\n${previewPlain}`;
+  const previewPlain = candidate.plain.substring(0, 800);
+  const prompt = `From the paragraph below, return ONLY a short phrase (2-5 words) that appears VERBATIM and would naturally link to: "${targetArticle.title}". Return JSON only {"anchorText":"..."}.
+
+Paragraph:\n${previewPlain}`;
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -278,88 +301,62 @@ Article text (first 2000 chars):\n${previewPlain}`;
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [
-        {
-          role: 'system',
-          content:
-            'Return only valid JSON. Choose a 2-5 word phrase that already exists verbatim in the provided text. Do not invent words. Do not return explanations.',
-        },
+        { role: 'system', content: 'Return valid JSON only. Pick a 2-5 word phrase that ALREADY EXISTS verbatim. No explanations.' },
         { role: 'user', content: prompt },
       ],
       response_format: { type: 'json_object' },
     }),
   });
 
-  if (!response.ok) {
-    console.error('Failed to get internal link anchor phrase');
-    return content;
-  }
+  if (!response.ok) return content;
 
-  const data = await response.json();
   let anchorText: string | undefined;
   try {
+    const data = await response.json();
     const parsed = JSON.parse(data.choices[0].message.content);
     anchorText = typeof parsed.anchorText === 'string' ? parsed.anchorText.trim() : undefined;
   } catch {
     return content;
   }
 
-  if (!anchorText || anchorText.split(/\s+/).length < 1) return content;
+  if (!anchorText) return content;
+  // validate phrase length/words to avoid absurd selections
+  const words = anchorText.trim().split(/\s+/);
+  if (words.length < 1 || words.length > 7 || anchorText.length > 80) return content;
 
-  // Ensure the anchor text appears in plain content
-  const plainTextIndex = contentPlain.indexOf(anchorText);
-  if (plainTextIndex === -1) {
-    console.warn('Anchor text not found in content:', anchorText);
-    return content;
+  let plainIdx = candidate.plain.indexOf(anchorText);
+  if (plainIdx === -1) {
+    const lower = candidate.plain.toLowerCase();
+    plainIdx = lower.indexOf(anchorText.toLowerCase());
+    if (plainIdx === -1) return content;
+    anchorText = candidate.plain.substr(plainIdx, anchorText.length);
   }
 
-  // Map plain text index to HTML index
-  let htmlIndex = 0;
-  let plainIndex = 0;
-  let inTag = false;
+  const anchorLen = anchorText.length;
+  const mapped = mapPlainToHtml(candidate.html, plainIdx, anchorLen);
+  if (!mapped) return content;
 
-  while (plainIndex < plainTextIndex && htmlIndex < content.length) {
-    const ch = content[htmlIndex];
-    if (ch === '<') inTag = true;
-    else if (ch === '>') {
-      inTag = false;
-      htmlIndex++;
-      continue;
-    }
-    if (!inTag) plainIndex++;
-    htmlIndex++;
-  }
+  const { htmlStart, htmlEnd } = mapped;
 
-  // Determine HTML length for the anchor text
-  let skipChars = 0;
-  let skippedPlain = 0;
-  inTag = false;
-  while (skippedPlain < anchorText.length && htmlIndex + skipChars < content.length) {
-    const ch = content[htmlIndex + skipChars];
-    if (ch === '<') inTag = true;
-    else if (ch === '>') {
-      inTag = false;
-      skipChars++;
-      continue;
-    }
-    if (!inTag) skippedPlain++;
-    skipChars++;
-  }
+  // Avoid nesting inside existing <a>
+  const beforeInner = candidate.html.substring(0, htmlStart);
+  const lastOpenA = beforeInner.lastIndexOf('<a');
+  const lastCloseA = beforeInner.lastIndexOf('</a>');
+  if (lastOpenA > lastCloseA) return content;
 
-  const before = content.substring(0, htmlIndex);
-  const after = content.substring(htmlIndex + skipChars);
+  const wrappedInner =
+    candidate.html.substring(0, htmlStart) +
+    `<a href="${targetHref}" class="text-primary hover:underline" data-autolink="true">` +
+    candidate.html.substring(htmlStart, htmlEnd) +
+    `</a>` +
+    candidate.html.substring(htmlEnd);
 
-  // Avoid linking inside an existing <a>
-  const lastOpenA = before.lastIndexOf('<a');
-  const lastCloseA = before.lastIndexOf('</a>');
-  if (lastOpenA > lastCloseA) {
-    console.warn('Skipping link to avoid nesting inside existing anchor');
-    return content;
-  }
+  const updated =
+    content.substring(0, candidate.start) +
+    wrappedInner +
+    content.substring(candidate.end);
 
-  const wrapped = `<a href="/blog/${targetArticle.category}/${targetArticle.slug}" class="text-primary hover:underline" data-autolink="true">` +
-    content.substring(htmlIndex, htmlIndex + skipChars) + `</a>`;
-
-  return before + wrapped + after;
+  return updated;
 }
 
 async function insertExternalLink(
@@ -367,14 +364,23 @@ async function insertExternalLink(
   externalLink: { url: string; anchorText: string; topic: string },
   apiKey: string
 ): Promise<string> {
-  // Always link using existing native text only (wrap exact substring)
-  const contentPlain = content.replace(/<[^>]*>/g, '');
-  const previewPlain = contentPlain.substring(0, 2000);
+  const segments = collectSegments(content);
 
-  const prompt = `You are an SEO assistant. From the article text below, pick ONE short phrase (2-5 words) that ALREADY EXISTS verbatim in the text and would naturally reference the external topic: "${externalLink.topic}".
-Return JSON only: {"anchorText":"exact substring from the text"}
+  const topicKeywords = externalLink.topic
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter((w) => w.length > 3)
+    .map((w) => w.toLowerCase());
 
-Article text (first 2000 chars):\n${previewPlain}`;
+  const candidate = pickBestSegment(segments, topicKeywords);
+  if (!candidate) return content;
+
+  if (candidate.html.includes(`href="${externalLink.url}"`)) return content;
+  if (/data-autolink="true"/.test(candidate.html)) return content;
+
+  const previewPlain = candidate.plain.substring(0, 800);
+  const prompt = `From the paragraph below, return ONLY a short phrase (2-5 words) that appears VERBATIM and would naturally reference the external topic: "${externalLink.topic}". Return JSON only {"anchorText":"..."}.
+
+Paragraph:\n${previewPlain}`;
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -385,89 +391,147 @@ Article text (first 2000 chars):\n${previewPlain}`;
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [
-        { role: 'system', content: 'Return only valid JSON. Choose a 2-5 word phrase that already exists verbatim in the provided text. Do not invent words.' },
+        { role: 'system', content: 'Return valid JSON only. Pick a 2-5 word phrase that ALREADY EXISTS verbatim. No explanations.' },
         { role: 'user', content: prompt },
       ],
       response_format: { type: 'json_object' },
     }),
   });
 
-  if (!response.ok) {
-    console.error('Failed to get external link anchor phrase');
-    return content;
-  }
+  if (!response.ok) return content;
 
-  const data = await response.json();
   let anchorText: string | undefined;
   try {
+    const data = await response.json();
     const parsed = JSON.parse(data.choices[0].message.content);
     anchorText = typeof parsed.anchorText === 'string' ? parsed.anchorText.trim() : undefined;
   } catch {
     return content;
   }
 
-  if (!anchorText || anchorText.split(/\s+/).length < 1) return content;
+  if (!anchorText) return content;
+  const words = anchorText.trim().split(/\s+/);
+  if (words.length < 1 || words.length > 7 || anchorText.length > 80) return content;
 
-  const plainTextIndex = contentPlain.indexOf(anchorText);
-  if (plainTextIndex === -1) {
-    console.warn('External anchor text not found in content:', anchorText);
-    return content;
+  let plainIdx = candidate.plain.indexOf(anchorText);
+  if (plainIdx === -1) {
+    const lower = candidate.plain.toLowerCase();
+    plainIdx = lower.indexOf(anchorText.toLowerCase());
+    if (plainIdx === -1) return content;
+    anchorText = candidate.plain.substr(plainIdx, anchorText.length);
   }
 
-  // Map plain position to HTML indices
-  let htmlIndex = 0;
-  let plainIndex = 0;
-  let inTag = false;
+  const anchorLen = anchorText.length;
+  const mapped = mapPlainToHtml(candidate.html, plainIdx, anchorLen);
+  if (!mapped) return content;
 
-  while (plainIndex < plainTextIndex && htmlIndex < content.length) {
-    const ch = content[htmlIndex];
-    if (ch === '<') inTag = true;
-    else if (ch === '>') {
-      inTag = false;
-      htmlIndex++;
-      continue;
-    }
-    if (!inTag) plainIndex++;
-    htmlIndex++;
-  }
+  const { htmlStart, htmlEnd } = mapped;
 
-  let skipChars = 0;
-  let skippedPlain = 0;
-  inTag = false;
-  while (skippedPlain < anchorText.length && htmlIndex + skipChars < content.length) {
-    const ch = content[htmlIndex + skipChars];
-    if (ch === '<') inTag = true;
-    else if (ch === '>') {
-      inTag = false;
-      skipChars++;
-      continue;
-    }
-    if (!inTag) skippedPlain++;
-    skipChars++;
-  }
+  const beforeInner = candidate.html.substring(0, htmlStart);
+  const lastOpenA = beforeInner.lastIndexOf('<a');
+  const lastCloseA = beforeInner.lastIndexOf('</a>');
+  if (lastOpenA > lastCloseA) return content;
 
-  const before = content.substring(0, htmlIndex);
-  const after = content.substring(htmlIndex + skipChars);
+  const wrappedInner =
+    candidate.html.substring(0, htmlStart) +
+    `<a href="${externalLink.url}" target="_blank" rel="nofollow noopener noreferrer" class="text-primary hover:underline" data-autolink="true">` +
+    candidate.html.substring(htmlStart, htmlEnd) +
+    `</a>` +
+    candidate.html.substring(htmlEnd);
 
-  // Avoid nesting inside existing <a>
-  const lastOpenA = before.lastIndexOf('<a');
-  const lastCloseA = before.lastIndexOf('</a>');
-  if (lastOpenA > lastCloseA) {
-    console.warn('Skipping external link to avoid nesting');
-    return content;
-  }
+  const updated =
+    content.substring(0, candidate.start) +
+    wrappedInner +
+    content.substring(candidate.end);
 
-  const wrapped = `<a href="${externalLink.url}" target="_blank" rel="nofollow noopener noreferrer" class="text-primary hover:underline" data-autolink="true">` +
-    content.substring(htmlIndex, htmlIndex + skipChars) + `</a>`;
-
-  return before + wrapped + after;
+  return updated;
 }
 
 // Remove previously auto-inserted links that may not be relevant
 function sanitizeContent(content: string): string {
   return content
     // Internal auto-links
-    .replace(/<a[^>]*href="\/blog\/[^"]+"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*data-autolink="true"[^>]*>(.*?)<\/a>/g, '$1')
+    .replace(/<a[^>]*href="\/blog\/[^\"]+"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*data-autolink="true"[^>]*>(.*?)<\/a>/g, '$1')
     // External auto-links
-    .replace(/<a[^>]*href="https?:\/\/[^"]+"[^>]*target="_blank"[^>]*rel="nofollow noopener noreferrer"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*data-autolink="true"[^>]*>(.*?)<\/a>/g, '$1');
+    .replace(/<a[^>]*href="https?:\/\/[^\"]+"[^>]*target="_blank"[^>]*rel="nofollow noopener noreferrer"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*data-autolink="true"[^>]*>(.*?)<\/a>/g, '$1');
+}
+
+// --- Helper Types & Utilities for paragraph-scoped linking ---
+
+type Segment = { start: number; end: number; html: string; plain: string; tag: string };
+
+function collectSegments(html: string): Segment[] {
+  const segs: Segment[] = [];
+  const tags = ['p', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+  for (const tag of tags) segs.push(...findSegmentsByTag(html, tag));
+  return segs;
+}
+
+function findSegmentsByTag(html: string, tag: string): Segment[] {
+  const segments: Segment[] = [];
+  const lower = html.toLowerCase();
+  let cursor = 0;
+  while (true) {
+    const openIdx = lower.indexOf(`<${tag}`, cursor);
+    if (openIdx === -1) break;
+    const openEnd = html.indexOf('>', openIdx);
+    if (openEnd === -1) break;
+    const closeToken = `</${tag}>`;
+    const closeIdx = lower.indexOf(closeToken, openEnd + 1);
+    if (closeIdx === -1) break;
+    const innerStart = openEnd + 1;
+    const innerEnd = closeIdx;
+    const innerHtml = html.substring(innerStart, innerEnd);
+    const plain = innerHtml.replace(/<[^>]*>/g, '');
+    segments.push({ start: innerStart, end: innerEnd, html: innerHtml, plain, tag });
+    cursor = closeIdx + closeToken.length;
+  }
+  return segments;
+}
+
+function pickBestSegment(segments: Segment[], keywords: string[]): Segment | null {
+  let best: Segment | null = null;
+  let bestScore = 0;
+  for (const seg of segments) {
+    const anchorCount = (seg.html.match(/<a\b/gi) || []).length;
+    if (anchorCount >= 2) continue; // don't overcrowd
+
+    const text = seg.plain.toLowerCase();
+    let score = 0;
+    for (const kw of keywords) {
+      if (!kw || kw.length < 3) continue;
+      if (text.includes(kw)) score += 1;
+    }
+    if (/^h[1-6]$/i.test(seg.tag)) score -= 0.5; // prefer body text
+
+    if (score > bestScore) { bestScore = score; best = seg; }
+  }
+  return bestScore > 0 ? best : null;
+}
+
+function mapPlainToHtml(innerHtml: string, plainTargetIndex: number, plainLen: number): { htmlStart: number; htmlEnd: number } | null {
+  let htmlIdx = 0;
+  let plainIdx = 0;
+  let inTag = false;
+
+  while (plainIdx < plainTargetIndex && htmlIdx < innerHtml.length) {
+    const ch = innerHtml[htmlIdx];
+    if (ch === '<') inTag = true;
+    else if (ch === '>') { inTag = false; htmlIdx++; continue; }
+    if (!inTag) plainIdx++;
+    htmlIdx++;
+  }
+
+  let skip = 0;
+  let consumed = 0;
+  inTag = false;
+  while (consumed < plainLen && htmlIdx + skip < innerHtml.length) {
+    const ch = innerHtml[htmlIdx + skip];
+    if (ch === '<') inTag = true;
+    else if (ch === '>') { inTag = false; skip++; continue; }
+    if (!inTag) consumed++;
+    skip++;
+  }
+
+  return { htmlStart: htmlIdx, htmlEnd: htmlIdx + skip };
 }
