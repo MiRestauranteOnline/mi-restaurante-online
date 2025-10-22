@@ -79,25 +79,23 @@ export default function AdminDashboardLayout() {
         return;
       }
       
-      // Fetch user's accessible restaurants for admin
-      const { data: userClients, error } = await (supabase as any)
-        .from('user_clients')
-        .select(`
-          client_id,
-          clients (
-            id,
-            restaurant_name,
-            subdomain
-          )
-        `)
-        .eq('user_id', session.user.id);
+      // Admins can see ALL clients in the system
+      const { data: allClients, error } = await supabase
+        .from('clients')
+        .select('id, restaurant_name, subdomain')
+        .order('restaurant_name');
 
       if (error) {
         console.error('Error loading clients:', error);
       } else {
-        setClients(userClients || []);
-        if (userClients && userClients.length > 0) {
-          setSelectedClientId(userClients[0].client_id);
+        // Transform to match the expected UserClient format
+        const formattedClients = (allClients || []).map(client => ({
+          client_id: client.id,
+          clients: client
+        }));
+        setClients(formattedClients);
+        if (formattedClients.length > 0) {
+          setSelectedClientId(formattedClients[0].client_id);
         }
       }
       
