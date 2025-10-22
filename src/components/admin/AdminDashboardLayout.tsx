@@ -229,6 +229,22 @@ export default function AdminDashboardLayout() {
                 <h1 className="text-lg font-semibold">
                   Admin Dashboard
                 </h1>
+                
+                {/* Client Selector */}
+                {clients.length > 0 && (
+                  <Select value={selectedClientId} onValueChange={setSelectedClientId}>
+                    <SelectTrigger className="w-[280px]">
+                      <SelectValue placeholder="Select a client" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clients.map((userClient) => (
+                        <SelectItem key={userClient.client_id} value={userClient.client_id}>
+                          {userClient.clients.restaurant_name} ({userClient.clients.subdomain})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
               
               <div className="flex items-center gap-4">
