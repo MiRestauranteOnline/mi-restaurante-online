@@ -17,6 +17,14 @@ import { businessData } from "@/config/businessData";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, Clock, MapPin, Send, CheckCircle, Shield, AlertCircle, Plus, Trash2 } from "lucide-react";
 
+const dnsRecordSchema = z.object({
+  type: z.string().min(1, "Tipo de registro requerido"),
+  name: z.string().min(1, "Nombre requerido"),
+  content: z.string().min(1, "Contenido requerido"),
+  priority: z.string().optional(),
+  ttl: z.string().optional(),
+});
+
 const supportSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   email: z.string().email("Ingresa un email válido"),
@@ -27,13 +35,7 @@ const supportSchema = z.object({
   consultType: z.enum(["general", "dns", "technical", "billing"]),
   premiumEmail: z.string().optional(),
   premiumPin: z.string().optional(),
-  dnsRecords: z.array(z.object({
-    type: z.string(),
-    name: z.string(),
-    content: z.string(),
-    priority: z.string().optional(),
-    ttl: z.string().optional(),
-  })).optional(),
+  dnsRecords: z.array(dnsRecordSchema).optional(),
 }).refine((data) => {
   if (data.supportType === "premium") {
     return data.premiumEmail && data.premiumPin && data.premiumPin.length === 8;
@@ -43,13 +45,35 @@ const supportSchema = z.object({
   message: "Para soporte premium, debes proporcionar email y PIN de 8 dígitos",
 }).refine((data) => {
   if (data.consultType === "dns" && data.dnsRecords && data.dnsRecords.length > 0) {
-    return data.dnsRecords.every(record => 
-      record.type && record.name && record.content
-    );
+    // Validate each DNS record based on its type
+    return data.dnsRecords.every(record => {
+      if (!record.type || !record.name || !record.content) return false;
+      
+      // Validate based on record type
+      switch (record.type) {
+        case 'A':
+          // A records need IPv4 address
+          return /^(\d{1,3}\.){3}\d{1,3}$/.test(record.content);
+        case 'AAAA':
+          // AAAA records need IPv6 address
+          return /^([0-9a-fA-F]{0,4}:){7}[0-9a-fA-F]{0,4}$/.test(record.content) || record.content.includes(':');
+        case 'CNAME':
+          // CNAME records need domain name
+          return record.content.includes('.') || record.content === '@';
+        case 'MX':
+          // MX records need domain and priority
+          return record.content.includes('.') && record.priority && /^\d+$/.test(record.priority);
+        case 'TXT':
+          // TXT records can be anything
+          return true;
+        default:
+          return true;
+      }
+    });
   }
   return true;
 }, {
-  message: "Para solicitudes DNS, debes completar tipo, nombre y contenido de cada registro",
+  message: "Registros DNS inválidos: Verifica que A tenga IP, AAAA tenga IPv6, CNAME tenga dominio, MX tenga dominio y prioridad",
 });
 
 type SupportFormData = z.infer<typeof supportSchema>;
@@ -672,7 +696,14 @@ const Soporte = () => {
                                         <div>
                                           <Label>Contenido / Valor</Label>
                                           <Input
-                                            placeholder="IP o valor"
+                                            placeholder={
+                                              record.type === 'A' ? 'e.g., 192.0.2.1' :
+                                              record.type === 'AAAA' ? 'e.g., 2001:0db8::1' :
+                                              record.type === 'CNAME' ? 'e.g., example.com' :
+                                              record.type === 'MX' ? 'e.g., mail.example.com' :
+                                              record.type === 'TXT' ? 'e.g., "v=spf1 include:example.com"' :
+                                              'IP o valor'
+                                            }
                                             value={record.content}
                                             onChange={(e) => {
                                               const newRecords = [...dnsRecords];
@@ -699,9 +730,31 @@ const Soporte = () => {
                                                 form.setValue('dnsRecords', newRecords);
                                               }}
                                             />
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                              Menor número = mayor prioridad (típicamente 10)
+                                            </p>
                                           </div>
                                         </div>
                                       )}
+
+                                      {/* Validation hints based on record type */}
+                                      <div className="text-xs text-muted-foreground bg-blue-50 dark:bg-blue-950 p-2 rounded">
+                                        {record.type === 'A' && (
+                                          <p>✓ Registro A requiere una dirección IPv4 (e.g., 192.0.2.1)</p>
+                                        )}
+                                        {record.type === 'AAAA' && (
+                                          <p>✓ Registro AAAA requiere una dirección IPv6 (e.g., 2001:0db8::1)</p>
+                                        )}
+                                        {record.type === 'CNAME' && (
+                                          <p>✓ Registro CNAME requiere un nombre de dominio (e.g., example.com)</p>
+                                        )}
+                                        {record.type === 'MX' && (
+                                          <p>✓ Registro MX requiere un nombre de dominio y prioridad (e.g., mail.example.com, prioridad 10)</p>
+                                        )}
+                                        {record.type === 'TXT' && (
+                                          <p>✓ Registro TXT puede contener cualquier texto (e.g., verificación de dominio, SPF, DKIM)</p>
+                                        )}
+                                      </div>
 
                                       <div>
                                         <Label>TTL</Label>
