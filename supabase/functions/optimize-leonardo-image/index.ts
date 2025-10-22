@@ -177,12 +177,21 @@ serve(async (req) => {
       optimizedSize = originalSize;
     }
     
-    const optimizedFilename = `${filename}.webp`;
+    // Ensure unique filename to bypass CDN/browser caches
+    const cacheBuster = `-${Date.now()}`;
+    const safeBase = (filename || 'optimized-image')
+      .toString()
+      .trim()
+      .replace(/[^a-z0-9-\s]/gi, '-')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .toLowerCase();
+    const optimizedFilename = `${safeBase}${cacheBuster}.webp`;
     
     // Step 4: Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('client-assets')
-      .upload(`optimized-images/${optimizedFilename}`, imageBuffer, {
+      .upload(`optimized-images/${optimizedFilename}`, optimizedBuffer, {
         contentType: 'image/webp',
         upsert: true
       });
