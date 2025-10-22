@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
     const externalLinks = await findExternalLinks(newArticle, openaiApiKey);
 
     // Step 4: Insert links into the new article
-    let updatedNewContent = newArticle.content;
+    let updatedNewContent = sanitizeContent(newArticle.content);
     
     // Add internal links to other articles
     for (const targetArticle of articlesToLinkTo) {
@@ -117,8 +117,9 @@ Deno.serve(async (req) => {
 
     // Step 5: Insert links FROM other articles TO the new article
     for (const sourceArticle of articlesToLinkFrom) {
+    const sanitizedSource = sanitizeContent(sourceArticle.content);
       let updatedContent = await insertInternalLink(
-        sourceArticle.content,
+        sanitizedSource,
         newArticle,
         sourceArticle,
         openaiApiKey
@@ -258,21 +259,15 @@ async function insertInternalLink(
   sourceArticle: Article,
   apiKey: string
 ): Promise<string> {
-  // Find a contextually relevant place to insert the link
-  const prompt = `Given this article content, find the best place to naturally insert a link to another article titled "${targetArticle.title}".
+  // Always link using existing native text only (wrap exact substring)
+  const contentPlain = content.replace(/<[^>]*>/g, '');
+  const previewPlain = contentPlain.substring(0, 2000);
 
-Source article excerpt: ${sourceArticle.excerpt}
-Target article: "${targetArticle.title}" about ${targetArticle.excerpt}
+  const prompt = `You are an SEO internal linking assistant. From the article text below, pick ONE short phrase (2-5 words) that ALREADY EXISTS verbatim in the text and would naturally link to the topic "${targetArticle.title}". The phrase must be exactly as it appears in the text.
 
-Article content (first 2000 chars):
-${content.substring(0, 2000)}
+Return JSON only: {"anchorText":"exact substring from the text"}
 
-Find a relevant sentence or phrase where this link would fit naturally. Return JSON:
-{
-  "searchText": "exact text to replace (must exist in content)",
-  "anchorText": "SHORT keyword phrase (MAXIMUM 5 words, preferably 2-3 words). Use natural keywords, NOT full sentences.",
-  "insertAfter": true/false
-}`;
+Article text (first 2000 chars):\n${previewPlain}`;
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -285,7 +280,8 @@ Find a relevant sentence or phrase where this link would fit naturally. Return J
       messages: [
         {
           role: 'system',
-          content: 'You are an SEO expert. Find natural places to insert links. Return valid JSON.',
+          content:
+            'Return only valid JSON. Choose a 2-5 word phrase that already exists verbatim in the provided text. Do not invent words. Do not return explanations.',
         },
         { role: 'user', content: prompt },
       ],
@@ -294,78 +290,76 @@ Find a relevant sentence or phrase where this link would fit naturally. Return J
   });
 
   if (!response.ok) {
-    console.error('Failed to get link placement');
+    console.error('Failed to get internal link anchor phrase');
     return content;
   }
 
   const data = await response.json();
-  const result = JSON.parse(data.choices[0].message.content);
-  
-  console.log('Link suggestion:', result);
-  
-  const link = `<a href="/blog/${targetArticle.category}/${targetArticle.slug}" class="text-primary hover:underline">${result.anchorText}</a>`;
-  
-  // Strip HTML tags from searchText for matching, but work with original content
-  const searchTextPlain = result.searchText;
-  const contentPlain = content.replace(/<[^>]*>/g, '');
-  
-  // Find the plain text position
-  const plainTextIndex = contentPlain.indexOf(searchTextPlain);
-  
-  if (plainTextIndex === -1) {
-    console.warn('Could not find exact match for:', searchTextPlain);
+  let anchorText: string | undefined;
+  try {
+    const parsed = JSON.parse(data.choices[0].message.content);
+    anchorText = typeof parsed.anchorText === 'string' ? parsed.anchorText.trim() : undefined;
+  } catch {
     return content;
   }
-  
-  // Find corresponding position in HTML content by counting characters
+
+  if (!anchorText || anchorText.split(/\s+/).length < 1) return content;
+
+  // Ensure the anchor text appears in plain content
+  const plainTextIndex = contentPlain.indexOf(anchorText);
+  if (plainTextIndex === -1) {
+    console.warn('Anchor text not found in content:', anchorText);
+    return content;
+  }
+
+  // Map plain text index to HTML index
   let htmlIndex = 0;
   let plainIndex = 0;
   let inTag = false;
-  
+
   while (plainIndex < plainTextIndex && htmlIndex < content.length) {
-    if (content[htmlIndex] === '<') {
-      inTag = true;
-    } else if (content[htmlIndex] === '>') {
+    const ch = content[htmlIndex];
+    if (ch === '<') inTag = true;
+    else if (ch === '>') {
       inTag = false;
       htmlIndex++;
       continue;
     }
-    
-    if (!inTag) {
-      plainIndex++;
-    }
+    if (!inTag) plainIndex++;
     htmlIndex++;
   }
-  
-  // Insert link at the found position
-  const before = content.substring(0, htmlIndex);
-  const after = content.substring(htmlIndex);
-  
-  if (result.insertAfter) {
-    // Skip to end of searchText in HTML
-    let skipChars = 0;
-    let skippedPlain = 0;
-    inTag = false;
-    
-    while (skippedPlain < searchTextPlain.length && htmlIndex + skipChars < content.length) {
-      if (content[htmlIndex + skipChars] === '<') {
-        inTag = true;
-      } else if (content[htmlIndex + skipChars] === '>') {
-        inTag = false;
-        skipChars++;
-        continue;
-      }
-      
-      if (!inTag) {
-        skippedPlain++;
-      }
+
+  // Determine HTML length for the anchor text
+  let skipChars = 0;
+  let skippedPlain = 0;
+  inTag = false;
+  while (skippedPlain < anchorText.length && htmlIndex + skipChars < content.length) {
+    const ch = content[htmlIndex + skipChars];
+    if (ch === '<') inTag = true;
+    else if (ch === '>') {
+      inTag = false;
       skipChars++;
+      continue;
     }
-    
-    return before + content.substring(htmlIndex, htmlIndex + skipChars) + ' ' + link + content.substring(htmlIndex + skipChars);
-  } else {
-    return before + link + ' ' + after;
+    if (!inTag) skippedPlain++;
+    skipChars++;
   }
+
+  const before = content.substring(0, htmlIndex);
+  const after = content.substring(htmlIndex + skipChars);
+
+  // Avoid linking inside an existing <a>
+  const lastOpenA = before.lastIndexOf('<a');
+  const lastCloseA = before.lastIndexOf('</a>');
+  if (lastOpenA > lastCloseA) {
+    console.warn('Skipping link to avoid nesting inside existing anchor');
+    return content;
+  }
+
+  const wrapped = `<a href="/blog/${targetArticle.category}/${targetArticle.slug}" class="text-primary hover:underline" data-autolink="true">` +
+    content.substring(htmlIndex, htmlIndex + skipChars) + `</a>`;
+
+  return before + wrapped + after;
 }
 
 async function insertExternalLink(
@@ -373,17 +367,14 @@ async function insertExternalLink(
   externalLink: { url: string; anchorText: string; topic: string },
   apiKey: string
 ): Promise<string> {
-  const prompt = `Find the best place in this article to insert an external link about "${externalLink.topic}".
+  // Always link using existing native text only (wrap exact substring)
+  const contentPlain = content.replace(/<[^>]*>/g, '');
+  const previewPlain = contentPlain.substring(0, 2000);
 
-Article content (first 2000 chars):
-${content.substring(0, 2000)}
+  const prompt = `You are an SEO assistant. From the article text below, pick ONE short phrase (2-5 words) that ALREADY EXISTS verbatim in the text and would naturally reference the external topic: "${externalLink.topic}".
+Return JSON only: {"anchorText":"exact substring from the text"}
 
-Return JSON:
-{
-  "searchText": "exact text to replace",
-  "anchorText": "SHORT keyword phrase (MAXIMUM 5 words, preferably 2-3 words). If suggested anchorText '${externalLink.anchorText}' is too long, shorten to key terms only.",
-  "insertAfter": true/false
-}`;
+Article text (first 2000 chars):\n${previewPlain}`;
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -394,7 +385,7 @@ Return JSON:
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [
-        { role: 'system', content: 'You are an SEO expert. Return valid JSON.' },
+        { role: 'system', content: 'Return only valid JSON. Choose a 2-5 word phrase that already exists verbatim in the provided text. Do not invent words.' },
         { role: 'user', content: prompt },
       ],
       response_format: { type: 'json_object' },
@@ -402,78 +393,81 @@ Return JSON:
   });
 
   if (!response.ok) {
-    console.error('Failed to get external link placement');
+    console.error('Failed to get external link anchor phrase');
     return content;
   }
 
   const data = await response.json();
-  const result = JSON.parse(data.choices[0].message.content);
-  
-  console.log('External link suggestion:', result);
-  
-  // Use the AI-suggested short anchor text, or fall back to the original if not provided
-  const finalAnchorText = result.anchorText || externalLink.anchorText;
-  const link = `<a href="${externalLink.url}" target="_blank" rel="nofollow noopener noreferrer" class="text-primary hover:underline">${finalAnchorText}</a>`;
-  
-  // Strip HTML tags from searchText for matching
-  const searchTextPlain = result.searchText;
-  const contentPlain = content.replace(/<[^>]*>/g, '');
-  
-  // Find the plain text position
-  const plainTextIndex = contentPlain.indexOf(searchTextPlain);
-  
-  if (plainTextIndex === -1) {
-    console.warn('Could not find exact match for external link:', searchTextPlain);
+  let anchorText: string | undefined;
+  try {
+    const parsed = JSON.parse(data.choices[0].message.content);
+    anchorText = typeof parsed.anchorText === 'string' ? parsed.anchorText.trim() : undefined;
+  } catch {
     return content;
   }
-  
-  // Find corresponding position in HTML content by counting characters
+
+  if (!anchorText || anchorText.split(/\s+/).length < 1) return content;
+
+  const plainTextIndex = contentPlain.indexOf(anchorText);
+  if (plainTextIndex === -1) {
+    console.warn('External anchor text not found in content:', anchorText);
+    return content;
+  }
+
+  // Map plain position to HTML indices
   let htmlIndex = 0;
   let plainIndex = 0;
   let inTag = false;
-  
+
   while (plainIndex < plainTextIndex && htmlIndex < content.length) {
-    if (content[htmlIndex] === '<') {
-      inTag = true;
-    } else if (content[htmlIndex] === '>') {
+    const ch = content[htmlIndex];
+    if (ch === '<') inTag = true;
+    else if (ch === '>') {
       inTag = false;
       htmlIndex++;
       continue;
     }
-    
-    if (!inTag) {
-      plainIndex++;
-    }
+    if (!inTag) plainIndex++;
     htmlIndex++;
   }
-  
-  // Insert link at the found position
-  const before = content.substring(0, htmlIndex);
-  const after = content.substring(htmlIndex);
-  
-  if (result.insertAfter) {
-    // Skip to end of searchText in HTML
-    let skipChars = 0;
-    let skippedPlain = 0;
-    inTag = false;
-    
-    while (skippedPlain < searchTextPlain.length && htmlIndex + skipChars < content.length) {
-      if (content[htmlIndex + skipChars] === '<') {
-        inTag = true;
-      } else if (content[htmlIndex + skipChars] === '>') {
-        inTag = false;
-        skipChars++;
-        continue;
-      }
-      
-      if (!inTag) {
-        skippedPlain++;
-      }
+
+  let skipChars = 0;
+  let skippedPlain = 0;
+  inTag = false;
+  while (skippedPlain < anchorText.length && htmlIndex + skipChars < content.length) {
+    const ch = content[htmlIndex + skipChars];
+    if (ch === '<') inTag = true;
+    else if (ch === '>') {
+      inTag = false;
       skipChars++;
+      continue;
     }
-    
-    return before + content.substring(htmlIndex, htmlIndex + skipChars) + ' ' + link + content.substring(htmlIndex + skipChars);
-  } else {
-    return before + link + ' ' + after;
+    if (!inTag) skippedPlain++;
+    skipChars++;
   }
+
+  const before = content.substring(0, htmlIndex);
+  const after = content.substring(htmlIndex + skipChars);
+
+  // Avoid nesting inside existing <a>
+  const lastOpenA = before.lastIndexOf('<a');
+  const lastCloseA = before.lastIndexOf('</a>');
+  if (lastOpenA > lastCloseA) {
+    console.warn('Skipping external link to avoid nesting');
+    return content;
+  }
+
+  const wrapped = `<a href="${externalLink.url}" target="_blank" rel="nofollow noopener noreferrer" class="text-primary hover:underline" data-autolink="true">` +
+    content.substring(htmlIndex, htmlIndex + skipChars) + `</a>`;
+
+  return before + wrapped + after;
+}
+
+// Remove previously auto-inserted links that may not be relevant
+function sanitizeContent(content: string): string {
+  return content
+    // Internal auto-links
+    .replace(/<a[^>]*href="\\/blog\\/[^\"]+"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*>(.*?)<\\/a>/g, '$1')
+    // External auto-links
+    .replace(/<a[^>]*href="https?:\\/\\/[^\"]+"[^>]*rel="nofollow noopener noreferrer"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*>(.*?)<\\/a>/g, '$1');
 }
