@@ -77,7 +77,8 @@ serve(async (req) => {
 
     // Step 3: Generate featured image
     console.log('Step 3: Generating featured image...');
-    const imagePrompt = `Professional restaurant scene related to: ${article.title}. ${article.featured_image_alt}`;
+    // Create visual-only prompt that describes the scene without any text elements
+    const imagePrompt = `Professional high-quality restaurant photography showing the concept of ${article.category}. Scene description: ${article.featured_image_alt}. Pure visual composition, no typography, no words, no letters, no signage, no menu text, no price tags visible.`;
     
     const imageResponse = await supabase.functions.invoke('generate-featured-image', {
       body: { 

@@ -45,7 +45,7 @@ serve(async (req) => {
       throw new Error('Leonardo API key is not configured');
     }
 
-    const imageGenerationPrompt = `${imagePrompt}, ultra-realistic professional restaurant photography, single composition, single scene, no collage, no grid, no split-panel, no montage, no multi-image, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, blog header quality, no text overlay, photojournalistic quality, commercial food photography, Peruvian restaurant context`;
+    const imageGenerationPrompt = `${imagePrompt}, ultra-realistic professional restaurant photography, single composition, single scene, no collage, no grid, no split-panel, no montage, no multi-image, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, blog header quality, photojournalistic quality, commercial food photography, Peruvian restaurant context, pure photography without any overlays`;
 
     const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
       method: 'POST',
@@ -55,6 +55,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         prompt: imageGenerationPrompt,
+        negative_prompt: "text, words, letters, typography, writing, captions, titles, headlines, labels, signs, signage, menu text, price tags, numbers, characters, fonts, logos with text, watermarks, subtitles, annotations, overlays, banners, ribbons with text, speech bubbles, text boxes, business names, restaurant names written, taglines",
         modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3", // Leonardo Phoenix 1.0 - latest foundational model
         styleUUID: "7c3f932b-a572-47cb-9b9b-f20211e63b5b", // Pro color photography style
         width: 1280,
