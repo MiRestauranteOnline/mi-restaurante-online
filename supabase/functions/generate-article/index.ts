@@ -93,6 +93,29 @@ serve(async (req) => {
       return `"${a.title}": "${firstPara}..."`;
     }).join('\n') : 'No recent articles yet.';
 
+    // Source websites for inspiration and fact-checking
+    const sourceGuidelines = `
+REFERENCE SOURCES FOR INSPIRATION AND FACTS:
+Use these trusted sources for topic ideas, statistics, and Peru-specific information:
+
+1. GLOBAL RESTAURANT INSIGHTS:
+   - CloudKitchens Blog (https://cloudkitchens.com/blog/)
+   - Topics: ghost kitchens, delivery optimization, restaurant operations, marketing strategies
+   - Use for: industry trends, operational best practices, technology adoption
+
+2. PERU-SPECIFIC SOURCES (PRIORITIZE THESE FOR LOCAL CONTEXT):
+   - El Comercio Restaurantes (https://elcomercio.pe/noticias/restaurantes/)
+   - RPP Gastronomía (https://rpp.pe/noticias/gastronomia)
+   - Peru.info Gastronomía (https://peru.info/es-pe/gastronomia)
+   - Use for: Lima restaurant news, Peruvian cuisine trends, local market insights
+
+HOW TO USE THESE SOURCES:
+- Reference general industry trends without fabricating specific numbers
+- Use Peru-specific context (districts, cuisine types, local events) from these sources
+- Draw inspiration from topics but write in your own voice as Kevin van Geffen
+- When mentioning trends, use phrases like "según observaciones del sector" or "la industria indica"
+`;
+
 
     console.log('Loaded brand profile and context for generation');
 
@@ -133,30 +156,50 @@ Create a comprehensive, SEO-optimized article about: "${contentGap.topic}"
 Category: ${contentGap.category}
 Target keywords: ${contentGap.target_keywords.join(', ')}
 
-CRITICAL FACT-CHECKING REQUIREMENTS:
-❌ ABSOLUTELY PROHIBITED - DO NOT INCLUDE:
-1. Specific statistics or numbers you're not 100% certain about
-2. Exact dates of events unless widely known
-3. Specific prices for services/products you don't know
-4. Names of specific businesses or competitors
-5. Claims about market share percentages
-6. Exact user counts or adoption rates
-7. Specific awards or certifications unless verified
+CRITICAL FACT-CHECKING REQUIREMENTS (ZERO TOLERANCE FOR HALLUCINATIONS):
 
-✅ WHAT YOU CAN INCLUDE:
-1. General trends and observations (e.g., "cada vez más restaurantes", "la tendencia actual")
-2. Ranges instead of exact numbers (e.g., "entre S/500 y S/2,000" instead of "S/1,247")
-3. Qualitative descriptions (e.g., "muchos restaurantes", "la mayoría de los clientes")
-4. General best practices and recommendations
-5. Your own company's services and approach
-6. Generic advice that applies broadly
-7. Conceptual explanations and how-to guides
+${sourceGuidelines}
 
-CREDIBLE STATISTICS & REFERENCES:
-- When including stats, cite source type (e.g., "según estudios de la industria", "datos del sector gastronómico")
-- Use phrases like "se estima que", "aproximadamente", "en promedio" for estimated data
-- If uncertain, omit specific numbers and focus on trends instead
-- Reference authoritative sources when discussing industry standards
+❌ ABSOLUTELY PROHIBITED - DO NOT INCLUDE UNDER ANY CIRCUMSTANCES:
+1. Made-up statistics or specific numbers (e.g., "40% de incremento", "85% de los clientes")
+2. Specific case study numbers unless you can verify from sources above
+3. Exact dates of events unless widely known (e.g., Fiestas Patrias is OK, "marzo 2024" for random event is NOT)
+4. Specific prices for services/products you're uncertain about
+5. Names of specific competing businesses or restaurants
+6. Unverifiable market share percentages or adoption rates
+7. Specific awards, certifications, or rankings you cannot verify
+8. Fabricated "before and after" scenarios with exact percentages
+9. Made-up quotes from restaurant owners or customers
+10. Unverifiable research findings or survey results
+
+✅ WHAT YOU CAN INCLUDE TO MAKE IT INTERESTING:
+1. General industry trends (e.g., "cada vez más restaurantes están adoptando", "la tendencia en Lima muestra")
+2. Broad ranges (e.g., "entre S/500 y S/2,000 mensuales") with clear disclaimer "los costos varían según"
+3. Qualitative observations (e.g., "muchos restaurantes", "la mayoría de los clientes en mi experiencia")
+4. Real examples from YOUR experience at Mi Restaurante Online (anonymized)
+5. Observable patterns in the Peruvian market (districts, cuisine types, customer behaviors)
+6. General best practices from the industry (backed by "la industria recomienda", "expertos sugieren")
+7. Conceptual frameworks and how-to guides
+8. Engaging storytelling using hypothetical scenarios clearly marked as such
+9. Practical advice based on your actual work with restaurant clients
+10. Rhetorical questions that make readers think about their own situation
+
+WRITING STYLE TO MAKE IT FUN AND ENGAGING:
+- Use vivid, sensory language when appropriate: "imagina entrar a tu restaurante un viernes por la noche..."
+- Tell stories and use anecdotes from your experience (anonymized)
+- Use analogies and metaphors related to food/restaurants
+- Create suspense with questions: "¿Sabes cuál es el error más común?"
+- Use humor when appropriate (but stay professional)
+- Make it conversational - like chatting with a friend over coffee
+- Use specific Lima references (districts, streets, landmarks) to make it relatable
+- Include practical, actionable advice in every section
+
+FACT-CHECKING PROTOCOL:
+- Before writing ANY specific number or statistic, ask yourself: "Am I 100% certain this is true?"
+- If uncertain, replace with: qualitative description, general trend, or omit entirely
+- When citing industry practices, use: "según observaciones del sector", "la industria indica", "expertos recomiendan"
+- For Peru-specific facts, reference the sources above mentally but write in general terms
+- NEVER fabricate case studies - use hypothetical scenarios clearly marked as "imagina" or "supongamos"
 
 PRICING & COST GUIDELINES:
 - ALWAYS clarify that costs are estimates: "los costos pueden variar", "presupuestos típicos oscilan entre"
@@ -172,12 +215,14 @@ LOCATION-SPECIFIC INSIGHTS (CRITICAL):
 - Reference Peruvian business culture and customer expectations
 - Mention local delivery platforms: Rappi, PedidosYa, Uber Eats (when relevant)
 
-STORYTELLING & CASE STUDIES:
-- Include 1-2 short case study examples (anonymized or generic)
-- Format: "Un restaurante en Barranco incrementó sus reservas en 40% después de implementar..."
-- Use before/after scenarios to illustrate points
-- Share real problems and solutions from your experience
-- Make examples relatable to target audience's challenges
+STORYTELLING & CASE STUDIES (NO FABRICATED NUMBERS):
+- Create relatable scenarios based on YOUR actual experience at Mi Restaurante Online
+- Format examples as hypothetical: "Imagina un restaurante en Barranco que..."
+- Use qualitative results: "mejoró significativamente sus reservas" NOT "incrementó 40%"
+- Share real challenges and solutions from your work (anonymized, no specific metrics)
+- Make examples realistic and grounded in Peruvian restaurant context
+- Example: "Un cliente nuestro en Miraflores tenía problemas con reservas perdidas. Después de implementar un sistema de confirmación automática, comenzó a recibir feedback positivo y notó menos mesas vacías. Los clientes apreciaron la comunicación clara."
+- Focus on PROCESS and APPROACH, not invented success metrics
 
 VISUAL PLACEHOLDERS & DESCRIPTIONS:
 - Include image placeholders with detailed descriptions in comments
@@ -185,14 +230,18 @@ VISUAL PLACEHOLDERS & DESCRIPTIONS:
 - Suggest infographic topics: "Infografía: 5 pasos para optimizar tu sitio web"
 - Recommend visual elements for key sections
 
-ENGAGEMENT TECHNIQUES:
-- Ask 2-3 rhetorical questions throughout: "¿Tu restaurante está preparado para la competencia digital?"
-- Use "tú" form ALWAYS to create connection: "Imagina que tu cliente busca...", "tu menú", "tus reservas", "tu negocio"
-- Write as if having a conversation over coffee with someone who owns a restaurant
-- Be direct and honest - skip corporate-speak and marketing jargon
-- Include engaging transitions between sections
-- Address reader's pain points directly with empathy: "Todos hemos estado ahí", "Es frustrante cuando..."
-- Share insights as peer-to-peer advice, not expert lecturing
+ENGAGEMENT TECHNIQUES (MAKE IT FUN TO READ):
+- Start with compelling hooks: surprising observations, bold statements, rhetorical questions
+- Ask 2-3 thought-provoking questions: "¿Tu restaurante está preparado para la era digital?"
+- Use "tú" form ALWAYS: "tu negocio", "tus clientes", "tu carta", "tu equipo"
+- Tell stories that paint vivid pictures: "Son las 8 PM del sábado. Tu competidor tiene fila de espera..."
+- Be conversational and authentic - write like you're giving advice to a friend
+- Use Lima-specific references to create connection: "en el Circuito de Playas", "zona de Miraflores"
+- Address pain points with empathy: "Sé lo frustrante que es cuando...", "Todos hemos visto cómo..."
+- Share genuine insights from your experience in the industry
+- Use sensory language when appropriate: "imagina el aroma de...", "visualiza tu local lleno..."
+- Create curiosity: "Aquí está lo que pocos saben sobre...", "El secreto que marca la diferencia..."
+- Keep energy and pacing varied - mix short punchy sentences with longer explanatory ones
 
 CULTURAL & INDUSTRY INSIGHTS:
 - Highlight Peruvian gastronomy's global recognition
@@ -351,20 +400,28 @@ Return ONLY a JSON object with this structure:
             content: `You are Kevin van Geffen, co-founder of Mi Restaurante Online. You are an expert in restaurant website development and digital marketing for the Peruvian market. 
 
 CRITICAL INSTRUCTIONS:
-1. Write from your perspective as Kevin van Geffen
-2. Write as if having a one-on-one conversation with someone who runs a restaurant - be personal, direct, and conversational
-3. Use "tú" throughout - speak directly to the reader about "tu restaurante", "tu negocio", "tus clientes"
-4. Skip formal introductions and marketing-speak - get straight to the point with a compelling hook
-5. Always use the current year ${currentYear} when discussing trends, "this year", or recent developments
-6. NEVER fabricate statistics, specific numbers, or unverifiable claims
-7. When uncertain about a fact, either omit it or make it more general
-8. Focus on actionable advice and your actual expertise
-9. Use ONLY relative paths for internal links (/, /contacto, /guia/category/slug)
-10. NEVER include full domain URLs in links
-11. NEVER start with "Descubre", "Aprende a", "En este artículo", or similar generic phrases
-12. Review the recent article openings provided and create something completely different
+1. Write from your perspective as Kevin van Geffen with genuine expertise
+2. Write as if having a one-on-one conversation - be personal, direct, engaging, and FUN
+3. Use "tú" throughout - speak directly: "tu restaurante", "tu negocio", "tus clientes"
+4. Make it interesting to read - use stories, vivid language, rhetorical questions
+5. Skip generic openings - start with compelling hooks
+6. Always use the current year ${currentYear} for trends and recent developments
+7. ZERO TOLERANCE FOR HALLUCINATIONS - never fabricate statistics or specific numbers
+8. When uncertain about a fact, either omit it or make it more general/qualitative
+9. Focus on actionable advice based on YOUR actual expertise and experience
+10. Use ONLY relative paths for internal links (/, /contacto, /guia/category/slug)
+11. Reference the provided source websites mentally for inspiration but write authentically
+12. Make articles FUN - use humor, analogies, vivid scenarios, sensory language
+13. Every statistic must be verifiable or omitted - use qualitative descriptions instead
+14. Create engagement through storytelling, not through fabricated success metrics
 
-Your goal is to write helpful, accurate, and valuable content that feels like peer-to-peer advice from someone who genuinely understands the restaurant business.`
+FACT-CHECKING MANDATE:
+- Before writing ANY number, ask: "Am I 100% certain this is true?"
+- Replace uncertain numbers with: trends, observations, ranges with disclaimers
+- Use hypothetical scenarios marked as "imagina" rather than fake case studies
+- Never invent percentages, dates, specific results, or business names
+
+Your goal is to write helpful, accurate, ENGAGING content that feels like trusted advice from a peer who genuinely understands the restaurant business in Peru. Make it fun to read while being 100% truthful.`
           },
           { role: 'user', content: articlePrompt }
         ],

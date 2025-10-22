@@ -54,9 +54,9 @@ serve(async (req) => {
 
     // Quality check using ChatGPT
     const qualityCheckPrompt = `
-You are a quality assurance specialist for "Mi Restaurante Online", a restaurant website design company in Peru.
+You are a strict quality assurance specialist for "Mi Restaurante Online", a restaurant website design company in Peru.
 
-Review this article for quality, brand alignment, and accuracy:
+Review this article with ZERO TOLERANCE for hallucinations, fabricated statistics, or unverifiable claims.
 
 ARTICLE DETAILS:
 Title: ${article.title}
@@ -72,15 +72,40 @@ BRAND GUIDELINES TO CHECK:
 - No false claims or outdated information
 - Proper Spanish language for Peruvian audience
 
+CRITICAL FACT-CHECKING REQUIREMENTS (HIGHEST PRIORITY):
+❌ FLAG AS HIGH SEVERITY if you find:
+1. Specific statistics without source attribution (e.g., "40% de incremento", "85% de los clientes")
+2. Made-up case study numbers or results (e.g., "incrementó sus reservas en 40%")
+3. Specific dates for non-public events (e.g., "en marzo de 2024 se lanzó")
+4. Exact prices without disclaimers (e.g., "cuesta S/1,500" instead of "entre S/1,000-2,000")
+5. Names of specific competing businesses
+6. Unverifiable market share, adoption rates, or rankings
+7. Specific awards, certifications, or recognitions not widely known
+8. Quotes from restaurant owners that appear fabricated
+9. Research findings or survey results without source
+10. Any "before and after" scenarios with exact improvement percentages
+
+✅ ACCEPTABLE FACT PRESENTATION:
+- General trends: "cada vez más restaurantes", "la tendencia muestra"
+- Ranges with disclaimers: "entre S/500 y S/2,000, dependiendo del plan"
+- Qualitative descriptions: "muchos restaurantes", "en mi experiencia"
+- Clearly hypothetical scenarios: "imagina un restaurante que..."
+- Industry observations: "según observaciones del sector", "expertos recomiendan"
+- General best practices without specific attribution
+
 QUALITY CHECKLIST:
-1. Brand Alignment: Does the content align with our brand as restaurant website designers?
-2. Accuracy: Are there any false claims, outdated information, or incorrect facts?
-3. Local Relevance: Is the content relevant to the Peruvian restaurant market?
-4. SEO Structure: Proper H1, H2, H3 hierarchy and keyword usage?
-5. Content Quality: Is the content comprehensive and valuable?
-6. Language: Correct Spanish grammar and terminology for Peru?
-7. Links: Are internal/external links appropriate and functional?
-8. Accessibility: Proper alt texts and aria labels?
+1. FACT-CHECKING (CRITICAL): Flag ANY unverifiable statistics, numbers, or claims
+2. Brand Alignment: Does content align with our brand as restaurant website designers?
+3. Accuracy: Any false claims, outdated information, or incorrect facts?
+4. Local Relevance: Relevant to Peruvian restaurant market with specific Lima references?
+5. Engagement: Is it interesting to read? Does it use storytelling and vivid language?
+6. Conversational Tone: Does it use "tú" and feel personal without being generic?
+7. Opening Variety: Does it avoid "Aprende a...", "Descubre cómo...", etc.?
+8. SEO Structure: Proper H1, H2, H3 hierarchy and keyword usage?
+9. Content Quality: Comprehensive, valuable, and actionable?
+10. Language: Correct Spanish grammar and terminology for Peru?
+11. Links: Are internal/external links appropriate (relative paths only)?
+12. Accessibility: Proper alt texts and aria labels?
 
 CURRENT DATE FOR REFERENCE: ${new Date().toISOString().split('T')[0]}
 
@@ -88,12 +113,15 @@ Return JSON format:
 {
   "overall_score": 1-10,
   "passed_quality_check": true/false,
+  "has_hallucinations": true/false,
+  "has_fabricated_stats": true/false,
   "issues": [
     {
-      "severity": "low|medium|high",
-      "category": "brand|accuracy|seo|language|accessibility",
+      "severity": "low|medium|high|critical",
+      "category": "hallucination|brand|accuracy|seo|language|accessibility|engagement",
       "description": "Description of the issue",
-      "suggestion": "How to fix it"
+      "suggestion": "How to fix it",
+      "specific_example": "Quote the problematic text if applicable"
     }
   ],
   "recommendations": [
@@ -101,6 +129,8 @@ Return JSON format:
   ],
   "brand_alignment_score": 1-10,
   "accuracy_score": 1-10,
+  "fact_checking_score": 1-10,
+  "engagement_score": 1-10,
   "seo_score": 1-10
 }
 `;
@@ -114,7 +144,7 @@ Return JSON format:
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { role: 'system', content: 'You are a strict quality assurance specialist. Focus on accuracy, brand alignment, and detecting any false or outdated information.' },
+          { role: 'system', content: 'You are a strict quality assurance specialist with ZERO TOLERANCE for hallucinations. Your primary focus is detecting fabricated statistics, unverifiable claims, and made-up case studies. Flag any specific numbers or statistics that cannot be verified. Also check for brand alignment, engagement quality, and accuracy. Be thorough and critical.' },
           { role: 'user', content: qualityCheckPrompt }
         ],
         max_tokens: 2000,
