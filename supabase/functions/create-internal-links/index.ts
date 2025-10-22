@@ -301,17 +301,71 @@ Find a relevant sentence or phrase where this link would fit naturally. Return J
   const data = await response.json();
   const result = JSON.parse(data.choices[0].message.content);
   
+  console.log('Link suggestion:', result);
+  
   const link = `<a href="/blog/${targetArticle.category}/${targetArticle.slug}" class="text-primary hover:underline">${result.anchorText}</a>`;
   
-  if (result.searchText && content.includes(result.searchText)) {
-    if (result.insertAfter) {
-      return content.replace(result.searchText, `${result.searchText} ${link}`);
-    } else {
-      return content.replace(result.searchText, `${link} ${result.searchText}`);
-    }
+  // Strip HTML tags from searchText for matching, but work with original content
+  const searchTextPlain = result.searchText;
+  const contentPlain = content.replace(/<[^>]*>/g, '');
+  
+  // Find the plain text position
+  const plainTextIndex = contentPlain.indexOf(searchTextPlain);
+  
+  if (plainTextIndex === -1) {
+    console.warn('Could not find exact match for:', searchTextPlain);
+    return content;
   }
   
-  return content;
+  // Find corresponding position in HTML content by counting characters
+  let htmlIndex = 0;
+  let plainIndex = 0;
+  let inTag = false;
+  
+  while (plainIndex < plainTextIndex && htmlIndex < content.length) {
+    if (content[htmlIndex] === '<') {
+      inTag = true;
+    } else if (content[htmlIndex] === '>') {
+      inTag = false;
+      htmlIndex++;
+      continue;
+    }
+    
+    if (!inTag) {
+      plainIndex++;
+    }
+    htmlIndex++;
+  }
+  
+  // Insert link at the found position
+  const before = content.substring(0, htmlIndex);
+  const after = content.substring(htmlIndex);
+  
+  if (result.insertAfter) {
+    // Skip to end of searchText in HTML
+    let skipChars = 0;
+    let skippedPlain = 0;
+    inTag = false;
+    
+    while (skippedPlain < searchTextPlain.length && htmlIndex + skipChars < content.length) {
+      if (content[htmlIndex + skipChars] === '<') {
+        inTag = true;
+      } else if (content[htmlIndex + skipChars] === '>') {
+        inTag = false;
+        skipChars++;
+        continue;
+      }
+      
+      if (!inTag) {
+        skippedPlain++;
+      }
+      skipChars++;
+    }
+    
+    return before + content.substring(htmlIndex, htmlIndex + skipChars) + ' ' + link + content.substring(htmlIndex + skipChars);
+  } else {
+    return before + link + ' ' + after;
+  }
 }
 
 async function insertExternalLink(
@@ -355,17 +409,71 @@ Return JSON:
   const data = await response.json();
   const result = JSON.parse(data.choices[0].message.content);
   
+  console.log('External link suggestion:', result);
+  
   // Use the AI-suggested short anchor text, or fall back to the original if not provided
   const finalAnchorText = result.anchorText || externalLink.anchorText;
   const link = `<a href="${externalLink.url}" target="_blank" rel="nofollow noopener noreferrer" class="text-primary hover:underline">${finalAnchorText}</a>`;
   
-  if (result.searchText && content.includes(result.searchText)) {
-    if (result.insertAfter) {
-      return content.replace(result.searchText, `${result.searchText} ${link}`);
-    } else {
-      return content.replace(result.searchText, `${link} ${result.searchText}`);
-    }
+  // Strip HTML tags from searchText for matching
+  const searchTextPlain = result.searchText;
+  const contentPlain = content.replace(/<[^>]*>/g, '');
+  
+  // Find the plain text position
+  const plainTextIndex = contentPlain.indexOf(searchTextPlain);
+  
+  if (plainTextIndex === -1) {
+    console.warn('Could not find exact match for external link:', searchTextPlain);
+    return content;
   }
   
-  return content;
+  // Find corresponding position in HTML content by counting characters
+  let htmlIndex = 0;
+  let plainIndex = 0;
+  let inTag = false;
+  
+  while (plainIndex < plainTextIndex && htmlIndex < content.length) {
+    if (content[htmlIndex] === '<') {
+      inTag = true;
+    } else if (content[htmlIndex] === '>') {
+      inTag = false;
+      htmlIndex++;
+      continue;
+    }
+    
+    if (!inTag) {
+      plainIndex++;
+    }
+    htmlIndex++;
+  }
+  
+  // Insert link at the found position
+  const before = content.substring(0, htmlIndex);
+  const after = content.substring(htmlIndex);
+  
+  if (result.insertAfter) {
+    // Skip to end of searchText in HTML
+    let skipChars = 0;
+    let skippedPlain = 0;
+    inTag = false;
+    
+    while (skippedPlain < searchTextPlain.length && htmlIndex + skipChars < content.length) {
+      if (content[htmlIndex + skipChars] === '<') {
+        inTag = true;
+      } else if (content[htmlIndex + skipChars] === '>') {
+        inTag = false;
+        skipChars++;
+        continue;
+      }
+      
+      if (!inTag) {
+        skippedPlain++;
+      }
+      skipChars++;
+    }
+    
+    return before + content.substring(htmlIndex, htmlIndex + skipChars) + ' ' + link + content.substring(htmlIndex + skipChars);
+  } else {
+    return before + link + ' ' + after;
+  }
 }
