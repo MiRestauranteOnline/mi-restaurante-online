@@ -71,3 +71,6 @@ verify_jwt = false
 
 [functions.create-internal-links]
 verify_jwt = false
+
+[functions.fix-article-link]
+verify_jwt = false
