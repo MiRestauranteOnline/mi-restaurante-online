@@ -34,12 +34,43 @@ Deno.serve(async (req) => {
 
     console.log(`Adding custom domain ${customDomain} for client ${clientId}`);
 
-    // Add domain to Cloudflare Pages
     const cfAccountId = Deno.env.get('CLOUDFLARE_ACCOUNT_ID');
     const cfApiToken = Deno.env.get('CLOUDFLARE_API_TOKEN');
     const cfProjectName = Deno.env.get('CLOUDFLARE_PAGES_PROJECT_NAME') || 'mi-restaurante-online';
 
-    const cfResponse = await fetch(
+    // Step 1: Create Cloudflare Zone for DNS management
+    console.log(`Creating Cloudflare Zone for ${customDomain}`);
+    const zoneResponse = await fetch(
+      `https://api.cloudflare.com/client/v4/zones`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${cfApiToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: customDomain,
+          account: { id: cfAccountId },
+          jump_start: true,
+        }),
+      }
+    );
+
+    const zoneData = await zoneResponse.json();
+    console.log('Zone creation response:', zoneData);
+
+    if (!zoneResponse.ok) {
+      throw new Error(`Failed to create Cloudflare Zone: ${zoneData.errors?.[0]?.message || 'Unknown error'}`);
+    }
+
+    const zoneId = zoneData.result?.id;
+    if (!zoneId) {
+      throw new Error('Zone ID not returned from Cloudflare');
+    }
+
+    // Step 2: Add domain to Cloudflare Pages
+    console.log(`Adding domain ${customDomain} to Cloudflare Pages`);
+    const cfPagesResponse = await fetch(
       `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects/${cfProjectName}/domains`,
       {
         method: 'POST',
@@ -51,18 +82,19 @@ Deno.serve(async (req) => {
       }
     );
 
-    const cfData = await cfResponse.json();
-    console.log('Cloudflare response:', cfData);
+    const cfPagesData = await cfPagesResponse.json();
+    console.log('Pages domain response:', cfPagesData);
 
-    if (!cfResponse.ok) {
-      throw new Error(`Cloudflare API error: ${cfData.errors?.[0]?.message || 'Unknown error'}`);
+    if (!cfPagesResponse.ok) {
+      throw new Error(`Cloudflare Pages API error: ${cfPagesData.errors?.[0]?.message || 'Unknown error'}`);
     }
 
-    // Update client record with custom domain
+    // Step 3: Update client record with custom domain and zone_id
     const { error: updateError } = await supabaseClient
       .from('clients')
       .update({
         custom_domain: customDomain,
+        cloudflare_zone_id: zoneId,
         domain_verified: false,
         ssl_status: 'pending',
         last_domain_check: new Date().toISOString(),
@@ -74,14 +106,15 @@ Deno.serve(async (req) => {
       throw updateError;
     }
 
-    console.log(`Successfully added domain ${customDomain} to Cloudflare Pages`);
+    console.log(`Successfully added domain ${customDomain} with zone ${zoneId}`);
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Custom domain added to Cloudflare Pages',
+        message: 'Custom domain and DNS zone created successfully',
         domain: customDomain,
-        verification_status: cfData.result?.verification_status || 'pending',
+        zone_id: zoneId,
+        verification_status: cfPagesData.result?.verification_status || 'pending',
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

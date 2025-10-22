@@ -10,11 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { businessData } from "@/config/businessData";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, Clock, MapPin, Send, CheckCircle, Shield, AlertCircle } from "lucide-react";
+import { Mail, Phone, Clock, MapPin, Send, CheckCircle, Shield, AlertCircle, Plus, Trash2 } from "lucide-react";
 
 const supportSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
@@ -23,8 +24,16 @@ const supportSchema = z.object({
   message: z.string().min(20, "El mensaje debe tener al menos 20 caracteres"),
   clientId: z.string().optional(),
   supportType: z.enum(["regular", "premium"]),
+  consultType: z.enum(["general", "dns", "technical", "billing"]),
   premiumEmail: z.string().optional(),
   premiumPin: z.string().optional(),
+  dnsRecords: z.array(z.object({
+    type: z.string(),
+    name: z.string(),
+    content: z.string(),
+    priority: z.string().optional(),
+    ttl: z.string().optional(),
+  })).optional(),
 }).refine((data) => {
   if (data.supportType === "premium") {
     return data.premiumEmail && data.premiumPin && data.premiumPin.length === 8;
@@ -32,6 +41,15 @@ const supportSchema = z.object({
   return true;
 }, {
   message: "Para soporte premium, debes proporcionar email y PIN de 8 dígitos",
+}).refine((data) => {
+  if (data.consultType === "dns" && data.dnsRecords && data.dnsRecords.length > 0) {
+    return data.dnsRecords.every(record => 
+      record.type && record.name && record.content
+    );
+  }
+  return true;
+}, {
+  message: "Para solicitudes DNS, debes completar tipo, nombre y contenido de cada registro",
 });
 
 type SupportFormData = z.infer<typeof supportSchema>;
@@ -41,6 +59,13 @@ const Soporte = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isPremiumVerified, setIsPremiumVerified] = useState(false);
   const [verifyingPremium, setVerifyingPremium] = useState(false);
+  const [dnsRecords, setDnsRecords] = useState<Array<{
+    type: string;
+    name: string;
+    content: string;
+    priority?: string;
+    ttl?: string;
+  }>>([]);
   const { toast } = useToast();
 
   const form = useForm<SupportFormData>({
@@ -52,12 +77,15 @@ const Soporte = () => {
       message: "",
       clientId: "",
       supportType: "regular",
+      consultType: "general",
       premiumEmail: "",
       premiumPin: "",
+      dnsRecords: [],
     },
   });
 
   const supportType = form.watch("supportType");
+  const consultType = form.watch("consultType");
   const premiumEmail = form.watch("premiumEmail");
   const premiumPin = form.watch("premiumPin");
 
@@ -172,6 +200,8 @@ const Soporte = () => {
         message: data.message,
         clientId: data.clientId || null,
         supportType: data.supportType,
+        consultType: data.consultType,
+        dnsRecords: data.consultType === 'dns' ? dnsRecords : null,
         premiumEmail: data.premiumEmail || null,
         premiumPin: data.premiumPin || null
       };
@@ -206,6 +236,11 @@ const Soporte = () => {
       }
 
       console.log("Ticket submitted successfully");
+
+      // Reset DNS records if it was a DNS request
+      if (data.consultType === 'dns') {
+        setDnsRecords([]);
+      }
 
       setSubmitted(true);
       toast({
@@ -344,6 +379,7 @@ const Soporte = () => {
                       <Button 
                         onClick={() => {
                           setSubmitted(false);
+                          setDnsRecords([]);
                           form.reset();
                         }}
                         variant="outline"
@@ -507,6 +543,192 @@ const Soporte = () => {
                                 <p className="text-sm">
                                   Debes verificar tu PIN antes de enviar el mensaje de soporte premium.
                                 </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Consult Type Selection */}
+                        <FormField
+                          control={form.control}
+                          name="consultType"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Tipo de Consulta</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Selecciona el tipo de consulta" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="general">Consulta General</SelectItem>
+                                  <SelectItem value="dns">Solicitud de Configuración DNS</SelectItem>
+                                  <SelectItem value="technical">Soporte Técnico</SelectItem>
+                                  <SelectItem value="billing">Facturación</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* DNS Records Input */}
+                        {consultType === "dns" && (
+                          <div className="bg-muted p-4 rounded-lg space-y-4">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h3 className="font-semibold">Registros DNS</h3>
+                                <p className="text-sm text-muted-foreground">
+                                  Agrega los registros DNS que necesitas configurar
+                                </p>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDnsRecords([...dnsRecords, { type: 'A', name: '', content: '', priority: '10', ttl: 'Auto' }])}
+                              >
+                                <Plus className="h-4 w-4 mr-2" />
+                                Agregar Registro
+                              </Button>
+                            </div>
+
+                            {dnsRecords.length === 0 ? (
+                              <div className="text-center py-6 text-muted-foreground">
+                                <p className="text-sm">No hay registros DNS agregados</p>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="mt-2"
+                                  onClick={() => setDnsRecords([{ type: 'A', name: '', content: '', priority: '10', ttl: 'Auto' }])}
+                                >
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Agregar primer registro
+                                </Button>
+                              </div>
+                            ) : (
+                              <div className="space-y-4">
+                                {dnsRecords.map((record, index) => (
+                                  <Card key={index} className="p-4">
+                                    <div className="space-y-3">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-medium">Registro #{index + 1}</span>
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => {
+                                            const newRecords = dnsRecords.filter((_, i) => i !== index);
+                                            setDnsRecords(newRecords);
+                                            form.setValue('dnsRecords', newRecords);
+                                          }}
+                                        >
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+
+                                      <div className="grid md:grid-cols-3 gap-3">
+                                        <div>
+                                          <Label>Tipo</Label>
+                                          <Select
+                                            value={record.type}
+                                            onValueChange={(value) => {
+                                              const newRecords = [...dnsRecords];
+                                              newRecords[index].type = value;
+                                              setDnsRecords(newRecords);
+                                              form.setValue('dnsRecords', newRecords);
+                                            }}
+                                          >
+                                            <SelectTrigger>
+                                              <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="A">A</SelectItem>
+                                              <SelectItem value="AAAA">AAAA</SelectItem>
+                                              <SelectItem value="CNAME">CNAME</SelectItem>
+                                              <SelectItem value="MX">MX</SelectItem>
+                                              <SelectItem value="TXT">TXT</SelectItem>
+                                              <SelectItem value="SRV">SRV</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+
+                                        <div>
+                                          <Label>Nombre / Host</Label>
+                                          <Input
+                                            placeholder="@ o subdomain"
+                                            value={record.name}
+                                            onChange={(e) => {
+                                              const newRecords = [...dnsRecords];
+                                              newRecords[index].name = e.target.value;
+                                              setDnsRecords(newRecords);
+                                              form.setValue('dnsRecords', newRecords);
+                                            }}
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <Label>Contenido / Valor</Label>
+                                          <Input
+                                            placeholder="IP o valor"
+                                            value={record.content}
+                                            onChange={(e) => {
+                                              const newRecords = [...dnsRecords];
+                                              newRecords[index].content = e.target.value;
+                                              setDnsRecords(newRecords);
+                                              form.setValue('dnsRecords', newRecords);
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      {record.type === 'MX' && (
+                                        <div className="grid md:grid-cols-2 gap-3">
+                                          <div>
+                                            <Label>Prioridad</Label>
+                                            <Input
+                                              type="number"
+                                              placeholder="10"
+                                              value={record.priority}
+                                              onChange={(e) => {
+                                                const newRecords = [...dnsRecords];
+                                                newRecords[index].priority = e.target.value;
+                                                setDnsRecords(newRecords);
+                                                form.setValue('dnsRecords', newRecords);
+                                              }}
+                                            />
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      <div>
+                                        <Label>TTL</Label>
+                                        <Select
+                                          value={record.ttl || 'Auto'}
+                                          onValueChange={(value) => {
+                                            const newRecords = [...dnsRecords];
+                                            newRecords[index].ttl = value;
+                                            setDnsRecords(newRecords);
+                                            form.setValue('dnsRecords', newRecords);
+                                          }}
+                                        >
+                                          <SelectTrigger>
+                                            <SelectValue />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="Auto">Auto</SelectItem>
+                                            <SelectItem value="60">1 minuto</SelectItem>
+                                            <SelectItem value="300">5 minutos</SelectItem>
+                                            <SelectItem value="3600">1 hora</SelectItem>
+                                            <SelectItem value="86400">1 día</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                    </div>
+                                  </Card>
+                                ))}
                               </div>
                             )}
                           </div>
