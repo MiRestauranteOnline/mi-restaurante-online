@@ -117,11 +117,11 @@ export default function CustomDomainPage() {
     });
   };
 
-  // Step 2: Verify Domain
+  // Step 2: Verify Domain and Configure Hosting
   const handleVerifyDomain = async () => {
     setLoading(true);
     
-    const { data, error } = await supabase.functions.invoke('add-vercel-domain', {
+    const { data, error } = await supabase.functions.invoke('configure-custom-domain', {
       body: { client_id: selectedClientId, custom_domain: domain }
     });
     
@@ -217,7 +217,7 @@ export default function CustomDomainPage() {
         <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
         <AlertDescription className="text-sm">
           <strong>How it works:</strong> This process automatically configures DNS through Cloudflare 
-          and adds the domain to Vercel with SSL. The client will need access to their domain registrar 
+          and sets up SSL certificates for the custom domain. The client will need access to their domain registrar 
           (GoDaddy, Namecheap, etc.) to update nameservers.
         </AlertDescription>
       </Alert>
@@ -248,7 +248,7 @@ export default function CustomDomainPage() {
               completed={step > 3}
               current={step === 3}
               title="Domain Verification"
-              description="Verify DNS and add domain to Vercel"
+              description="Verify DNS and configure hosting"
             />
             <TimelineStep 
               number={4}
@@ -298,8 +298,8 @@ export default function CustomDomainPage() {
                   <ol className="list-decimal list-inside space-y-2 ml-2">
                     <li><strong>Configuración DNS automática:</strong> Al hacer clic en "Setup Domain", el sistema crea automáticamente una zona DNS en Cloudflare para este dominio y obtiene los nameservers asignados por Cloudflare.</li>
                     <li><strong>Actualización de nameservers:</strong> El cliente debe ir a su registrador de dominios (GoDaddy, Namecheap, etc.) y actualizar los nameservers con los proporcionados por Cloudflare.</li>
-                    <li><strong>Verificación de DNS:</strong> Una vez propagados los DNS (5-60 min), el sistema verifica la configuración y agrega el dominio a Vercel automáticamente.</li>
-                    <li><strong>Certificado SSL:</strong> Vercel emite un certificado SSL gratuito para el dominio. Este proceso toma 1-5 minutos y se hace automáticamente.</li>
+                    <li><strong>Verificación de DNS:</strong> Una vez propagados los DNS (5-60 min), el sistema verifica la configuración y completa la configuración del hosting automáticamente.</li>
+                    <li><strong>Certificado SSL:</strong> Cloudflare Pages emite un certificado SSL gratuito para el dominio. Este proceso toma 1-5 minutos y se hace automáticamente.</li>
                     <li><strong>Dominio activo:</strong> El sitio web del cliente estará disponible en su dominio personalizado con HTTPS seguro.</li>
                   </ol>
                   <div className="pt-2 text-xs text-muted-foreground border-t border-blue-200 dark:border-blue-800 mt-3">
@@ -462,13 +462,14 @@ export default function CustomDomainPage() {
               Visit Site
             </Button>
 
-            {clientData?.vercel_dashboard_url && (
+            {clientData?.cloudflare_dashboard_url && (
               <Button 
                 variant="ghost" 
                 className="w-full"
-                onClick={() => window.open(clientData.vercel_dashboard_url, '_blank')}
+                onClick={() => window.open(clientData.cloudflare_dashboard_url, '_blank')}
               >
-                View in Vercel Dashboard
+                <ExternalLink className="w-4 h-4 mr-2" />
+                View in Cloudflare
               </Button>
             )}
           </CardContent>

@@ -3541,7 +3541,7 @@ setReviewForm({
 
         <TabsContent value="domain">
           <div className="space-y-6">
-            {/* Subdomain and Vercel Configuration */}
+            {/* Subdomain and Cloudflare Configuration */}
             <Card>
               <CardHeader>
                 <CardTitle>Configuración de Subdominio</CardTitle>

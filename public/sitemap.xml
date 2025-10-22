@@ -6,10 +6,10 @@
     https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/serve-sitemap
     
     If you're seeing this on mirestaurante.online/sitemap.xml, 
-    configure your hosting provider to redirect /sitemap.xml to the edge function.
+    configure your hosting provider (Cloudflare Pages) to redirect /sitemap.xml to the edge function.
     
-    For Vercel: Already configured in vercel.json
-    For other hosting: Add a rewrite rule to proxy /sitemap.xml to the edge function
+    For Cloudflare Pages: Add a _redirects file with:
+    /sitemap.xml https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/serve-sitemap 200
   -->
   <url>
     <loc>https://mirestaurante.online/</loc>
