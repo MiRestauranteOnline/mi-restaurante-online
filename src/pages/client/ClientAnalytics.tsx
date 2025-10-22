@@ -1,7 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
-import { UsageWidget } from '@/components/client/UsageWidget';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -40,8 +39,6 @@ export default function ClientAnalytics() {
         <h1 className="text-2xl sm:text-3xl font-bold">Analíticas</h1>
         <p className="text-sm sm:text-base text-muted-foreground">Resumen de métricas clave de tu sitio web</p>
       </div>
-      
-      <UsageWidget clientId={clientId} analyticsEnabled={analyticsEnabled} />
       
       <AnalyticsOverview clientId={clientId} />
     </div>

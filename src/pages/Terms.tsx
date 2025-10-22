@@ -72,7 +72,8 @@ const Terms = () => {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">Plan Básico - S/ 297 por mes</h3>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li>Hasta 3,000 visitas mensuales (6 GB de transferencia)</li>
+                  <li>Visitas y ancho de banda ilimitados</li>
+                  <li>Hosting con SSL incluido (https gratis)</li>
                   <li>Soporte básico por WhatsApp</li>
                   <li>Soporte por email (respuesta en 48h)</li>
                   <li>Actualizaciones de contenido autoservicio vía dashboard</li>
@@ -81,17 +82,14 @@ const Terms = () => {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">Plan Avanzado - S/ 497 por mes</h3>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li>Hasta 6,000 visitas mensuales (12 GB de transferencia)</li>
+                  <li>Visitas y ancho de banda ilimitados</li>
+                  <li>Hosting con SSL incluido (https gratis)</li>
                   <li>1 hora/mes de soporte profesional para cambios de textos e imágenes</li>
                   <li>Soporte prioritario (respuesta en 24h)</li>
                   <li>WhatsApp premium con PIN único de soporte</li>
                   <li>Dashboard de Analytics básico y reportes mensuales</li>
                   <li>Configuración de Google Analytics y Search Console incluida</li>
                 </ul>
-              </div>
-              <div className="pt-4 border-t">
-                <h3 className="font-semibold text-foreground mb-2">Sobrecargos por Uso Adicional</h3>
-                <p>S/ 15 por cada 1,000 visitas adicionales o 3 GB de transferencia extra (lo que ocurra primero).</p>
               </div>
             </CardContent>
           </Card>
@@ -120,10 +118,9 @@ const Terms = () => {
                 Recibirás un recibo por email después de cada cobro exitoso.
               </p>
               <p>
-                <strong>Autorización de Cargos Variables:</strong> Al suscribirte, también autorizas expresamente 
-                cargos variables por sobrecargos de uso excedente y complementos aprobados que puedas agregar 
-                a tu cuenta durante el período de suscripción. Los cargos variables se notifican en el recibo del 
-                período y se calculan según la sección "Sobrecargos por Uso Adicional".
+                <strong>Hosting Ilimitado:</strong> Todos los planes incluyen hosting ilimitado sin cargos adicionales 
+                por visitas o ancho de banda. Utilizamos infraestructura de Cloudflare Pages para garantizar 
+                rendimiento y disponibilidad.
               </p>
             </CardContent>
           </Card>
@@ -141,8 +138,7 @@ const Terms = () => {
               <p>
                 <strong>Cuándo Toma Efecto:</strong> La cancelación toma efecto al final de tu ciclo de facturación 
                 actual. No se realizarán más cobros después de esa fecha. Seguirás teniendo acceso completo a tu sitio 
-                web hasta el último día de tu período pagado. Cualquier saldo pendiente (p. ej., sobrecargos de uso) 
-                se facturará y cargará en el medio de pago registrado.
+                web hasta el último día de tu período pagado.
               </p>
               <p>
                 <strong>Después de la Cancelación:</strong> Tu sitio web será desactivado al finalizar tu ciclo de 

@@ -146,7 +146,7 @@ export const PricingSection = () => {
         {/* Additional Info */}
         <div className="mt-12 text-center space-y-4">
           <p className="text-sm text-muted-foreground">
-            <strong>Sobrecargo:</strong> S/15 por cada 1,000 visitas adicionales o 3 GB (lo que sea mayor)
+            <strong>Hosting ilimitado:</strong> Sin límites de visitas ni ancho de banda • SSL gratis incluido
           </p>
           <p className="text-sm text-muted-foreground">
             Los dominios se pueden comprar en <strong>Namecheap</strong> • Evitamos GoDaddy por costos altos y panel confuso

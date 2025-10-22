@@ -354,7 +354,10 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               <li>• Integración Google Maps y Google My Business</li>
               <li>• Cambios auto-gestionables (PIN)</li>
               <li>• Soporte por WhatsApp</li>
-              <li>• Hasta 3,000 visitas/mes o 6 GB</li>
+              <li className="flex items-center gap-1">
+                <CheckCircle className="h-3 w-3 text-green-600 inline" />
+                <span className="font-semibold">Visitas y ancho de banda ilimitados</span>
+              </li>
             </ul>
             {subscription.plan_type === 'advanced' && canChangePlan(subscription.subscription_status) && (
               <Button className="w-full mt-4" variant="outline" onClick={handleDowngrade} disabled={actionLoading}>

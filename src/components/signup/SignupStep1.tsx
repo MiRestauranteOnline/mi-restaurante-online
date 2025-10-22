@@ -700,7 +700,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-3 h-3 text-primary" />
-                      Hasta 3,000 visitas/mes
+                      Visitas y ancho de banda ilimitados
                     </li>
                   </ul>
                 </CardContent>

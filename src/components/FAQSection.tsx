@@ -31,8 +31,8 @@ export const FAQSection = () => {
       answer: "Sí, durante el período promocional de lanzamiento, el precio que contratas se mantiene de por vida mientras tu suscripción esté activa. Es nuestra garantía para early adopters."
     },
     {
-      question: "¿Qué incluye el límite de 3,000 visitas/mes?",
-      answer: "Incluye hasta 3,000 visitas mensuales o 6 GB de transferencia (lo que ocurra primero). Para la mayoría de restaurantes nuevos esto es más que suficiente. Sobrecargo: S/15 por cada 1,000 visitas o 3 GB adicionales."
+      question: "¿Qué incluye el hosting?",
+      answer: "Incluimos hosting ilimitado con SSL (https) gratis y automático. No hay límites de visitas ni ancho de banda. Utilizamos infraestructura de Cloudflare Pages para garantizar velocidad, seguridad y disponibilidad mundial."
     },
     {
       question: "¿Puedo agregar funciones personalizadas no listadas?",
