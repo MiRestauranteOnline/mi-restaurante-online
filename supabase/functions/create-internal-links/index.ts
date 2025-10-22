@@ -270,7 +270,7 @@ ${content.substring(0, 2000)}
 Find a relevant sentence or phrase where this link would fit naturally. Return JSON:
 {
   "searchText": "exact text to replace (must exist in content)",
-  "anchorText": "natural anchor text that fits the context",
+  "anchorText": "SHORT keyword phrase (MAXIMUM 5 words, preferably 2-3 words). Use natural keywords, NOT full sentences.",
   "insertAfter": true/false
 }`;
 
@@ -327,6 +327,7 @@ ${content.substring(0, 2000)}
 Return JSON:
 {
   "searchText": "exact text to replace",
+  "anchorText": "SHORT keyword phrase (MAXIMUM 5 words, preferably 2-3 words). If suggested anchorText '${externalLink.anchorText}' is too long, shorten to key terms only.",
   "insertAfter": true/false
 }`;
 
@@ -354,7 +355,9 @@ Return JSON:
   const data = await response.json();
   const result = JSON.parse(data.choices[0].message.content);
   
-  const link = `<a href="${externalLink.url}" target="_blank" rel="nofollow noopener noreferrer" class="text-primary hover:underline">${externalLink.anchorText}</a>`;
+  // Use the AI-suggested short anchor text, or fall back to the original if not provided
+  const finalAnchorText = result.anchorText || externalLink.anchorText;
+  const link = `<a href="${externalLink.url}" target="_blank" rel="nofollow noopener noreferrer" class="text-primary hover:underline">${finalAnchorText}</a>`;
   
   if (result.searchText && content.includes(result.searchText)) {
     if (result.insertAfter) {
