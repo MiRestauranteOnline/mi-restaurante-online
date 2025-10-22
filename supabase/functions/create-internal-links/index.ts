@@ -467,7 +467,7 @@ Article text (first 2000 chars):\n${previewPlain}`;
 function sanitizeContent(content: string): string {
   return content
     // Internal auto-links
-    .replace(/<a[^>]*href="\\/blog\\/[^\"]+"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*>(.*?)<\\/a>/g, '$1')
+    .replace(/<a[^>]*href="\/blog\/[^"]+"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*data-autolink="true"[^>]*>(.*?)<\/a>/g, '$1')
     // External auto-links
-    .replace(/<a[^>]*href="https?:\\/\\/[^\"]+"[^>]*rel="nofollow noopener noreferrer"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*>(.*?)<\\/a>/g, '$1');
+    .replace(/<a[^>]*href="https?:\/\/[^"]+"[^>]*target="_blank"[^>]*rel="nofollow noopener noreferrer"[^>]*class="[^"]*text-primary[^"]*hover:underline[^"]*"[^>]*data-autolink="true"[^>]*>(.*?)<\/a>/g, '$1');
 }
