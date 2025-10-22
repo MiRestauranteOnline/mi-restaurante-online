@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')!;
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { articleId } = await req.json();
@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
       newArticle,
       existingArticles,
       3,
-      lovableApiKey
+      openaiApiKey
     );
 
     // Step 2: Find articles that should link TO the new article
@@ -77,11 +77,11 @@ Deno.serve(async (req) => {
       newArticle,
       existingArticles,
       3,
-      lovableApiKey
+      openaiApiKey
     );
 
     // Step 3: Find external authoritative sources
-    const externalLinks = await findExternalLinks(newArticle, lovableApiKey);
+    const externalLinks = await findExternalLinks(newArticle, openaiApiKey);
 
     // Step 4: Insert links into the new article
     let updatedNewContent = newArticle.content;
@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
         updatedNewContent,
         targetArticle,
         newArticle,
-        lovableApiKey
+        openaiApiKey
       );
     }
 
@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
       updatedNewContent = await insertExternalLink(
         updatedNewContent,
         externalLink,
-        lovableApiKey
+        openaiApiKey
       );
     }
 
@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
         sourceArticle.content,
         newArticle,
         sourceArticle,
-        lovableApiKey
+        openaiApiKey
       );
 
       const { error: updateError } = await supabase
@@ -172,14 +172,14 @@ ${articles.map((a, i) => `${i + 1}. "${a.title}" (${a.category}) - Keywords: ${a
 
 Return ONLY a JSON array of ${count} article indices (0-based) in order of relevance.`;
 
-  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.5-flash',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -222,14 +222,14 @@ Return a JSON object with format:
   ]
 }`;
 
-  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.5-flash',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -274,14 +274,14 @@ Find a relevant sentence or phrase where this link would fit naturally. Return J
   "insertAfter": true/false
 }`;
 
-  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.5-flash',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -331,14 +331,14 @@ Return JSON:
   "insertAfter": true/false
 }`;
 
-  const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.5-flash',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: 'You are an SEO expert. Return valid JSON.' },
         { role: 'user', content: prompt },
