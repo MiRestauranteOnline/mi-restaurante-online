@@ -77,13 +77,22 @@ serve(async (req) => {
     // Get existing published articles for internal linking
     const { data: existingArticles } = await supabase
       .from('generated_articles')
-      .select('title, slug, category, keywords')
+      .select('title, slug, category, keywords, content')
       .eq('status', 'published')
+      .order('published_at', { ascending: false })
       .limit(20);
 
     const availableArticles = existingArticles ? existingArticles.map(a => 
       `- "${a.title}" (/guia/${a.category}/${a.slug}) [Keywords: ${a.keywords.join(', ')}]`
     ).join('\n') : 'No existing articles available yet.';
+
+    // Extract opening lines from last 5 articles to avoid repetition
+    const recentOpenings = existingArticles ? existingArticles.slice(0, 5).map(a => {
+      // Extract first paragraph (first 150 chars of content, stripped of HTML)
+      const firstPara = a.content.replace(/<[^>]*>/g, '').substring(0, 150).trim();
+      return `"${a.title}": "${firstPara}..."`;
+    }).join('\n') : 'No recent articles yet.';
+
 
     console.log('Loaded brand profile and context for generation');
 
@@ -178,9 +187,12 @@ VISUAL PLACEHOLDERS & DESCRIPTIONS:
 
 ENGAGEMENT TECHNIQUES:
 - Ask 2-3 rhetorical questions throughout: "¿Tu restaurante está preparado para la competencia digital?"
-- Use "tú" form to create connection: "Imagina que tu cliente busca..."
+- Use "tú" form ALWAYS to create connection: "Imagina que tu cliente busca...", "tu menú", "tus reservas", "tu negocio"
+- Write as if having a conversation over coffee with someone who owns a restaurant
+- Be direct and honest - skip corporate-speak and marketing jargon
 - Include engaging transitions between sections
-- Address reader's pain points directly
+- Address reader's pain points directly with empathy: "Todos hemos estado ahí", "Es frustrante cuando..."
+- Share insights as peer-to-peer advice, not expert lecturing
 
 CULTURAL & INDUSTRY INSIGHTS:
 - Highlight Peruvian gastronomy's global recognition
@@ -252,15 +264,24 @@ META DESCRIPTION OPTIMIZATION:
 - Use action verbs: "Descubre", "Aprende", "Mejora", "Aumenta"
 - Example: "Aprende cómo diseñar una página web para restaurante que aumenta reservas. Guía completa con precios y ejemplos. Solicita tu consulta gratis."
 
+RECENT ARTICLE OPENINGS (AVOID REPETITION):
+${recentOpenings}
+
 OPENING PARAGRAPH REQUIREMENTS (CRITICAL):
-- ❌ NEVER start with "Descubre", "En este artículo", "Bienvenido a", "¿Sabías que?"
-- ✅ Start with compelling hook: surprising fact, relatable scenario, bold statement, or direct question
+- ❌ NEVER start with "Descubre", "Aprende a", "En este artículo", "Bienvenido a", "¿Sabías que?"
+- ❌ AVOID any opening pattern used in the recent articles above
+- ✅ Start with compelling hook: surprising fact, relatable scenario, bold statement, direct question, or personal observation
+- ✅ Write as if speaking directly to someone running a restaurant - use "tu negocio", "tus clientes", "tu carta"
+- ✅ Be conversational and personal without saying "como dueño de restaurante" or "si eres restaurantero"
 - Address reader's pain point immediately
 - Include main keyword naturally in first 2 sentences
-- Examples:
-  * "El 73% de los clientes potenciales abandonan un sitio web de restaurante que tarda más de 3 segundos en cargar."
-  * "Tu competidor en Miraflores acaba de duplicar sus reservas con un sitio web optimizado. ¿Qué estás esperando?"
-  * "Mientras lees esto, tu restaurante está perdiendo clientes porque tu presencia digital no está a la altura."
+- Examples of varied openings:
+  * Direct observation: "Tu página web recibe visitantes a las 2 AM, pero nadie puede hacer una reserva."
+  * Personal scenario: "Has invertido en renovar tu local, mejorar la carta, capacitar al equipo... pero tu sitio web sigue igual que hace tres años."
+  * Bold statement: "La diferencia entre un restaurante lleno y uno vacío muchas veces está en 300 milisegundos: el tiempo de carga de tu web."
+  * Rhetorical question: "¿Cuántos clientes perdiste esta semana porque tu menú no aparece en Google?"
+  * Relatable situation: "Son las 7 PM del viernes. Tu restaurante está medio lleno mientras el competidor de al lado tiene fila de espera. La diferencia no está en la comida."
+  * Intriguing fact: "Tres de cada cuatro personas que buscan tu restaurante nunca llaman ni reservan. Se van antes de ver tu carta completa."
 
 ARTICLE STRUCTURE REQUIREMENTS:
 1. ONE H1 title (engaging, includes main keyword, under 60 characters)
@@ -331,14 +352,19 @@ Return ONLY a JSON object with this structure:
 
 CRITICAL INSTRUCTIONS:
 1. Write from your perspective as Kevin van Geffen
-2. Always use the current year ${currentYear} when discussing trends, "this year", or recent developments
-3. NEVER fabricate statistics, specific numbers, or unverifiable claims
-4. When uncertain about a fact, either omit it or make it more general
-5. Focus on actionable advice and your actual expertise
-6. Use ONLY relative paths for internal links (/, /contacto, /guia/category/slug)
-7. NEVER include full domain URLs in links
+2. Write as if having a one-on-one conversation with someone who runs a restaurant - be personal, direct, and conversational
+3. Use "tú" throughout - speak directly to the reader about "tu restaurante", "tu negocio", "tus clientes"
+4. Skip formal introductions and marketing-speak - get straight to the point with a compelling hook
+5. Always use the current year ${currentYear} when discussing trends, "this year", or recent developments
+6. NEVER fabricate statistics, specific numbers, or unverifiable claims
+7. When uncertain about a fact, either omit it or make it more general
+8. Focus on actionable advice and your actual expertise
+9. Use ONLY relative paths for internal links (/, /contacto, /guia/category/slug)
+10. NEVER include full domain URLs in links
+11. NEVER start with "Descubre", "Aprende a", "En este artículo", or similar generic phrases
+12. Review the recent article openings provided and create something completely different
 
-Your goal is to write helpful, accurate, and valuable content for restaurant owners based on your real experience and knowledge.` 
+Your goal is to write helpful, accurate, and valuable content that feels like peer-to-peer advice from someone who genuinely understands the restaurant business.`
           },
           { role: 'user', content: articlePrompt }
         ],
