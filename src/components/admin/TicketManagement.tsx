@@ -85,13 +85,23 @@ export function TicketManagement() {
       }
 
       if (supportTypeFilter !== "all") {
-        query = query.eq("support_type", supportTypeFilter);
+        if (supportTypeFilter === "general") {
+          // Include legacy "regular" value as general
+          // @ts-ignore - in() accepts string[]
+          query = query.in("support_type", ["general", "regular"] as any);
+        } else {
+          query = query.eq("support_type", supportTypeFilter);
+        }
       }
 
       const { data, error } = await query;
 
       if (error) throw error;
-      setTickets(data || []);
+      const normalized = (data || []).map((t: any) => ({
+        ...t,
+        support_type: t.support_type === "regular" ? "general" : t.support_type,
+      }));
+      setTickets(normalized);
     } catch (error: any) {
       toast({
         title: "Error",

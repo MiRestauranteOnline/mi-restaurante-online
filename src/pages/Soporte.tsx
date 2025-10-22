@@ -31,7 +31,7 @@ const supportSchema = z.object({
   subject: z.string().min(5, "El asunto debe tener al menos 5 caracteres"),
   message: z.string().min(20, "El mensaje debe tener al menos 20 caracteres"),
   clientId: z.string().optional(),
-  supportType: z.enum(["regular", "premium"]),
+  supportType: z.enum(["general", "premium"]),
   consultType: z.enum(["general", "dns", "technical", "billing"]),
   premiumEmail: z.string().optional(),
   premiumPin: z.string().optional(),
@@ -100,7 +100,7 @@ const Soporte = () => {
       subject: "",
       message: "",
       clientId: "",
-      supportType: "regular",
+      supportType: "general",
       consultType: "general",
       premiumEmail: "",
       premiumPin: "",
@@ -472,8 +472,8 @@ const Soporte = () => {
                                   className="flex flex-col space-y-2"
                                 >
                                   <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="regular" id="regular" />
-                                    <Label htmlFor="regular">Soporte Regular</Label>
+                                    <RadioGroupItem value="general" id="general" />
+                                    <Label htmlFor="general">Soporte Regular</Label>
                                   </div>
                                   <div className="flex items-center space-x-2">
                                     <RadioGroupItem value="premium" id="premium" />

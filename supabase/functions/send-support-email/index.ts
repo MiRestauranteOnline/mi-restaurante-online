@@ -54,6 +54,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { name, email, subject, message, clientId, supportType, consultType, dnsRecords, premiumEmail, premiumPin } = requestData;
 
+    const normalizedSupportType = supportType === "premium" ? "premium" : "general";
+
     console.log("Support request received:", { name, email, subject, supportType, consultType, clientId });
 
     // Initialize Supabase client
@@ -125,7 +127,7 @@ const handler = async (req: Request): Promise<Response> => {
       message: fullMessage,
       customer_name: name,
       customer_email: email,
-      support_type: supportType
+      support_type: normalizedSupportType
     };
 
     // Add client_id if available
