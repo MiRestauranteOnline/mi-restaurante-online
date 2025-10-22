@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Star, CheckCircle, ArrowRight } from "lucide-react";
-import heroImage from "@/assets/hero-restaurant-websites.jpg";
+import heroImage from "@/assets/hero-restaurant-websites.webp";
 import { businessData } from "@/config/businessData";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
