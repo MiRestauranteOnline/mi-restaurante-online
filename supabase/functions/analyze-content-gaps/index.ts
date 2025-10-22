@@ -70,28 +70,43 @@ Restaurant industry categories we cover:
 - casos-exito (success cases)
 - guias-practicas (practical guides)
 
-CRITICAL REQUIREMENTS:
-1. Check existing content gaps and published articles carefully
-2. DO NOT suggest topics that are already covered or too similar to existing gaps
-3. Each new topic must be UNIQUE and fill a distinct content need
-4. Avoid near-duplicates like "SEO para Restaurantes" if we already have "SEO para Restaurantes Locales"
+**CRITICAL ANTI-DUPLICATE RULES:**
 
-Analyze the content gaps and identify the TOP 3 most important UNIQUE topics we should create articles about to build topical authority for restaurant websites in Peru. Consider:
-1. Keywords not yet covered
-2. Topics that support our main business (restaurant website design)
-3. Seasonal trends in Peru's restaurant industry
-4. Local market needs (Lima, Arequipa, Cusco, etc.)
-5. Topics that are distinctly different from what we already have
+1. **NO LOCATION DUPLICATES**: NEVER suggest the same topic with different city names (e.g., "Marketing Digital en Lima" vs "Marketing Digital en Cusco"). Focus on Lima ONLY or create Peru-wide guides.
+
+2. **NO SEMANTIC DUPLICATES**: Avoid topics that are too similar to existing content:
+   - "Estrategias de Marketing Digital" is TOO SIMILAR to "Marketing Digital para Restaurantes"
+   - "Diseño de Sitios Web" is TOO SIMILAR to "Diseño Web para Restaurantes"
+   - "Guía de Email Marketing" is TOO SIMILAR to "Estrategias de Email Marketing"
+
+3. **IDENTIFY TRUE GAPS**: Look for topics we genuinely haven't covered:
+   - New restaurant technologies (POS systems, inventory management, AI)
+   - Specific operational challenges (food cost control, waste reduction)
+   - Legal/regulatory topics (permits, licenses, health codes)
+   - Financial topics (pricing strategies, profit margins, budgeting)
+   - Customer service excellence, staff training
+   - Sustainability and eco-friendly practices
+
+4. **SPECIFICITY OVER BREADTH**: Prefer narrow, specific topics over broad ones:
+   ✅ GOOD: "Cómo Reducir el Desperdicio de Alimentos en Restaurantes"
+   ❌ BAD: "Guía de Gestión de Restaurantes"
+
+5. **CHECK ALL EXISTING**: Before suggesting a topic, mentally check if we have:
+   - An exact match
+   - A very similar topic
+   - A topic that covers the same keywords
+
+Analyze the content gaps and identify the TOP 3 most important UNIQUE topics we should create articles about to build topical authority for restaurant websites in Peru.
 
 Return JSON format:
 {
   "content_gaps": [
     {
-      "topic": "Topic title (must be unique and not similar to existing)",
+      "topic": "Specific, unique topic (NOT a duplicate or near-duplicate)",
       "category": "one of the 5 categories",
       "target_keywords": ["keyword1", "keyword2"],
       "priority_score": 1-10,
-      "reasoning": "Why this topic is important and how it differs from existing content"
+      "reasoning": "Why this is unique and fills a genuine gap"
     }
   ]
 }

@@ -56,6 +56,39 @@ serve(async (req) => {
       throw new Error('Content gap not found');
     }
 
+    // **ANTI-DUPLICATE CHECK**: Verify this topic isn't too similar to existing content
+    const { data: existingArticles } = await supabase
+      .from('generated_articles')
+      .select('title, slug, category, keywords, content')
+      .eq('status', 'published');
+
+    if (existingArticles && existingArticles.length > 0) {
+      // Check for near-duplicate titles
+      const topicLower = contentGap.topic.toLowerCase();
+      const isDuplicate = existingArticles.some(article => {
+        const titleLower = article.title.toLowerCase();
+        // Check for very similar titles (>70% word overlap)
+        const topicWords = topicLower.split(' ').filter((w: string) => w.length > 3);
+        const titleWords = titleLower.split(' ').filter((w: string) => w.length > 3);
+        const overlap = topicWords.filter((w: string) => titleWords.includes(w)).length;
+        const similarity = overlap / Math.max(topicWords.length, titleWords.length);
+        
+        return similarity > 0.7 || 
+               titleLower.includes(topicLower) || 
+               topicLower.includes(titleLower);
+      });
+
+      if (isDuplicate) {
+        console.error('Duplicate content detected, aborting generation:', contentGap.topic);
+        await supabase
+          .from('content_gaps')
+          .update({ status: 'identified' })
+          .eq('id', contentGapId);
+        
+        throw new Error(`DUPLICATE: Topic "${contentGap.topic}" is too similar to existing content. Skipping generation.`);
+      }
+    }
+
     // Log generation start
     const { data: logData } = await supabase
       .from('generation_logs')
@@ -74,15 +107,8 @@ serve(async (req) => {
       .update({ status: 'in_progress' })
       .eq('id', contentGapId);
 
-    // Get existing published articles for internal linking
-    const { data: existingArticles } = await supabase
-      .from('generated_articles')
-      .select('title, slug, category, keywords, content')
-      .eq('status', 'published')
-      .order('published_at', { ascending: false })
-      .limit(20);
-
-    const availableArticles = existingArticles ? existingArticles.map(a => 
+    // Get existing published articles for internal linking (already fetched above for duplicate check)
+    const availableArticles = existingArticles ? existingArticles.map(a =>
       `- "${a.title}" (/guia/${a.category}/${a.slug}) [Keywords: ${a.keywords.join(', ')}]`
     ).join('\n') : 'No existing articles available yet.';
 
