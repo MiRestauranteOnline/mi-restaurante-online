@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate, useOutletContext, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil, ArrowUp, ArrowDown, ChevronUp, ChevronDown } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil, ArrowUp, ArrowDown, ChevronUp, ChevronDown, Globe } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -48,7 +49,6 @@ import { cn } from "@/lib/utils";
 import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
 import { ClientDiscountAssignments } from '@/components/admin/ClientDiscountAssignments';
-import { DomainManagementTab } from '@/components/admin/DomainManagementTab';
 import { PageMetadataManager } from '@/components/admin/PageMetadataManager';
 import { useAdminImpersonation } from '@/hooks/useAdminImpersonation';
 import { UserCog } from 'lucide-react';
@@ -3569,11 +3569,15 @@ setReviewForm({
               </CardContent>
             </Card>
 
-            {/* Custom Domain Management with Cloudflare - Admin Only */}
+            {/* Custom Domain Management moved to dedicated page */}
             {userRole === 'admin' && (
               <div className="pt-4 border-t">
-                <h2 className="text-xl font-semibold mb-4">Dominio Personalizado (Cloudflare)</h2>
-                <DomainManagementTab clientId={effectiveClientId!} />
+                <Alert>
+                  <Globe className="h-4 w-4" />
+                  <AlertDescription>
+                    La gestión de dominios personalizados se ha movido a la <strong>página de Custom Domains</strong> en el menú de administración.
+                  </AlertDescription>
+                </Alert>
               </div>
             )}
           </div>

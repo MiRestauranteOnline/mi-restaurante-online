@@ -1,44 +1,36 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { toast } from "@/hooks/use-toast";
-import { 
-  CheckCircle2, 
-  Clock, 
-  Globe, 
-  Server, 
-  Shield, 
-  Copy,
-  RefreshCw,
-  ExternalLink,
-  Info,
-  AlertCircle
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, CheckCircle2, AlertCircle, Copy, Globe, Shield } from "lucide-react";
+import { toast } from "sonner";
 
 interface OutletContext {
-  selectedClientId: string;
-  selectedClient?: {
-    id: string;
-    restaurant_name: string;
-    subdomain: string;
-  };
+  selectedClientId: string | null;
+}
+
+interface ClientData {
+  id: string;
+  restaurant_name: string;
+  subdomain: string;
+  custom_domain: string | null;
+  domain_verified: boolean;
+  ssl_status: string;
+  domain_verification_date: string | null;
+  ssl_issued_date: string | null;
 }
 
 export default function CustomDomainPage() {
   const { selectedClientId } = useOutletContext<OutletContext>();
   const [loading, setLoading] = useState(false);
-  const [domain, setDomain] = useState("");
-  const [step, setStep] = useState(1); // 1: Setup, 2: NS Update, 3: Verification, 4: Complete
-  const [nameservers, setNameservers] = useState<string[]>([]);
-  const [clientData, setClientData] = useState<any>(null);
   const [polling, setPolling] = useState(false);
+  const [clientData, setClientData] = useState<ClientData | null>(null);
+  const [customDomain, setCustomDomain] = useState("");
 
-  // Fetch client data
   useEffect(() => {
     if (selectedClientId) {
       fetchClientData();
@@ -46,503 +38,359 @@ export default function CustomDomainPage() {
   }, [selectedClientId]);
 
   const fetchClientData = async () => {
-    if (!selectedClientId) return;
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("clients")
+        .select("id, restaurant_name, subdomain, custom_domain, domain_verified, ssl_status, domain_verification_date, ssl_issued_date")
+        .eq("id", selectedClientId)
+        .single();
 
-    const { data, error } = await supabase
-      .from('clients')
-      .select('id, restaurant_name, subdomain, domain, email, phone')
-      .eq('id', selectedClientId)
-      .maybeSingle();
-    
-    if (error) {
-      console.error('Error fetching client data:', error);
+      if (error) throw error;
+      setClientData(data);
+      setCustomDomain(data.custom_domain || "");
+    } catch (error: any) {
+      console.error("Error fetching client data:", error);
+      toast.error("Error al cargar datos del cliente");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddDomain = async () => {
+    if (!customDomain || !selectedClientId) {
+      toast.error("Por favor ingresa un dominio válido");
       return;
     }
 
-    // Cast data to any to bypass type checking for columns not yet in types
-    const clientInfo = data as any;
-    setClientData(clientInfo);
-    
-    // Determine current step based on data
-    if (clientInfo?.custom_domain) {
-      setDomain(clientInfo.custom_domain);
-      if (clientInfo.ssl_status === 'issued') {
-        setStep(4);
-      } else if (clientInfo.domain_verified) {
-        setStep(3);
-      } else if (clientInfo.dns_records_status?.nameservers) {
-        setStep(2);
-        setNameservers(clientInfo.dns_records_status.nameservers);
-      }
+    // Basic domain validation
+    const domainRegex = /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}$/i;
+    if (!domainRegex.test(customDomain)) {
+      toast.error("Formato de dominio inválido");
+      return;
     }
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.functions.invoke("add-custom-domain-to-pages", {
+        body: { clientId: selectedClientId, customDomain },
+      });
+
+      if (error) throw error;
+
+      toast.success("Dominio añadido a Cloudflare Pages");
+      await fetchClientData();
+      startPolling();
+    } catch (error: any) {
+      console.error("Error adding domain:", error);
+      toast.error(error.message || "Error al añadir dominio");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyDomain = async () => {
+    if (!selectedClientId) return;
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.functions.invoke("verify-custom-domain-status", {
+        body: { clientId: selectedClientId },
+      });
+
+      if (error) throw error;
+
+      if (data.verified && data.ssl_status === "active") {
+        toast.success("¡Dominio verificado y SSL activo!");
+      } else if (data.verified) {
+        toast.success("Dominio verificado, SSL pendiente");
+      } else {
+        toast.info("Dominio aún no verificado");
+      }
+
+      await fetchClientData();
+    } catch (error: any) {
+      console.error("Error verifying domain:", error);
+      toast.error(error.message || "Error al verificar dominio");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveDomain = async () => {
+    if (!selectedClientId) return;
+    if (!confirm("¿Estás seguro de que quieres eliminar este dominio personalizado?")) return;
+
+    try {
+      setLoading(true);
+      const { error } = await supabase.functions.invoke("remove-custom-domain", {
+        body: { clientId: selectedClientId },
+      });
+
+      if (error) throw error;
+
+      toast.success("Dominio personalizado eliminado");
+      setCustomDomain("");
+      await fetchClientData();
+    } catch (error: any) {
+      console.error("Error removing domain:", error);
+      toast.error(error.message || "Error al eliminar dominio");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const startPolling = () => {
+    setPolling(true);
+    const interval = setInterval(async () => {
+      try {
+        const { data } = await supabase.functions.invoke("verify-custom-domain-status", {
+          body: { clientId: selectedClientId },
+        });
+        
+        await fetchClientData();
+
+        if (data?.verified && data?.ssl_status === "active") {
+          setPolling(false);
+          clearInterval(interval);
+          toast.success("¡Dominio completamente configurado!");
+        }
+      } catch (error) {
+        console.error("Polling error:", error);
+      }
+    }, 10000);
+
+    setTimeout(() => {
+      setPolling(false);
+      clearInterval(interval);
+    }, 300000);
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied!", description: "Nameserver copied to clipboard" });
-  };
-
-  // Step 1: Setup Cloudflare Zone
-  const handleSetupDomain = async () => {
-    if (!domain.match(/^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/)) {
-      toast({ 
-        title: "Invalid Domain", 
-        description: "Please enter a valid domain (e.g., mirestaurante.com)",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setLoading(true);
-    const { data, error } = await supabase.functions.invoke('setup-cloudflare-zone', {
-      body: { client_id: selectedClientId, custom_domain: domain }
-    });
-    
-    setLoading(false);
-
-    if (error || !data?.success) {
-      toast({ 
-        title: "Setup Failed", 
-        description: error?.message || "Could not setup Cloudflare zone",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setNameservers(data.nameservers);
-    setStep(2);
-    toast({ 
-      title: "Cloudflare Configured!", 
-      description: "Now update your nameservers at your registrar" 
-    });
-  };
-
-  // Step 2: Verify Domain and Configure Hosting
-  const handleVerifyDomain = async () => {
-    setLoading(true);
-    
-    const { data, error } = await supabase.functions.invoke('configure-custom-domain', {
-      body: { client_id: selectedClientId, custom_domain: domain }
-    });
-    
-    setLoading(false);
-
-    if (error || !data?.success) {
-      toast({ 
-        title: "Verification Failed", 
-        description: "DNS not propagated yet. Wait 5-10 minutes and try again.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (data.verified) {
-      setStep(3);
-      startPolling();
-      toast({ 
-        title: "Domain Verified!", 
-        description: "SSL certificate is being provisioned" 
-      });
-    } else {
-      toast({ 
-        title: "Not Ready Yet", 
-        description: "DNS propagation can take 5-60 minutes. Please try again shortly.",
-      });
-    }
-  };
-
-  // Step 3: Poll for SSL status
-  const startPolling = () => {
-    setPolling(true);
-    
-    const interval = setInterval(async () => {
-      const { data } = await supabase.functions.invoke('check-domain-status', {
-        body: { client_id: selectedClientId }
-      });
-      
-      if (data?.status === 'active' && data?.ssl_status === 'issued') {
-        setStep(4);
-        setPolling(false);
-        clearInterval(interval);
-        toast({ 
-          title: "Domain Active! 🎉", 
-          description: "Your custom domain is now live with SSL" 
-        });
-        fetchClientData();
-      }
-    }, 30000); // Check every 30 seconds
-
-    // Stop polling after 10 minutes
-    setTimeout(() => {
-      clearInterval(interval);
-      setPolling(false);
-    }, 600000);
-  };
-
-  const handleCheckStatus = async () => {
-    setLoading(true);
-    await fetchClientData();
-    setLoading(false);
-    toast({ title: "Status Updated", description: "Domain status refreshed" });
+    toast.success("Copiado al portapapeles");
   };
 
   if (!selectedClientId) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
-        <Alert variant="destructive">
+      <div className="p-8">
+        <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Please select a client from the dropdown to manage their custom domain.
+            Por favor selecciona un cliente de la lista para configurar su dominio personalizado.
           </AlertDescription>
         </Alert>
       </div>
     );
   }
 
+  if (loading && !clientData) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  const hasCustomDomain = clientData?.custom_domain;
+  const isVerified = clientData?.domain_verified;
+  const sslActive = clientData?.ssl_status === "active";
+
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      {/* Header with Guidance */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <Globe className="w-8 h-8" />
-          Custom Domain Setup
-        </h1>
+    <div className="p-8 max-w-4xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">Dominio Personalizado</h1>
         <p className="text-muted-foreground">
-          Connect a custom domain (e.g., mirestaurante.com) to the selected client's website
+          Configura un dominio personalizado para {clientData?.restaurant_name}
         </p>
       </div>
 
-      {/* Admin Guidance Card */}
-      <Alert className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
-        <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-        <AlertDescription className="text-sm">
-          <strong>How it works:</strong> This process automatically configures DNS through Cloudflare 
-          and sets up SSL certificates for the custom domain. The client will need access to their domain registrar 
-          (GoDaddy, Namecheap, etc.) to update nameservers.
-        </AlertDescription>
-      </Alert>
-
-      {/* Progress Timeline */}
-      <Card className="mb-6">
+      {/* Current Status */}
+      <Card>
         <CardHeader>
-          <CardTitle>Setup Progress</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Estado Actual
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <TimelineStep 
-              number={1}
-              completed={step > 1}
-              current={step === 1}
-              title="Configure DNS"
-              description="Setup Cloudflare zone and get nameservers"
-            />
-            <TimelineStep 
-              number={2}
-              completed={step > 2}
-              current={step === 2}
-              title="Update Nameservers"
-              description="Change nameservers at the domain registrar"
-            />
-            <TimelineStep 
-              number={3}
-              completed={step > 3}
-              current={step === 3}
-              title="Domain Verification"
-              description="Verify DNS and configure hosting"
-            />
-            <TimelineStep 
-              number={4}
-              completed={step === 4}
-              current={step === 4}
-              title="SSL Provisioning"
-              description="Secure the site with HTTPS certificate"
-            />
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Subdominio</p>
+              <p className="font-medium">{clientData?.subdomain}.mirestauranteonline.com</p>
+            </div>
+            {hasCustomDomain && (
+              <>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Dominio Personalizado</p>
+                  <p className="font-medium">{clientData?.custom_domain}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Estado de Verificación</p>
+                  <Badge variant={isVerified ? "default" : "secondary"}>
+                    {isVerified ? "Verificado" : "Pendiente"}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Estado SSL</p>
+                  <Badge variant={sslActive ? "default" : "secondary"}>
+                    {sslActive ? "Activo" : "Pendiente"}
+                  </Badge>
+                </div>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Step 1: Domain Input */}
-      {step === 1 && (
+      {/* Add Domain or Instructions */}
+      {!hasCustomDomain ? (
         <Card>
           <CardHeader>
-            <CardTitle>Enter Custom Domain</CardTitle>
+            <CardTitle>Añadir Dominio Personalizado</CardTitle>
             <CardDescription>
-              Enter the domain to use (without www or https://)
+              Ingresa el dominio que deseas usar (ej: restaurante.com)
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="mirestaurante.com"
-                  value={domain}
-                  onChange={(e) => setDomain(e.target.value.toLowerCase().trim())}
-                  disabled={loading}
-                />
-                <Button 
-                  onClick={handleSetupDomain} 
-                  disabled={loading || !domain}
-                  size="lg"
-                >
-                  {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Setup Domain"}
-                </Button>
-              </div>
-              
-              {/* Detailed Process Explanation */}
-              <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
-                <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                <AlertDescription className="text-sm space-y-3">
-                  <div>
-                    <strong className="text-blue-700 dark:text-blue-300">¿Cómo funciona el proceso de dominio personalizado?</strong>
-                  </div>
-                  <ol className="list-decimal list-inside space-y-2 ml-2">
-                    <li><strong>Configuración DNS automática:</strong> Al hacer clic en "Setup Domain", el sistema crea automáticamente una zona DNS en Cloudflare para este dominio y obtiene los nameservers asignados por Cloudflare.</li>
-                    <li><strong>Actualización de nameservers:</strong> El cliente debe ir a su registrador de dominios (GoDaddy, Namecheap, etc.) y actualizar los nameservers con los proporcionados por Cloudflare.</li>
-                    <li><strong>Verificación de DNS:</strong> Una vez propagados los DNS (5-60 min), el sistema verifica la configuración y completa la configuración del hosting automáticamente.</li>
-                    <li><strong>Certificado SSL:</strong> Cloudflare Pages emite un certificado SSL gratuito para el dominio. Este proceso toma 1-5 minutos y se hace automáticamente.</li>
-                    <li><strong>Dominio activo:</strong> El sitio web del cliente estará disponible en su dominio personalizado con HTTPS seguro.</li>
-                  </ol>
-                  <div className="pt-2 text-xs text-muted-foreground border-t border-blue-200 dark:border-blue-800 mt-3">
-                    <strong>Nota:</strong> El cliente necesitará acceso a su cuenta de registrador de dominios para completar el paso 2. Todo el proceso toma aproximadamente 15-30 minutos en total.
-                  </div>
-                </AlertDescription>
-              </Alert>
-              
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="ejemplo.com"
+                value={customDomain}
+                onChange={(e) => setCustomDomain(e.target.value.toLowerCase().trim())}
+                disabled={loading}
+              />
+              <Button onClick={handleAddDomain} disabled={loading || !customDomain}>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Añadir Dominio
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          {/* DNS Instructions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Instrucciones de Configuración DNS</CardTitle>
+              <CardDescription>
+                Configura estos registros en tu proveedor de dominio
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <Alert>
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  <strong>Before starting:</strong> Ensure the client has access to their domain registrar 
-                  account to update nameservers in the next step.
+                <AlertDescription>
+                  Añade un registro CNAME apuntando a tu proyecto de Cloudflare Pages.
+                  Los cambios DNS pueden tardar hasta 48 horas en propagarse.
                 </AlertDescription>
               </Alert>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
-      {/* Step 2: Nameserver Update */}
-      {step === 2 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Server className="w-5 h-5" />
-              Update Nameservers at Domain Registrar
-            </CardTitle>
-            <CardDescription>
-              Follow these steps to point the domain to Cloudflare
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Instructions */}
-            <div className="bg-muted p-4 rounded-lg space-y-3">
-              <h4 className="font-semibold">Step-by-Step Guide:</h4>
-              <ol className="list-decimal list-inside space-y-2 text-sm">
-                <li>Log in to the domain registrar (GoDaddy, Namecheap, etc.)</li>
-                <li>Find the <strong>DNS Settings</strong> or <strong>Nameservers</strong> section</li>
-                <li>Choose <strong>"Custom Nameservers"</strong> or <strong>"Change Nameservers"</strong></li>
-                <li>Replace existing nameservers with the ones below</li>
-                <li>Save changes (can take 5-60 minutes to propagate)</li>
-              </ol>
-            </div>
-
-            {/* Nameservers */}
-            <div>
-              <label className="text-sm font-medium mb-2 block">
-                Copy these nameservers:
-              </label>
-              <div className="space-y-2">
-                {nameservers.map((ns, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <code className="flex-1 bg-background border p-3 rounded font-mono text-sm">
-                      {ns}
-                    </code>
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      onClick={() => copyToClipboard(ns)}
-                    >
-                      <Copy className="w-4 h-4" />
-                    </Button>
+              <div className="space-y-3">
+                <div className="bg-muted p-4 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold">Tipo:</span>
+                    <span>CNAME</span>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold">Nombre:</span>
+                    <div className="flex items-center gap-2">
+                      <code className="bg-background px-2 py-1 rounded">@</code>
+                      <span className="text-sm text-muted-foreground">(o tu dominio raíz)</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold">Valor:</span>
+                    <div className="flex items-center gap-2">
+                      <code className="bg-background px-2 py-1 rounded">mi-restaurante-online.pages.dev</code>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard("mi-restaurante-online.pages.dev")}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
 
-            <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-950 dark:border-amber-800">
-              <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-              <AlertDescription className="text-sm">
-                <strong>DNS propagation takes time.</strong> After updating nameservers, 
-                wait 5-10 minutes before clicking "Verify Domain" below. It can take up to 
-                48 hours in rare cases.
-              </AlertDescription>
-            </Alert>
-
-            <Button 
-              onClick={handleVerifyDomain} 
-              disabled={loading}
-              size="lg"
-              className="w-full"
-            >
-              {loading ? (
-                <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                "Nameservers Updated - Verify Now"
-              )}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Step 3: Verification in Progress */}
-      {step === 3 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5 animate-pulse" />
-              SSL Certificate Provisioning
-            </CardTitle>
-            <CardDescription>
-              Domain is verified. SSL certificate is being issued...
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-center p-8">
-              <RefreshCw className="w-16 h-16 animate-spin text-primary" />
-            </div>
-            <p className="text-center text-sm text-muted-foreground">
-              This usually takes 1-5 minutes. The page will update automatically when complete.
-            </p>
-            <Button 
-              variant="outline" 
-              onClick={handleCheckStatus}
-              disabled={loading}
-              className="w-full"
-            >
-              Check Status Manually
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Step 4: Complete */}
-      {step === 4 && (
-        <Card className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
-              <CheckCircle2 className="w-6 h-6" />
-              Domain Active!
-            </CardTitle>
-            <CardDescription className="text-green-600 dark:text-green-500">
-              The custom domain is now live with SSL certificate
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="bg-white dark:bg-background p-4 rounded-lg border border-green-200 dark:border-green-800">
-              <p className="text-sm mb-2">
-                <strong>Domain:</strong> <code className="bg-muted px-2 py-1 rounded">{domain}</code>
-              </p>
-              <div className="flex gap-2 mt-3">
-                <Badge variant="secondary" className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
-                  <Shield className="w-3 h-3 mr-1" />
-                  SSL Issued
-                </Badge>
-                <Badge variant="secondary" className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
-                  <CheckCircle2 className="w-3 h-3 mr-1" />
-                  DNS Verified
-                </Badge>
-              </div>
-            </div>
-
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => window.open(`https://${domain}`, '_blank')}
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Visit Site
-            </Button>
-
-            {clientData?.cloudflare_dashboard_url && (
-              <Button 
-                variant="ghost" 
-                className="w-full"
-                onClick={() => window.open(clientData.cloudflare_dashboard_url, '_blank')}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                View in Cloudflare
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Current Status Card (always visible) */}
-      {clientData && (
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-sm">Current Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">Domain:</span>
-                <p className="font-medium">{clientData.custom_domain || 'Not set'}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">SSL Status:</span>
-                <p className="font-medium capitalize">{clientData.ssl_status || 'Pending'}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Verified:</span>
-                <p className="font-medium">{clientData.domain_verified ? 'Yes' : 'No'}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Last Checked:</span>
-                <p className="font-medium text-xs">
-                  {clientData.last_domain_check 
-                    ? new Date(clientData.last_domain_check).toLocaleString()
-                    : 'Never'
-                  }
+                <p className="text-sm text-muted-foreground">
+                  * Si tu proveedor no permite CNAME en el dominio raíz, usa estos registros A:
                 </p>
+                <div className="bg-muted p-4 rounded-lg space-y-2">
+                  <div className="text-sm">
+                    <strong>Tipo:</strong> A | <strong>Nombre:</strong> @ | <strong>Valor:</strong> (consultar con Cloudflare)
+                  </div>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-}
+            </CardContent>
+          </Card>
 
-// Timeline Step Component
-function TimelineStep({ 
-  number, 
-  completed, 
-  current, 
-  title, 
-  description 
-}: {
-  number: number;
-  completed: boolean;
-  current: boolean;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="flex gap-4 items-start">
-      <div className={`
-        w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-semibold
-        ${completed ? 'bg-green-500 text-white' : ''}
-        ${current ? 'bg-primary text-primary-foreground animate-pulse' : ''}
-        ${!completed && !current ? 'bg-muted text-muted-foreground' : ''}
-      `}>
-        {completed ? <CheckCircle2 className="w-5 h-5" /> : number}
-      </div>
-      <div className="flex-1 pt-1">
-        <h4 className={`font-semibold ${current ? 'text-primary' : ''}`}>
-          {title}
-        </h4>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </div>
+          {/* Verification Status */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Estado de Verificación
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4">
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    {isVerified ? (
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    ) : (
+                      <AlertCircle className="h-5 w-5 text-yellow-500" />
+                    )}
+                    <div>
+                      <p className="font-medium">Verificación DNS</p>
+                      <p className="text-sm text-muted-foreground">
+                        {isVerified ? "Dominio verificado correctamente" : "Esperando configuración DNS"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    {sslActive ? (
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    ) : (
+                      <AlertCircle className="h-5 w-5 text-yellow-500" />
+                    )}
+                    <div>
+                      <p className="font-medium">Certificado SSL</p>
+                      <p className="text-sm text-muted-foreground">
+                        {sslActive ? "SSL activo y funcionando" : "Esperando emisión de certificado"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button onClick={handleVerifyDomain} disabled={loading || polling}>
+                  {(loading || polling) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Verificar Estado
+                </Button>
+                <Button variant="destructive" onClick={handleRemoveDomain} disabled={loading}>
+                  Eliminar Dominio
+                </Button>
+              </div>
+
+              {polling && (
+                <Alert>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <AlertDescription>
+                    Verificando automáticamente cada 10 segundos...
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+        </>
+      )}
     </div>
   );
 }
