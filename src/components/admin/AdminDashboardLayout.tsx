@@ -24,7 +24,8 @@ import {
   Globe,
   BarChart3,
   Receipt,
-  Monitor
+  Monitor,
+  Network
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -137,6 +138,7 @@ export default function AdminDashboardLayout() {
     { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
     { href: '/admin/client-management', label: t('clientManagement'), icon: Users },
     { href: '/admin/custom-domains', label: 'Custom Domains', icon: Globe },
+    { href: '/admin/custom-dns', label: 'DNS Records', icon: Network },
     { href: '/admin/cloudflare-monitoring', label: 'Cloudflare Monitoring', icon: Monitor, adminOnly: true },
     { href: '/admin/billing', label: 'Billing & Invoices', icon: Receipt },
     { href: '/admin/tickets', label: 'Tickets de Soporte', icon: MessageSquare },

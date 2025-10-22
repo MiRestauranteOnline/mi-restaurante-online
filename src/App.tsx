@@ -32,6 +32,7 @@ import MarketingAnalytics from "./pages/admin/MarketingAnalytics";
 import PlanManagement from "./pages/admin/PlanManagement";
 import TemplatesManagement from "./pages/admin/TemplatesManagement";
 import CustomDomainPage from "./pages/admin/CustomDomainPage";
+import CustomDNS from "./pages/admin/CustomDNS";
 import ClientDashboardLayout from "./components/client/ClientDashboardLayout";
 import ClientDashboard from "./pages/client/ClientDashboard";
 import ClientSettingsPage from "./pages/client/ClientSettings";
@@ -97,6 +98,7 @@ const AppContent = () => {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="client-management" element={<ClientManagement />} />
           <Route path="custom-domains" element={<CustomDomainPage />} />
+          <Route path="custom-dns" element={<CustomDNS />} />
           <Route path="cloudflare-monitoring" element={<ProtectedRoute requireAdmin><CloudflareMonitoring /></ProtectedRoute>} />
           <Route path="billing" element={<BillingInvoicing />} />
           <Route path="tickets" element={<TicketManagement />} />
