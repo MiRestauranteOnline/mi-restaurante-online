@@ -74,3 +74,12 @@ verify_jwt = false
 
 [functions.fix-article-link]
 verify_jwt = false
+
+[functions.add-custom-domain-to-pages]
+verify_jwt = true
+
+[functions.verify-custom-domain-status]
+verify_jwt = true
+
+[functions.remove-custom-domain]
+verify_jwt = true
