@@ -70,6 +70,41 @@ Restaurant industry categories we cover:
 - casos-exito (success cases)
 - guias-practicas (practical guides)
 
+**CRITICAL TOPICAL AUTHORITY GAPS FOR PERU:**
+
+Our analysis shows we need stronger coverage in these strategic areas to build true topical authority:
+
+**1. LEGAL & REGULATORY (Peru-specific):**
+- Licenses, permits, and health regulations (DIGESA, INDECOPI, municipal requirements)
+- Labor laws and employment regulations for restaurants
+- Food safety and sanitation compliance
+- Alcohol licensing and requirements
+
+**2. FINANCIAL MANAGEMENT:**
+- Cost control and profit margin optimization
+- Pricing strategies for the Peruvian market
+- Inventory management and waste reduction
+- Tax obligations and accounting for restaurants
+- POS systems and payment processing
+
+**3. OPERATIONS & LOGISTICS:**
+- Supplier management and reliable vendors in Lima/Peru
+- Staff training, retention, and productivity
+- Kitchen workflow optimization
+- Food waste management and sustainability
+
+**4. LOCAL MARKET DYNAMICS:**
+- Delivery platforms (Rappi, PedidosYa, Uber Eats) optimization
+- Seasonal marketing (Fiestas Patrias, Christmas, etc.)
+- Competition analysis and differentiation
+- Local food trends and Peruvian gastronomy
+
+**5. CUSTOMER EXPERIENCE:**
+- Reservation systems and table management
+- Customer loyalty programs specific to Peru
+- Handling customer complaints and reviews
+- Service quality standards
+
 **CRITICAL ANTI-DUPLICATE RULES:**
 
 1. **NO LOCATION DUPLICATES**: NEVER suggest the same topic with different city names (e.g., "Marketing Digital en Lima" vs "Marketing Digital en Cusco"). Focus on Lima ONLY or create Peru-wide guides.
@@ -77,36 +112,35 @@ Restaurant industry categories we cover:
 2. **NO SEMANTIC DUPLICATES**: Avoid topics that are too similar to existing content:
    - "Estrategias de Marketing Digital" is TOO SIMILAR to "Marketing Digital para Restaurantes"
    - "Diseño de Sitios Web" is TOO SIMILAR to "Diseño Web para Restaurantes"
-   - "Guía de Email Marketing" is TOO SIMILAR to "Estrategias de Email Marketing"
+   - Check if existing articles already cover the same concept, even with different wording
 
-3. **IDENTIFY TRUE GAPS**: Look for topics we genuinely haven't covered:
-   - New restaurant technologies (POS systems, inventory management, AI)
-   - Specific operational challenges (food cost control, waste reduction)
-   - Legal/regulatory topics (permits, licenses, health codes)
-   - Financial topics (pricing strategies, profit margins, budgeting)
-   - Customer service excellence, staff training
-   - Sustainability and eco-friendly practices
+3. **PRIORITIZE HIGH-VALUE GAPS**: Focus on topics from the strategic areas above that are:
+   - Specific to the Peruvian market context
+   - Actionable and practical for restaurant owners
+   - Not covered by existing articles
+   - High search intent and commercial value
 
-4. **SPECIFICITY OVER BREADTH**: Prefer narrow, specific topics over broad ones:
-   ✅ GOOD: "Cómo Reducir el Desperdicio de Alimentos en Restaurantes"
+4. **SPECIFICITY OVER BREADTH**: Prefer narrow, specific topics:
+   ✅ GOOD: "Guía completa de licencias DIGESA para restaurantes en Lima 2025"
+   ✅ GOOD: "Cómo optimizar costos de proveedores para restaurantes en Perú"
    ❌ BAD: "Guía de Gestión de Restaurantes"
 
-5. **CHECK ALL EXISTING**: Before suggesting a topic, mentally check if we have:
-   - An exact match
-   - A very similar topic
-   - A topic that covers the same keywords
+5. **CHECK ALL EXISTING**: Before suggesting a topic, verify:
+   - No exact match exists
+   - No very similar topic exists
+   - Keywords aren't already covered
 
-Analyze the content gaps and identify the TOP 3 most important UNIQUE topics we should create articles about to build topical authority for restaurant websites in Peru.
+Analyze the content gaps and identify the TOP 3 most important UNIQUE topics we should create articles about to build topical authority for restaurant websites in Peru. Prioritize topics from the strategic gaps identified above.
 
 Return JSON format:
 {
   "content_gaps": [
     {
-      "topic": "Specific, unique topic (NOT a duplicate or near-duplicate)",
+      "topic": "Specific, unique topic focused on strategic gaps",
       "category": "one of the 5 categories",
       "target_keywords": ["keyword1", "keyword2"],
       "priority_score": 1-10,
-      "reasoning": "Why this is unique and fills a genuine gap"
+      "reasoning": "Why this is unique, fills a strategic gap, and builds topical authority"
     }
   ]
 }
