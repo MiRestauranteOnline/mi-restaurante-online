@@ -132,7 +132,6 @@ export default function AdminDashboardLayout() {
   const mainSidebarItems = [
     { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
     { href: '/admin/client-management', label: t('clientManagement'), icon: Users },
-    { href: '/admin/project-config', label: t('projectConfig'), icon: Settings },
     { href: '/admin/subscription-management', label: t('subscriptions'), icon: CreditCard },
   ];
 
@@ -145,7 +144,6 @@ export default function AdminDashboardLayout() {
     { href: '/admin/tickets', label: 'Tickets de Soporte', icon: MessageSquare },
     { href: '/admin/marketing-analytics', label: 'Marketing Analytics', icon: TrendingUp },
     { href: '/admin/templates-management', label: 'Plantillas', icon: LayoutDashboard },
-    { href: '/admin/project-config', label: t('projectConfig'), icon: Settings },
     { href: '/admin/subscription-management', label: t('subscriptions'), icon: CreditCard },
     { href: '/admin/coupon-management', label: 'Cupones', icon: Tag },
     { href: '/admin/plan-management', label: 'Planes', icon: Store },

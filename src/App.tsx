@@ -22,7 +22,6 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import UnifiedDashboard from "./pages/dashboard/UnifiedDashboard";
 import ClientManagement from "./pages/admin/ClientManagement";
 import AdminClientSettings from "./pages/admin/ClientSettings";
-import ProjectConfiguration from "./pages/admin/ProjectConfiguration";
 import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
 import CouponManagement from "./pages/admin/CouponManagement";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -104,7 +103,6 @@ const AppContent = () => {
           <Route path="client-images" element={<ClientImages />} />
           <Route path="marketing-analytics" element={<MarketingAnalytics />} />
           <Route path="client-settings/:clientId" element={<AdminClientSettings />} />
-          <Route path="project-config" element={<ProjectConfiguration />} />
           <Route path="subscription-management" element={<SubscriptionManagement />} />
           <Route path="coupon-management" element={<CouponManagement />} />
           <Route path="plan-management" element={<PlanManagement />} />
