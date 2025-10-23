@@ -391,7 +391,8 @@ className="bg-destructive h-3 rounded-full transition-all duration-500"
                     {Object.entries(deviceBreakdown)
                       .sort(([,a], [,b]) => b - a)
                       .map(([device, count], index) => {
-                        const percentage = Math.round((count / totals.unique_sessions) * 100);
+                        const totalDeviceCount = Object.values(deviceBreakdown).reduce((sum, c) => sum + c, 0);
+                        const percentage = Math.round((count / totalDeviceCount) * 100);
                         const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-destructive to-destructive/80'];
                         const DeviceIcon = device === 'desktop' ? Monitor : device === 'tablet' ? Tablet : Smartphone;
                         const colorClass = device === 'desktop' ? 'text-accent' : device === 'tablet' ? 'text-destructive' : 'text-primary';
