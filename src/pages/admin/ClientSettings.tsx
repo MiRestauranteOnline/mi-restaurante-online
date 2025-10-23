@@ -737,6 +737,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const location = useLocation();
   const isClientView = location.pathname.startsWith('/client/');
   const [activeTab, setActiveTab] = useState<string>('basic');
+  const [selectedContentPage, setSelectedContentPage] = useState<string>("homepage");
 
   // Ensure activeTab is allowed (especially in client view)
   useEffect(() => {
@@ -4388,8 +4389,33 @@ setReviewForm({
             />
           )}
           <div className="space-y-6">
+            {/* PAGE SELECTOR */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-4">
+                  <Label htmlFor="content-page-select" className="whitespace-nowrap font-medium">Seleccionar Página:</Label>
+                  <Select value={selectedContentPage} onValueChange={setSelectedContentPage}>
+                    <SelectTrigger id="content-page-select" className="w-full max-w-md">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border border-border shadow-md z-50">
+                      <SelectItem value="homepage">Página Principal</SelectItem>
+                      <SelectItem value="about">Página Acerca de</SelectItem>
+                      <SelectItem value="menu">Página Menú</SelectItem>
+                      <SelectItem value="contact">Página Contacto</SelectItem>
+                      <SelectItem value="reviews">Página de Reseñas</SelectItem>
+                      <SelectItem value="services">Contenido de Servicios</SelectItem>
+                      <SelectItem value="stats">Contenido de Estadísticas</SelectItem>
+                      <SelectItem value="footer">Footer</SelectItem>
+                      <SelectItem value="whatsapp">Mensajes de WhatsApp</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
               
               {/* HOMEPAGE SECTION */}
+              {selectedContentPage === "homepage" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.homepage')}</h3>
                 
@@ -4783,8 +4809,10 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
 
               {/* ABOUT PAGE SECTION */}
+              {selectedContentPage === "about" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.aboutPage')}</h3>
                 
@@ -4928,8 +4956,10 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
 
               {/* MENU PAGE SECTION */}
+              {selectedContentPage === "menu" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.menuPage')}</h3>
                 
@@ -4985,8 +5015,10 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
 
               {/* CONTACT PAGE SECTION */}
+              {selectedContentPage === "contact" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.contactPage')}</h3>
                 
@@ -5060,8 +5092,10 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
 
               {/* REVIEWS PAGE SECTION */}
+              {selectedContentPage === "reviews" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.reviewsPage')}</h3>
                 
@@ -5109,8 +5143,10 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
 
               {/* SERVICES CONTENT SECTION */}
+              {selectedContentPage === "services" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.servicesContent')}</h3>
                 
@@ -5382,8 +5418,10 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
 
               {/* STATS CONTENT SECTION */}
+              {selectedContentPage === "stats" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.statsContent')}</h3>
                 
@@ -5508,8 +5546,10 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
 
               {/* FOOTER SECTION */}
+              {selectedContentPage === "footer" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.footer')}</h3>
                 
@@ -5530,8 +5570,10 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
 
               {/* WHATSAPP MESSAGES SECTION */}
+              {selectedContentPage === "whatsapp" && (
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-primary border-b pb-2">{t('content.whatsappMessages')}</h3>
                 
@@ -5562,6 +5604,7 @@ setReviewForm({
                   </CardContent>
                 </Card>
               </div>
+              )}
             </div>
           </TabsContent>
 
