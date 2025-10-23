@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -1520,101 +1520,255 @@ export default function ClientGuides() {
 
       case "marca-personalizacion":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Marca y Personalización</CardTitle>
-              <CardDescription>
-                Personaliza los colores y la moneda de tu restaurante
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Marca y Personalización</h1>
+              <p className="text-muted-foreground">
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Sección "Personalización"
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Palette className="h-5 w-5 text-primary" />
+                  ¿Qué Puedes Personalizar?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Configuración</strong> → sección <strong>"Personalización"</strong>
+                  Esta sección te permite personalizar los elementos visuales y de formato de tu sitio web 
+                  para que refleje la identidad única de tu restaurante.
                 </p>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Opciones Disponibles</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Color Principal de tu Marca
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  El color principal define la identidad visual de tu sitio web. Este color se aplicará en:
+                </p>
                 
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Color Principal</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      El color principal de tu marca que se usará en todo el sitio web (botones, enlaces, etc.)
-                    </p>
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Cómo seleccionar:</p>
-                      <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
-                        <li>Usa el selector de color (cuadrado de color) para elegir visualmente</li>
-                        <li>O ingresa un código de color hexadecimal manualmente (ej: #22c55e)</li>
-                        <li>El color se actualizará en tiempo real en el selector</li>
-                      </ol>
-                    </div>
+                <div className="grid gap-2">
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">Botones principales (reservar, ver menú, contactar)</span>
                   </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Moneda</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Símbolo de moneda que aparecerá junto a los precios en todo el sitio
-                    </p>
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Ejemplos comunes:</p>
-                      <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                        <li><code className="bg-muted px-2 py-1 rounded">S/</code> - Soles peruanos</li>
-                        <li><code className="bg-muted px-2 py-1 rounded">$</code> - Dólares</li>
-                        <li><code className="bg-muted px-2 py-1 rounded">€</code> - Euros</li>
-                        <li><code className="bg-muted px-2 py-1 rounded">MXN$</code> - Pesos mexicanos</li>
-                      </ul>
-                    </div>
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">Enlaces y elementos interactivos</span>
+                  </div>
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">Elementos destacados y llamadas a la acción</span>
+                  </div>
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">Iconos y detalles de diseño</span>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">⚠️ Advertencia Importante</h3>
-                <div className="p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                  <h4 className="font-medium mb-2 text-yellow-900 dark:text-yellow-100">
-                    Al cambiar el color principal, aparecerá un popup de confirmación
+                <div className="mt-4 p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <Palette className="h-4 w-4 text-primary" />
+                    Cómo Seleccionar tu Color
                   </h4>
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200 mb-3">
-                    <strong>¿Por qué?</strong> Cambiar el color principal puede afectar significativamente la apariencia de tu sitio web.
+                  <ol className="space-y-2 text-sm">
+                    <li className="flex gap-2">
+                      <span className="font-bold text-primary">1.</span>
+                      <span>Haz clic en el <strong>selector de color</strong> (el cuadrado de color)</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="font-bold text-primary">2.</span>
+                      <span>Elige tu color visualmente usando el selector desplegable</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="font-bold text-primary">3.</span>
+                      <span>O ingresa directamente un código hexadecimal (ej: <code className="bg-background px-2 py-0.5 rounded">#22c55e</code>)</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="font-bold text-primary">4.</span>
+                      <span>Verás una vista previa del color en tiempo real</span>
+                    </li>
+                  </ol>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-amber-500/50 bg-amber-500/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                  <AlertCircle className="h-5 w-5" />
+                  Importante: Confirmación de Cambio de Color
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-foreground/90">
+                  Al cambiar el color principal, aparecerá un <strong>popup de confirmación</strong>. 
+                  Esto es porque el cambio afecta toda la identidad visual de tu sitio web.
+                </p>
+                <div className="space-y-2 text-sm">
+                  <p className="font-semibold text-foreground">¿Por qué aparece esta confirmación?</p>
+                  <ul className="space-y-1.5 text-foreground/80">
+                    <li className="flex gap-2">
+                      <span>•</span>
+                      <span>El color se aplicará <strong>instantáneamente</strong> en todo tu sitio web</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span>•</span>
+                      <span>Cambia la <strong>identidad visual</strong> que tus clientes conocen</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span>•</span>
+                      <span>Afecta botones, enlaces y elementos interactivos</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span>•</span>
+                      <span>Los visitantes verán el cambio <strong>inmediatamente</strong></span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-3 p-3 bg-amber-100/50 dark:bg-amber-900/20 rounded border border-amber-300/50 dark:border-amber-700/50">
+                  <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+                    💡 <strong>Recomendación:</strong> Antes de confirmar, asegúrate de que el nuevo color:
                   </p>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">El popup te pedirá confirmación porque:</p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800 dark:text-yellow-200">
-                      <li>El color se aplicará a todos los botones del sitio</li>
-                      <li>Afectará los enlaces y elementos interactivos</li>
-                      <li>Cambiará la identidad visual de tu marca en línea</li>
-                      <li>Los cambios son inmediatos y visibles para tus clientes</li>
-                    </ul>
-                  </div>
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200 mt-3">
-                    <strong>Recomendación:</strong> Visualiza cómo se verá el nuevo color antes de confirmar y asegúrate de que combine bien con tus imágenes y contenido.
+                  <ul className="mt-2 space-y-1 text-sm text-amber-800 dark:text-amber-300">
+                    <li>• Representa bien la identidad de tu restaurante</li>
+                    <li>• Combina con tus fotos y contenido existente</li>
+                    <li>• Tiene buen contraste y es legible</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Símbolo de Moneda
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Define el símbolo que aparecerá junto a todos los precios en tu menú y sitio web.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Card className="bg-muted/30">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <code className="text-lg font-bold bg-background px-3 py-1.5 rounded">$</code>
+                        <span className="font-medium">Dólar / Peso</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">USD, MXN, ARS, CLP, etc.</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-muted/30">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <code className="text-lg font-bold bg-background px-3 py-1.5 rounded">S/</code>
+                        <span className="font-medium">Sol Peruano</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">PEN</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-muted/30">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <code className="text-lg font-bold bg-background px-3 py-1.5 rounded">€</code>
+                        <span className="font-medium">Euro</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">EUR</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-muted/30">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <code className="text-lg font-bold bg-background px-3 py-1.5 rounded">R$</code>
+                        <span className="font-medium">Real Brasileño</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">BRL</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="p-4 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <p className="text-sm text-blue-900 dark:text-blue-200">
+                    <Info className="h-4 w-4 inline mr-1.5" />
+                    <strong>Nota:</strong> Solo necesitas configurar la moneda una vez, a menos que cambies 
+                    de país o decidas mostrar precios en otra divisa.
                   </p>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Elige un color que represente bien tu marca y sea fácil de leer</li>
-                  <li>Asegúrate de que el color tenga buen contraste con el blanco/negro</li>
-                  <li>Puedes cambiar el color cuando quieras, pero piénsalo bien antes</li>
-                  <li>La moneda solo necesita configurarse una vez, a menos que cambies de país</li>
-                  <li>Guarda los cambios haciendo clic en "Guardar Configuración"</li>
-                  <li>Revisa tu sitio web después de guardar para ver cómo se ve el nuevo color</li>
+            <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <span>💡</span> Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Usa colores de tu marca:</strong> Si ya tienes un logo o material de marca, usa esos colores para mantener coherencia
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Contraste adecuado:</strong> Asegúrate de que el color sea legible sobre fondos claros y oscuros
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Colores profesionales:</strong> Elige colores que transmitan profesionalismo y confianza
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Prueba antes de confirmar:</strong> Visualiza cómo se ve el color en el selector antes de aplicarlo
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Consistencia:</strong> Una vez elegido un color, mantenlo por un tiempo para que tus clientes lo asocien con tu marca
+                    </span>
+                  </li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Save className="h-5 w-5" />
+                  Guardar Cambios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Después de personalizar tu color y moneda, haz clic en el botón <strong>"Guardar Configuración"</strong>. 
+                  Los cambios se aplicarán inmediatamente en tu sitio web. Te recomendamos visitar tu sitio en una 
+                  ventana privada para ver cómo se ve con los nuevos cambios.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "contenido-sitio":
