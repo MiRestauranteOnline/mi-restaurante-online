@@ -6137,56 +6137,54 @@ setReviewForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {faqs.length > 0 ? (
                 [...faqs].sort((a, b) => a.display_order - b.display_order).map((faq, index) => (
-                  <Card key={faq.id} className="overflow-hidden">
-                    <CardContent className="p-4">
-                      <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:justify-between">
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-base mb-2">{faq.question}</h4>
-                          <p className="text-sm text-muted-foreground">{faq.answer}</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant={faq.is_active ? "default" : "secondary"}>
-                              {faq.is_active ? 'Activo' : 'Inactivo'}
-                            </Badge>
-                          </div>
+                  <div key={faq.id} className="flex flex-col gap-3 p-4 border-2 border-border rounded-lg bg-card shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start gap-2 mb-2">
+                          <h4 className="font-semibold text-base flex-1">{faq.question}</h4>
+                          <Badge variant={faq.is_active ? "default" : "secondary"} className="shrink-0">
+                            {faq.is_active ? 'Activo' : 'Inactivo'}
+                          </Badge>
                         </div>
-                        <div className="flex gap-2 shrink-0">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleMoveFaqUp(faq.id)}
-                            disabled={index === 0}
-                          >
-                            <ArrowUp className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleMoveFaqDown(faq.id)}
-                            disabled={index === faqs.length - 1}
-                          >
-                            <ArrowDown className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => openFaqDialog(faq)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDeleteFaq(faq.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                    <div className="flex gap-2 justify-end pt-3 border-t-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleMoveFaqUp(faq.id)}
+                        disabled={index === 0}
+                      >
+                        <ArrowUp className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleMoveFaqDown(faq.id)}
+                        disabled={index === faqs.length - 1}
+                      >
+                        <ArrowDown className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openFaqDialog(faq)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteFaq(faq.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 ))
               ) : (
                 <p className="text-muted-foreground text-center py-4">
