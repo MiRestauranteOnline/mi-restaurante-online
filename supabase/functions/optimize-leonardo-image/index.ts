@@ -104,75 +104,62 @@ serve(async (req) => {
     const originalSize = imageBuffer.byteLength;
     console.log(`Original image size: ${(originalSize / 1024).toFixed(2)} KB`);
 
-    // Step 3: Resize and compress - blog images should be max 1200px wide  
-    const maxWidth = 1200;
-    const quality = 80;
+    // Step 3: Compress and resize using ImageScript (matches ImageUpload.tsx compression)
+    // Context-based compression settings (matching browser-image-compression targets)
+    const contextSettings: Record<string, { maxWidth: number; targetKB: number; quality: number }> = {
+      'menu-item': { maxWidth: 800, targetKB: 60, quality: 70 },
+      'hero-background': { maxWidth: 1920, targetKB: 300, quality: 80 },
+      'carousel': { maxWidth: 1000, targetKB: 140, quality: 70 },
+      'restaurant blog': { maxWidth: 1200, targetKB: 200, quality: 70 },
+      'default': { maxWidth: 1200, targetKB: 200, quality: 70 }
+    };
+
+    const settings = contextSettings[context] || contextSettings['default'];
+    console.log(`Using compression settings for "${context}":`, settings);
+
     let optimizedBuffer: ArrayBuffer;
     let optimizedSize: number;
     
     try {
-      const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+      // Dynamic import of imagescript for image processing
+      const { Image } = await import('https://deno.land/x/imagescript@1.3.0/mod.ts');
       
-      if (!lovableApiKey) {
-        console.warn('LOVABLE_API_KEY not found, using original image');
-        optimizedBuffer = imageBuffer;
-        optimizedSize = originalSize;
-      } else {
-        // Convert image to base64
-        const base64Image = btoa(
-          new Uint8Array(imageBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
-        );
-        const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+      // Decode the image
+      const image = await Image.decode(new Uint8Array(imageBuffer));
+      
+      // Calculate new dimensions maintaining aspect ratio
+      const aspectRatio = image.width / image.height;
+      let newWidth = Math.min(image.width, settings.maxWidth);
+      let newHeight = Math.round(newWidth / aspectRatio);
+      
+      // Resize if needed
+      const resized = image.width > settings.maxWidth 
+        ? image.resize(newWidth, newHeight)
+        : image;
+      
+      // Encode to JPEG with quality setting (ImageScript doesn't support WebP encoding natively)
+      // We'll encode as JPEG and upload with .webp extension, browser will handle properly
+      const compressedBuffer = await resized.encodeJPEG(settings.quality);
+      optimizedBuffer = compressedBuffer.buffer as ArrayBuffer;
+      optimizedSize = compressedBuffer.byteLength;
+
+      console.log(`Optimized image size: ${(optimizedSize / 1024).toFixed(2)} KB (target: ${settings.targetKB} KB)`);
+      console.log(`Compression ratio: ${Math.round((1 - optimizedSize / originalSize) * 100)}%`);
+
+      // If still too large, reduce quality further
+      if (optimizedSize / 1024 > settings.targetKB * 1.2) {
+        console.log('Image still too large, reducing quality further...');
+        const lowerQuality = Math.max(50, settings.quality - 20);
+        const recompressed = await resized.encodeJPEG(lowerQuality);
         
-        const resizeResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${lovableApiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-2.5-flash-image-preview",
-            messages: [
-              {
-                role: "user",
-                content: [
-                  {
-                    type: "text",
-                    text: `Resize this image to a maximum width of ${maxWidth}px while maintaining aspect ratio. Optimize for web use with WebP format at ${quality}% quality.`
-                  },
-                  {
-                    type: "image_url",
-                    image_url: { url: dataUrl }
-                  }
-                ]
-              }
-            ],
-            modalities: ["image"]
-          })
-        });
-        
-        const resizeData = await resizeResponse.json();
-        const editedImageUrl = resizeData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-        
-        if (editedImageUrl && editedImageUrl.startsWith('data:image')) {
-          const base64Data = editedImageUrl.split(',')[1];
-          const binaryString = atob(base64Data);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
-          optimizedBuffer = bytes.buffer;
-          optimizedSize = optimizedBuffer.byteLength;
-          
-          console.log(`Optimized image size: ${(optimizedSize / 1024).toFixed(2)} KB`);
-          console.log(`Compression ratio: ${Math.round((1 - optimizedSize / originalSize) * 100)}%`);
-        } else {
-          optimizedBuffer = imageBuffer;
-          optimizedSize = originalSize;
+        if (recompressed.byteLength < optimizedSize) {
+          optimizedBuffer = recompressed.buffer as ArrayBuffer;
+          optimizedSize = recompressed.byteLength;
+          console.log(`Recompressed to: ${(optimizedSize / 1024).toFixed(2)} KB at quality ${lowerQuality}`);
         }
       }
     } catch (error) {
-      console.error('Image processing failed, using original:', error);
+      console.error('ImageScript compression failed, using original image:', error);
       optimizedBuffer = imageBuffer;
       optimizedSize = originalSize;
     }
@@ -186,13 +173,13 @@ serve(async (req) => {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .toLowerCase();
-    const optimizedFilename = `${safeBase}${cacheBuster}.webp`;
+    const optimizedFilename = `${safeBase}${cacheBuster}.jpg`; // Using .jpg since ImageScript encodes to JPEG
     
     // Step 4: Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('client-assets')
       .upload(`optimized-images/${optimizedFilename}`, optimizedBuffer, {
-        contentType: 'image/webp',
+        contentType: 'image/jpeg',
         upsert: true
       });
 
