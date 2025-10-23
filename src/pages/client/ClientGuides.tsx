@@ -659,7 +659,7 @@ export default function ClientGuides() {
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Teléfono</h4>
                     <p className="text-sm text-muted-foreground">
-                      Número de teléfono de contacto. Formato sugerido: +51 123 456 789
+                      Número de teléfono de contacto. Formato sugerido: 123 456 789 (selecciona el código de país en el menú desplegable)
                     </p>
                   </div>
 
@@ -673,7 +673,7 @@ export default function ClientGuides() {
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">WhatsApp</h4>
                     <p className="text-sm text-muted-foreground">
-                      Número de WhatsApp para que los clientes puedan contactarte directamente. Formato: +51 987 654 321
+                      Número de WhatsApp para que los clientes puedan contactarte directamente. Formato: 123 456 789 (selecciona el código de país en el menú desplegable)
                     </p>
                   </div>
 
@@ -708,35 +708,35 @@ export default function ClientGuides() {
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Ocultar Botón de WhatsApp del Menú</h4>
                     <p className="text-sm text-muted-foreground">
-                      Activa este switch si no quieres que aparezca el botón flotante de WhatsApp en las páginas de menú de tu sitio web. Por defecto está visible.
+                      Activa este switch si no quieres que aparezca el botón de WhatsApp en la barra de navegación superior de tu sitio web. Por defecto está visible.
                     </p>
                   </div>
 
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Ocultar Botón de Teléfono del Menú</h4>
                     <p className="text-sm text-muted-foreground">
-                      Activa este switch si no quieres que aparezca el botón de llamada telefónica en las páginas de menú. Por defecto está visible.
+                      Activa este switch si no quieres que aparezca el botón de teléfono en la barra de navegación superior de tu sitio web. Por defecto está visible.
                     </p>
                   </div>
 
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Mostrar Popup de WhatsApp</h4>
                     <p className="text-sm text-muted-foreground">
-                      Activa este switch para que aparezca un popup de WhatsApp cuando los visitantes entren a tu sitio. Útil para captar la atención de clientes potenciales. Por defecto está deshabilitado.
+                      Activa este switch para mostrar un botón flotante de WhatsApp en tu sitio web que permanece visible mientras los visitantes navegan. Útil para facilitar el contacto directo. Por defecto está deshabilitado.
                     </p>
                   </div>
 
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Texto del Botón CTA Personalizado</h4>
                     <p className="text-sm text-muted-foreground">
-                      Personaliza el texto que aparece en el botón de llamada a la acción (CTA) principal de tu sitio. Por ejemplo: "Reservar Ahora", "Contactar", "Hacer Pedido". Si se deja vacío, usará el texto predeterminado.
+                      Personaliza el texto que aparece en un botón adicional de llamada a la acción en la barra de navegación superior. Por ejemplo: "Reservar Mesa", "Ver Promociones", "Delivery". Si se deja vacío, el botón no aparecerá.
                     </p>
                   </div>
 
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Enlace del Botón CTA Personalizado</h4>
                     <p className="text-sm text-muted-foreground">
-                      Define a dónde redirige el botón CTA cuando los usuarios hacen clic. Puede ser un enlace a WhatsApp, formulario de reservas, o cualquier URL. Ejemplo: https://wa.me/51987654321 o #contact para anclas internas.
+                      URL a la que dirigirá el botón CTA personalizado de la barra de navegación cuando los usuarios hagan clic. Puede ser una página externa, formulario de reservas, o cualquier enlace relevante. Ejemplo: https://wa.me/51987654321
                     </p>
                   </div>
                 </div>
@@ -748,12 +748,13 @@ export default function ClientGuides() {
                 <h3 className="text-lg font-semibold">💡 Consejos</h3>
                 <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                   <li>Asegúrate de que todos los datos de contacto estén actualizados</li>
-                  <li>Usa el formato internacional para teléfonos (+51 para Perú)</li>
+                  <li>Usa el selector de código de país y escribe solo los dígitos del número (ej: 123 456 789)</li>
                   <li>El nombre del restaurante aparecerá en el título de la página y en el encabezado</li>
                   <li>Activa "Usar Coordenadas Específicas" si tu restaurante no aparece correctamente en el mapa con la dirección</li>
                   <li>Selecciona la zona horaria correcta para evitar confusiones con las reservas</li>
-                  <li>El popup de WhatsApp puede aumentar conversiones, pero úsalo con moderación para no molestar</li>
-                  <li>Personaliza el texto del botón CTA según tu objetivo principal (reservas, pedidos, contacto)</li>
+                  <li>El botón flotante de WhatsApp puede aumentar conversiones, pero úsalo con moderación</li>
+                  <li>Los botones de la barra de navegación (WhatsApp, teléfono, CTA) te permiten personalizar la experiencia</li>
+                  <li>El botón CTA personalizado es ideal para destacar tu acción principal (reservas, promociones)</li>
                   <li>No olvides hacer clic en "Guardar Configuración" después de realizar cambios</li>
                 </ul>
               </div>
