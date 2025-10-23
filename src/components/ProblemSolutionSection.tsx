@@ -160,11 +160,12 @@ export const ProblemSolutionSection = () => {
       <div className="container mx-auto px-4">
         {/* Section Label and Heading */}
         <div className="text-center mb-8 animate-fade-up">
-          <p className="text-sm uppercase tracking-wider text-primary font-semibold mb-3">
+          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
             La Realidad del Mercado
-          </p>
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            ¿Tu restaurante está perdiendo<br />Clientes cada día?
+          </Badge>
+          <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
+            ¿Tu restaurante está perdiendo
+            <span className="text-primary block">Clientes cada día?</span>
           </h2>
         </div>
 
