@@ -556,26 +556,26 @@ function SortableMenuItem({ item, currencySymbol, onEdit, onDelete, onToggleStat
   isLast: boolean
 }) {
   return (
-    <div className="flex flex-col gap-3 p-3 border rounded bg-card">
+    <div className="flex flex-col gap-3 p-4 border-2 border-border rounded-lg bg-card shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200">
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex flex-col gap-2 mb-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-medium break-words">{item.name}</span>
+              <span className="font-semibold text-base break-words">{item.name}</span>
               <Badge variant={item.is_active ? "default" : "secondary"} className="shrink-0">
                 {item.is_active ? 'Active' : 'Inactive'}
               </Badge>
             </div>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-lg font-bold text-primary">
               {currencySymbol}{item.price}
             </span>
           </div>
           {item.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{item.description}</p>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2 justify-between pt-2 border-t">
+      <div className="flex items-center gap-2 justify-between pt-3 border-t-2">
         <Switch
           checked={item.is_active}
           onCheckedChange={(checked) => onToggleStatus(item.id, checked)}
