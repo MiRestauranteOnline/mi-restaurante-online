@@ -3159,13 +3159,13 @@ export default function ClientGuides() {
                     Ve a tu <strong>Dashboard de Mi Restaurante Online</strong>
                   </li>
                   <li>
-                    Navega a <strong>Panel Principal</strong> (si eres admin) o <strong>Configuración</strong> (si eres cliente)
+                    <strong>Si eres cliente:</strong> Navega a <strong>Configuración</strong> en el menú lateral, luego selecciona la pestaña <strong>"Analíticas"</strong>
                   </li>
                   <li>
-                    Busca la sección <strong>"Analíticas"</strong>
+                    <strong>Si eres admin:</strong> Navega a <strong>Panel Principal</strong>, luego selecciona la pestaña <strong>"Avanzado"</strong> y busca la sección de Google Analytics
                   </li>
                   <li>
-                    Activa el switch <strong>"Habilitar Analíticas"</strong>
+                    Activa el switch <strong>"Habilitar Analíticas"</strong> (o el switch junto a "Google Analytics 4" si eres admin)
                   </li>
                   <li>
                     Pega tu <strong>ID de Google Analytics (G-XXXXXXXXXX)</strong> en el campo correspondiente
@@ -3341,13 +3341,13 @@ export default function ClientGuides() {
                     Ve a tu <strong>Dashboard de Mi Restaurante Online</strong>
                   </li>
                   <li>
-                    Navega a <strong>Panel Principal</strong> (si eres admin) o <strong>Configuración</strong> (si eres cliente)
+                    <strong>Si eres cliente:</strong> Navega a <strong>Configuración</strong> en el menú lateral, luego selecciona la pestaña <strong>"Analíticas"</strong>
                   </li>
                   <li>
-                    Busca la sección <strong>"Google Search Console"</strong>
+                    <strong>Si eres admin:</strong> Navega a <strong>Panel Principal</strong>, luego selecciona la pestaña <strong>"Avanzado"</strong> y busca la sección de Google Search Console
                   </li>
                   <li>
-                    Pega el <strong>código de verificación</strong> que copiaste en el campo correspondiente
+                    Pega el <strong>código de verificación</strong> que copiaste en el campo <strong>"Código de verificación GSC"</strong>
                     <div className="p-3 bg-muted rounded mt-2">
                       <p className="text-sm">El formato debe ser algo como: <code className="bg-background px-2 py-1 rounded text-xs">XYZ789abc_EJEMPLO-123</code></p>
                     </div>
