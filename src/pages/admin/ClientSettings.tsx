@@ -1725,6 +1725,37 @@ const [faqForm, setFaqForm] = useState({
     toast({ title: 'Switched to client view', description: 'You are now viewing as the client' });
   };
 
+  const handleDeactivationToggle = async (checked: boolean) => {
+    if (!clientId) return;
+    
+    try {
+      const { error } = await supabase
+        .from('clients')
+        .update({
+          is_deactivated: checked,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', clientId);
+
+      if (error) throw error;
+
+      setFormData({ ...formData, is_deactivated: checked });
+      
+      toast({
+        title: checked ? 'Sitio Desactivado' : 'Sitio Activado',
+        description: checked 
+          ? 'El sitio ahora mostrará un aviso de desactivación'
+          : 'El sitio está activo nuevamente',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo actualizar el estado: ' + error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleSave = async () => {
     if (!clientId) return;
     
@@ -6568,7 +6599,7 @@ setReviewForm({
                   <Switch
                     id="is_deactivated"
                     checked={formData.is_deactivated}
-                    onCheckedChange={(checked) => setFormData({...formData, is_deactivated: checked})}
+                    onCheckedChange={handleDeactivationToggle}
                   />
                 </div>
               </div>
