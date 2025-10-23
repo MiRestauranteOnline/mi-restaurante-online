@@ -43,16 +43,50 @@ export const ProblemSolutionSection = () => {
     fetchPlans();
   }, []);
 
-  // Get all unique features from both plans
-  const allFeatures = Array.from(
-    new Set([
-      ...(plans.find(p => p.plan_key === 'basic')?.features || []),
-      ...(plans.find(p => p.plan_key === 'advanced')?.features || [])
-    ])
-  );
+  // Comprehensive feature list with proper categorization
+  const allFeatures = [
+    'Hosting ilimitado (visitas y ancho de banda)',
+    'Dominio personalizado o subdominio incluido',
+    'SSL y CDN incluidos',
+    'Contenido optimizado para SEO',
+    'Menú digital en vivo (editable en segundos)',
+    'Menú descargable en PDF',
+    'Sistema completo de reservaciones por mesa',
+    'Gestión de disponibilidad de mesas',
+    'Carrusel de imágenes personalizable',
+    'Sección de preguntas frecuentes',
+    'Sección de reseñas destacadas',
+    'Gestión de equipo y staff',
+    'Enlaces a redes sociales',
+    'Integración con apps de delivery',
+    'Botón flotante de WhatsApp',
+    'Control total de visibilidad de secciones',
+    'Cambios en vivo instantáneos',
+    'Gestión desde dispositivo móvil',
+    'Guías de instrucción completas',
+    'Video tutoriales paso a paso',
+    'Cancelación flexible sin penalización',
+    'Soporte por tickets',
+  ];
 
   const basicPlan = plans.find(p => p.plan_key === 'basic');
   const advancedPlan = plans.find(p => p.plan_key === 'advanced');
+  
+  // Special handling for support features
+  const getFeatureValue = (feature: string, planKey: string) => {
+    if (feature === 'Soporte por tickets') {
+      return planKey === 'basic' ? '48h' : '24h';
+    }
+    return true;
+  };
+  
+  const hasFeature = (feature: string, planKey: string) => {
+    // WhatsApp support only in advanced
+    if (feature.toLowerCase().includes('whatsapp prioritario')) {
+      return planKey === 'advanced';
+    }
+    return true; // All other features in both plans
+  };
 
   return (
     <section className="py-20 bg-gradient-subtle">
@@ -101,8 +135,10 @@ export const ProblemSolutionSection = () => {
                 </TableHeader>
                 <TableBody>
                   {allFeatures.map((feature, index) => {
-                    const inBasic = basicPlan?.features.includes(feature);
-                    const inAdvanced = advancedPlan?.features.includes(feature);
+                    const basicValue = getFeatureValue(feature, 'basic');
+                    const advancedValue = getFeatureValue(feature, 'advanced');
+                    const inBasic = hasFeature(feature, 'basic');
+                    const inAdvanced = hasFeature(feature, 'advanced');
                     
                     return (
                       <TableRow key={index} className="hover:bg-muted/30 transition-colors">
@@ -111,8 +147,12 @@ export const ProblemSolutionSection = () => {
                         </TableCell>
                         <TableCell className="text-center">
                           {inBasic ? (
-                            <div className="flex justify-center">
-                              <CheckCircle className="w-5 h-5 text-accent" />
+                            <div className="flex justify-center items-center">
+                              {typeof basicValue === 'string' ? (
+                                <span className="text-sm font-medium text-accent">{basicValue}</span>
+                              ) : (
+                                <CheckCircle className="w-5 h-5 text-accent" />
+                              )}
                             </div>
                           ) : (
                             <div className="flex justify-center">
@@ -122,8 +162,12 @@ export const ProblemSolutionSection = () => {
                         </TableCell>
                         <TableCell className="text-center">
                           {inAdvanced ? (
-                            <div className="flex justify-center">
-                              <CheckCircle className="w-5 h-5 text-primary" />
+                            <div className="flex justify-center items-center">
+                              {typeof advancedValue === 'string' ? (
+                                <span className="text-sm font-medium text-primary">{advancedValue}</span>
+                              ) : (
+                                <CheckCircle className="w-5 h-5 text-primary" />
+                              )}
                             </div>
                           ) : (
                             <div className="flex justify-center">
@@ -134,6 +178,21 @@ export const ProblemSolutionSection = () => {
                       </TableRow>
                     );
                   })}
+                  <TableRow className="hover:bg-muted/30 transition-colors bg-muted/20">
+                    <TableCell className="font-medium text-foreground">
+                      Soporte prioritario por WhatsApp
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex justify-center">
+                        <X className="w-5 h-5 text-muted-foreground/30" />
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex justify-center">
+                        <CheckCircle className="w-5 h-5 text-primary" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </div>
