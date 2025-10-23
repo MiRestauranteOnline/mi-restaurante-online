@@ -3329,50 +3329,59 @@ setReviewForm({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
           {userRole === 'admin' && (
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => navigate('/admin/client-management')}
+              className="shrink-0"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
           )}
-          <div>
-            <h1 className="text-3xl font-bold">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold truncate">
               {userRole === 'admin' ? 'Edit Client Settings' : 'Dashboard'}
             </h1>
-            <div className="flex items-center gap-3">
-              <p className="text-muted-foreground">{client.restaurant_name}</p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <p className="text-muted-foreground truncate">{client.restaurant_name}</p>
               {userRole === 'admin' && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleSwitchToUser}
-                  className="gap-2"
+                  className="gap-2 shrink-0"
                 >
                   <UserCog className="h-4 w-4" />
-                  Switch to User
+                  <span className="hidden sm:inline">Switch to User</span>
                 </Button>
               )}
             </div>
           </div>
         </div>
-        <Button onClick={handleSave} disabled={saving}>
-          {saving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <Save className="mr-2 h-4 w-4" />
-              {t('common.save')}
-            </>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          {!saving && (
+            <div className="text-sm text-muted-foreground flex items-center gap-1.5">
+              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="hidden sm:inline">Guardado</span>
+            </div>
           )}
-        </Button>
+          <Button onClick={handleSave} disabled={saving} className="flex-1 sm:flex-initial">
+            {saving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Guardando...
+              </>
+            ) : (
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                {t('common.save')}
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       <Tabs value={activeTab} className="w-full" onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
@@ -3412,26 +3421,30 @@ setReviewForm({
             </CardContent>
           </Card>
         ) : (
-          <TabsList>
-            {showTab('basic') && <TabsTrigger value="basic">{t('nav.general')}</TabsTrigger>}
-            {showTab('domain') && <TabsTrigger value="domain">Dominio</TabsTrigger>}
-            {showTab('metadata') && <TabsTrigger value="metadata">SEO Metadata</TabsTrigger>}
-            {showTab('hours') && <TabsTrigger value="hours">{t('general.openingHours')}</TabsTrigger>}
-            {showTab('social') && <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>}
-            {showTab('delivery') && <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>}
-            {showTab('branding') && <TabsTrigger value="branding">Marca</TabsTrigger>}
-            {showTab('navigation-visibility') && <TabsTrigger value="navigation-visibility">Navegación y Visibilidad</TabsTrigger>}
-            {showTab('content') && <TabsTrigger value="content">Contenido</TabsTrigger>}
-            {showTab('briefing') && <TabsTrigger value="briefing">{t('nav.briefing')}</TabsTrigger>}
-            {showTab('menu') && <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>}
-            {showTab('team') && <TabsTrigger value="team">{t('nav.team')}</TabsTrigger>}
-            {showTab('reviews') && <TabsTrigger value="reviews">{t('nav.reviews')}</TabsTrigger>}
-            {showTab('faqs') && <TabsTrigger value="faqs">Preguntas Frecuentes</TabsTrigger>}
-            {showTab('carousel') && <TabsTrigger value="carousel">{t('nav.carousel')}</TabsTrigger>}
-            {showTab('custom-images') && <TabsTrigger value="custom-images">{t('nav.images')}</TabsTrigger>}
-            {userRole === 'admin' && <TabsTrigger value="discounts">Descuentos</TabsTrigger>}
-            {userRole === 'admin' && <TabsTrigger value="advanced">Avanzado</TabsTrigger>}
-          </TabsList>
+          <div className="relative">
+            <div className="overflow-x-auto pb-2 -mx-2 px-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+              <TabsList className="inline-flex w-max min-w-full justify-start">
+                {showTab('basic') && <TabsTrigger value="basic" className="whitespace-nowrap">{t('nav.general')}</TabsTrigger>}
+                {showTab('domain') && <TabsTrigger value="domain" className="whitespace-nowrap">Dominio</TabsTrigger>}
+                {showTab('metadata') && <TabsTrigger value="metadata" className="whitespace-nowrap">SEO Metadata</TabsTrigger>}
+                {showTab('hours') && <TabsTrigger value="hours" className="whitespace-nowrap">{t('general.openingHours')}</TabsTrigger>}
+                {showTab('social') && <TabsTrigger value="social" className="whitespace-nowrap">{t('general.socialMedia')}</TabsTrigger>}
+                {showTab('delivery') && <TabsTrigger value="delivery" className="whitespace-nowrap">{t('general.deliveryInfo')}</TabsTrigger>}
+                {showTab('branding') && <TabsTrigger value="branding" className="whitespace-nowrap">Marca</TabsTrigger>}
+                {showTab('navigation-visibility') && <TabsTrigger value="navigation-visibility" className="whitespace-nowrap">Navegación</TabsTrigger>}
+                {showTab('content') && <TabsTrigger value="content" className="whitespace-nowrap">Contenido</TabsTrigger>}
+                {showTab('briefing') && <TabsTrigger value="briefing" className="whitespace-nowrap">{t('nav.briefing')}</TabsTrigger>}
+                {showTab('menu') && <TabsTrigger value="menu" className="whitespace-nowrap">{t('nav.menu')}</TabsTrigger>}
+                {showTab('team') && <TabsTrigger value="team" className="whitespace-nowrap">{t('nav.team')}</TabsTrigger>}
+                {showTab('reviews') && <TabsTrigger value="reviews" className="whitespace-nowrap">{t('nav.reviews')}</TabsTrigger>}
+                {showTab('faqs') && <TabsTrigger value="faqs" className="whitespace-nowrap">FAQ</TabsTrigger>}
+                {showTab('carousel') && <TabsTrigger value="carousel" className="whitespace-nowrap">{t('nav.carousel')}</TabsTrigger>}
+                {showTab('custom-images') && <TabsTrigger value="custom-images" className="whitespace-nowrap">{t('nav.images')}</TabsTrigger>}
+                {userRole === 'admin' && <TabsTrigger value="discounts" className="whitespace-nowrap">Descuentos</TabsTrigger>}
+                {userRole === 'admin' && <TabsTrigger value="advanced" className="whitespace-nowrap">Avanzado</TabsTrigger>}
+              </TabsList>
+            </div>
+          </div>
         )}
 
 
@@ -5987,16 +6000,21 @@ setReviewForm({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Search Bar */}
-              <div className="mb-6">
+              {/* Search Bar - More Prominent */}
+              <div className="mb-6 bg-muted/30 p-4 rounded-lg border-2 border-border">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary h-5 w-5" />
                   <Input
                     placeholder={t('menu.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9"
+                    className="pl-10 h-12 text-base border-2 focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
+                  {searchTerm && (
+                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
+                      {Object.values(filteredAndGroupedMenuItems).flat().length} resultados
+                    </span>
+                  )}
                 </div>
               </div>
 

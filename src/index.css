@@ -198,4 +198,45 @@
   .animate-pulse-accent {
     animation: pulse-accent 2s infinite;
   }
+
+  /* Scrollbar Utilities */
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+  }
+
+  /* Drag State Utilities */
+  .dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+    transform: scale(1.02);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .drag-overlay {
+    position: relative;
+  }
+  
+  .drag-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: hsl(var(--primary) / 0.1);
+    border: 2px dashed hsl(var(--primary));
+    border-radius: 0.5rem;
+    pointer-events: none;
+  }
 }
