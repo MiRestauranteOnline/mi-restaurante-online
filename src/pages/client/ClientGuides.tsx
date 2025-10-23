@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Navigate, Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Copy, Check, ExternalLink, FileText, Globe, Mail } from "lucide-react";
@@ -628,138 +629,313 @@ export default function ClientGuides() {
       
       case "informacion-general":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Información General del Restaurante</CardTitle>
-              <CardDescription>
-                Cómo configurar la información básica de tu restaurante
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
-                <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Configuración</strong> → sección <strong>"Información Básica"</strong>
-                </p>
-              </div>
+          <div className="space-y-6">
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <FileText className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Información General del Restaurante</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Configura los datos básicos de tu restaurante que aparecerán en todo el sitio web
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
 
-              <Separator />
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → Pestaña <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">General</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Esta es la primera pestaña que verás al entrar a tu panel de control
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Campos Disponibles</h3>
-                
+            {/* Fields Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Campos Disponibles</CardTitle>
+                <CardDescription>
+                  Estos son todos los campos que puedes configurar en la sección de información general
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Required Field */}
+                <div className="p-4 border-2 border-primary/30 rounded-lg bg-primary/5">
+                  <div className="flex items-start gap-3">
+                    <Badge variant="destructive" className="shrink-0 mt-0.5">Obligatorio</Badge>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-base mb-2">Nombre del Restaurante</h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        El nombre oficial de tu restaurante que aparecerá en todo el sitio web, incluyendo el título de la página, encabezado y pie de página. Este campo es obligatorio y debe ser único.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Fields Group */}
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Nombre del Restaurante *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      El nombre de tu restaurante que aparecerá en todo el sitio web. Este campo es obligatorio.
+                  <h4 className="font-semibold text-sm uppercase text-muted-foreground tracking-wide">Información de Contacto</h4>
+                  
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      📧 Email
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Correo electrónico de contacto oficial para tu restaurante. Este email aparecerá en la sección de contacto y será visible para tus clientes. Debe ser un email válido y preferiblemente profesional.
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Teléfono</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Número de teléfono de contacto. Formato sugerido: 123 456 789 (selecciona el código de país en el menú desplegable)
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      📞 Teléfono
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Número de teléfono principal de contacto. Usa el selector desplegable para elegir el código de país (+51 para Perú) y luego ingresa solo los dígitos del número. Ejemplo: 987 654 321
+                    </p>
+                    <div className="mt-2 p-2 bg-muted/50 rounded text-xs">
+                      <strong>Formato:</strong> Código de país + número local (sin espacios ni guiones)
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      💬 WhatsApp
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Número de WhatsApp para que los clientes puedan contactarte directamente desde tu sitio web. Usa el selector de código de país y escribe los dígitos del número. Este número se usará para enlaces directos de WhatsApp.
+                    </p>
+                    <div className="mt-2 p-2 bg-green-50 dark:bg-green-950/30 rounded text-xs text-green-800 dark:text-green-200">
+                      <strong>💡 Consejo:</strong> Asegúrate de que este número tenga WhatsApp activo
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location Fields Group */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-sm uppercase text-muted-foreground tracking-wide">Ubicación</h4>
+                  
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      📍 Dirección
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Dirección completa y detallada de tu restaurante. Esta dirección se mostrará en la página de contacto y será utilizada para generar el mapa. Puedes usar múltiples líneas para mayor claridad (calle, número, distrito, ciudad).
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Email</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Correo electrónico de contacto para tu restaurante. Debe ser un email válido.
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      🎯 Usar Coordenadas Específicas
+                      <Badge variant="outline">Switch</Badge>
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Activa este interruptor para usar coordenadas GPS exactas en lugar de la dirección automática para los mapas. Útil cuando:
                     </p>
+                    <ul className="text-sm text-muted-foreground mt-2 space-y-1 ml-4">
+                      <li>• La dirección no se encuentra correctamente en Google Maps</li>
+                      <li>• Quieres señalar una entrada específica del local</li>
+                      <li>• Tu restaurante está en una zona con direcciones poco precisas</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Regional Settings Group */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-sm uppercase text-muted-foreground tracking-wide">Configuración Regional</h4>
+                  
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      🌍 País
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Selecciona el país donde se ubica tu restaurante (ejemplo: 🇵🇪 Perú). Esta configuración es importante para:
+                    </p>
+                    <ul className="text-sm text-muted-foreground mt-2 space-y-1 ml-4">
+                      <li>• Optimización SEO en motores de búsqueda locales</li>
+                      <li>• Formato correcto de fechas y números</li>
+                      <li>• Configuración regional del sitio web</li>
+                    </ul>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">WhatsApp</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Número de WhatsApp para que los clientes puedan contactarte directamente. Formato: 123 456 789 (selecciona el código de país en el menú desplegable)
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      🕐 Zona Horaria
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Selecciona la zona horaria correcta de tu ubicación (ejemplo: America/Lima UTC-5). Esta configuración asegura que:
                     </p>
+                    <ul className="text-sm text-muted-foreground mt-2 space-y-1 ml-4">
+                      <li>• Las reservas se muestren en el horario local correcto</li>
+                      <li>• Los horarios de apertura sean precisos para tus clientes</li>
+                      <li>• Las notificaciones lleguen en el momento adecuado</li>
+                    </ul>
+                    <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 rounded text-xs text-amber-800 dark:text-amber-200">
+                      <strong>⚠️ Importante:</strong> Si usas el sistema de reservas, esta configuración es crítica
+                    </div>
                   </div>
 
-              <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Dirección</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Dirección completa de tu restaurante. Este campo acepta múltiples líneas para mayor claridad.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Usar Coordenadas Específicas</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Activar este switch para usar coordenadas GPS exactas en lugar de la dirección para los mapas. Útil si la dirección no se encuentra correctamente en Google Maps o si quieres señalar una entrada específica.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">País</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Selecciona el país donde se ubica tu restaurante (ej: 🇵🇪 Perú). Usado para SEO y configuración regional del sitio. Afecta el formato de fechas, moneda y optimización en motores de búsqueda locales.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Zona Horaria</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Selecciona la zona horaria de tu restaurante (ej: Lima UTC-5). Asegura que las reservas y horarios de apertura se muestren correctamente para tus clientes locales. Importante si utilizas el sistema de reservas.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Ocultar Botón de WhatsApp del Menú</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Activa este switch si no quieres que aparezca el botón de WhatsApp en la barra de navegación superior de tu sitio web. Por defecto está visible.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Ocultar Botón de Teléfono del Menú</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Activa este switch si no quieres que aparezca el botón de teléfono en la barra de navegación superior de tu sitio web. Por defecto está visible.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Mostrar Popup de WhatsApp</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Activa este switch para mostrar un botón flotante de WhatsApp en tu sitio web que permanece visible mientras los visitantes navegan. Útil para facilitar el contacto directo. Por defecto está deshabilitado.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Texto del Botón CTA Personalizado</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Personaliza el texto que aparece en un botón adicional de llamada a la acción en la barra de navegación superior. Por ejemplo: "Reservar Mesa", "Ver Promociones", "Delivery". Si se deja vacío, el botón no aparecerá.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Enlace del Botón CTA Personalizado</h4>
-                    <p className="text-sm text-muted-foreground">
-                      URL a la que dirigirá el botón CTA personalizado de la barra de navegación cuando los usuarios hagan clic. Puede ser una página externa, formulario de reservas, o cualquier enlace relevante. Ejemplo: https://wa.me/51987654321
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      💱 Moneda
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Símbolo de moneda que se mostrará junto a los precios en el menú de tu sitio web. Ejemplos comunes: S/ (Sol Peruano), $ (Dólar), € (Euro), MX$ (Peso Mexicano).
                     </p>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
+                {/* Navigation & Display Group */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-sm uppercase text-muted-foreground tracking-wide">Botones de Navegación</h4>
+                  
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      👁️ Ocultar Botón de WhatsApp del Menú
+                      <Badge variant="outline">Switch</Badge>
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Activa este interruptor si NO quieres que aparezca el botón de WhatsApp en la barra de navegación superior de tu sitio web. Por defecto está visible y es útil para que los clientes te contacten fácilmente.
+                    </p>
+                  </div>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Asegúrate de que todos los datos de contacto estén actualizados</li>
-                  <li>Usa el selector de código de país y escribe solo los dígitos del número (ej: 123 456 789)</li>
-                  <li>El nombre del restaurante aparecerá en el título de la página y en el encabezado</li>
-                  <li>Activa "Usar Coordenadas Específicas" si tu restaurante no aparece correctamente en el mapa con la dirección</li>
-                  <li>Selecciona la zona horaria correcta para evitar confusiones con las reservas</li>
-                  <li>El botón flotante de WhatsApp puede aumentar conversiones, pero úsalo con moderación</li>
-                  <li>Los botones de la barra de navegación (WhatsApp, teléfono, CTA) te permiten personalizar la experiencia</li>
-                  <li>El botón CTA personalizado es ideal para destacar tu acción principal (reservas, promociones)</li>
-                  <li>No olvides hacer clic en "Guardar Configuración" después de realizar cambios</li>
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      👁️ Ocultar Botón de Teléfono del Menú
+                      <Badge variant="outline">Switch</Badge>
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Activa este interruptor si NO quieres que aparezca el botón de teléfono en la barra de navegación superior. Por defecto está visible para facilitar que los clientes te llamen directamente.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      💬 Mostrar Popup de WhatsApp
+                      <Badge variant="outline">Switch</Badge>
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Activa este interruptor para mostrar un botón flotante de WhatsApp que permanece visible mientras los visitantes navegan por tu sitio. Este botón facilita el contacto directo.
+                    </p>
+                    <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-950/30 rounded text-xs text-blue-800 dark:text-blue-200">
+                      <strong>💡 Tip:</strong> El botón flotante puede aumentar las conversiones, pero úsalo con moderación para no saturar la interfaz
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors bg-gradient-to-br from-primary/5 to-transparent">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      ⭐ Texto del Botón CTA Personalizado
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+                      Personaliza el texto de un botón adicional de llamada a la acción en la barra de navegación superior. Ejemplos efectivos:
+                    </p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2 bg-background rounded border">🎯 "Reservar Mesa"</div>
+                      <div className="p-2 bg-background rounded border">🎁 "Ver Promociones"</div>
+                      <div className="p-2 bg-background rounded border">🚚 "Pedir Delivery"</div>
+                      <div className="p-2 bg-background rounded border">📋 "Ver Carta"</div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Si se deja vacío, el botón no aparecerá en el sitio.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors bg-gradient-to-br from-primary/5 to-transparent">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      🔗 Enlace del Botón CTA Personalizado
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      URL completa a la que dirigirá el botón CTA personalizado cuando los usuarios hagan clic. Puede ser:
+                    </p>
+                    <ul className="text-sm text-muted-foreground mt-2 space-y-1 ml-4">
+                      <li>• Enlace directo de WhatsApp: <code className="text-xs bg-muted px-1 py-0.5 rounded">https://wa.me/51987654321</code></li>
+                      <li>• Formulario de reservas externo</li>
+                      <li>• Página de promociones especiales</li>
+                      <li>• Plataforma de delivery (Rappi, PedidosYa, etc.)</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Best Practices Card */}
+            <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <span>💡</span> Mejores Prácticas y Consejos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">Mantén todos los datos de contacto <strong>actualizados y verificados</strong> regularmente</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">Usa números con el <strong>código de país correcto</strong> para evitar problemas de comunicación</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">Verifica que tu <strong>número de WhatsApp esté activo</strong> antes de publicarlo</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">Si tu dirección no aparece bien en mapas, <strong>activa coordenadas específicas</strong></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">La <strong>zona horaria correcta</strong> es esencial si usas reservas online</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">El botón CTA personalizado es ideal para <strong>destacar tu acción principal</strong> (reservas, promociones)</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">Prueba diferentes textos de CTA para ver cuál <strong>genera más conversiones</strong></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">Siempre haz clic en <strong>"Guardar"</strong> después de realizar cambios (observa el indicador de estado)</span>
+                  </li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {/* Save Reminder Card */}
+            <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl">⚠️</div>
+                  <div>
+                    <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-1">
+                      Recuerda Guardar tus Cambios
+                    </h4>
+                    <p className="text-sm text-amber-800 dark:text-amber-200">
+                      Después de editar cualquier información, asegúrate de hacer clic en el botón <strong>"Guardar"</strong> en la parte superior derecha. Verás un indicador de estado que cambia de "Sin guardar" (punto rojo) a "Guardado" (punto verde) cuando los cambios se hayan aplicado exitosamente.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "horarios-apertura":
