@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, Save } from 'lucide-react';
@@ -27,6 +28,7 @@ export default function ClientSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  const [premiumFeatures, setPremiumFeatures] = useState<any>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("general");
@@ -34,8 +36,33 @@ export default function ClientSettings() {
   useEffect(() => {
     if (selectedClientId) {
       fetchClientData();
+      fetchPremiumFeatures();
     }
   }, [selectedClientId]);
+
+  const fetchPremiumFeatures = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('premium_features')
+        .select('*')
+        .eq('client_id', selectedClientId)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      
+      if (data) {
+        setPremiumFeatures(data);
+        setFormData((prev: any) => ({
+          ...prev,
+          google_analytics_id: data.google_analytics_id || '',
+          google_search_console_verification: data.google_search_console_verification || '',
+          analytics_enabled: data.analytics_enabled || false,
+        }));
+      }
+    } catch (error: any) {
+      console.error('Error fetching premium features:', error);
+    }
+  };
 
   const fetchClientData = async () => {
     try {
@@ -104,16 +131,34 @@ export default function ClientSettings() {
         .upsert({
           client_id: selectedClientId,
           primary_color: formData.primary_color,
-          hide_phone_button_menu: formData.hide_phone_button_menu,
-          hide_whatsapp_button_menu: formData.hide_whatsapp_button_menu,
-          custom_cta_button_text: formData.custom_cta_button_text,
-          custom_cta_button_link: formData.custom_cta_button_link,
-          show_whatsapp_popup: formData.show_whatsapp_popup,
-          delivery_info: formData.delivery_info,
-          whatsapp_messages: formData.whatsapp_messages
+          header_background_enabled: formData.header_background_enabled,
+          header_background_style: formData.header_background_style,
+        }, {
+          onConflict: 'client_id'
         });
 
       if (settingsError) throw settingsError;
+
+      // Update premium features if analytics fields are present
+      if (formData.google_analytics_id !== undefined || 
+          formData.google_search_console_verification !== undefined ||
+          formData.analytics_enabled !== undefined) {
+        const { error: premiumError } = await supabase
+          .from('premium_features')
+          .upsert({
+            client_id: selectedClientId,
+            google_analytics_id: formData.google_analytics_id || null,
+            google_search_console_verification: formData.google_search_console_verification || null,
+            analytics_enabled: formData.analytics_enabled || false,
+            analytics_setup_date: formData.analytics_enabled && formData.google_analytics_id 
+              ? new Date().toISOString() 
+              : null,
+          }, {
+            onConflict: 'client_id'
+          });
+
+        if (premiumError) throw premiumError;
+      }
 
       toast({
         title: "Guardado",
@@ -408,7 +453,86 @@ export default function ClientSettings() {
         <TabsContent value="analytics" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Analíticas</CardTitle>
+              <CardTitle>Configuración de Analíticas</CardTitle>
+              <CardDescription>
+                Conecta Google Analytics y Search Console para rastrear el rendimiento de tu sitio
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Google Analytics Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Google Analytics (GA4)</h3>
+                
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="analytics_enabled"
+                    checked={formData.analytics_enabled || false}
+                    onCheckedChange={(checked) => setFormData({...formData, analytics_enabled: checked})}
+                  />
+                  <Label htmlFor="analytics_enabled">Habilitar Analíticas</Label>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="google_analytics_id">ID de Google Analytics (GA4)</Label>
+                  <Input
+                    id="google_analytics_id"
+                    value={formData.google_analytics_id || ''}
+                    onChange={(e) => setFormData({...formData, google_analytics_id: e.target.value})}
+                    placeholder="G-XXXXXXXXXX"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Ingresa tu ID de medición de Google Analytics 4. Formato: G-XXXXXXXXXX
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Google Search Console Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Google Search Console</h3>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="google_search_console_verification">Código de Verificación GSC</Label>
+                  <Input
+                    id="google_search_console_verification"
+                    value={formData.google_search_console_verification || ''}
+                    onChange={(e) => setFormData({...formData, google_search_console_verification: e.target.value})}
+                    placeholder="código de verificación"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Pega solo el contenido del atributo "content" de la etiqueta meta de verificación
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Link to Guides */}
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm text-blue-900 dark:text-blue-100 mb-3">
+                  ¿Necesitas ayuda? Consulta nuestras guías paso a paso:
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button variant="outline" size="sm" asChild>
+                    <a href="/guias/analiticas/configurar-google-analytics" target="_blank" rel="noopener noreferrer">
+                      Guía de Google Analytics
+                    </a>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href="/guias/analiticas/configurar-google-search-console" target="_blank" rel="noopener noreferrer">
+                      Guía de Google Search Console
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Estadísticas de Uso</CardTitle>
+              <CardDescription>Métricas y analíticas de tu sitio web</CardDescription>
             </CardHeader>
             <CardContent>
               <AnalyticsOverview clientId={selectedClientId} />
