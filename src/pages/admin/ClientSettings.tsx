@@ -740,7 +740,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
 
   // Ensure activeTab is allowed (especially in client view)
   useEffect(() => {
-    const order = ['basic','domain','hours','social','delivery','branding','content','briefing','menu','team','reviews','faqs','carousel','custom-images'];
+    const order = ['basic','domain','metadata','hours','social','delivery','branding','navigation-visibility','content','briefing','menu','team','reviews','faqs','carousel','custom-images'];
     const adminOnly = ['discounts','advanced'];
     const ordered = userRole === 'admin' ? [...order, ...adminOnly] : order;
     const firstAllowed = ordered.find((v) => showTab(v));
@@ -3202,8 +3202,12 @@ setReviewForm({
 
   const handleTabChange = (value: string) => {
     // Show warning for non-admin users accessing sensitive tabs
-    if (userRole !== 'admin' && (value === 'branding' || value === 'content') && !userConfirmedWarning) {
-      setWarningTabName(value === 'branding' ? 'configuración de marca' : 'cambio de contenido');
+    if (userRole !== 'admin' && (value === 'branding' || value === 'content' || value === 'navigation-visibility') && !userConfirmedWarning) {
+      setWarningTabName(
+        value === 'branding' ? 'configuración de marca' : 
+        value === 'navigation-visibility' ? 'configuración de navegación' : 
+        'cambio de contenido'
+      );
       setShowWarningOverlay(true);
       return;
     }
@@ -3299,6 +3303,7 @@ setReviewForm({
                   {showTab('social') && <SelectItem value="social">{t('general.socialMedia')}</SelectItem>}
                   {showTab('delivery') && <SelectItem value="delivery">{t('general.deliveryInfo')}</SelectItem>}
                   {showTab('branding') && <SelectItem value="branding">Marca</SelectItem>}
+                  {showTab('navigation-visibility') && <SelectItem value="navigation-visibility">Navegación y Visibilidad</SelectItem>}
                   {showTab('content') && <SelectItem value="content">Contenido</SelectItem>}
                   {showTab('briefing') && <SelectItem value="briefing">{t('nav.briefing')}</SelectItem>}
                   {showTab('menu') && <SelectItem value="menu">{t('nav.menu')}</SelectItem>}
@@ -3322,6 +3327,7 @@ setReviewForm({
             {showTab('social') && <TabsTrigger value="social">{t('general.socialMedia')}</TabsTrigger>}
             {showTab('delivery') && <TabsTrigger value="delivery">{t('general.deliveryInfo')}</TabsTrigger>}
             {showTab('branding') && <TabsTrigger value="branding">Marca</TabsTrigger>}
+            {showTab('navigation-visibility') && <TabsTrigger value="navigation-visibility">Navegación y Visibilidad</TabsTrigger>}
             {showTab('content') && <TabsTrigger value="content">Contenido</TabsTrigger>}
             {showTab('briefing') && <TabsTrigger value="briefing">{t('nav.briefing')}</TabsTrigger>}
             {showTab('menu') && <TabsTrigger value="menu">{t('nav.menu')}</TabsTrigger>}
@@ -3509,70 +3515,6 @@ setReviewForm({
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="hide_whatsapp_button_menu">{t('general.hideWhatsAppButton')}</Label>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="hide_whatsapp_button_menu"
-                      checked={formData.hide_whatsapp_button_menu}
-                      onCheckedChange={(checked) => setFormData({...formData, hide_whatsapp_button_menu: checked})}
-                    />
-                    <Label htmlFor="hide_whatsapp_button_menu" className="text-sm text-muted-foreground">
-                      {formData.hide_whatsapp_button_menu ? t('general.hidden') : t('general.visible')}
-                    </Label>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="hide_phone_button_menu">{t('general.hidePhoneButton')}</Label>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="hide_phone_button_menu"
-                      checked={formData.hide_phone_button_menu}
-                      onCheckedChange={(checked) => setFormData({...formData, hide_phone_button_menu: checked})}
-                    />
-                    <Label htmlFor="hide_phone_button_menu" className="text-sm text-muted-foreground">
-                      {formData.hide_phone_button_menu ? t('general.hidden') : t('general.visible')}
-                    </Label>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="show_whatsapp_popup">{t('general.showWhatsAppPopup')}</Label>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="show_whatsapp_popup"
-                      checked={formData.show_whatsapp_popup}
-                      onCheckedChange={(checked) => setFormData({...formData, show_whatsapp_popup: checked})}
-                    />
-                    <Label htmlFor="show_whatsapp_popup" className="text-sm text-muted-foreground">
-                      {formData.show_whatsapp_popup ? t('general.enabled') : t('general.disabled')}
-                    </Label>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                  <Label htmlFor="custom_cta_button_text">Texto del Botón CTA Personalizado</Label>
-                  <Input
-                    id="custom_cta_button_text"
-                    value={formData.custom_cta_button_text}
-                    onChange={(e) => setFormData({...formData, custom_cta_button_text: e.target.value})}
-                    placeholder={t('general.ctaButtonPlaceholder')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="custom_cta_button_link">Enlace del Botón CTA Personalizado</Label>
-                  <Input
-                    id="custom_cta_button_link"
-                    value={formData.custom_cta_button_link}
-                    onChange={(e) => setFormData({...formData, custom_cta_button_link: e.target.value})}
-                    placeholder={t('general.ctaLinkPlaceholder')}
-                  />
-                </div>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -3788,6 +3730,249 @@ setReviewForm({
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="navigation-visibility" className="relative">
+          {userRole !== 'admin' && showWarningOverlay && warningTabName === 'configuración de navegación' && (
+            <UserWarningOverlay
+              isOpen={true}
+              onConfirm={handleWarningConfirm}
+              tabName={warningTabName}
+            />
+          )}
+          <div className="space-y-6">
+            {/* NAVIGATION CONTROLS */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Controles de Navegación y Botones</CardTitle>
+                <CardDescription>Configura la visibilidad y comportamiento de los botones en el menú de navegación</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="hide_whatsapp_button_menu">{t('general.hideWhatsAppButton')}</Label>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="hide_whatsapp_button_menu"
+                        checked={formData.hide_whatsapp_button_menu}
+                        onCheckedChange={(checked) => setFormData({...formData, hide_whatsapp_button_menu: checked})}
+                      />
+                      <Label htmlFor="hide_whatsapp_button_menu" className="text-sm text-muted-foreground">
+                        {formData.hide_whatsapp_button_menu ? t('general.hidden') : t('general.visible')}
+                      </Label>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="hide_phone_button_menu">{t('general.hidePhoneButton')}</Label>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="hide_phone_button_menu"
+                        checked={formData.hide_phone_button_menu}
+                        onCheckedChange={(checked) => setFormData({...formData, hide_phone_button_menu: checked})}
+                      />
+                      <Label htmlFor="hide_phone_button_menu" className="text-sm text-muted-foreground">
+                        {formData.hide_phone_button_menu ? t('general.hidden') : t('general.visible')}
+                      </Label>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="show_whatsapp_popup">{t('general.showWhatsAppPopup')}</Label>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="show_whatsapp_popup"
+                        checked={formData.show_whatsapp_popup}
+                        onCheckedChange={(checked) => setFormData({...formData, show_whatsapp_popup: checked})}
+                      />
+                      <Label htmlFor="show_whatsapp_popup" className="text-sm text-muted-foreground">
+                        {formData.show_whatsapp_popup ? t('general.enabled') : t('general.disabled')}
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <Label htmlFor="custom_cta_button_text">Texto del Botón CTA Personalizado</Label>
+                    <Input
+                      id="custom_cta_button_text"
+                      value={formData.custom_cta_button_text}
+                      onChange={(e) => setFormData({...formData, custom_cta_button_text: e.target.value})}
+                      placeholder={t('general.ctaButtonPlaceholder')}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="custom_cta_button_link">Enlace del Botón CTA Personalizado</Label>
+                    <Input
+                      id="custom_cta_button_link"
+                      value={formData.custom_cta_button_link}
+                      onChange={(e) => setFormData({...formData, custom_cta_button_link: e.target.value})}
+                      placeholder={t('general.ctaLinkPlaceholder')}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* SECTION VISIBILITY CONTROLS */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Controles de Visibilidad de Secciones</CardTitle>
+                <CardDescription>Controla qué secciones se muestran en cada página de tu sitio web</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Homepage Toggles */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-base border-b pb-2">Página de Inicio</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_about_section_visible" className="flex-1">Mostrar Sección Acerca de Nosotros</Label>
+                      <Switch
+                        id="homepage_about_section_visible"
+                        checked={formData.homepage_about_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_about_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_about_stats_visible" className="flex-1">Mostrar Estadísticas en Sección Acerca</Label>
+                      <Switch
+                        id="homepage_about_stats_visible"
+                        checked={formData.homepage_about_stats_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_about_stats_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_menu_section_visible" className="flex-1">Mostrar Sección de Menú</Label>
+                      <Switch
+                        id="homepage_menu_section_visible"
+                        checked={formData.homepage_menu_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_menu_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_services_section_visible" className="flex-1">Mostrar Sección de Servicios</Label>
+                      <Switch
+                        id="homepage_services_section_visible"
+                        checked={formData.homepage_services_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_services_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_reservations_section_visible" className="flex-1">Mostrar Sección de Reservaciones</Label>
+                      <Switch
+                        id="homepage_reservations_section_visible"
+                        checked={formData.homepage_reservations_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_reservations_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_reviews_section_visible" className="flex-1">Mostrar Sección de Reseñas</Label>
+                      <Switch
+                        id="homepage_reviews_section_visible"
+                        checked={formData.homepage_reviews_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_reviews_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_contact_section_visible" className="flex-1">Mostrar Sección de Contacto</Label>
+                      <Switch
+                        id="homepage_contact_section_visible"
+                        checked={formData.homepage_contact_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_contact_map_visible" className="flex-1">Mostrar Mapa en Sección de Contacto</Label>
+                      <Switch
+                        id="homepage_contact_map_visible"
+                        checked={formData.homepage_contact_map_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_map_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_delivery_section_visible" className="flex-1">Mostrar sección de Delivery en página principal</Label>
+                      <Switch
+                        id="homepage_delivery_section_visible"
+                        checked={formData.homepage_delivery_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_delivery_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_faq_section_visible" className="flex-1">Mostrar sección de FAQ en página principal</Label>
+                      <Switch
+                        id="homepage_faq_section_visible"
+                        checked={formData.homepage_faq_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_faq_section_visible: checked})}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* About Page Toggles */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-base border-b pb-2">Página Acerca de Nosotros</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="about_page_about_section_visible" className="flex-1">Mostrar Sección Acerca de</Label>
+                      <Switch
+                        id="about_page_about_section_visible"
+                        checked={formData.about_page_about_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, about_page_about_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="about_page_about_stats_visible" className="flex-1">Mostrar Estadísticas en Texto</Label>
+                      <Switch
+                        id="about_page_about_stats_visible"
+                        checked={formData.about_page_about_stats_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, about_page_about_stats_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="about_page_stats_section_visible" className="flex-1">Mostrar Sección de Estadísticas</Label>
+                      <Switch
+                        id="about_page_stats_section_visible"
+                        checked={formData.about_page_stats_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, about_page_stats_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="about_page_team_section_visible" className="flex-1">Mostrar Sección de Equipo</Label>
+                      <Switch
+                        id="about_page_team_section_visible"
+                        checked={formData.about_page_team_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, about_page_team_section_visible: checked})}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Page Toggles */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-base border-b pb-2">Página de Contacto</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="contact_page_contact_section_visible" className="flex-1">Mostrar Formulario de Contacto</Label>
+                      <Switch
+                        id="contact_page_contact_section_visible"
+                        checked={formData.contact_page_contact_section_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, contact_page_contact_section_visible: checked})}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="contact_page_map_visible" className="flex-1">Mostrar Mapa</Label>
+                      <Switch
+                        id="contact_page_map_visible"
+                        checked={formData.contact_page_map_visible}
+                        onCheckedChange={(checked) => setFormData({...formData, contact_page_map_visible: checked})}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="delivery">
@@ -4203,164 +4388,6 @@ setReviewForm({
             />
           )}
           <div className="space-y-6">
-              
-              {/* SECTION VISIBILITY CONTROLS */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Controles de Visibilidad de Secciones</CardTitle>
-                  <CardDescription>Controla qué secciones se muestran en cada página de tu sitio web</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Homepage Toggles */}
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-base border-b pb-2">Página de Inicio</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_about_section_visible" className="flex-1">Mostrar Sección Acerca de Nosotros</Label>
-                        <Switch
-                          id="homepage_about_section_visible"
-                          checked={formData.homepage_about_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_about_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_about_stats_visible" className="flex-1">Mostrar Estadísticas en Sección Acerca</Label>
-                        <Switch
-                          id="homepage_about_stats_visible"
-                          checked={formData.homepage_about_stats_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_about_stats_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_menu_section_visible" className="flex-1">Mostrar Sección de Menú</Label>
-                        <Switch
-                          id="homepage_menu_section_visible"
-                          checked={formData.homepage_menu_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_menu_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_services_section_visible" className="flex-1">Mostrar Sección de Servicios</Label>
-                        <Switch
-                          id="homepage_services_section_visible"
-                          checked={formData.homepage_services_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_services_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_reservations_section_visible" className="flex-1">Mostrar Sección de Reservaciones</Label>
-                        <Switch
-                          id="homepage_reservations_section_visible"
-                          checked={formData.homepage_reservations_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_reservations_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_reviews_section_visible" className="flex-1">Mostrar Sección de Reseñas</Label>
-                        <Switch
-                          id="homepage_reviews_section_visible"
-                          checked={formData.homepage_reviews_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_reviews_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_contact_section_visible" className="flex-1">Mostrar Sección de Contacto</Label>
-                        <Switch
-                          id="homepage_contact_section_visible"
-                          checked={formData.homepage_contact_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_contact_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_contact_map_visible" className="flex-1">Mostrar Mapa en Sección de Contacto</Label>
-                        <Switch
-                          id="homepage_contact_map_visible"
-                          checked={formData.homepage_contact_map_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_contact_map_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_delivery_section_visible" className="flex-1">Mostrar sección de Delivery en página principal</Label>
-                        <Switch
-                          id="homepage_delivery_section_visible"
-                          checked={formData.homepage_delivery_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_delivery_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="homepage_faq_section_visible" className="flex-1">Mostrar sección de FAQ en página principal</Label>
-                        <Switch
-                          id="homepage_faq_section_visible"
-                          checked={formData.homepage_faq_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, homepage_faq_section_visible: checked})}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* About Page Toggles */}
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-base border-b pb-2">Página Acerca de Nosotros</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="about_page_about_section_visible" className="flex-1">Mostrar Sección Acerca de</Label>
-                        <Switch
-                          id="about_page_about_section_visible"
-                          checked={formData.about_page_about_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, about_page_about_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="about_page_about_stats_visible" className="flex-1">Mostrar Estadísticas en Texto</Label>
-                        <Switch
-                          id="about_page_about_stats_visible"
-                          checked={formData.about_page_about_stats_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, about_page_about_stats_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="about_page_stats_section_visible" className="flex-1">Mostrar Sección de Estadísticas</Label>
-                        <Switch
-                          id="about_page_stats_section_visible"
-                          checked={formData.about_page_stats_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, about_page_stats_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="about_page_team_section_visible" className="flex-1">Mostrar Sección de Equipo</Label>
-                        <Switch
-                          id="about_page_team_section_visible"
-                          checked={formData.about_page_team_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, about_page_team_section_visible: checked})}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Contact Page Toggles */}
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-base border-b pb-2">Página de Contacto</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="contact_page_contact_section_visible" className="flex-1">Mostrar Formulario de Contacto</Label>
-                        <Switch
-                          id="contact_page_contact_section_visible"
-                          checked={formData.contact_page_contact_section_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, contact_page_contact_section_visible: checked})}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between space-x-2">
-                        <Label htmlFor="contact_page_map_visible" className="flex-1">Mostrar Mapa</Label>
-                        <Switch
-                          id="contact_page_map_visible"
-                          checked={formData.contact_page_map_visible}
-                          onCheckedChange={(checked) => setFormData({...formData, contact_page_map_visible: checked})}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
               
               {/* HOMEPAGE SECTION */}
               <div className="space-y-4">
