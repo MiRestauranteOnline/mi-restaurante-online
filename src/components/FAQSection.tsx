@@ -36,7 +36,7 @@ export const FAQSection = () => {
     },
     {
       question: "¿Qué diferencia hay entre Plan Básico y Avanzado?",
-      answer: "Plan Básico incluye todo lo esencial: sitio web completo, menú digital, reservas, WhatsApp, SEO básico y soporte en 48h. Plan Avanzado añade: soporte prioritario en 24h, 1 hora/mes de cambios profesionales por nuestro equipo (ideal para actualizar textos, diseño o agregar secciones), analíticas avanzadas con métricas detalladas, y WhatsApp premium con PIN único para atención prioritaria."
+      answer: "Plan Básico incluye todo lo esencial: sitio web completo, menú digital, reservas, WhatsApp, SEO básico y soporte en 48h. Plan Avanzado añade: soporte prioritario en 24h, 1 hora/mes de cambios profesionales por nuestro equipo (ideal para actualizar textos, contenido o agregar funcionalidades), analíticas avanzadas con métricas detalladas, y WhatsApp premium con PIN único para atención prioritaria."
     },
     {
       question: "¿El sitio funciona bien en celulares?",
@@ -48,7 +48,7 @@ export const FAQSection = () => {
     },
     {
       question: "¿Puedo agregar funciones personalizadas no listadas?",
-      answer: "Nuestros planes incluyen todas las funcionalidades esenciales que necesita un restaurante: menú digital + PDF descargable, sistema de reservas, galería de imágenes, WhatsApp integrado, links de delivery, SEO, analíticas, y más. Si necesitas desarrollos completamente personalizados fuera de este alcance, podemos cotizarlos por separado."
+      answer: "Nuestros planes incluyen todas las funcionalidades esenciales que necesita un restaurante: menú digital + PDF descargable, sistema de reservas, galería de imágenes, WhatsApp integrado, links de delivery, SEO, analíticas, y más. No ofrecemos sitios web completamente personalizados ni desarrollos custom, ya que nos especializamos en soluciones optimizadas basadas en plantillas profesionales."
     }
   ];
 

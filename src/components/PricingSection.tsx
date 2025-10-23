@@ -143,7 +143,7 @@ export const PricingSection = () => {
                         <div className="flex items-start gap-2">
                           <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" />
                           <p className="text-xs text-foreground">
-                            <strong>1 hora de soporte mensual:</strong> Ideal para cambios de menú, actualización de contenido o ajustes de diseño
+                            <strong>1 hora de soporte mensual:</strong> Ideal para cambios de menú, actualización de contenido o ajustes de funcionalidades
                           </p>
                         </div>
                         <div className="flex items-start gap-2">

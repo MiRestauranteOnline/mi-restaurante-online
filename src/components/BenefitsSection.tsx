@@ -82,7 +82,7 @@ export const BenefitsSection = () => {
     {
       icon: Clock,
       title: "Online en 72 Horas",
-      description: "Tu sitio profesional listo en 3 días con contenido optimizado y diseño personalizado. Mientras otros esperan meses, tú capturas clientes.",
+      description: "Tu sitio profesional listo en 3 días con contenido optimizado y configuración personalizada. Mientras otros esperan meses, tú capturas clientes.",
       color: "text-primary"
     },
     {
