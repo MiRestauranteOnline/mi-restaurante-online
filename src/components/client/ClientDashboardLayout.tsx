@@ -24,8 +24,7 @@ import {
   Calendar,
   ShieldAlert,
   X,
-  BookOpen,
-  Mail
+  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
@@ -144,7 +143,6 @@ export default function ClientDashboardLayout() {
     { href: selectedClientId ? `/client/dashboard/${selectedClientId}` : '/client', icon: LayoutDashboard, label: t('nav.dashboard') },
     { href: `/client/reservations/${selectedClientId}`, icon: Calendar, label: t('nav.reservations') },
     { href: `/client/analytics/${selectedClientId}`, icon: BarChart3, label: 'Analíticas' },
-    { href: `/client/email-dns/${selectedClientId}`, icon: Mail, label: 'Email DNS' },
     { href: `/client/support/${selectedClientId}`, icon: Shield, label: 'Soporte' },
     { href: '/client/subscription', icon: CreditCard, label: t('nav.subscription') },
   ];

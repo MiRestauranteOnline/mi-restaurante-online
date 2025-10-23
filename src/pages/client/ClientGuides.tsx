@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 import { Copy, Check, ExternalLink, FileText, Globe, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { EmailDNSConfigForm } from "@/components/client/EmailDNSConfigForm";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -2160,13 +2159,6 @@ export default function ClientGuides() {
                   </div>
                 </div>
               </div>
-
-              {/* Automated DNS Configuration Form */}
-              {clientId && (
-                <div className="space-y-4">
-                  <EmailDNSConfigForm clientId={clientId} />
-                </div>
-              )}
 
               {/* Step 4: Verify Configuration */}
               <div className="space-y-4">
