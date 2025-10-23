@@ -65,8 +65,9 @@ const Signup = () => {
   
   // Get step from URL or default to 1
   const urlStep = parseInt(searchParams.get('step') || '1');
+  const urlPlan = searchParams.get('plan') as 'basic' | 'advanced' | null;
   const [currentStep, setCurrentStep] = useState(urlStep);
-  const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
+  const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>(urlPlan || 'basic');
   
   // Check auth and restore signup data
   useEffect(() => {
@@ -78,20 +79,66 @@ const Signup = () => {
         if (session?.user) {
           console.log('User is authenticated, restoring progress');
           const savedData = localStorage.getItem('signupProgress');
+          let parsedData: any = null;
+          
           if (savedData) {
             try {
-              const parsed = JSON.parse(savedData);
-              if (parsed.signupData) setSignupData(parsed.signupData);
-              if (parsed.websiteRequirements) setWebsiteRequirements(parsed.websiteRequirements);
-              if (parsed.combinedData) setCombinedData(parsed.combinedData);
-              if (parsed.openingHoursData) setOpeningHoursData(parsed.openingHoursData);
-              if (parsed.imagesData) setImagesData(parsed.imagesData);
-              if (parsed.faqsData) setFaqsData(parsed.faqsData);
-              if (parsed.selectedPlan) setSelectedPlan(parsed.selectedPlan);
-              if (parsed.createdClientId) setCreatedClientId(parsed.createdClientId);
-              if (parsed.currentStep) setCurrentStep(parsed.currentStep);
+              parsedData = JSON.parse(savedData);
+              if (parsedData.signupData) setSignupData(parsedData.signupData);
+              if (parsedData.websiteRequirements) setWebsiteRequirements(parsedData.websiteRequirements);
+              if (parsedData.combinedData) setCombinedData(parsedData.combinedData);
+              if (parsedData.openingHoursData) setOpeningHoursData(parsedData.openingHoursData);
+              if (parsedData.imagesData) setImagesData(parsedData.imagesData);
+              if (parsedData.faqsData) setFaqsData(parsedData.faqsData);
+              if (parsedData.selectedPlan) setSelectedPlan(parsedData.selectedPlan);
+              if (parsedData.createdClientId) setCreatedClientId(parsedData.createdClientId);
+              if (parsedData.currentStep) setCurrentStep(parsedData.currentStep);
             } catch (e) {
               console.error('Error restoring signup progress:', e);
+            }
+          }
+          
+          // If on step 2 or later but missing client data, fetch from database
+          if (urlStep >= 2 && !parsedData?.createdClientId) {
+            console.log('Fetching client data from database for authenticated user');
+            try {
+              const { data: clients, error } = await supabase
+                .from('clients')
+                .select('id, restaurant_name, subdomain, email, phone, plan_type, address')
+                .eq('id', session.user.id)
+                .single();
+              
+              if (!error && clients) {
+                console.log('Client data fetched:', clients);
+                setCreatedClientId(clients.id);
+                setSignupData(prev => ({
+                  ...prev,
+                  email: session.user.email || '',
+                  restaurantName: clients.restaurant_name,
+                  subdomain: clients.subdomain,
+                  phone: clients.phone || '',
+                  address: clients.address || '',
+                  paymentId: clients.id,
+                }));
+                setSelectedPlan(clients.plan_type as 'basic' | 'advanced' || 'basic');
+                
+                // Fetch plan pricing
+                const { data: planData } = await supabase
+                  .from('subscription_plans')
+                  .select('plan_key, monthly_price')
+                  .eq('is_active', true)
+                  .in('plan_key', ['basic', 'advanced']);
+                
+                if (planData) {
+                  const basicPrice = planData.find(p => p.plan_key === 'basic')?.monthly_price || 49;
+                  const advancedPrice = planData.find(p => p.plan_key === 'advanced')?.monthly_price || 99;
+                  const amount = clients.plan_type === 'basic' ? basicPrice : advancedPrice;
+                  setOriginalAmount(amount);
+                  setPaymentAmount(amount);
+                }
+              }
+            } catch (fetchError) {
+              console.error('Error fetching client data:', fetchError);
             }
           }
         }
@@ -103,7 +150,7 @@ const Signup = () => {
     };
 
     checkAuthAndRestoreData();
-  }, []);
+  }, [urlStep]);
   
   // Update URL when step changes
   useEffect(() => {

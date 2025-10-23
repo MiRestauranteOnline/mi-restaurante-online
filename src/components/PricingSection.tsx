@@ -83,7 +83,7 @@ export const PricingSection = () => {
             {plans.map((plan) => (
               <Card 
                 key={plan.id} 
-                className={`relative border-2 ${plan.is_popular ? 'hover:shadow-primary border-primary' : 'border-accent hover:shadow-accent'} transition-smooth ${plan.is_popular ? 'shadow-lg' : ''}`}
+                className={`relative border-2 ${plan.plan_key === 'advanced' ? 'hover:shadow-primary border-primary' : 'border-accent hover:shadow-accent'} transition-smooth ${plan.plan_key === 'advanced' ? 'shadow-lg' : ''}`}
               >
                 {plan.is_popular && (
                   <div className="absolute -top-3 left-6">
@@ -101,7 +101,7 @@ export const PricingSection = () => {
                   
                   <div className="py-6">
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className={`text-5xl font-bold ${plan.is_popular ? 'text-primary' : 'text-accent'}`} role="heading" aria-level={3}>
+                      <span className={`text-5xl font-bold ${plan.plan_key === 'advanced' ? 'text-primary' : 'text-accent'}`} role="heading" aria-level={3}>
                         {plan.currency === 'USD' ? '$' : 'S/'}{plan.monthly_price}
                       </span>
                       <span className="text-lg text-muted-foreground">/mes</span>
@@ -124,7 +124,7 @@ export const PricingSection = () => {
                   <div className="space-y-3">
                     {plan.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-3">
-                        <CheckCircle className={`w-5 h-5 ${plan.is_popular ? 'text-primary' : 'text-accent'} flex-shrink-0`} aria-hidden="true" />
+                        <CheckCircle className={`w-5 h-5 ${plan.plan_key === 'advanced' ? 'text-primary' : 'text-accent'} flex-shrink-0`} aria-hidden="true" />
                         <span className="text-sm">{feature}</span>
                       </div>
                     ))}
@@ -147,7 +147,7 @@ export const PricingSection = () => {
                           </p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" />
+                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                           <p className="text-xs text-foreground">
                             <strong>Analíticas avanzadas:</strong> Entiende a tus clientes y optimiza tu sitio basado en datos reales
                           </p>
@@ -158,7 +158,7 @@ export const PricingSection = () => {
 
                   <div className="pt-6">
                     <Button 
-                      className={`w-full ${plan.is_popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary' : 'bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent'}`}
+                      className={`w-full ${plan.plan_key === 'advanced' ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary' : 'bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent'}`}
                       onClick={() => navigate(`/registro?plan=${plan.plan_key}`)}
                     >
                       <CheckCircle className="w-4 h-4 mr-2" aria-hidden="true" />
