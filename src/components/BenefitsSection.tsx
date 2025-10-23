@@ -152,6 +152,7 @@ export const BenefitsSection = () => {
             </h3>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
               Fundado por un diseñador con experiencia internacional en más de 100 proyectos web. 
+              Construimos con tecnología moderna (React/Next.js), no sistemas anticuados como WordPress. 
               Tu sitio profesional estará listo en 72 horas, no en meses.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

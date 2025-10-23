@@ -11,6 +11,7 @@ import { SignupStep6FAQs, type FAQsData } from "@/components/signup/SignupStep6F
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { CouponInput } from "@/components/signup/CouponInput";
 import { Card, CardContent } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -733,19 +734,28 @@ const Signup = () => {
                     onCouponApplied={handleCouponApplied}
                   />
 
-                  {createdClientId && paymentAmount > 0 ? (
-                    <DebugErrorBoundary>
-                      <OpenPayPaymentForm
-                        clientId={createdClientId}
-                        planType={selectedPlan}
-                        customerName={signupData.restaurantName || ''}
-                        customerEmail={signupData.email || ''}
-                        customerPhone={signupData.phone || ''}
-                        couponCode={appliedCoupon?.code}
-                        onSuccess={handlePaymentSuccess}
-                        onCancel={handlePaymentCancel}
-                      />
-                    </DebugErrorBoundary>
+                  {createdClientId ? (
+                    paymentAmount > 0 ? (
+                      <DebugErrorBoundary>
+                        <OpenPayPaymentForm
+                          clientId={createdClientId}
+                          planType={selectedPlan}
+                          customerName={signupData.restaurantName || ''}
+                          customerEmail={signupData.email || ''}
+                          customerPhone={signupData.phone || ''}
+                          couponCode={appliedCoupon?.code}
+                          onSuccess={handlePaymentSuccess}
+                          onCancel={handlePaymentCancel}
+                        />
+                      </DebugErrorBoundary>
+                    ) : (
+                      <Card>
+                        <CardContent className="pt-6 text-center">
+                          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                          <p className="text-muted-foreground">Cargando información de pago...</p>
+                        </CardContent>
+                      </Card>
+                    )
                   ) : (
                     <Card>
                       <CardContent className="pt-6">

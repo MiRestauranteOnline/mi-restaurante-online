@@ -16,7 +16,7 @@ export const FAQSection = () => {
     },
     {
       question: "¿Usan plantillas o diseños completamente personalizados?",
-      answer: "Utilizamos plantillas profesionales creadas internamente con las últimas tecnologías. Esto nos permite entregar sitios de alta calidad en 72 horas. No ofrecemos diseños completamente personalizados en los planes básicos, pero todas las plantillas son modernas y optimizadas para restaurantes."
+      answer: "Utilizamos plantillas profesionales creadas internamente con React y tecnología moderna. A diferencia de sistemas anticuados como WordPress, nuestras soluciones son más rápidas, seguras y fáciles de actualizar. Esto nos permite entregar sitios de alta calidad en 72 horas. No ofrecemos diseños completamente personalizados en los planes básicos, pero todas las plantillas son modernas y optimizadas para restaurantes."
     },
     {
       question: "¿Qué pasa si quiero cancelar el servicio?",
