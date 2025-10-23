@@ -1429,7 +1429,7 @@ export default function ClientGuides() {
                   Puedes agregar enlaces a las siguientes plataformas:
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <Card className="bg-orange-50/50 dark:bg-orange-950/20 border-orange-200">
                     <CardContent className="pt-4">
                       <div className="font-semibold mb-2 text-orange-600 dark:text-orange-400 flex items-center gap-2">
@@ -1459,17 +1459,6 @@ export default function ClientGuides() {
                       </div>
                       <code className="text-xs bg-background/80 px-2 py-1 rounded block">
                         didifood.com/es-MX/...
-                      </code>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-green-50/50 dark:bg-green-950/20 border-green-200">
-                    <CardContent className="pt-4">
-                      <div className="font-semibold mb-2 text-green-600 dark:text-green-400 flex items-center gap-2">
-                        🍕 Uber Eats
-                      </div>
-                      <code className="text-xs bg-background/80 px-2 py-1 rounded block">
-                        ubereats.com/store/...
                       </code>
                     </CardContent>
                   </Card>
