@@ -66,6 +66,7 @@ const Signup = () => {
   // Get step from URL or default to 1
   const urlStep = parseInt(searchParams.get('step') || '1');
   const urlPlan = searchParams.get('plan') as 'basic' | 'advanced' | null;
+  const urlClient = searchParams.get('client');
   const [currentStep, setCurrentStep] = useState(urlStep);
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>(urlPlan || 'basic');
   
@@ -110,7 +111,19 @@ const Signup = () => {
           if (parsedData.faqsData) setFaqsData(parsedData.faqsData);
           if (parsedData.selectedPlan) setSelectedPlan(parsedData.selectedPlan);
           if (parsedData.createdClientId) setCreatedClientId(parsedData.createdClientId);
-              if (parsedData.currentStep) setCurrentStep(Math.max(parsedData.currentStep, urlStep));
+          if (parsedData.currentStep) setCurrentStep(Math.max(parsedData.currentStep, urlStep));
+
+          // If we already have a created client from saved progress, recompute payment amounts
+          if (parsedData.createdClientId) {
+            const b = parsedData.signupData?.locked_basic_price;
+            const a = parsedData.signupData?.locked_advanced_price;
+            const chosen = (parsedData.selectedPlan as 'basic' | 'advanced') || selectedPlan;
+            if (b && a) {
+              const amt = chosen === 'basic' ? b : a;
+              setOriginalAmount(amt);
+              setPaymentAmount(amt);
+            }
+          }
         }
 
         // 4) If we are on step 2+ but don't have a client id, resolve it via clients (RLS will scope to current user)
@@ -189,13 +202,7 @@ const Signup = () => {
     checkAuthAndRestoreData();
   }, [urlStep]);
   
-  // Update URL when step changes
-  useEffect(() => {
-    const newStep = currentStep.toString();
-    if (searchParams.get('step') !== newStep) {
-      setSearchParams({ step: newStep });
-    }
-  }, [currentStep, searchParams, setSearchParams]);
+  // URL params sync handled after state declarations
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [signupData, setSignupData] = useState<SignupData>({
     email: "",
@@ -242,9 +249,18 @@ const Signup = () => {
   const [isProcessingFinalStep, setIsProcessingFinalStep] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [originalAmount, setOriginalAmount] = useState(0);
-  const [createdClientId, setCreatedClientId] = useState<string>("");
+  const [createdClientId, setCreatedClientId] = useState<string>(urlClient || "");
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
   const { toast } = useToast();
+
+  // Update URL when step, plan or client changes (preserve params)
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    params.set('step', currentStep.toString());
+    if (selectedPlan) params.set('plan', selectedPlan);
+    if (createdClientId) params.set('client', createdClientId);
+    setSearchParams(params);
+  }, [currentStep, selectedPlan, createdClientId, searchParams, setSearchParams]);
 
   // Reset processing states on mount to prevent stuck loading states
   React.useEffect(() => {
