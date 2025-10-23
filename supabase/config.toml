@@ -83,3 +83,6 @@ verify_jwt = true
 
 [functions.manage-dns-records]
 verify_jwt = true
+
+[functions.prebuild-client-data]
+verify_jwt = false
