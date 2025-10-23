@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -1210,186 +1210,286 @@ export default function ClientGuides() {
 
       case "redes-sociales":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Redes Sociales</CardTitle>
-              <CardDescription>
-                Conecta tus perfiles de redes sociales a tu sitio web
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold mb-4">Configuración de Redes Sociales</h2>
+              <p className="text-lg text-muted-foreground">
+                Conecta las redes sociales de tu restaurante para que tus clientes puedan encontrarte y seguirte fácilmente.
+              </p>
+            </div>
+
+            <Card className="border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Ubicación de la Configuración
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-2">Navega a:</p>
+                <div className="bg-muted/50 p-3 rounded-lg font-mono text-sm">
+                  Panel Principal → Pestaña <Badge variant="outline">Contacto</Badge> → Sección "Redes Sociales"
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Redes Sociales Disponibles
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Redes Sociales</strong> → sección <strong>"Redes Sociales"</strong>
+                  Puedes configurar enlaces a las siguientes plataformas:
                 </p>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Plataformas Disponibles</h3>
                 
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Facebook</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace completo a tu página de Facebook
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://facebook.com/mirestaurante
-                    </code>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2">📘 Facebook</div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded">
+                        https://facebook.com/turestaurante
+                      </code>
+                    </CardContent>
+                  </Card>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Instagram</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace completo a tu perfil de Instagram
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://instagram.com/mirestaurante
-                    </code>
-                  </div>
+                  <Card className="border-pink-200 bg-pink-50/50 dark:bg-pink-950/20">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2">📷 Instagram</div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded">
+                        https://instagram.com/turestaurante
+                      </code>
+                    </CardContent>
+                  </Card>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">X (Twitter)</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace completo a tu perfil de X (anteriormente Twitter)
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://x.com/mirestaurante
-                    </code>
-                  </div>
+                  <Card className="border-gray-200 bg-gray-50/50 dark:bg-gray-950/20">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2">✖️ X (Twitter)</div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded">
+                        https://x.com/turestaurante
+                      </code>
+                    </CardContent>
+                  </Card>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">LinkedIn</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace a tu página de empresa en LinkedIn
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://linkedin.com/company/mirestaurante
-                    </code>
-                  </div>
+                  <Card className="border-purple-200 bg-purple-50/50 dark:bg-purple-950/20">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2">🎵 TikTok</div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded">
+                        https://tiktok.com/@turestaurante
+                      </code>
+                    </CardContent>
+                  </Card>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">YouTube</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace a tu canal de YouTube
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://youtube.com/@mirestaurante
-                    </code>
-                  </div>
+                  <Card className="border-red-200 bg-red-50/50 dark:bg-red-950/20">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2">🎬 YouTube</div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded">
+                        https://youtube.com/@turestaurante
+                      </code>
+                    </CardContent>
+                  </Card>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">TikTok</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace a tu perfil de TikTok
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://tiktok.com/@mirestaurante
-                    </code>
+                  <Card className="border-blue-300 bg-blue-100/50 dark:bg-blue-900/20">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2">💼 LinkedIn</div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded">
+                        https://linkedin.com/company/turestaurante
+                      </code>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-green-200 bg-green-50/50 dark:bg-green-950/20">
+              <CardHeader>
+                <CardTitle className="text-green-900 dark:text-green-100">💡 Mejores Prácticas</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-green-900 dark:text-green-100">
+                <div className="flex gap-2">
+                  <span>✅</span>
+                  <div>
+                    <strong>Usa URLs completas:</strong> Siempre incluye "https://" al inicio de cada enlace
                   </div>
                 </div>
-              </div>
+                <div className="flex gap-2">
+                  <span>✅</span>
+                  <div>
+                    <strong>Verifica los enlaces:</strong> Asegúrate de que cada URL lleve al perfil correcto antes de guardar
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <span>✅</span>
+                  <div>
+                    <strong>Solo completa las que uses:</strong> Deja en blanco las redes sociales que no utilizas
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <span>✅</span>
+                  <div>
+                    <strong>Mantén actualizado:</strong> Si cambias de usuario o perfil, actualiza el enlace aquí
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <span>✅</span>
+                  <div>
+                    <strong>Aparición automática:</strong> Los iconos de redes sociales aparecerán automáticamente en el footer de tu sitio
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Usa URLs completas (incluyendo https://)</li>
-                  <li>Solo aparecerán iconos para las redes sociales que hayas configurado</li>
-                  <li>Verifica que los enlaces funcionen antes de guardar</li>
-                  <li>Los iconos de redes sociales aparecerán automáticamente en el footer de tu sitio</li>
-                  <li>Mantén actualizados tus enlaces si cambias de usuario o perfil</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Save className="h-5 w-5" />
+                  Guardar Cambios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Después de completar los campos que necesites, haz clic en el botón <strong>Guardar</strong> en la parte superior derecha de la pantalla. Los iconos de redes sociales aparecerán automáticamente en tu sitio web.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "informacion-delivery":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Información de Delivery</CardTitle>
-              <CardDescription>
-                Conecta tus perfiles en plataformas de delivery
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
-                <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Redes Sociales</strong> → sección <strong>"Plataformas de Delivery"</strong>
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold mb-4">Información de Delivery</h2>
+              <p className="text-lg text-muted-foreground">
+                Configura los detalles de tu servicio de delivery y envío a domicilio.
+              </p>
+            </div>
+
+            <Card className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20">
+              <CardHeader>
+                <CardTitle className="text-amber-900 dark:text-amber-100">⚠️ Sección en Desarrollo</CardTitle>
+              </CardHeader>
+              <CardContent className="text-amber-900 dark:text-amber-100">
+                <p className="mb-3">
+                  La configuración detallada de información de delivery aún no está disponible en el panel de configuración. 
                 </p>
-              </div>
+                <p className="mb-3">
+                  Actualmente, esta información se gestiona durante el proceso inicial de configuración del sitio web.
+                </p>
+                <p className="font-semibold">
+                  Si necesitas actualizar tu información de delivery, por favor contacta a soporte.
+                </p>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Plataformas Disponibles</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle>📦 Información Típica de Delivery</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Cuando esta función esté disponible, podrás configurar:
+                </p>
                 
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Rappi</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace completo a tu perfil de restaurante en Rappi
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://www.rappi.com.pe/restaurantes/tu-restaurante
-                    </code>
-                  </div>
+                  <Card className="bg-muted/30">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-1">🗺️ Áreas de Cobertura</div>
+                      <p className="text-sm text-muted-foreground">
+                        Define las zonas o distritos donde ofreces servicio de delivery
+                      </p>
+                    </CardContent>
+                  </Card>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">PedidosYa</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace completo a tu perfil de restaurante en PedidosYa
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://www.pedidosya.com.pe/restaurantes/tu-restaurante
-                    </code>
-                  </div>
+                  <Card className="bg-muted/30">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-1">💰 Costos de Envío</div>
+                      <p className="text-sm text-muted-foreground">
+                        Especifica el costo de delivery por zona o pedido mínimo gratuito
+                      </p>
+                    </CardContent>
+                  </Card>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">DiDi Food</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Enlace completo a tu perfil de restaurante en DiDi Food
-                    </p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      Ejemplo: https://food.didiglobal.com/pe/restaurant/tu-restaurante
-                    </code>
+                  <Card className="bg-muted/30">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-1">⏱️ Tiempo de Entrega</div>
+                      <p className="text-sm text-muted-foreground">
+                        Indica el tiempo estimado de entrega a domicilio
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-muted/30">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-1">📝 Condiciones y Restricciones</div>
+                      <p className="text-sm text-muted-foreground">
+                        Establece pedidos mínimos, horarios de delivery, etc.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>🚀 Enlaces a Plataformas de Delivery</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground mb-3">
+                  Si tu restaurante está en plataformas como Rappi, PedidosYa o DiDi Food, puedes agregar esos enlaces en la sección de <strong>Redes Sociales</strong> usando campos personalizados o contacta a soporte para configurarlos.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <Card className="bg-orange-50/50 dark:bg-orange-950/20 border-orange-200">
+                    <CardContent className="pt-4 text-center">
+                      <div className="font-semibold text-orange-600 dark:text-orange-400">🛵 Rappi</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-red-50/50 dark:bg-red-950/20 border-red-200">
+                    <CardContent className="pt-4 text-center">
+                      <div className="font-semibold text-red-600 dark:text-red-400">🍔 PedidosYa</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-blue-50/50 dark:bg-blue-950/20 border-blue-200">
+                    <CardContent className="pt-4 text-center">
+                      <div className="font-semibold text-blue-600 dark:text-blue-400">🚗 DiDi Food</div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20">
+              <CardHeader>
+                <CardTitle className="text-blue-900 dark:text-blue-100">💡 Mientras Tanto...</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-blue-900 dark:text-blue-100">
+                <p>
+                  Puedes comunicar tu información de delivery a través de:
+                </p>
+                <div className="flex gap-2">
+                  <span>📱</span>
+                  <div>
+                    <strong>WhatsApp:</strong> Configura tu número en la pestaña Contacto para que los clientes pregunten por delivery
                   </div>
                 </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cómo Obtener el Enlace</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Abre la app o sitio web de la plataforma de delivery</li>
-                  <li>Busca tu restaurante como lo harían tus clientes</li>
-                  <li>Copia la URL completa de la página de tu restaurante</li>
-                  <li>Pégala en el campo correspondiente en el panel</li>
-                </ol>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Usa URLs completas (incluyendo https://)</li>
-                  <li>Los enlaces de delivery aparecerán como botones en tu sitio web</li>
-                  <li>Prueba los enlaces después de guardarlos para verificar que funcionen</li>
-                  <li>Solo configura las plataformas donde realmente tengas presencia</li>
-                  <li>Mantén los enlaces actualizados si cambias de ubicación o nombre</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="flex gap-2">
+                  <span>📞</span>
+                  <div>
+                    <strong>Teléfono:</strong> Asegúrate de tener tu teléfono visible para consultas de delivery
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <span>📧</span>
+                  <div>
+                    <strong>Email:</strong> Los clientes pueden contactarte por email para información de delivery
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "marca-personalizacion":
