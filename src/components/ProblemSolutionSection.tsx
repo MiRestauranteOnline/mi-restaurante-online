@@ -43,31 +43,93 @@ export const ProblemSolutionSection = () => {
     fetchPlans();
   }, []);
 
-  // Comprehensive feature list with proper categorization
-  const allFeatures = [
-    'Hosting ilimitado (visitas y ancho de banda)',
-    'Dominio personalizado o subdominio incluido',
-    'SSL y CDN incluidos',
-    'Contenido optimizado para SEO',
-    'Menú digital en vivo (editable en segundos)',
-    'Menú descargable en PDF',
-    'Sistema completo de reservaciones por mesa',
-    'Gestión de disponibilidad de mesas',
-    'Carrusel de imágenes personalizable',
-    'Sección de preguntas frecuentes',
-    'Sección de reseñas destacadas',
-    'Gestión de equipo y staff',
-    'Enlaces a redes sociales',
-    'Integración con apps de delivery',
-    'Botón flotante de WhatsApp',
-    'Control total de visibilidad de secciones',
-    'Cambios en vivo instantáneos',
-    'Gestión desde dispositivo móvil',
-    'Guías de instrucción completas',
-    'Video tutoriales paso a paso',
-    'Cancelación flexible sin penalización',
-    'Soporte por tickets',
+  // Organized feature list with categories
+  const featureCategories = [
+    {
+      category: 'Infraestructura y Hosting',
+      features: [
+        'Hosting ilimitado (visitas y ancho de banda)',
+        'Dominio personalizado o subdominio incluido',
+        'SSL y CDN incluidos para máxima velocidad',
+      ]
+    },
+    {
+      category: 'Contenido y SEO',
+      features: [
+        'Contenido optimizado para SEO',
+        'Integración con Google Search Console',
+        'Metadatos y schema markup automático',
+      ]
+    },
+    {
+      category: 'Gestión de Menú',
+      features: [
+        'Menú digital en vivo (editable en segundos)',
+        'Menú descargable en PDF',
+        'Organización por categorías ilimitadas',
+      ]
+    },
+    {
+      category: 'Sistema de Reservaciones',
+      features: [
+        'Sistema completo de reservaciones por mesa',
+        'Gestión de disponibilidad y horarios',
+        'Notificaciones de reservas en tiempo real',
+      ]
+    },
+    {
+      category: 'Personalización y Contenido',
+      features: [
+        'Carrusel de imágenes personalizable',
+        'Sección de preguntas frecuentes',
+        'Sección de reseñas destacadas',
+        'Gestión de equipo y staff',
+        'Control total de visibilidad de secciones',
+      ]
+    },
+    {
+      category: 'Marketing y Conversión',
+      features: [
+        'Enlaces a redes sociales',
+        'Integración con apps de delivery',
+        'Botón flotante de WhatsApp',
+        'Popup de WhatsApp personalizable',
+      ]
+    },
+    {
+      category: 'Analíticas y Métricas',
+      features: [
+        'Panel de analíticas detallado',
+        'Seguimiento de visitas y conversiones',
+        'Métricas de interacción del menú',
+        'Estadísticas de reservaciones',
+      ]
+    },
+    {
+      category: 'Gestión y Facilidad de Uso',
+      features: [
+        'Cambios en vivo instantáneos',
+        'Gestión desde dispositivo móvil',
+        'Interfaz intuitiva sin código',
+        'Actualizaciones automáticas',
+      ]
+    },
+    {
+      category: 'Recursos y Soporte',
+      features: [
+        'Guías de instrucción completas',
+        'Video tutoriales paso a paso',
+        'Base de conocimiento actualizada',
+        'Cancelación flexible sin penalización',
+        'Soporte por tickets',
+      ]
+    },
   ];
+
+  // Flatten for easy iteration
+  const allFeatures = featureCategories.flatMap(cat => 
+    [{ type: 'category', name: cat.category }, ...cat.features.map(f => ({ type: 'feature', name: f }))]
+  );
 
   const basicPlan = plans.find(p => p.plan_key === 'basic');
   const advancedPlan = plans.find(p => p.plan_key === 'advanced');
@@ -134,7 +196,18 @@ export const ProblemSolutionSection = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {allFeatures.map((feature, index) => {
+                  {allFeatures.map((item, index) => {
+                    if (item.type === 'category') {
+                      return (
+                        <TableRow key={index} className="bg-muted/50">
+                          <TableCell colSpan={3} className="font-bold text-foreground py-3">
+                            {item.name}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                    
+                    const feature = item.name;
                     const basicValue = getFeatureValue(feature, 'basic');
                     const advancedValue = getFeatureValue(feature, 'advanced');
                     const inBasic = hasFeature(feature, 'basic');
@@ -142,7 +215,7 @@ export const ProblemSolutionSection = () => {
                     
                     return (
                       <TableRow key={index} className="hover:bg-muted/30 transition-colors">
-                        <TableCell className="font-medium text-foreground">
+                        <TableCell className="font-medium text-foreground pl-8">
                           {feature}
                         </TableCell>
                         <TableCell className="text-center">
@@ -178,8 +251,13 @@ export const ProblemSolutionSection = () => {
                       </TableRow>
                     );
                   })}
-                  <TableRow className="hover:bg-muted/30 transition-colors bg-muted/20">
-                    <TableCell className="font-medium text-foreground">
+                  <TableRow className="bg-muted/50">
+                    <TableCell colSpan={3} className="font-bold text-foreground py-3">
+                      Soporte Adicional
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className="hover:bg-muted/30 transition-colors">
+                    <TableCell className="font-medium text-foreground pl-8">
                       Soporte prioritario por WhatsApp
                     </TableCell>
                     <TableCell className="text-center">
