@@ -898,6 +898,8 @@ export type Database = {
           last_domain_check: string | null
           last_payment_attempt: string | null
           locale: string | null
+          locked_advanced_price: number | null
+          locked_basic_price: number | null
           monthly_bandwidth_limit_gb: number | null
           monthly_visits_limit: number | null
           next_billing_date: string | null
@@ -960,6 +962,8 @@ export type Database = {
           last_domain_check?: string | null
           last_payment_attempt?: string | null
           locale?: string | null
+          locked_advanced_price?: number | null
+          locked_basic_price?: number | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
           next_billing_date?: string | null
@@ -1022,6 +1026,8 @@ export type Database = {
           last_domain_check?: string | null
           last_payment_attempt?: string | null
           locale?: string | null
+          locked_advanced_price?: number | null
+          locked_basic_price?: number | null
           monthly_bandwidth_limit_gb?: number | null
           monthly_visits_limit?: number | null
           next_billing_date?: string | null

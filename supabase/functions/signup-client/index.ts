@@ -18,6 +18,8 @@ interface SignupRequest {
   customDomain?: string;
   referralSource?: string;
   address?: string;
+  locked_basic_price?: number;
+  locked_advanced_price?: number;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -48,7 +50,9 @@ const handler = async (req: Request): Promise<Response> => {
       paymentId,
       customDomain,
       referralSource,
-      address
+      address,
+      locked_basic_price,
+      locked_advanced_price
     } = reqBody;
 
     const signupFormData = reqBody.signupFormData;
@@ -123,6 +127,8 @@ const handler = async (req: Request): Promise<Response> => {
         email: email,
         domain: customDomain || null,
         address: address || null,
+        locked_basic_price: locked_basic_price || null,
+        locked_advanced_price: locked_advanced_price || null,
         other_customizations: {
           paymentId: paymentId || 'temp-payment-id',
           referralSource: referralSource || null,

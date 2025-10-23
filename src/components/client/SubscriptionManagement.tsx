@@ -20,6 +20,8 @@ interface SubscriptionData {
   cancellation_date?: string;
   cancellation_reason?: string;
   subscription_auto_recurring?: boolean;
+  locked_basic_price?: number;
+  locked_advanced_price?: number;
 }
 
 interface PlanPrice {
@@ -77,7 +79,9 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
           payment_failures_count,
           cancellation_date,
           cancellation_reason,
-          subscription_auto_recurring
+          subscription_auto_recurring,
+          locked_basic_price,
+          locked_advanced_price
         `)
         .eq('id', clientId)
         .single();
@@ -232,7 +236,12 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   };
 
   const getPlanPrice = (plan: string) => {
-    return planPrices[plan] || (plan === 'basic' ? 297 : 497);
+    // Use locked prices if available, otherwise fall back to current prices or defaults
+    if (plan === 'basic') {
+      return subscription?.locked_basic_price || planPrices[plan] || 297;
+    } else {
+      return subscription?.locked_advanced_price || planPrices[plan] || 497;
+    }
   };
 
   const isValidDate = (dateString?: string) => {

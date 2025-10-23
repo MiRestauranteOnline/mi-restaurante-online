@@ -85,10 +85,30 @@ const PlanManagement = () => {
 
       await fetchPlans();
       
-      toast({
-        title: "Plan actualizado",
-        description: `Los cambios en ${editForm.name} se han guardado correctamente.`,
-      });
+      // Sync prices to Openpay after updating
+      try {
+        const { error: syncError } = await supabase.functions.invoke('sync-openpay-plan-prices');
+        if (syncError) {
+          console.error('Error syncing to Openpay:', syncError);
+          toast({
+            title: "Advertencia",
+            description: "Plan actualizado pero hubo un problema sincronizando con Openpay. Contacta soporte.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Plan actualizado",
+            description: "El plan y los precios de Openpay han sido sincronizados correctamente",
+          });
+        }
+      } catch (syncErr) {
+        console.error('Error calling sync function:', syncErr);
+        toast({
+          title: "Advertencia",
+          description: "Plan actualizado pero no se pudo sincronizar con Openpay automáticamente",
+          variant: "destructive",
+        });
+      }
 
       setEditingPlan(null);
       setEditForm(null);

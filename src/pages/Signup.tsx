@@ -32,6 +32,8 @@ export interface SignupData {
   customDomain?: string;
   referralSource?: string;
   plan_type?: 'basic' | 'advanced';
+  locked_basic_price?: number;
+  locked_advanced_price?: number;
 }
 
 export interface SocialMedia {
@@ -183,25 +185,33 @@ const Signup = () => {
       setIsProcessingPayment(false);
     }, 10000); // 10 seconds
     
-    // Fetch plan pricing from database
+    // Fetch plan pricing from database - both plans for locking
     try {
       const { data: planData, error } = await supabase
         .from('subscription_plans')
-        .select('monthly_price')
-        .eq('plan_key', plan)
+        .select('plan_key, monthly_price')
         .eq('is_active', true)
-        .single();
+        .in('plan_key', ['basic', 'advanced']);
 
       if (error) throw error;
 
-      const amount = planData?.monthly_price || (plan === 'basic' ? 49 : 99);
+      const basicPrice = planData?.find(p => p.plan_key === 'basic')?.monthly_price || 49;
+      const advancedPrice = planData?.find(p => p.plan_key === 'advanced')?.monthly_price || 99;
+      
+      const amount = plan === 'basic' ? basicPrice : advancedPrice;
       setOriginalAmount(amount);
       setPaymentAmount(amount);
+      
+      // Store both prices for later use when creating the client
+      signupData.locked_basic_price = basicPrice;
+      signupData.locked_advanced_price = advancedPrice;
     } catch (error) {
       console.error('Error fetching plan price:', error);
       const amount = plan === 'basic' ? 49 : 99;
       setOriginalAmount(amount);
       setPaymentAmount(amount);
+      signupData.locked_basic_price = 49;
+      signupData.locked_advanced_price = 99;
     }
     
     try {
@@ -222,6 +232,8 @@ const Signup = () => {
           customDomain: formData.customDomain,
           referralSource: formData.referralSource,
           plan_type: plan,
+          locked_basic_price: updatedData.locked_basic_price,
+          locked_advanced_price: updatedData.locked_advanced_price,
           signupFormData: formData,
           websiteRequirements: websiteRequirements,
         },

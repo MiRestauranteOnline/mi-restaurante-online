@@ -140,6 +140,36 @@ export default function OpenPayPaymentForm({
         setLoading(false);
         return;
       }
+
+      // Fetch current plan prices and lock them for this client
+      const { data: planData, error: planError } = await supabase
+        .from('subscription_plans')
+        .select('plan_key, monthly_price')
+        .eq('is_active', true)
+        .in('plan_key', ['basic', 'advanced']);
+
+      if (planError) {
+        console.error('Error fetching plan prices:', planError);
+      }
+
+      const lockedBasicPrice = planData?.find(p => p.plan_key === 'basic')?.monthly_price || 297;
+      const lockedAdvancedPrice = planData?.find(p => p.plan_key === 'advanced')?.monthly_price || 497;
+
+      // Update client with locked prices
+      const { error: updateError } = await supabase
+        .from('clients')
+        .update({
+          locked_basic_price: lockedBasicPrice,
+          locked_advanced_price: lockedAdvancedPrice,
+        })
+        .eq('id', clientId);
+
+      if (updateError) {
+        console.error('Error updating locked prices:', updateError);
+      } else {
+        console.log('✅ Locked prices saved:', { lockedBasicPrice, lockedAdvancedPrice });
+      }
+
       // Validate card data
       const validatedCard = cardSchema.parse(cardData);
       

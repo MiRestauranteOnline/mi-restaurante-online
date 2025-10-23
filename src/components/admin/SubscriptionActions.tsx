@@ -18,6 +18,8 @@ interface SubscriptionActionsProps {
     subscription_end_date?: string;
     payment_failures_count: number;
     subscription_auto_recurring?: boolean;
+    locked_basic_price?: number;
+    locked_advanced_price?: number;
   };
   onUpdate: () => void;
 }
@@ -177,8 +179,14 @@ export function SubscriptionActions({ clientId, subscription, onUpdate }: Subscr
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="basic">Plan Básico - S/ {planPrices['basic'] || 297}</SelectItem>
-                <SelectItem value="advanced">Plan Avanzado - S/ {planPrices['advanced'] || 497}</SelectItem>
+                <SelectItem value="basic">
+                  Plan Básico - S/ {subscription.locked_basic_price || planPrices['basic'] || 297}
+                  {subscription.locked_basic_price && subscription.locked_basic_price !== planPrices['basic'] && ' (precio bloqueado)'}
+                </SelectItem>
+                <SelectItem value="advanced">
+                  Plan Avanzado - S/ {subscription.locked_advanced_price || planPrices['advanced'] || 497}
+                  {subscription.locked_advanced_price && subscription.locked_advanced_price !== planPrices['advanced'] && ' (precio bloqueado)'}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
