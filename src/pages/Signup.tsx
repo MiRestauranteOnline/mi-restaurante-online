@@ -73,73 +73,98 @@ const Signup = () => {
   useEffect(() => {
     const checkAuthAndRestoreData = async () => {
       try {
-        // Check if user is already authenticated
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session?.user) {
-          console.log('User is authenticated, restoring progress');
-          const savedData = localStorage.getItem('signupProgress');
-          let parsedData: any = null;
-          
-          if (savedData) {
-            try {
-              parsedData = JSON.parse(savedData);
-              if (parsedData.signupData) setSignupData(parsedData.signupData);
-              if (parsedData.websiteRequirements) setWebsiteRequirements(parsedData.websiteRequirements);
-              if (parsedData.combinedData) setCombinedData(parsedData.combinedData);
-              if (parsedData.openingHoursData) setOpeningHoursData(parsedData.openingHoursData);
-              if (parsedData.imagesData) setImagesData(parsedData.imagesData);
-              if (parsedData.faqsData) setFaqsData(parsedData.faqsData);
-              if (parsedData.selectedPlan) setSelectedPlan(parsedData.selectedPlan);
-              if (parsedData.createdClientId) setCreatedClientId(parsedData.createdClientId);
-              if (parsedData.currentStep) setCurrentStep(parsedData.currentStep);
-            } catch (e) {
-              console.error('Error restoring signup progress:', e);
-            }
+        // 1) Load any saved local progress
+        const savedDataRaw = localStorage.getItem('signupProgress');
+        let parsedData: any = null;
+        if (savedDataRaw) {
+          try {
+            parsedData = JSON.parse(savedDataRaw);
+          } catch (e) {
+            console.error('Error parsing saved signupProgress:', e);
           }
-          
-          // If on step 2 or later but missing client data, fetch from database
-          if (urlStep >= 2 && !parsedData?.createdClientId) {
-            console.log('Fetching client data from database for authenticated user');
-            try {
-              const { data: clients, error } = await supabase
+        }
+
+        // 2) Ensure user is authenticated; if not, try auto sign-in from saved credentials
+        let { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user && parsedData?.signupData?.email && parsedData?.signupData?.password) {
+          try {
+            const { error: signInErr } = await supabase.auth.signInWithPassword({
+              email: parsedData.signupData.email,
+              password: parsedData.signupData.password,
+            });
+            if (!signInErr) {
+              ({ data: { session } } = await supabase.auth.getSession());
+            }
+          } catch (autoErr) {
+            console.warn('Auto sign-in failed:', autoErr);
+          }
+        }
+        
+        // 3) Restore local progress if available
+        if (parsedData) {
+          if (parsedData.signupData) setSignupData(parsedData.signupData);
+          if (parsedData.websiteRequirements) setWebsiteRequirements(parsedData.websiteRequirements);
+          if (parsedData.combinedData) setCombinedData(parsedData.combinedData);
+          if (parsedData.openingHoursData) setOpeningHoursData(parsedData.openingHoursData);
+          if (parsedData.imagesData) setImagesData(parsedData.imagesData);
+          if (parsedData.faqsData) setFaqsData(parsedData.faqsData);
+          if (parsedData.selectedPlan) setSelectedPlan(parsedData.selectedPlan);
+          if (parsedData.createdClientId) setCreatedClientId(parsedData.createdClientId);
+          if (parsedData.currentStep) setCurrentStep(parsedData.currentStep);
+        }
+
+        // 4) If we are on step 2+ but don't have a client id, resolve it via user_clients mapping
+        if (session?.user && urlStep >= 2 && !parsedData?.createdClientId) {
+          console.log('Resolving client via user_clients mapping for user:', session.user.id);
+          try {
+            const { data: linkRows, error: linkErr } = await supabase
+              .from('user_clients')
+              .select('client_id')
+              .eq('user_id', session.user.id)
+              .limit(1);
+
+            const clientId = linkRows && linkRows.length > 0 ? (linkRows[0] as any).client_id : null;
+            if (clientId) {
+              setCreatedClientId(clientId);
+
+              const { data: client, error: clientErr } = await supabase
                 .from('clients')
                 .select('id, restaurant_name, subdomain, email, phone, plan_type, address')
-                .eq('id', session.user.id)
+                .eq('id', clientId)
                 .single();
-              
-              if (!error && clients) {
-                console.log('Client data fetched:', clients);
-                setCreatedClientId(clients.id);
+
+              if (!clientErr && client) {
                 setSignupData(prev => ({
                   ...prev,
-                  email: session.user.email || '',
-                  restaurantName: clients.restaurant_name,
-                  subdomain: clients.subdomain,
-                  phone: clients.phone || '',
-                  address: clients.address || '',
-                  paymentId: clients.id,
+                  email: client.email || session.user.email || '',
+                  restaurantName: client.restaurant_name,
+                  subdomain: client.subdomain,
+                  phone: client.phone || '',
+                  address: client.address || '',
+                  paymentId: client.id,
+                  plan_type: (client.plan_type as 'basic' | 'advanced') || prev.plan_type,
                 }));
-                setSelectedPlan(clients.plan_type as 'basic' | 'advanced' || 'basic');
-                
-                // Fetch plan pricing
+                setSelectedPlan((client.plan_type as 'basic' | 'advanced') || 'basic');
+
+                // Fetch current pricing to set payment amounts
                 const { data: planData } = await supabase
                   .from('subscription_plans')
                   .select('plan_key, monthly_price')
                   .eq('is_active', true)
                   .in('plan_key', ['basic', 'advanced']);
-                
                 if (planData) {
                   const basicPrice = planData.find(p => p.plan_key === 'basic')?.monthly_price || 49;
                   const advancedPrice = planData.find(p => p.plan_key === 'advanced')?.monthly_price || 99;
-                  const amount = clients.plan_type === 'basic' ? basicPrice : advancedPrice;
+                  const amount = client.plan_type === 'basic' ? basicPrice : advancedPrice;
                   setOriginalAmount(amount);
                   setPaymentAmount(amount);
                 }
               }
-            } catch (fetchError) {
-              console.error('Error fetching client data:', fetchError);
+            } else if (linkErr) {
+              console.warn('No user_clients mapping found or access denied:', linkErr);
             }
+          } catch (fetchError) {
+            console.error('Error resolving client mapping:', fetchError);
           }
         }
       } catch (error) {
