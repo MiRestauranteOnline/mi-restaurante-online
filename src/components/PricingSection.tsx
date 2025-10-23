@@ -26,7 +26,7 @@ export const PricingSection = () => {
       try {
         const { data, error } = await supabase
           .from('subscription_plans')
-          .select('*')
+          .select('id, plan_key, name, monthly_price, original_price, discount_percentage, features, is_popular, currency')
           .eq('is_active', true)
           .order('display_order', { ascending: true });
 
