@@ -8,43 +8,47 @@ export const FAQSection = () => {
   const faqs = [
     {
       question: "¿En cuánto tiempo estará listo mi sitio web?",
-      answer: "Tu sitio web profesional estará completamente listo y online en 72 horas. Trabajamos con plantillas optimizadas de alta calidad que personalizamos con tu contenido, logo, menú y fotos."
+      answer: "Tu sitio web profesional estará completamente listo y online en 72 horas. Trabajamos con plantillas optimizadas de alta calidad creadas con React que personalizamos con tu contenido, logo, menú y fotos."
     },
     {
-      question: "¿Qué cambios puedo hacer yo mismo?",
-      answer: "A través de tu dashboard personal puedes actualizar: menú con precios, horarios de atención, información de contacto, imágenes, y textos básicos. Para cambios de diseño o funcionalidades adicionales, te ayudamos según tu plan."
+      question: "¿Qué cambios puedo hacer yo mismo desde el dashboard?",
+      answer: "Desde tu dashboard puedes actualizar: menú completo con categorías y precios, horarios de atención, información de contacto, imágenes de galería, equipo/staff, links de delivery, FAQs, sistema de reservas (horarios y disponibilidad), y ver analíticas detalladas. Todo sin necesitar conocimientos técnicos."
     },
     {
       question: "¿Usan plantillas o diseños completamente personalizados?",
-      answer: "Utilizamos plantillas profesionales creadas internamente con React y tecnología moderna. A diferencia de sistemas anticuados como WordPress, nuestras soluciones son más rápidas, seguras y fáciles de actualizar. Esto nos permite entregar sitios de alta calidad en 72 horas. No ofrecemos diseños completamente personalizados en los planes básicos, pero todas las plantillas son modernas y optimizadas para restaurantes."
+      answer: "Utilizamos plantillas profesionales creadas internamente con React y tecnología moderna. A diferencia de sistemas anticuados como WordPress, nuestras soluciones son más rápidas, seguras y fáciles de actualizar. Esto nos permite entregar sitios de alta calidad en 72 horas. No ofrecemos diseños completamente personalizados en los planes base, pero todas las plantillas son modernas y optimizadas para restaurantes."
     },
     {
-      question: "¿Qué pasa si quiero cancelar el servicio?",
-      answer: "Puedes cancelar en cualquier momento sin penalizaciones. El sitio se desactiva en tu próximo ciclo de facturación. Guardamos tu sitio web por 6 meses en nuestro sistema para que puedas reactivarlo fácilmente. Como es un servicio administrado, no ofrecemos migración del sitio a otros servidores."
+      question: "¿Necesito comprar un dominio o puedo empezar gratis?",
+      answer: "Puedes empezar inmediatamente con nuestro subdominio gratuito (ejemplo: turestaurante.mirestauranteonline.com). Si prefieres tu propio dominio, recomendamos comprarlo en Namecheap (evitamos GoDaddy por costos altos y panel confuso). Te guiamos en todo el proceso de compra y lo configuramos sin costo adicional."
     },
     {
-      question: "¿Dónde compro mi dominio?",
-      answer: "Los dominios se compran por separado. Recomendamos Namecheap (evitamos GoDaddy por costos altos y panel confuso). Te guiamos en todo el proceso de compra y lo configuramos sin costo adicional."
+      question: "¿El precio mensual es realmente fijo de por vida?",
+      answer: "Sí, durante el período promocional de lanzamiento, el precio que contratas se mantiene de por vida mientras tu suscripción esté activa. Es nuestra garantía para early adopters. Los precios pueden aumentar para nuevos clientes, pero tu tarifa queda bloqueada."
     },
     {
-      question: "¿El precio de S/297 es realmente fijo de por vida?",
-      answer: "Sí, durante el período promocional de lanzamiento, el precio que contratas se mantiene de por vida mientras tu suscripción esté activa. Es nuestra garantía para early adopters."
+      question: "¿Qué incluye exactamente el hosting?",
+      answer: "Incluimos hosting ilimitado con SSL (https) gratis y automático. No hay límites de visitas ni ancho de banda. Utilizamos infraestructura de Cloudflare Pages (CDN mundial) para garantizar velocidad, seguridad y disponibilidad 24/7. Tu sitio carga rápido desde cualquier parte del mundo."
     },
     {
-      question: "¿Qué incluye el hosting?",
-      answer: "Incluimos hosting ilimitado con SSL (https) gratis y automático. No hay límites de visitas ni ancho de banda. Utilizamos infraestructura de Cloudflare Pages para garantizar velocidad, seguridad y disponibilidad mundial."
+      question: "¿Qué incluye el sistema de reservas?",
+      answer: "Sistema completo de gestión de mesas con configuración de horarios, capacidad de mesas, disponibilidad por día/hora, notificaciones en tiempo real de nuevas reservas, y panel de administración para gestionar todas tus reservas. Los clientes reservan directamente desde tu sitio web."
     },
     {
-      question: "¿Puedo agregar funciones personalizadas no listadas?",
-      answer: "Las funciones listadas en nuestros planes son lo que incluimos. Si necesitas funcionalidades completamente personalizadas (sistemas de reservas complejos, e-commerce integrado, etc.), podemos cotizarlas por separado, pero no están incluidas en los planes base."
+      question: "¿Qué diferencia hay entre Plan Básico y Avanzado?",
+      answer: "Plan Básico incluye todo lo esencial: sitio web completo, menú digital, reservas, WhatsApp, SEO básico y soporte en 48h. Plan Avanzado añade: soporte prioritario en 24h, 1 hora/mes de cambios profesionales por nuestro equipo (ideal para actualizar textos, diseño o agregar secciones), analíticas avanzadas con métricas detalladas, y WhatsApp premium con PIN único para atención prioritaria."
     },
     {
       question: "¿El sitio funciona bien en celulares?",
-      answer: "Sí, todos nuestros sitios son mobile-first. Se diseñan primero para móvil y luego se adaptan a desktop. Más del 80% de tus clientes visitarán desde celular, por eso es nuestra prioridad."
+      answer: "Sí, todos nuestros sitios son mobile-first. Se diseñan primero para móvil y luego se adaptan a desktop. Más del 80% de tus clientes visitarán desde celular, por eso es nuestra prioridad. Además, puedes gestionar todo el dashboard desde tu móvil sin necesitar computadora."
     },
     {
-      question: "¿Qué diferencia hay entre Plan Básico y Avanzado en soporte?",
-      answer: "Plan Básico: Soporte WhatsApp básico y email (48h) para actualizaciones vía dashboard. Plan Avanzado: Soporte prioritario (24h), 1 hora/mes de cambios profesionales (textos, imágenes, secciones), analytics y WhatsApp premium con PIN único."
+      question: "¿Qué pasa si quiero cancelar el servicio?",
+      answer: "Puedes cancelar en cualquier momento sin penalizaciones. El sitio se desactiva al final de tu ciclo de facturación actual. Guardamos tu sitio web por 6 meses en nuestro sistema para que puedas reactivarlo fácilmente si cambias de opinión. Como es un servicio administrado, no ofrecemos migración del sitio a otros servidores."
+    },
+    {
+      question: "¿Puedo agregar funciones personalizadas no listadas?",
+      answer: "Nuestros planes incluyen todas las funcionalidades esenciales que necesita un restaurante: menú digital + PDF descargable, sistema de reservas, galería de imágenes, WhatsApp integrado, links de delivery, SEO, analíticas, y más. Si necesitas desarrollos completamente personalizados fuera de este alcance, podemos cotizarlos por separado."
     }
   ];
 
