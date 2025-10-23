@@ -87,7 +87,7 @@ export const PricingSection = () => {
               >
                 {plan.is_popular && (
                   <div className="absolute -top-3 left-6">
-                    <Badge className="bg-primary text-primary-foreground">
+                    <Badge className="bg-accent text-accent-foreground">
                       Más Popular
                     </Badge>
                   </div>

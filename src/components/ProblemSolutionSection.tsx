@@ -200,13 +200,13 @@ export const ProblemSolutionSection = () => {
                     <TableHead className="text-center font-bold text-foreground">
                       <div className="flex flex-col items-center gap-1">
                         <span className="text-lg">{basicPlan?.name || 'Plan Básico'}</span>
-                        <Badge variant="outline" className="text-xs">Esencial</Badge>
+                        <Badge className="text-xs bg-accent text-accent-foreground">Más Popular</Badge>
                       </div>
                     </TableHead>
                     <TableHead className="text-center font-bold text-primary">
                       <div className="flex flex-col items-center gap-1">
                         <span className="text-lg">{advancedPlan?.name || 'Plan Avanzado'}</span>
-                        <Badge className="text-xs bg-primary text-primary-foreground">Más Popular</Badge>
+                        <Badge variant="outline" className="text-xs border-primary text-primary">Para Profesionales</Badge>
                       </div>
                     </TableHead>
                   </TableRow>
