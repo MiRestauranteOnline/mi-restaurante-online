@@ -894,6 +894,7 @@ export type Database = {
           email: string | null
           favicon_url: string | null
           id: string
+          is_deactivated: boolean
           last_domain_check: string | null
           last_payment_attempt: string | null
           locale: string | null
@@ -955,6 +956,7 @@ export type Database = {
           email?: string | null
           favicon_url?: string | null
           id?: string
+          is_deactivated?: boolean
           last_domain_check?: string | null
           last_payment_attempt?: string | null
           locale?: string | null
@@ -1016,6 +1018,7 @@ export type Database = {
           email?: string | null
           favicon_url?: string | null
           id?: string
+          is_deactivated?: boolean
           last_domain_check?: string | null
           last_payment_attempt?: string | null
           locale?: string | null

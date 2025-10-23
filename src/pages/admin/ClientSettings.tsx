@@ -82,6 +82,9 @@ interface Client {
   timezone?: string;
   country_code?: string;
   locale?: string;
+  is_deactivated?: boolean;
+  subscription_status?: string;
+  payment_status?: string;
 }
 
 interface ClientSettings {
@@ -1070,7 +1073,9 @@ const [faqForm, setFaqForm] = useState({
     about_page_stats_section_visible: true,
     about_page_team_section_visible: true,
     contact_page_contact_section_visible: true,
-    contact_page_map_visible: true
+    contact_page_map_visible: true,
+    // Site deactivation (admin only)
+    is_deactivated: false
   });
 
   useEffect(() => {
@@ -1182,7 +1187,8 @@ const [faqForm, setFaqForm] = useState({
         other_customizations: {
           currency: 'S/',
           ...(data.other_customizations as any || {})
-        }
+        },
+        is_deactivated: (data as any).is_deactivated || false
       }));
     } catch (error: any) {
       toast({
@@ -1762,6 +1768,7 @@ const [faqForm, setFaqForm] = useState({
           country_code: formData.country_code,
           locale: formData.locale,
           favicon_url: formData.favicon_url,
+          is_deactivated: formData.is_deactivated,
           updated_at: new Date().toISOString()
         })
         .eq('id', clientId)
@@ -6521,6 +6528,47 @@ setReviewForm({
                     id="premium_support_enabled"
                     checked={formData.premium_support_enabled}
                     onCheckedChange={(checked) => setFormData({...formData, premium_support_enabled: checked})}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Site Deactivation Section */}
+            <div className="space-y-4 pt-6 border-t">
+              <h3 className="text-lg font-semibold text-destructive">Control de Sitio</h3>
+              
+              <Alert variant="destructive">
+                <AlertDescription>
+                  Cuando el sitio está desactivado, se mostrará un aviso en todas las páginas del cliente informando que el sitio no está disponible.
+                </AlertDescription>
+              </Alert>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+                  <div className="space-y-1">
+                    <Label htmlFor="is_deactivated" className="text-base font-semibold">
+                      Sitio Desactivado
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Se activa automáticamente cuando la suscripción es cancelada por falta de pago
+                    </p>
+                    {client?.subscription_status && (
+                      <div className="flex gap-2 mt-2">
+                        <Badge variant={client.subscription_status === 'active' ? 'default' : 'destructive'}>
+                          Estado: {client.subscription_status}
+                        </Badge>
+                        {client.payment_status && (
+                          <Badge variant={client.payment_status === 'paid' ? 'default' : 'secondary'}>
+                            Pago: {client.payment_status}
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <Switch
+                    id="is_deactivated"
+                    checked={formData.is_deactivated}
+                    onCheckedChange={(checked) => setFormData({...formData, is_deactivated: checked})}
                   />
                 </div>
               </div>

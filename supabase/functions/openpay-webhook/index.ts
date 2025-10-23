@@ -168,10 +168,11 @@ async function handleSubscriptionCancelled(supabase: any, transaction: any) {
         subscription_status: 'cancelled',
         cancellation_date: new Date().toISOString(),
         subscription_auto_recurring: false,
+        is_deactivated: true, // Automatically deactivate site when subscription is cancelled
         updated_at: new Date().toISOString(),
       })
       .eq('id', client.id);
 
-    console.log('Client subscription cancelled');
+    console.log('Client subscription cancelled and site deactivated');
   }
 }
