@@ -121,7 +121,7 @@ export const PricingSection = () => {
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  <div className={`space-y-3 ${plan.is_popular ? 'min-h-[280px]' : ''}`}>
+                  <div className="space-y-3">
                     {plan.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-3">
                         <CheckCircle className={`w-5 h-5 ${plan.is_popular ? 'text-primary' : 'text-accent'} flex-shrink-0`} aria-hidden="true" />
@@ -131,10 +131,28 @@ export const PricingSection = () => {
                   </div>
 
                   {plan.is_popular && (
-                    <div className="pt-2 pb-4 border-t border-border">
-                      <p className="text-xs text-center text-muted-foreground italic">
-                        Perfecto para restaurantes que buscan maximizar su presencia online y obtener insights detallados de su rendimiento
-                      </p>
+                    <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20">
+                      <h4 className="font-semibold text-sm mb-3 text-primary">Ventajas Premium del Plan Avanzado:</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-start gap-2">
+                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <p className="text-xs text-muted-foreground">
+                            <strong>Soporte prioritario:</strong> Respuestas en 24h vs 48h del plan básico
+                          </p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <p className="text-xs text-muted-foreground">
+                            <strong>1 hora de soporte mensual:</strong> Ideal para cambios de menú, actualización de contenido o ajustes de diseño
+                          </p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <p className="text-xs text-muted-foreground">
+                            <strong>Analíticas avanzadas:</strong> Entiende a tus clientes y optimiza tu sitio basado en datos reales
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   )}
 
