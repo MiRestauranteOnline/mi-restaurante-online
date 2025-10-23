@@ -131,24 +131,24 @@ export const PricingSection = () => {
                   </div>
 
                   {plan.plan_key === 'advanced' && (
-                    <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20">
+                    <div className="mt-6 p-4 rounded-lg bg-primary/10 border-2 border-primary/30">
                       <h4 className="font-semibold text-sm mb-3 text-primary">Ventajas Premium del Plan Avanzado:</h4>
                       <div className="space-y-2">
                         <div className="flex items-start gap-2">
-                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                          <p className="text-xs text-muted-foreground">
+                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" />
+                          <p className="text-xs text-foreground">
                             <strong>Soporte prioritario:</strong> Respuestas en 24h vs 48h del plan básico
                           </p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                          <p className="text-xs text-muted-foreground">
+                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" />
+                          <p className="text-xs text-foreground">
                             <strong>1 hora de soporte mensual:</strong> Ideal para cambios de menú, actualización de contenido o ajustes de diseño
                           </p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                          <p className="text-xs text-muted-foreground">
+                          <Star className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="currentColor" />
+                          <p className="text-xs text-foreground">
                             <strong>Analíticas avanzadas:</strong> Entiende a tus clientes y optimiza tu sitio basado en datos reales
                           </p>
                         </div>
@@ -159,7 +159,7 @@ export const PricingSection = () => {
                   <div className="pt-6">
                     <Button 
                       className={`w-full ${plan.is_popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary' : 'bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent'}`}
-                      onClick={() => navigate('/registro')}
+                      onClick={() => navigate(`/registro?plan=${plan.plan_key}`)}
                     >
                       <CheckCircle className="w-4 h-4 mr-2" aria-hidden="true" />
                       Registrarse con {plan.name}
