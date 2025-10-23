@@ -130,7 +130,7 @@ export const PricingSection = () => {
                     ))}
                   </div>
 
-                  {plan.is_popular && (
+                  {plan.plan_key === 'advanced' && (
                     <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20">
                       <h4 className="font-semibold text-sm mb-3 text-primary">Ventajas Premium del Plan Avanzado:</h4>
                       <div className="space-y-2">
