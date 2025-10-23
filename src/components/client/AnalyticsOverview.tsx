@@ -137,14 +137,15 @@ export function AnalyticsOverview({ clientId }: AnalyticsOverviewProps) {
   const menuSections = analytics.reduce((acc, day) => {
     Object.entries(day.menu_section_data || {}).forEach(([section, data]) => {
       if (!acc[section]) {
-        acc[section] = { views: 0, total_time: 0, count: 0 };
+        acc[section] = { views: 0, weighted_time: 0 };
       }
-      acc[section].views += (data as any).views || 0;
-      acc[section].total_time += (data as any).avg_time || 0;
-      acc[section].count += 1;
+      const views = (data as any).views || 0;
+      const avgTime = (data as any).avg_time || 0;
+      acc[section].views += views;
+      acc[section].weighted_time += avgTime * views; // Weighted by views for proper average
     });
     return acc;
-  }, {} as Record<string, { views: number; total_time: number; count: number }>);
+  }, {} as Record<string, { views: number; weighted_time: number }>);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -445,7 +446,9 @@ className="bg-destructive h-3 rounded-full transition-all duration-500"
                       .sort(([,a], [,b]) => b.views - a.views)
                       .slice(0, 4)
                       .map(([section, data], index) => {
-                        const percentage = Math.round((data.views / totals.page_views) * 100);
+                        const totalMenuViews = Object.values(menuSections).reduce((sum, s) => sum + s.views, 0);
+                        const percentage = Math.round((data.views / totalMenuViews) * 100);
+                        const avgTime = Math.round(data.weighted_time / Math.max(data.views, 1));
                         const colors = ['from-primary to-primary/80', 'from-accent to-accent/80', 'from-orange-600 to-orange-700', 'from-secondary to-secondary/80'];
                         return (
                           <div key={section} className="space-y-2">
@@ -463,7 +466,7 @@ className="bg-destructive h-3 rounded-full transition-all duration-500"
                               ></div>
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              {formatTime(Math.round(data.total_time / Math.max(data.count, 1)))} tiempo promedio
+                              {formatTime(avgTime)} tiempo promedio
                             </p>
                           </div>
                         );
