@@ -19,74 +19,74 @@ export const BenefitsSection = () => {
   const benefits = [
     {
       icon: DollarSign,
-      title: "Sin Comisiones por Cliente",
-      description: "0% de comisión. A diferencia de otros servicios, no cobramos por cada cliente que te llega.",
+      title: "Hosting Ilimitado Incluido",
+      description: "Sin límites de visitas ni ancho de banda. Tu sitio carga rápido con CDN y SSL incluidos, sin cargos por tráfico extra.",
       color: "text-primary"
     },
     {
-      icon: Download,
-      title: "Menú Digital Siempre Actualizado",
-      description: "Tu menú completo online y descargable en PDF. Clientes ven tus platos antes de decidir.",
+      icon: Zap,
+      title: "Actualización Instantánea",
+      description: "Cambia menú, precios, horarios y contenido en segundos. Los cambios aparecen en vivo sin esperas ni desarrolladores.",
       color: "text-accent"
     },
     {
       icon: Settings,
-      title: "Control Total - Sin Esperas",
-      description: "Actualiza menú, precios y horarios tú mismo en minutos. No dependas de desarrolladores lentos.",
-      color: "text-primary"
-    },
-    {
-      icon: Headphones,
-      title: "Soporte de Alta Calidad",
-      description: "Atención rápida cuando lo necesites. Nada de tickets ignorados o sitios caídos.",
-      color: "text-accent"
-    },
-    {
-      icon: ImageIcon,
-      title: "Galería Profesional",
-      description: "Muestra tus platos y ambiente con galería optimizada. Atrae más clientes con fotos impactantes.",
+      title: "Sistema de Reservas Completo",
+      description: "Gestión inteligente de mesas, horarios y disponibilidad. Recibe notificaciones en tiempo real de cada reserva.",
       color: "text-primary"
     },
     {
       icon: Search,
-      title: "Optimizado para Google",
-      description: "SEO técnico incluido. Tu restaurante será visible cuando clientes busquen en Google.",
+      title: "SEO y Google Search Console",
+      description: "Optimización técnica completa, metadatos automáticos y seguimiento en Google. Aparece cuando clientes buscan restaurantes.",
+      color: "text-accent"
+    },
+    {
+      icon: Smartphone,
+      title: "Gestiona Todo Desde Tu Móvil",
+      description: "Dashboard optimizado para celular. Actualiza tu sitio desde cualquier lugar, en segundos, sin necesitar computadora.",
+      color: "text-primary"
+    },
+    {
+      icon: ImageIcon,
+      title: "Carrusel de Imágenes Profesional",
+      description: "Galería optimizada automáticamente. Sube fotos desde tu móvil y muéstralas en formato profesional sin perder calidad.",
+      color: "text-accent"
+    },
+    {
+      icon: Download,
+      title: "Menú Digital Completo",
+      description: "Menú en vivo editable al instante + versión PDF descargable. Organiza por categorías ilimitadas con fotos y precios.",
+      color: "text-primary"
+    },
+    {
+      icon: Star,
+      title: "Panel de Analíticas Detallado",
+      description: "Seguimiento de visitas, conversiones, clics de WhatsApp y teléfono. Métricas de cada sección del menú y dispositivos.",
+      color: "text-accent"
+    },
+    {
+      icon: MessageCircle,
+      title: "WhatsApp Integrado + Popup",
+      description: "Botón flotante en todas las páginas + popup personalizable. Mensajes predefinidos para reservas, delivery y consultas.",
+      color: "text-primary"
+    },
+    {
+      icon: Headphones,
+      title: "Soporte Real con Respuesta Rápida",
+      description: "Tickets con respuesta en 24-48h. Plan avanzado incluye soporte prioritario por WhatsApp con atención directa.",
       color: "text-accent"
     },
     {
       icon: Clock,
       title: "Online en 72 Horas",
-      description: "Tu sitio web profesional listo en 3 días. Mientras competidores esperan meses, tú ya capturas clientes.",
+      description: "Tu sitio profesional listo en 3 días con contenido optimizado y diseño personalizado. Mientras otros esperan meses, tú capturas clientes.",
       color: "text-primary"
     },
     {
       icon: Shield,
-      title: "Hosting Confiable y Rápido",
-      description: "Sitio web que funciona 24/7 sin caídas. Carga en menos de 3 segundos en cualquier dispositivo.",
-      color: "text-accent"
-    },
-    {
-      icon: MessageCircle,
-      title: "WhatsApp Directo",
-      description: "Botón flotante de WhatsApp para que clientes te contacten al instante desde cualquier página.",
-      color: "text-primary"
-    },
-    {
-      icon: Smartphone,
-      title: "Perfecto en Móvil",
-      description: "Diseño responsive impecable. El 80% de tus clientes te buscarán desde el celular.",
-      color: "text-accent"
-    },
-    {
-      icon: Star,
-      title: "Muestra tus Mejores Reseñas",
-      description: "Sección de testimonios para generar confianza. Muestra por qué eres la mejor opción.",
-      color: "text-primary"
-    },
-    {
-      icon: Zap,
-      title: "Dashboard de Gestión",
-      description: "Panel intuitivo para gestionar todo tu contenido sin conocimientos técnicos.",
+      title: "Control Total Sin Código",
+      description: "Activa/desactiva secciones, añade staff, delivery links y FAQs. Guías completas y videos tutoriales para cada función.",
       color: "text-accent"
     }
   ];
