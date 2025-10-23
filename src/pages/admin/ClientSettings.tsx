@@ -3927,11 +3927,11 @@ setReviewForm({
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
-                      <Label htmlFor="homepage_contact_hide_reservation_box" className="flex-1">Ocultar Caja de Reserva en Sección de Contacto</Label>
+                      <Label htmlFor="homepage_contact_hide_reservation_box" className="flex-1">Mostrar Caja de Reserva en Sección de Contacto</Label>
                       <Switch
                         id="homepage_contact_hide_reservation_box"
-                        checked={formData.homepage_contact_hide_reservation_box}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: checked})}
+                        checked={!formData.homepage_contact_hide_reservation_box}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: !checked})}
                       />
                     </div>
                   </div>
