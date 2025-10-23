@@ -69,6 +69,12 @@ export default function OpenPayPaymentForm({
     cvv2: '',
   });
 
+  const [customer, setCustomer] = useState({
+    name: customerName || '',
+    email: customerEmail || '',
+    phone: customerPhone || '',
+  });
+
   const [billingInfo, setBillingInfo] = useState<BillingInfo>({
     documentType: 'boleta',
   });
@@ -175,9 +181,9 @@ export default function OpenPayPaymentForm({
       
       // Validate customer data
       const validatedCustomer = customerSchema.parse({
-        name: customerName,
-        email: customerEmail,
-        phone: customerPhone,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
       });
 
       // Apply coupon if provided
@@ -290,6 +296,24 @@ export default function OpenPayPaymentForm({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Datos del cliente (editable si faltan) */}
+          {(!customerName || !customerEmail || !customerPhone) && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="customerName">Nombre y Apellido</Label>
+                <Input id="customerName" value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="customerEmail">Correo</Label>
+                <Input id="customerEmail" type="email" value={customer.email} onChange={(e) => setCustomer({ ...customer, email: e.target.value })} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="customerPhone">Teléfono</Label>
+                <Input id="customerPhone" value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} required />
+              </div>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="cardNumber">Número de Tarjeta</Label>
             <Input

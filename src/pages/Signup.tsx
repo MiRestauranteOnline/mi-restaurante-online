@@ -546,6 +546,30 @@ const Signup = () => {
     setCurrentStep(8); // Move to success step
   };
 
+  // Fallback: ensure payment amount is set on step 2+ even if local data is missing
+  useEffect(() => {
+    const ensureAmount = async () => {
+      if (urlStep >= 2 && paymentAmount === 0) {
+        try {
+          const { data: planData } = await supabase
+            .from('subscription_plans')
+            .select('plan_key, monthly_price')
+            .eq('is_active', true)
+            .in('plan_key', ['basic', 'advanced']);
+          if (planData) {
+            const basicPrice = planData.find(p => p.plan_key === 'basic')?.monthly_price || 49;
+            const advancedPrice = planData.find(p => p.plan_key === 'advanced')?.monthly_price || 99;
+            const amount = selectedPlan === 'basic' ? basicPrice : advancedPrice;
+            setOriginalAmount(amount);
+            setPaymentAmount(amount);
+          }
+        } catch (e) {
+          console.error('Failed to ensure payment amount:', e);
+        }
+      }
+    };
+    ensureAmount();
+  }, [urlStep, paymentAmount, selectedPlan]);
 
   const handleBackToStep1 = () => {
     setCurrentStep(1);
@@ -709,14 +733,14 @@ const Signup = () => {
                     onCouponApplied={handleCouponApplied}
                   />
 
-                  {createdClientId && signupData.email && signupData.restaurantName && signupData.phone && paymentAmount > 0 ? (
+                  {createdClientId && paymentAmount > 0 ? (
                     <DebugErrorBoundary>
                       <OpenPayPaymentForm
                         clientId={createdClientId}
                         planType={selectedPlan}
-                        customerName={signupData.restaurantName}
-                        customerEmail={signupData.email}
-                        customerPhone={signupData.phone}
+                        customerName={signupData.restaurantName || ''}
+                        customerEmail={signupData.email || ''}
+                        customerPhone={signupData.phone || ''}
                         couponCode={appliedCoupon?.code}
                         onSuccess={handlePaymentSuccess}
                         onCancel={handlePaymentCancel}
