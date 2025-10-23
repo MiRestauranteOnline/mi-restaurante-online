@@ -677,10 +677,66 @@ export default function ClientGuides() {
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
+              <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Dirección</h4>
                     <p className="text-sm text-muted-foreground">
                       Dirección completa de tu restaurante. Este campo acepta múltiples líneas para mayor claridad.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Usar Coordenadas Específicas</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Activar este switch para usar coordenadas GPS exactas en lugar de la dirección para los mapas. Útil si la dirección no se encuentra correctamente en Google Maps o si quieres señalar una entrada específica.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">País</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Selecciona el país donde se ubica tu restaurante (ej: 🇵🇪 Perú). Usado para SEO y configuración regional del sitio. Afecta el formato de fechas, moneda y optimización en motores de búsqueda locales.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Zona Horaria</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Selecciona la zona horaria de tu restaurante (ej: Lima UTC-5). Asegura que las reservas y horarios de apertura se muestren correctamente para tus clientes locales. Importante si utilizas el sistema de reservas.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Ocultar Botón de WhatsApp del Menú</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Activa este switch si no quieres que aparezca el botón flotante de WhatsApp en las páginas de menú de tu sitio web. Por defecto está visible.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Ocultar Botón de Teléfono del Menú</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Activa este switch si no quieres que aparezca el botón de llamada telefónica en las páginas de menú. Por defecto está visible.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Mostrar Popup de WhatsApp</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Activa este switch para que aparezca un popup de WhatsApp cuando los visitantes entren a tu sitio. Útil para captar la atención de clientes potenciales. Por defecto está deshabilitado.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Texto del Botón CTA Personalizado</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Personaliza el texto que aparece en el botón de llamada a la acción (CTA) principal de tu sitio. Por ejemplo: "Reservar Ahora", "Contactar", "Hacer Pedido". Si se deja vacío, usará el texto predeterminado.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Enlace del Botón CTA Personalizado</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Define a dónde redirige el botón CTA cuando los usuarios hacen clic. Puede ser un enlace a WhatsApp, formulario de reservas, o cualquier URL. Ejemplo: https://wa.me/51987654321 o #contact para anclas internas.
                     </p>
                   </div>
                 </div>
@@ -694,6 +750,10 @@ export default function ClientGuides() {
                   <li>Asegúrate de que todos los datos de contacto estén actualizados</li>
                   <li>Usa el formato internacional para teléfonos (+51 para Perú)</li>
                   <li>El nombre del restaurante aparecerá en el título de la página y en el encabezado</li>
+                  <li>Activa "Usar Coordenadas Específicas" si tu restaurante no aparece correctamente en el mapa con la dirección</li>
+                  <li>Selecciona la zona horaria correcta para evitar confusiones con las reservas</li>
+                  <li>El popup de WhatsApp puede aumentar conversiones, pero úsalo con moderación para no molestar</li>
+                  <li>Personaliza el texto del botón CTA según tu objetivo principal (reservas, pedidos, contacto)</li>
                   <li>No olvides hacer clic en "Guardar Configuración" después de realizar cambios</li>
                 </ul>
               </div>
