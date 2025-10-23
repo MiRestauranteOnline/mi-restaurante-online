@@ -2319,14 +2319,8 @@ export type Database = {
         Args: { opening_hours_obj: Json }
         Returns: Json
       }
-      generate_support_pin: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_ticket_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_support_pin: { Args: never; Returns: string }
+      generate_ticket_number: { Args: never; Returns: string }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -2346,10 +2340,7 @@ export type Database = {
         Args: { coupon_code: string }
         Returns: undefined
       }
-      is_subscription_active: {
-        Args: { client_id: string }
-        Returns: boolean
-      }
+      is_subscription_active: { Args: { client_id: string }; Returns: boolean }
       link_user_to_client: {
         Args: { client_uuid: string; user_email: string; user_role?: string }
         Returns: string

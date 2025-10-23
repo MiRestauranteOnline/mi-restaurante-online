@@ -132,6 +132,16 @@ const guideMetadata: Record<string, { title: string; description: string; catego
     description: "Consulta las estadísticas detalladas de uso de tu sitio web y plataforma de gestión.",
     category: "Analíticas"
   },
+  "configurar-google-analytics": {
+    title: "Configurar Google Analytics para tu Restaurante",
+    description: "Guía completa para conectar Google Analytics 4 (GA4) y rastrear visitantes de tu sitio web de restaurante.",
+    category: "Analíticas"
+  },
+  "configurar-google-search-console": {
+    title: "Configurar Google Search Console - Guía Restaurantes",
+    description: "Aprende a verificar tu sitio web con Google Search Console para mejorar tu posicionamiento SEO.",
+    category: "Analíticas"
+  },
   "como-obtener-soporte": {
     title: "Cómo Obtener Soporte Técnico para tu Restaurante Online",
     description: "Conoce los canales de soporte disponibles y cómo contactarnos para resolver tus dudas.",
@@ -222,6 +232,8 @@ const guideCategories = [
       { id: "introduccion-analiticas", title: "Introducción a Analíticas", icon: FileText },
       { id: "metricas", title: "Entendiendo las Métricas", icon: FileText },
       { id: "estadisticas-uso", title: "Estadísticas de Uso", icon: FileText },
+      { id: "configurar-google-analytics", title: "Configurar Google Analytics", icon: FileText },
+      { id: "configurar-google-search-console", title: "Configurar Google Search Console", icon: FileText },
     ],
   },
   {
@@ -3012,6 +3024,418 @@ export default function ClientGuides() {
               <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
                   💡 <strong>Consejo:</strong> El widget de uso en tu dashboard te alerta cuando te acercas al 80% de tus límites mensuales.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "configurar-google-analytics":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Configurar Google Analytics (GA4)</CardTitle>
+              <CardDescription>
+                Conecta Google Analytics para rastrear visitantes y comportamiento en tu sitio web
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué es Google Analytics?</h3>
+                <p className="text-muted-foreground">
+                  Google Analytics es una herramienta gratuita de Google que te permite rastrear visitantes, páginas vistas, tiempo en el sitio, origen del tráfico y mucho más. Con GA4 (Google Analytics 4), obtienes información detallada sobre cómo interactúan los usuarios con tu restaurante online.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 1: Crear una Cuenta de Google Analytics</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Ve a <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">analytics.google.com</a>
+                  </li>
+                  <li>
+                    Inicia sesión con tu cuenta de Google (o crea una si no tienes)
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Comenzar a medir"</strong>
+                  </li>
+                  <li>
+                    Ingresa el <strong>nombre de tu cuenta</strong> (ej: "Mi Restaurante")
+                  </li>
+                  <li>
+                    Configura las opciones de uso compartido de datos (recomendado dejar por defecto)
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Siguiente"</strong>
+                  </li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 2: Crear una Propiedad (Property)</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Ingresa el <strong>nombre de la propiedad</strong> (ej: "Sitio Web Restaurante")
+                  </li>
+                  <li>
+                    Selecciona tu <strong>zona horaria</strong> (ej: "(GMT-5) Hora de Perú")
+                  </li>
+                  <li>
+                    Selecciona tu <strong>moneda</strong> (ej: "Sol peruano (S/)")
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Siguiente"</strong>
+                  </li>
+                  <li>
+                    Completa los <strong>detalles de tu negocio</strong>:
+                    <ul className="list-disc list-inside ml-6 mt-2 space-y-1">
+                      <li>Categoría de la industria: <strong>"Alimentos y bebidas"</strong></li>
+                      <li>Tamaño de la empresa: Selecciona según corresponda</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Selecciona <strong>objetivos de uso</strong> (ej: "Medir el interacción del usuario")
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Crear"</strong>
+                  </li>
+                  <li>
+                    Acepta los <strong>Términos del servicio</strong>
+                  </li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 3: Configurar Flujo de Datos (Data Stream)</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Selecciona <strong>"Web"</strong> como plataforma
+                  </li>
+                  <li>
+                    Ingresa la <strong>URL de tu sitio web</strong> (ej: "turestaurante.com")
+                  </li>
+                  <li>
+                    Ingresa un <strong>nombre para el stream</strong> (ej: "Sitio Web Principal")
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Crear stream"</strong>
+                  </li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 4: Obtener tu ID de Medición (Measurement ID)</h3>
+                <p className="text-muted-foreground mb-3">
+                  Después de crear el stream, verás los detalles del flujo de datos:
+                </p>
+                <div className="p-4 bg-muted rounded-lg space-y-2">
+                  <p className="text-sm font-medium">Busca el <strong>"ID de medición"</strong></p>
+                  <p className="text-sm text-muted-foreground">
+                    Se ve así: <code className="bg-background px-2 py-1 rounded">G-XXXXXXXXXX</code>
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Ejemplo: <code className="bg-background px-2 py-1 rounded">G-ABC123DEF4</code>
+                  </p>
+                </div>
+                <p className="text-sm text-muted-foreground mt-3">
+                  <strong>COPIA este ID</strong> – lo necesitarás para el siguiente paso.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 5: Conectar Google Analytics en Mi Restaurante Online</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Ve a tu <strong>Dashboard de Mi Restaurante Online</strong>
+                  </li>
+                  <li>
+                    Navega a <strong>Panel Principal</strong> (si eres admin) o <strong>Configuración</strong> (si eres cliente)
+                  </li>
+                  <li>
+                    Busca la sección <strong>"Analíticas"</strong>
+                  </li>
+                  <li>
+                    Activa el switch <strong>"Habilitar Analíticas"</strong>
+                  </li>
+                  <li>
+                    Pega tu <strong>ID de Google Analytics (G-XXXXXXXXXX)</strong> en el campo correspondiente
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Guardar cambios"</strong>
+                  </li>
+                </ol>
+
+                <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-4">
+                  <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                    ✅ <strong>¡Listo!</strong> Google Analytics comenzará a rastrear visitantes automáticamente. Los datos pueden tardar 24-48 horas en aparecer en tu cuenta de Google Analytics.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Verificar que Funciona</h3>
+                <ol className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>
+                    Ve a <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Google Analytics</a>
+                  </li>
+                  <li>
+                    Selecciona tu propiedad
+                  </li>
+                  <li>
+                    Ve a <strong>Informes → Tiempo real</strong>
+                  </li>
+                  <li>
+                    Abre tu sitio web en otra pestaña
+                  </li>
+                  <li>
+                    Deberías ver <strong>tu visita en tiempo real</strong> en el informe
+                  </li>
+                </ol>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Explora los informes de GA4 para entender de dónde vienen tus visitantes (búsqueda, redes sociales, directo) y qué páginas visitan más. Esto te ayudará a optimizar tu estrategia de marketing.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case "configurar-google-search-console":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Configurar Google Search Console</CardTitle>
+              <CardDescription>
+                Verifica tu sitio web en Google Search Console para mejorar tu SEO y aparecer en resultados de búsqueda
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Qué es Google Search Console?</h3>
+                <p className="text-muted-foreground">
+                  Google Search Console (GSC) es una herramienta gratuita de Google que te ayuda a monitorear y mejorar cómo aparece tu sitio en los resultados de búsqueda de Google. Con GSC puedes ver qué palabras clave traen tráfico, identificar problemas de indexación, y optimizar tu presencia en Google.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Beneficios de Usar Google Search Console</h3>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>Ver cuántas personas encuentran tu restaurante en Google</li>
+                  <li>Saber qué búsquedas muestran tu sitio web</li>
+                  <li>Identificar problemas técnicos que afectan tu SEO</li>
+                  <li>Enviar tu sitemap para indexación más rápida</li>
+                  <li>Monitorear el rendimiento móvil de tu sitio</li>
+                </ul>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 1: Acceder a Google Search Console</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Ve a <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">search.google.com/search-console</a>
+                  </li>
+                  <li>
+                    Inicia sesión con tu cuenta de Google (la misma que usaste para Analytics si ya lo configuraste)
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Comenzar ahora"</strong>
+                  </li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 2: Agregar tu Propiedad</h3>
+                <p className="text-muted-foreground mb-3">
+                  Verás dos opciones para agregar tu propiedad:
+                </p>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Opción 1: Dominio (Recomendado)</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Verifica todos los subdominios y protocolos (http, https, www, etc.)
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Ingresa solo tu dominio: <code className="bg-background px-2 py-1 rounded">turestaurante.com</code>
+                    </p>
+                    <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
+                      ⚠️ Esta opción requiere verificación por DNS. Si no tienes acceso a tu DNS, usa la Opción 2.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950">
+                    <h4 className="font-medium mb-2">Opción 2: Prefijo de URL (Más Fácil) ✅</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Verifica solo una URL específica
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Ingresa la URL completa: <code className="bg-background px-2 py-1 rounded">https://turestaurante.com</code>
+                    </p>
+                    <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
+                      💡 <strong>Recomendamos esta opción</strong> porque puedes verificar con una etiqueta meta (más fácil).
+                    </p>
+                  </div>
+                </div>
+                <p className="text-muted-foreground mt-3">
+                  <strong>Para esta guía usaremos la Opción 2 (Prefijo de URL)</strong>
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 3: Elegir Método de Verificación</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Después de ingresar tu URL, verás varios métodos de verificación
+                  </li>
+                  <li>
+                    Selecciona <strong>"Etiqueta HTML"</strong>
+                  </li>
+                  <li>
+                    Google te mostrará un código que se ve así:
+                    <div className="p-3 bg-muted rounded mt-2 overflow-x-auto">
+                      <code className="text-xs">
+                        &lt;meta name="google-site-verification" content="<strong className="text-blue-600">ABC123xyz...</strong>" /&gt;
+                      </code>
+                    </div>
+                  </li>
+                  <li>
+                    <strong>COPIA</strong> solo la parte del <code className="bg-background px-1 py-0.5 rounded text-sm">content="..."</code> (el texto después de <code className="bg-background px-1 py-0.5 rounded text-sm">content=</code>)
+                    <div className="p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded mt-2">
+                      <p className="text-sm text-green-900 dark:text-green-100">
+                        Ejemplo: Si el código es<br />
+                        <code className="text-xs">&lt;meta name="google-site-verification" content="<strong>XYZ789abc_EJEMPLO-123</strong>" /&gt;</code><br />
+                        <strong>Solo copia:</strong> <code className="text-xs bg-background px-1 py-0.5 rounded">XYZ789abc_EJEMPLO-123</code>
+                      </p>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 4: Agregar el Código en Mi Restaurante Online</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Ve a tu <strong>Dashboard de Mi Restaurante Online</strong>
+                  </li>
+                  <li>
+                    Navega a <strong>Panel Principal</strong> (si eres admin) o <strong>Configuración</strong> (si eres cliente)
+                  </li>
+                  <li>
+                    Busca la sección <strong>"Google Search Console"</strong>
+                  </li>
+                  <li>
+                    Pega el <strong>código de verificación</strong> que copiaste en el campo correspondiente
+                    <div className="p-3 bg-muted rounded mt-2">
+                      <p className="text-sm">El formato debe ser algo como: <code className="bg-background px-2 py-1 rounded text-xs">XYZ789abc_EJEMPLO-123</code></p>
+                    </div>
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Guardar cambios"</strong>
+                  </li>
+                </ol>
+
+                <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
+                  <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                    ⏱️ <strong>Espera 1-2 minutos</strong> después de guardar para que el código se propague correctamente antes de verificar en Google.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 5: Verificar en Google Search Console</h3>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>
+                    Vuelve a la pestaña de <strong>Google Search Console</strong>
+                  </li>
+                  <li>
+                    Haz clic en el botón <strong>"Verificar"</strong>
+                  </li>
+                  <li>
+                    Si todo está correcto, verás un mensaje de <strong>"Propiedad verificada"</strong> ✅
+                  </li>
+                </ol>
+
+                <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-4">
+                  <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                    ✅ <strong>¡Felicitaciones!</strong> Tu sitio está verificado. Los datos comenzarán a aparecer en 24-48 horas. Google empezará a rastrear tu sitio web y mostrarte información sobre tu rendimiento en búsquedas.
+                  </p>
+                </div>
+
+                <div className="p-4 border border-red-200 dark:border-red-800 rounded-lg mt-4">
+                  <h4 className="font-medium mb-2 text-red-900 dark:text-red-100">❌ Si la verificación falla:</h4>
+                  <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-red-900 dark:text-red-100">
+                    <li>Verifica que copiaste el código completo correctamente</li>
+                    <li>Asegúrate de haber esperado 1-2 minutos después de guardar</li>
+                    <li>Revisa que guardaste los cambios en Mi Restaurante Online</li>
+                    <li>Intenta limpiar la caché de tu navegador</li>
+                  </ul>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Paso 6: Enviar tu Sitemap (Opcional pero Recomendado)</h3>
+                <p className="text-muted-foreground mb-3">
+                  Un sitemap ayuda a Google a indexar todas las páginas de tu sitio más rápidamente:
+                </p>
+                <ol className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li>
+                    En Google Search Console, ve a <strong>"Sitemaps"</strong> en el menú lateral
+                  </li>
+                  <li>
+                    En "Agregar un nuevo sitemap", ingresa: <code className="bg-background px-2 py-1 rounded">sitemap.xml</code>
+                  </li>
+                  <li>
+                    Haz clic en <strong>"Enviar"</strong>
+                  </li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Qué Hacer Después</h3>
+                <p className="text-muted-foreground mb-3">
+                  Una vez verificado, podrás acceder a información valiosa:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
+                  <li><strong>Rendimiento:</strong> Qué búsquedas muestran tu restaurante</li>
+                  <li><strong>Inspección de URL:</strong> Verificar si páginas específicas están indexadas</li>
+                  <li><strong>Cobertura:</strong> Identificar errores de rastreo</li>
+                  <li><strong>Experiencia:</strong> Ver si tu sitio es mobile-friendly</li>
+                  <li><strong>Mejoras:</strong> Sugerencias para optimizar tu SEO</li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  💡 <strong>Consejo:</strong> Revisa Google Search Console semanalmente para identificar oportunidades de mejorar tu ranking. Presta atención a las palabras clave que te traen clics y optimiza tu contenido alrededor de ellas.
                 </p>
               </div>
             </CardContent>
