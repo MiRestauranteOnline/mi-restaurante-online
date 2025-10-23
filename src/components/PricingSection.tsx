@@ -83,7 +83,7 @@ export const PricingSection = () => {
             {plans.map((plan) => (
               <Card 
                 key={plan.id} 
-                className={`relative border-2 ${plan.is_popular ? 'hover:shadow-primary' : 'border-accent hover:shadow-accent'} transition-smooth`}
+                className={`relative border-2 ${plan.is_popular ? 'hover:shadow-primary border-primary' : 'border-accent hover:shadow-accent'} transition-smooth ${plan.is_popular ? 'shadow-lg' : ''}`}
               >
                 {plan.is_popular && (
                   <div className="absolute -top-3 left-6">
@@ -121,7 +121,7 @@ export const PricingSection = () => {
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  <div className="space-y-3">
+                  <div className={`space-y-3 ${plan.is_popular ? 'min-h-[280px]' : ''}`}>
                     {plan.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-3">
                         <CheckCircle className={`w-5 h-5 ${plan.is_popular ? 'text-primary' : 'text-accent'} flex-shrink-0`} aria-hidden="true" />
@@ -129,6 +129,14 @@ export const PricingSection = () => {
                       </div>
                     ))}
                   </div>
+
+                  {plan.is_popular && (
+                    <div className="pt-2 pb-4 border-t border-border">
+                      <p className="text-xs text-center text-muted-foreground italic">
+                        Perfecto para restaurantes que buscan maximizar su presencia online y obtener insights detallados de su rendimiento
+                      </p>
+                    </div>
+                  )}
 
                   <div className="pt-6">
                     <Button 
