@@ -4558,7 +4558,7 @@ setReviewForm({
           )}
           <div className="space-y-6">
             {/* PAGE SELECTOR */}
-            <div className="sticky top-0 z-10 bg-gradient-to-r from-primary/60 to-primary/40 backdrop-blur-md border-2 border-primary/30 rounded-lg shadow-lg">
+            <div className="sticky top-0 z-30 bg-gradient-to-r from-primary/60 to-primary/40 backdrop-blur-md border-2 border-primary/30 rounded-lg shadow-lg">
               <div className="p-4 bg-background/90 rounded-lg">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   <div className="flex items-center gap-2">
