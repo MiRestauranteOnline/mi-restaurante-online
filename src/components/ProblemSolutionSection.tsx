@@ -158,6 +158,16 @@ export const ProblemSolutionSection = () => {
   return (
     <section className="py-20 bg-gradient-subtle">
       <div className="container mx-auto px-4">
+        {/* Section Label and Heading */}
+        <div className="text-center mb-8 animate-fade-up">
+          <p className="text-sm uppercase tracking-wider text-primary font-semibold mb-3">
+            La Realidad del Mercado
+          </p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+            ¿Tu restaurante está perdiendo<br />Clientes cada día?
+          </h2>
+        </div>
+
         {/* Intro Text */}
         <div className="text-center mb-12 animate-fade-up max-w-3xl mx-auto">
           <p className="text-lg text-muted-foreground">
