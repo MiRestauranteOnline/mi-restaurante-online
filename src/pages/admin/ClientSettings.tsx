@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil, ArrowUp, ArrowDown, ChevronUp, ChevronDown, Globe } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Plus, Trash2, Edit, Search, GripVertical, FolderPlus, ChevronRight, CalendarIcon, Trash, Pencil, ArrowUp, ArrowDown, ChevronUp, ChevronDown, Globe, Utensils, Truck, Users, Clock, Star, MapPin, Award, Heart, Coffee, Zap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -54,6 +54,25 @@ import { useAdminImpersonation } from '@/hooks/useAdminImpersonation';
 import { UserCog } from 'lucide-react';
 import { timezones } from '@/data/timezones';
 import { countries } from '@/data/countries';
+import * as React from "react";
+
+// Icon mapping helper
+const iconMap: Record<string, any> = {
+  Utensils,
+  Truck,
+  Users,
+  Clock,
+  Star,
+  MapPin,
+  Award,
+  Heart,
+  Coffee,
+  Zap
+};
+
+const getIconComponent = (iconName: string) => {
+  return iconMap[iconName] || Utensils;
+};
 
 interface Client {
   id: string;
@@ -5154,178 +5173,218 @@ setReviewForm({
                 <Card>
                   <CardHeader>
                     <CardTitle>{t('content.serviceCards')}</CardTitle>
+                    <CardDescription>Configura las tres tarjetas de servicio principales</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {/* Service Card 1 */}
-                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">{t('content.firstServiceCard')}</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="services_card1_icon">{t('content.firstServiceCardIcon')}</Label>
-                          <Select value={formData.services_card1_icon} onValueChange={(value) => setFormData({...formData, services_card1_icon: value})}>
-                            <SelectTrigger>
-                              <SelectValue placeholder={t('content.selectIcon')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {iconOptions.map((icon) => (
-                                <SelectItem key={icon.value} value={icon.value}>
-                                  {icon.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                    <Card className="border-2 border-primary/20 bg-muted/30">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="default">Tarjeta 1</Badge>
+                          <CardTitle className="text-base">{t('content.firstServiceCard')}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="services_card1_icon">{t('content.firstServiceCardIcon')}</Label>
+                            <Select value={formData.services_card1_icon} onValueChange={(value) => setFormData({...formData, services_card1_icon: value})}>
+                              <SelectTrigger>
+                                <SelectValue placeholder={t('content.selectIcon')} />
+                              </SelectTrigger>
+                              <SelectContent className="bg-background border border-border shadow-md z-50">
+                                {iconOptions.map((icon) => {
+                                  const IconComponent = getIconComponent(icon.value);
+                                  return (
+                                    <SelectItem key={icon.value} value={icon.value}>
+                                      <div className="flex items-center gap-2">
+                                        <IconComponent className="h-4 w-4" />
+                                        <span>{icon.label}</span>
+                                      </div>
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label htmlFor="services_card1_title">{t('content.firstServiceCardTitle')}</Label>
+                            <Input
+                              id="services_card1_title"
+                              value={formData.services_card1_title}
+                              onChange={(e) => setFormData({...formData, services_card1_title: e.target.value})}
+                            />
+                          </div>
                         </div>
                         <div>
-                          <Label htmlFor="services_card1_title">{t('content.firstServiceCardTitle')}</Label>
-                          <Input
-                            id="services_card1_title"
-                            value={formData.services_card1_title}
-                            onChange={(e) => setFormData({...formData, services_card1_title: e.target.value})}
+                          <Label htmlFor="services_card1_description">{t('content.firstServiceCardDescription')}</Label>
+                          <Textarea
+                            id="services_card1_description"
+                            value={formData.services_card1_description}
+                            onChange={(e) => setFormData({...formData, services_card1_description: e.target.value})}
+                            rows={2}
                           />
                         </div>
-                      </div>
-                      <div>
-                        <Label htmlFor="services_card1_description">{t('content.firstServiceCardDescription')}</Label>
-                        <Textarea
-                          id="services_card1_description"
-                          value={formData.services_card1_description}
-                          onChange={(e) => setFormData({...formData, services_card1_description: e.target.value})}
-                          rows={2}
-                        />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="services_card1_button_text">{t('content.firstServiceCardButton')}</Label>
-                          <Input
-                            id="services_card1_button_text"
-                            value={formData.services_card1_button_text}
-                            onChange={(e) => setFormData({...formData, services_card1_button_text: e.target.value})}
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="services_card1_button_text">{t('content.firstServiceCardButton')}</Label>
+                            <Input
+                              id="services_card1_button_text"
+                              value={formData.services_card1_button_text}
+                              onChange={(e) => setFormData({...formData, services_card1_button_text: e.target.value})}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="services_card1_button_link">{t('content.firstServiceCardLink')}</Label>
+                            <Input
+                              id="services_card1_button_link"
+                              value={formData.services_card1_button_link}
+                              onChange={(e) => setFormData({...formData, services_card1_button_link: e.target.value})}
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <Label htmlFor="services_card1_button_link">{t('content.firstServiceCardLink')}</Label>
-                          <Input
-                            id="services_card1_button_link"
-                            value={formData.services_card1_button_link}
-                            onChange={(e) => setFormData({...formData, services_card1_button_link: e.target.value})}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
 
                     {/* Service Card 2 */}
-                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">{t('content.secondServiceCard')}</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="services_card2_icon">{t('content.secondServiceCardIcon')}</Label>
-                          <Select value={formData.services_card2_icon} onValueChange={(value) => setFormData({...formData, services_card2_icon: value})}>
-                            <SelectTrigger>
-                              <SelectValue placeholder={t('content.selectIcon')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {iconOptions.map((icon) => (
-                                <SelectItem key={icon.value} value={icon.value}>
-                                  {icon.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                    <Card className="border-2 border-primary/20 bg-muted/30">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="default">Tarjeta 2</Badge>
+                          <CardTitle className="text-base">{t('content.secondServiceCard')}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="services_card2_icon">{t('content.secondServiceCardIcon')}</Label>
+                            <Select value={formData.services_card2_icon} onValueChange={(value) => setFormData({...formData, services_card2_icon: value})}>
+                              <SelectTrigger>
+                                <SelectValue placeholder={t('content.selectIcon')} />
+                              </SelectTrigger>
+                              <SelectContent className="bg-background border border-border shadow-md z-50">
+                                {iconOptions.map((icon) => {
+                                  const IconComponent = getIconComponent(icon.value);
+                                  return (
+                                    <SelectItem key={icon.value} value={icon.value}>
+                                      <div className="flex items-center gap-2">
+                                        <IconComponent className="h-4 w-4" />
+                                        <span>{icon.label}</span>
+                                      </div>
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label htmlFor="services_card2_title">{t('content.secondServiceCardTitle')}</Label>
+                            <Input
+                              id="services_card2_title"
+                              value={formData.services_card2_title}
+                              onChange={(e) => setFormData({...formData, services_card2_title: e.target.value})}
+                            />
+                          </div>
                         </div>
                         <div>
-                          <Label htmlFor="services_card2_title">{t('content.secondServiceCardTitle')}</Label>
-                          <Input
-                            id="services_card2_title"
-                            value={formData.services_card2_title}
-                            onChange={(e) => setFormData({...formData, services_card2_title: e.target.value})}
+                          <Label htmlFor="services_card2_description">{t('content.secondServiceCardDescription')}</Label>
+                          <Textarea
+                            id="services_card2_description"
+                            value={formData.services_card2_description}
+                            onChange={(e) => setFormData({...formData, services_card2_description: e.target.value})}
+                            rows={2}
                           />
                         </div>
-                      </div>
-                      <div>
-                        <Label htmlFor="services_card2_description">{t('content.secondServiceCardDescription')}</Label>
-                        <Textarea
-                          id="services_card2_description"
-                          value={formData.services_card2_description}
-                          onChange={(e) => setFormData({...formData, services_card2_description: e.target.value})}
-                          rows={2}
-                        />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="services_card2_button_text">{t('content.secondServiceCardButton')}</Label>
-                          <Input
-                            id="services_card2_button_text"
-                            value={formData.services_card2_button_text}
-                            onChange={(e) => setFormData({...formData, services_card2_button_text: e.target.value})}
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="services_card2_button_text">{t('content.secondServiceCardButton')}</Label>
+                            <Input
+                              id="services_card2_button_text"
+                              value={formData.services_card2_button_text}
+                              onChange={(e) => setFormData({...formData, services_card2_button_text: e.target.value})}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="services_card2_button_link">{t('content.secondServiceCardLink')}</Label>
+                            <Input
+                              id="services_card2_button_link"
+                              value={formData.services_card2_button_link}
+                              onChange={(e) => setFormData({...formData, services_card2_button_link: e.target.value})}
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <Label htmlFor="services_card2_button_link">{t('content.secondServiceCardLink')}</Label>
-                          <Input
-                            id="services_card2_button_link"
-                            value={formData.services_card2_button_link}
-                            onChange={(e) => setFormData({...formData, services_card2_button_link: e.target.value})}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
 
                     {/* Service Card 3 */}
-                    <div className="border-l-4 border-primary/30 pl-4 space-y-4">
-                      <h4 className="font-medium text-primary">{t('content.thirdServiceCard')}</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="services_card3_icon">{t('content.thirdServiceCardIcon')}</Label>
-                          <Select value={formData.services_card3_icon} onValueChange={(value) => setFormData({...formData, services_card3_icon: value})}>
-                            <SelectTrigger>
-                              <SelectValue placeholder={t('content.selectIcon')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {iconOptions.map((icon) => (
-                                <SelectItem key={icon.value} value={icon.value}>
-                                  {icon.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                    <Card className="border-2 border-primary/20 bg-muted/30">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="default">Tarjeta 3</Badge>
+                          <CardTitle className="text-base">{t('content.thirdServiceCard')}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="services_card3_icon">{t('content.thirdServiceCardIcon')}</Label>
+                            <Select value={formData.services_card3_icon} onValueChange={(value) => setFormData({...formData, services_card3_icon: value})}>
+                              <SelectTrigger>
+                                <SelectValue placeholder={t('content.selectIcon')} />
+                              </SelectTrigger>
+                              <SelectContent className="bg-background border border-border shadow-md z-50">
+                                {iconOptions.map((icon) => {
+                                  const IconComponent = getIconComponent(icon.value);
+                                  return (
+                                    <SelectItem key={icon.value} value={icon.value}>
+                                      <div className="flex items-center gap-2">
+                                        <IconComponent className="h-4 w-4" />
+                                        <span>{icon.label}</span>
+                                      </div>
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label htmlFor="services_card3_title">{t('content.thirdServiceCardTitle')}</Label>
+                            <Input
+                              id="services_card3_title"
+                              value={formData.services_card3_title}
+                              onChange={(e) => setFormData({...formData, services_card3_title: e.target.value})}
+                            />
+                          </div>
                         </div>
                         <div>
-                          <Label htmlFor="services_card3_title">{t('content.thirdServiceCardTitle')}</Label>
-                          <Input
-                            id="services_card3_title"
-                            value={formData.services_card3_title}
-                            onChange={(e) => setFormData({...formData, services_card3_title: e.target.value})}
+                          <Label htmlFor="services_card3_description">{t('content.thirdServiceCardDescription')}</Label>
+                          <Textarea
+                            id="services_card3_description"
+                            value={formData.services_card3_description}
+                            onChange={(e) => setFormData({...formData, services_card3_description: e.target.value})}
+                            rows={2}
                           />
                         </div>
-                      </div>
-                      <div>
-                        <Label htmlFor="services_card3_description">{t('content.thirdServiceCardDescription')}</Label>
-                        <Textarea
-                          id="services_card3_description"
-                          value={formData.services_card3_description}
-                          onChange={(e) => setFormData({...formData, services_card3_description: e.target.value})}
-                          rows={2}
-                        />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="services_card3_button_text">{t('content.thirdServiceCardButton')}</Label>
-                          <Input
-                            id="services_card3_button_text"
-                            value={formData.services_card3_button_text}
-                            onChange={(e) => setFormData({...formData, services_card3_button_text: e.target.value})}
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="services_card3_button_text">{t('content.thirdServiceCardButton')}</Label>
+                            <Input
+                              id="services_card3_button_text"
+                              value={formData.services_card3_button_text}
+                              onChange={(e) => setFormData({...formData, services_card3_button_text: e.target.value})}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="services_card3_button_link">{t('content.thirdServiceCardLink')}</Label>
+                            <Input
+                              id="services_card3_button_link"
+                              value={formData.services_card3_button_link}
+                              onChange={(e) => setFormData({...formData, services_card3_button_link: e.target.value})}
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <Label htmlFor="services_card3_button_link">{t('content.thirdServiceCardLink')}</Label>
-                          <Input
-                            id="services_card3_button_link"
-                            value={formData.services_card3_button_link}
-                            onChange={(e) => setFormData({...formData, services_card3_button_link: e.target.value})}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                   </CardContent>
                 </Card>
 
@@ -5333,6 +5392,7 @@ setReviewForm({
                 <Card>
                   <CardHeader>
                     <CardTitle>{t('content.serviceFeatures')}</CardTitle>
+                    <CardDescription>Configura las características adicionales del servicio</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {/* Feature 1 */}
@@ -5343,12 +5403,18 @@ setReviewForm({
                           <SelectTrigger>
                             <SelectValue placeholder={t('content.selectIcon')} />
                           </SelectTrigger>
-                          <SelectContent>
-                            {iconOptions.map((icon) => (
-                              <SelectItem key={icon.value} value={icon.value}>
-                                {icon.label}
-                              </SelectItem>
-                            ))}
+                          <SelectContent className="bg-background border border-border shadow-md z-50">
+                            {iconOptions.map((icon) => {
+                              const IconComponent = getIconComponent(icon.value);
+                              return (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  <div className="flex items-center gap-2">
+                                    <IconComponent className="h-4 w-4" />
+                                    <span>{icon.label}</span>
+                                  </div>
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
@@ -5370,12 +5436,18 @@ setReviewForm({
                           <SelectTrigger>
                             <SelectValue placeholder={t('content.selectIcon')} />
                           </SelectTrigger>
-                          <SelectContent>
-                            {iconOptions.map((icon) => (
-                              <SelectItem key={icon.value} value={icon.value}>
-                                {icon.label}
-                              </SelectItem>
-                            ))}
+                          <SelectContent className="bg-background border border-border shadow-md z-50">
+                            {iconOptions.map((icon) => {
+                              const IconComponent = getIconComponent(icon.value);
+                              return (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  <div className="flex items-center gap-2">
+                                    <IconComponent className="h-4 w-4" />
+                                    <span>{icon.label}</span>
+                                  </div>
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
@@ -5397,12 +5469,18 @@ setReviewForm({
                           <SelectTrigger>
                             <SelectValue placeholder={t('content.selectIcon')} />
                           </SelectTrigger>
-                          <SelectContent>
-                            {iconOptions.map((icon) => (
-                              <SelectItem key={icon.value} value={icon.value}>
-                                {icon.label}
-                              </SelectItem>
-                            ))}
+                          <SelectContent className="bg-background border border-border shadow-md z-50">
+                            {iconOptions.map((icon) => {
+                              const IconComponent = getIconComponent(icon.value);
+                              return (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                  <div className="flex items-center gap-2">
+                                    <IconComponent className="h-4 w-4" />
+                                    <span>{icon.label}</span>
+                                  </div>
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
@@ -5440,12 +5518,18 @@ setReviewForm({
                             <SelectTrigger>
                               <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
-                            <SelectContent>
-                              {iconOptions.map((icon) => (
-                                <SelectItem key={icon.value} value={icon.value}>
-                                  {icon.label}
-                                </SelectItem>
-                              ))}
+                            <SelectContent className="bg-background border border-border shadow-md z-50">
+                              {iconOptions.map((icon) => {
+                                const IconComponent = getIconComponent(icon.value);
+                                return (
+                                  <SelectItem key={icon.value} value={icon.value}>
+                                    <div className="flex items-center gap-2">
+                                      <IconComponent className="h-4 w-4" />
+                                      <span>{icon.label}</span>
+                                    </div>
+                                  </SelectItem>
+                                );
+                              })}
                             </SelectContent>
                           </Select>
                         </div>
@@ -5478,12 +5562,18 @@ setReviewForm({
                             <SelectTrigger>
                               <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
-                            <SelectContent>
-                              {iconOptions.map((icon) => (
-                                <SelectItem key={icon.value} value={icon.value}>
-                                  {icon.label}
-                                </SelectItem>
-                              ))}
+                            <SelectContent className="bg-background border border-border shadow-md z-50">
+                              {iconOptions.map((icon) => {
+                                const IconComponent = getIconComponent(icon.value);
+                                return (
+                                  <SelectItem key={icon.value} value={icon.value}>
+                                    <div className="flex items-center gap-2">
+                                      <IconComponent className="h-4 w-4" />
+                                      <span>{icon.label}</span>
+                                    </div>
+                                  </SelectItem>
+                                );
+                              })}
                             </SelectContent>
                           </Select>
                         </div>
@@ -5516,12 +5606,18 @@ setReviewForm({
                             <SelectTrigger>
                               <SelectValue placeholder={t('content.selectIcon')} />
                             </SelectTrigger>
-                            <SelectContent>
-                              {iconOptions.map((icon) => (
-                                <SelectItem key={icon.value} value={icon.value}>
-                                  {icon.label}
-                                </SelectItem>
-                              ))}
+                            <SelectContent className="bg-background border border-border shadow-md z-50">
+                              {iconOptions.map((icon) => {
+                                const IconComponent = getIconComponent(icon.value);
+                                return (
+                                  <SelectItem key={icon.value} value={icon.value}>
+                                    <div className="flex items-center gap-2">
+                                      <IconComponent className="h-4 w-4" />
+                                      <span>{icon.label}</span>
+                                    </div>
+                                  </SelectItem>
+                                );
+                              })}
                             </SelectContent>
                           </Select>
                         </div>
