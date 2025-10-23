@@ -3494,12 +3494,12 @@ setReviewForm({
               </div>
 
               <div className="space-y-2 mt-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="use_coordinates" className="text-base font-medium">
+                <div className="flex items-center justify-between p-5 border-2 border-primary/20 rounded-lg bg-primary/5 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="space-y-1 flex-1 pr-4">
+                    <Label htmlFor="use_coordinates" className="text-base font-semibold text-foreground">
                       Usar Coordenadas Específicas
                     </Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       Activar para usar coordenadas exactas en lugar de la dirección para los mapas
                     </p>
                   </div>
