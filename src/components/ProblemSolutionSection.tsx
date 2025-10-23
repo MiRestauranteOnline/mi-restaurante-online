@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, X, Loader2 } from "lucide-react";
+import { CheckCircle, X, Loader2, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -20,6 +20,7 @@ interface PlanFeatures {
 export const ProblemSolutionSection = () => {
   const [plans, setPlans] = useState<PlanFeatures[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -131,6 +132,10 @@ export const ProblemSolutionSection = () => {
     [{ type: 'category', name: cat.category }, ...cat.features.map(f => ({ type: 'feature', name: f }))]
   );
 
+  // Show first 3 categories when collapsed (approximately 15-20 rows)
+  const collapsedFeatureCount = featureCategories.slice(0, 3).reduce((acc, cat) => acc + cat.features.length + 1, 0);
+  const displayedFeatures = isExpanded ? allFeatures : allFeatures.slice(0, collapsedFeatureCount);
+
   const basicPlan = plans.find(p => p.plan_key === 'basic');
   const advancedPlan = plans.find(p => p.plan_key === 'advanced');
   
@@ -196,7 +201,7 @@ export const ProblemSolutionSection = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {allFeatures.map((item, index) => {
+                  {displayedFeatures.map((item, index) => {
                     if (item.type === 'category') {
                       return (
                         <TableRow key={index} className="bg-muted/50">
@@ -251,23 +256,38 @@ export const ProblemSolutionSection = () => {
                       </TableRow>
                     );
                   })}
-                  <TableRow className="bg-muted/50">
-                    <TableCell colSpan={3} className="font-bold text-foreground py-3">
-                      Soporte Adicional
-                    </TableCell>
-                  </TableRow>
-                  <TableRow className="hover:bg-muted/30 transition-colors">
-                    <TableCell className="font-medium text-foreground pl-8">
-                      Soporte prioritario por WhatsApp
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex justify-center">
-                        <X className="w-5 h-5 text-muted-foreground/30" />
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex justify-center">
-                        <CheckCircle className="w-5 h-5 text-primary" />
+                  {isExpanded && (
+                    <>
+                      <TableRow className="bg-muted/50">
+                        <TableCell colSpan={3} className="font-bold text-foreground py-3">
+                          Soporte Adicional
+                        </TableCell>
+                      </TableRow>
+                      <TableRow className="hover:bg-muted/30 transition-colors">
+                        <TableCell className="font-medium text-foreground pl-8">
+                          Soporte prioritario por WhatsApp
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex justify-center">
+                            <X className="w-5 h-5 text-muted-foreground/30" />
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex justify-center">
+                            <CheckCircle className="w-5 h-5 text-primary" />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  )}
+                  <TableRow 
+                    className="bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                  >
+                    <TableCell colSpan={3} className="text-center py-4">
+                      <div className="flex items-center justify-center gap-2 font-medium text-primary">
+                        <span>{isExpanded ? 'Ver menos' : 'Ver más características'}</span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
                       </div>
                     </TableCell>
                   </TableRow>
