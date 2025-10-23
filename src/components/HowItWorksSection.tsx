@@ -13,8 +13,8 @@ export const HowItWorksSection = () => {
       step: "1",
       icon: MessageSquare,
       title: "Aplicas",
-      description: "Completa nuestro formulario de registro simple con la información básica de tu restaurante.",
-      duration: "5 minutos",
+      description: "Completa nuestro formulario de registro simple con la información básica de tu restaurante. Setup configurations such as your menu, links, opening hours and more.",
+      duration: "15 minutos",
       color: "bg-primary/10 text-primary border-primary/20"
     },
     {
@@ -29,7 +29,7 @@ export const HowItWorksSection = () => {
       step: "3",
       icon: Code,
       title: "Entregamos completo",
-      description: "Te enviamos tu sitio web listo con todas las funcionalidades: WhatsApp, menú PDF, SEO y móvil optimizado.",
+      description: "Te enviamos tu sitio web listo con todas las funcionalidades: WhatsApp, menú, SEO y móvil optimizado.",
       duration: "72 horas",
       color: "bg-primary/10 text-primary border-primary/20"
     },
@@ -37,7 +37,7 @@ export const HowItWorksSection = () => {
       step: "4",
       icon: Rocket,
       title: "Eliges tu dominio",
-      description: "Decides si usar nuestro subdominio gratuito (turestaurante.mirestauranteonline.com) o conectar tu propio dominio.",
+      description: "Decides si usar nuestro subdominio gratuito (nombre.mirestauranteonline.com) o conectar tu propio dominio.",
       duration: "Tu decides",
       color: "bg-accent/10 text-accent border-accent/20"
     }
