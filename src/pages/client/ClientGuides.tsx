@@ -1026,7 +1026,7 @@ export default function ClientGuides() {
                         <div className="flex-1">
                           <p className="font-medium">Selecciona hora de cierre</p>
                           <p className="text-sm text-muted-foreground">
-                            Establece la hora de cierre en el <strong>segundo campo de tiempo</strong>
+                            Establece la hora de cierre en el <strong>segundo campo de tiempo</strong>. Los horarios se muestran en <strong>formato AM/PM</strong> (12 horas)
                           </p>
                         </div>
                       </div>
@@ -1058,10 +1058,10 @@ export default function ClientGuides() {
                         </div>
                         <div className="flex gap-2 text-sm">
                           <div className="flex-1 p-2 bg-muted rounded">
-                            <span className="text-muted-foreground">Apertura:</span> <strong>09:00</strong>
+                            <span className="text-muted-foreground">Apertura:</span> <strong>9:00 AM</strong>
                           </div>
                           <div className="flex-1 p-2 bg-muted rounded">
-                            <span className="text-muted-foreground">Cierre:</span> <strong>22:00</strong>
+                            <span className="text-muted-foreground">Cierre:</span> <strong>10:00 PM</strong>
                           </div>
                         </div>
                       </div>
@@ -1121,7 +1121,7 @@ export default function ClientGuides() {
                   <li className="flex gap-3">
                     <span className="text-amber-600 dark:text-amber-400 shrink-0">•</span>
                     <span className="text-sm">
-                      <strong>Formato de 24 horas:</strong> Los horarios se muestran y guardan en formato de 24 horas (ejemplo: 14:00 para 2:00 PM)
+                      <strong>Formato AM/PM:</strong> Los horarios se muestran en formato de 12 horas con AM/PM (ejemplo: 2:00 PM para las 14:00 horas, 9:00 AM para las 09:00 horas)
                     </span>
                   </li>
                   <li className="flex gap-3">
