@@ -110,61 +110,73 @@ const Signup = () => {
           if (parsedData.faqsData) setFaqsData(parsedData.faqsData);
           if (parsedData.selectedPlan) setSelectedPlan(parsedData.selectedPlan);
           if (parsedData.createdClientId) setCreatedClientId(parsedData.createdClientId);
-          if (parsedData.currentStep) setCurrentStep(parsedData.currentStep);
+              if (parsedData.currentStep) setCurrentStep(Math.max(parsedData.currentStep, urlStep));
         }
 
-        // 4) If we are on step 2+ but don't have a client id, resolve it via user_clients mapping
+        // 4) If we are on step 2+ but don't have a client id, resolve it via clients (RLS will scope to current user)
         if (session?.user && urlStep >= 2 && !parsedData?.createdClientId) {
-          console.log('Resolving client via user_clients mapping for user:', session.user.id);
+          console.log('Resolving client via clients RLS for user:', session.user.id);
           try {
-            const { data: linkRows, error: linkErr } = await supabase
-              .from('user_clients')
-              .select('client_id')
-              .eq('user_id', session.user.id)
-              .limit(1);
+            const { data: client, error: clientErr } = await supabase
+              .from('clients')
+              .select('id, restaurant_name, subdomain, email, phone, plan_type, address')
+              .order('created_at', { ascending: false })
+              .maybeSingle();
 
-            const clientId = linkRows && linkRows.length > 0 ? (linkRows[0] as any).client_id : null;
-            if (clientId) {
-              setCreatedClientId(clientId);
+            if (!clientErr && client) {
+              setCreatedClientId(client.id);
+              setSignupData(prev => ({
+                ...prev,
+                email: client.email || session.user.email || '',
+                restaurantName: client.restaurant_name,
+                subdomain: client.subdomain,
+                phone: client.phone || '',
+                address: client.address || '',
+                paymentId: client.id,
+                plan_type: (client.plan_type as 'basic' | 'advanced') || prev.plan_type,
+              }));
+              setSelectedPlan((client.plan_type as 'basic' | 'advanced') || 'basic');
 
-              const { data: client, error: clientErr } = await supabase
-                .from('clients')
-                .select('id, restaurant_name, subdomain, email, phone, plan_type, address')
-                .eq('id', clientId)
-                .single();
-
-              if (!clientErr && client) {
-                setSignupData(prev => ({
-                  ...prev,
-                  email: client.email || session.user.email || '',
-                  restaurantName: client.restaurant_name,
-                  subdomain: client.subdomain,
-                  phone: client.phone || '',
-                  address: client.address || '',
-                  paymentId: client.id,
-                  plan_type: (client.plan_type as 'basic' | 'advanced') || prev.plan_type,
-                }));
-                setSelectedPlan((client.plan_type as 'basic' | 'advanced') || 'basic');
-
-                // Fetch current pricing to set payment amounts
-                const { data: planData } = await supabase
-                  .from('subscription_plans')
-                  .select('plan_key, monthly_price')
-                  .eq('is_active', true)
-                  .in('plan_key', ['basic', 'advanced']);
-                if (planData) {
-                  const basicPrice = planData.find(p => p.plan_key === 'basic')?.monthly_price || 49;
-                  const advancedPrice = planData.find(p => p.plan_key === 'advanced')?.monthly_price || 99;
-                  const amount = client.plan_type === 'basic' ? basicPrice : advancedPrice;
-                  setOriginalAmount(amount);
-                  setPaymentAmount(amount);
-                }
+              // Fetch current pricing to set payment amounts
+              const { data: planData } = await supabase
+                .from('subscription_plans')
+                .select('plan_key, monthly_price')
+                .eq('is_active', true)
+                .in('plan_key', ['basic', 'advanced']);
+              if (planData) {
+                const basicPrice = planData.find(p => p.plan_key === 'basic')?.monthly_price || 49;
+                const advancedPrice = planData.find(p => p.plan_key === 'advanced')?.monthly_price || 99;
+                const amount = client.plan_type === 'basic' ? basicPrice : advancedPrice;
+                setOriginalAmount(amount);
+                setPaymentAmount(amount);
               }
-            } else if (linkErr) {
-              console.warn('No user_clients mapping found or access denied:', linkErr);
+
+              // Persist resolved clientId so future refreshes are instant
+              saveProgress(
+                {
+                  ...signupData,
+                  email: client.email || session.user.email || signupData.email,
+                  restaurantName: client.restaurant_name || signupData.restaurantName,
+                  subdomain: client.subdomain || signupData.subdomain,
+                  phone: client.phone || signupData.phone,
+                  address: client.address || signupData.address,
+                  paymentId: client.id,
+                  plan_type: (client.plan_type as 'basic' | 'advanced') || signupData.plan_type,
+                },
+                websiteRequirements,
+                combinedData,
+                openingHoursData,
+                imagesData,
+                faqsData,
+                (client.plan_type as 'basic' | 'advanced') || selectedPlan,
+                client.id,
+                Math.max(2, currentStep)
+              );
+            } else if (clientErr) {
+              console.warn('No client found for current user or access denied:', clientErr);
             }
           } catch (fetchError) {
-            console.error('Error resolving client mapping:', fetchError);
+            console.error('Error resolving client via clients table:', fetchError);
           }
         }
       } catch (error) {
