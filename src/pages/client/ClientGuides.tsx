@@ -1361,132 +1361,169 @@ export default function ClientGuides() {
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-4">Información de Delivery</h2>
+              <h2 className="text-3xl font-bold mb-4">Enlaces de Plataformas de Delivery</h2>
               <p className="text-lg text-muted-foreground">
-                Configura los detalles de tu servicio de delivery y envío a domicilio.
+                Conecta tu restaurante con plataformas de delivery para que tus clientes puedan ordenar fácilmente.
               </p>
             </div>
 
-            <Card className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20">
+            <Card className="border-primary/20">
               <CardHeader>
-                <CardTitle className="text-amber-900 dark:text-amber-100">⚠️ Sección en Desarrollo</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Ubicación de la Configuración
+                </CardTitle>
               </CardHeader>
-              <CardContent className="text-amber-900 dark:text-amber-100">
-                <p className="mb-3">
-                  La configuración detallada de información de delivery aún no está disponible en el panel de configuración. 
-                </p>
-                <p className="mb-3">
-                  Actualmente, esta información se gestiona durante el proceso inicial de configuración del sitio web.
-                </p>
-                <p className="font-semibold">
-                  Si necesitas actualizar tu información de delivery, por favor contacta a soporte.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>📦 Información Típica de Delivery</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  Cuando esta función esté disponible, podrás configurar:
-                </p>
-                
-                <div className="space-y-3">
-                  <Card className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="font-semibold mb-1">🗺️ Áreas de Cobertura</div>
-                      <p className="text-sm text-muted-foreground">
-                        Define las zonas o distritos donde ofreces servicio de delivery
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="font-semibold mb-1">💰 Costos de Envío</div>
-                      <p className="text-sm text-muted-foreground">
-                        Especifica el costo de delivery por zona o pedido mínimo gratuito
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="font-semibold mb-1">⏱️ Tiempo de Entrega</div>
-                      <p className="text-sm text-muted-foreground">
-                        Indica el tiempo estimado de entrega a domicilio
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="font-semibold mb-1">📝 Condiciones y Restricciones</div>
-                      <p className="text-sm text-muted-foreground">
-                        Establece pedidos mínimos, horarios de delivery, etc.
-                      </p>
-                    </CardContent>
-                  </Card>
+              <CardContent>
+                <p className="text-muted-foreground mb-2">Navega a:</p>
+                <div className="bg-muted/50 p-3 rounded-lg font-mono text-sm">
+                  Panel Principal → Pestaña <Badge variant="outline">Contacto</Badge> → Sección "Información de Delivery"
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>🚀 Enlaces a Plataformas de Delivery</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  ¿Qué Son Estos Enlaces?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  En esta sección puedes agregar los enlaces directos a las páginas de tu restaurante en plataformas 
+                  de delivery. Cuando los clientes visiten tu sitio web, podrán hacer clic en estos enlaces para 
+                  hacer pedidos a través de estas plataformas.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Cómo Agregar Enlaces
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <ol className="space-y-3 list-decimal list-inside">
+                  <li className="text-muted-foreground">
+                    <strong className="text-foreground">Copia el enlace completo</strong> de tu perfil en cada plataforma de delivery
+                  </li>
+                  <li className="text-muted-foreground">
+                    <strong className="text-foreground">Pégalo en el campo correspondiente</strong> en la sección de Información de Delivery
+                  </li>
+                  <li className="text-muted-foreground">
+                    <strong className="text-foreground">Guarda los cambios</strong> haciendo clic en el botón de guardar
+                  </li>
+                </ol>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>🚀 Plataformas Disponibles</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground mb-3">
-                  Si tu restaurante está en plataformas como Rappi, PedidosYa o DiDi Food, puedes agregar esos enlaces en la sección de <strong>Redes Sociales</strong> usando campos personalizados o contacta a soporte para configurarlos.
+                  Puedes agregar enlaces a las siguientes plataformas:
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <Card className="bg-orange-50/50 dark:bg-orange-950/20 border-orange-200">
-                    <CardContent className="pt-4 text-center">
-                      <div className="font-semibold text-orange-600 dark:text-orange-400">🛵 Rappi</div>
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2 text-orange-600 dark:text-orange-400 flex items-center gap-2">
+                        🛵 Rappi
+                      </div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded block">
+                        rappi.com/restaurantes/...
+                      </code>
                     </CardContent>
                   </Card>
+
                   <Card className="bg-red-50/50 dark:bg-red-950/20 border-red-200">
-                    <CardContent className="pt-4 text-center">
-                      <div className="font-semibold text-red-600 dark:text-red-400">🍔 PedidosYa</div>
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2 text-red-600 dark:text-red-400 flex items-center gap-2">
+                        🍔 PedidosYa
+                      </div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded block">
+                        pedidosya.com.mx/...
+                      </code>
                     </CardContent>
                   </Card>
+
                   <Card className="bg-blue-50/50 dark:bg-blue-950/20 border-blue-200">
-                    <CardContent className="pt-4 text-center">
-                      <div className="font-semibold text-blue-600 dark:text-blue-400">🚗 DiDi Food</div>
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2 text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                        🚗 DiDi Food
+                      </div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded block">
+                        didifood.com/es-MX/...
+                      </code>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-green-50/50 dark:bg-green-950/20 border-green-200">
+                    <CardContent className="pt-4">
+                      <div className="font-semibold mb-2 text-green-600 dark:text-green-400 flex items-center gap-2">
+                        🍕 Uber Eats
+                      </div>
+                      <code className="text-xs bg-background/80 px-2 py-1 rounded block">
+                        ubereats.com/store/...
+                      </code>
                     </CardContent>
                   </Card>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20">
+            <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
               <CardHeader>
-                <CardTitle className="text-blue-900 dark:text-blue-100">💡 Mientras Tanto...</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <span>💡</span> Mejores Prácticas
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 text-blue-900 dark:text-blue-100">
-                <p>
-                  Puedes comunicar tu información de delivery a través de:
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Usa URLs completas:</strong> Incluye "https://" al inicio de cada enlace
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Verifica los enlaces:</strong> Prueba cada enlace en una ventana privada para asegurarte de que funciona correctamente
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Solo lo que uses:</strong> Deja vacíos los campos de plataformas donde no estés activo
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Mantén actualizado:</strong> Si cambias tu URL en alguna plataforma, actualízala también aquí
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Save className="h-5 w-5" />
+                  Guardar Cambios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Después de agregar tus enlaces, no olvides hacer clic en el botón <strong>Guardar</strong> en la parte superior derecha. Los enlaces aparecerán automáticamente en tu sitio web para que tus clientes puedan acceder a ellos.
                 </p>
-                <div className="flex gap-2">
-                  <span>📱</span>
-                  <div>
-                    <strong>WhatsApp:</strong> Configura tu número en la pestaña Contacto para que los clientes pregunten por delivery
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <span>📞</span>
-                  <div>
-                    <strong>Teléfono:</strong> Asegúrate de tener tu teléfono visible para consultas de delivery
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <span>📧</span>
-                  <div>
-                    <strong>Email:</strong> Los clientes pueden contactarte por email para información de delivery
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
