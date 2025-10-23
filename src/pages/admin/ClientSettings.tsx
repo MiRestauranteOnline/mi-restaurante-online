@@ -736,6 +736,8 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [initialFormData, setInitialFormData] = useState<any>(null);
   const [showCategoryDialog, setShowCategoryDialog] = useState(false);
   const [showMenuItemDialog, setShowMenuItemDialog] = useState(false);
   const [showTeamMemberDialog, setShowTeamMemberDialog] = useState(false);
@@ -1125,6 +1127,21 @@ const [faqForm, setFaqForm] = useState({
       console.log('No effectiveClientId found');
     }
   }, [effectiveClientId]);
+
+  // Capture initial formData snapshot after loading completes
+  useEffect(() => {
+    if (!loading && client && !initialFormData) {
+      setInitialFormData({ ...formData });
+    }
+  }, [loading, client, formData, initialFormData]);
+
+  // Detect unsaved changes by comparing current formData with initial snapshot
+  useEffect(() => {
+    if (initialFormData && !saving) {
+      const hasChanges = JSON.stringify(formData) !== JSON.stringify(initialFormData);
+      setHasUnsavedChanges(hasChanges);
+    }
+  }, [formData, initialFormData, saving]);
 
   // Debug team members
   useEffect(() => {
@@ -2149,6 +2166,10 @@ const [faqForm, setFaqForm] = useState({
         title: "Success",
         description: "Client settings updated successfully",
       });
+      
+      // Reset unsaved changes flag and update initial snapshot
+      setHasUnsavedChanges(false);
+      setInitialFormData({ ...formData });
     } catch (error: any) {
       console.error('Save error:', error); // Debug log
       toast({
@@ -3363,9 +3384,18 @@ setReviewForm({
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
           {!saving && (
-            <div className="text-sm text-muted-foreground flex items-center gap-1.5">
-              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="hidden sm:inline">Guardado</span>
+            <div className="text-sm flex items-center gap-1.5">
+              {hasUnsavedChanges ? (
+                <>
+                  <div className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  <span className="hidden sm:inline text-destructive">Sin guardar</span>
+                </>
+              ) : (
+                <>
+                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="hidden sm:inline text-green-600 dark:text-green-400">Guardado</span>
+                </>
+              )}
             </div>
           )}
           <Button onClick={handleSave} disabled={saving} className="flex-1 sm:flex-initial">
