@@ -3606,6 +3606,24 @@ setReviewForm({
                     Asegura que las reservas y horarios se muestren correctamente
                   </p>
                 </div>
+
+                <div>
+                  <Label htmlFor="currency">{t('branding.currency')}</Label>
+                  <Input
+                    id="currency"
+                    value={formData.other_customizations.currency}
+                    onChange={(e) => setFormData({
+                      ...formData, 
+                      other_customizations: {
+                        ...formData.other_customizations,
+                        currency: e.target.value
+                      }
+                    })}
+                  />
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Símbolo de moneda que se muestra en los precios del menú
+                  </p>
+                </div>
               </div>
               
             </CardContent>
@@ -4212,6 +4230,9 @@ setReviewForm({
                       className="h-12 w-24"
                     />
                   </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Color principal que define la identidad visual de su sitio
+                  </p>
                 </div>
               </div>
 
@@ -4229,6 +4250,9 @@ setReviewForm({
                         <SelectItem value="dark">{t('branding.dark')}</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Tema visual general de su sitio web (claro u oscuro)
+                    </p>
                   </div>
                   <div>
                     <Label htmlFor="hero_overlay_opacity">Opacidad de Superposición del Hero</Label>
@@ -4253,6 +4277,9 @@ setReviewForm({
                         <SelectItem value="100">100% (Negro Sólido)</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Controla la oscuridad de la capa sobre la imagen de fondo del hero
+                    </p>
                   </div>
                 </div>
               </div>
@@ -4289,7 +4316,7 @@ setReviewForm({
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground mt-1">
-                      La plantilla controla el diseño y estructura del sitio web del cliente
+                      La plantilla controla el diseño y estructura de su sitio web
                     </p>
                   </div>
                 </div>
@@ -4307,6 +4334,9 @@ setReviewForm({
                       context="logo"
                       description="restaurant header logo"
                     />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Logo que aparece en la parte superior de su sitio
+                    </p>
                   </div>
                   <div>
                     <ImageUpload
@@ -4317,6 +4347,9 @@ setReviewForm({
                       context="logo"
                       description="restaurant footer logo"
                     />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Logo que aparece en el pie de página de su sitio
+                    </p>
                   </div>
                   <div>
                     <ImageUpload
@@ -4328,7 +4361,7 @@ setReviewForm({
                       description={`favicon for ${formData.restaurant_name || 'restaurant'} website`}
                     />
                     <p className="text-xs text-muted-foreground mt-2">
-                      PNG/ICO, 32x32 o 512x512px
+                      Icono pequeño que aparece en la pestaña del navegador (PNG/ICO, 32x32 o 512x512px)
                     </p>
                   </div>
                 </div>
@@ -4373,6 +4406,9 @@ setReviewForm({
                         <SelectItem value="Satisfy">Satisfy</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Tipografía utilizada para todos los títulos de su sitio
+                    </p>
                   </div>
                   <div>
                     <Label htmlFor="title_font_weight">{t('branding.titleFontWeight')}</Label>
@@ -4395,6 +4431,9 @@ setReviewForm({
                         <SelectItem value="900">900 - Black</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Grosor de la fuente para los títulos (más alto = más grueso)
+                    </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -4433,6 +4472,9 @@ setReviewForm({
                         <SelectItem value="Playfair Display">Playfair Display</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Tipografía para el texto del cuerpo de su sitio
+                    </p>
                   </div>
                   <div>
                     <Label htmlFor="title_size_scale">Escala de Tamaño de Títulos</Label>
@@ -4453,26 +4495,9 @@ setReviewForm({
                         <SelectItem value="50">50% más grande</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 border-t pt-4">
-                <h4 className="text-lg font-medium">{t('branding.otherSettings')}</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="currency">{t('branding.currency')}</Label>
-                    <Input
-                      id="currency"
-                      value={formData.other_customizations.currency}
-                      onChange={(e) => setFormData({
-                        ...formData, 
-                        other_customizations: {
-                          ...formData.other_customizations,
-                          currency: e.target.value
-                        }
-                      })}
-                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Ajusta el tamaño de todos los títulos proporcionalmente
+                    </p>
                   </div>
                 </div>
               </div>
