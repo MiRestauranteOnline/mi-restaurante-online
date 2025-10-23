@@ -142,7 +142,7 @@ export default function ClientDashboardLayout() {
   const sidebarItems = [
     { href: selectedClientId ? `/client/dashboard/${selectedClientId}` : '/client', icon: LayoutDashboard, label: t('nav.dashboard') },
     { href: `/client/reservations/${selectedClientId}`, icon: Calendar, label: t('nav.reservations') },
-    { href: `/client/analytics/${selectedClientId}`, icon: BarChart3, label: 'Analíticas' },
+    ...(selectedClient?.plan_type === 'advanced' ? [{ href: `/client/analytics/${selectedClientId}`, icon: BarChart3, label: 'Analíticas' }] : []),
     { href: `/client/support/${selectedClientId}`, icon: Shield, label: 'Soporte' },
     { href: '/client/subscription', icon: CreditCard, label: t('nav.subscription') },
   ];
