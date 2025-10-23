@@ -1776,6 +1776,79 @@ const [faqForm, setFaqForm] = useState({
     }
   };
 
+  const handleToggleAutoSave = async (fieldName: string, value: boolean) => {
+    if (!clientId || !effectiveClientId) return;
+    
+    try {
+      // Determine which table the field belongs to
+      const clientSettingsFields = ['hide_whatsapp_button_menu', 'hide_phone_button_menu', 'show_whatsapp_popup'];
+      const clientsFields = ['use_coordinates'];
+      const premiumFeaturesFields = ['analytics_enabled', 'monthly_reports_enabled', 'premium_support_enabled'];
+      
+      // Update formData state first
+      setFormData({ ...formData, [fieldName]: value });
+      
+      // Save to appropriate table
+      if (clientSettingsFields.includes(fieldName)) {
+        const { error } = await supabase
+          .from('client_settings')
+          .upsert({
+            client_id: effectiveClientId,
+            [fieldName]: value,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'client_id'
+          });
+        if (error) throw error;
+      } else if (clientsFields.includes(fieldName)) {
+        const { error } = await supabase
+          .from('clients')
+          .update({
+            [fieldName]: value,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', clientId);
+        if (error) throw error;
+      } else if (premiumFeaturesFields.includes(fieldName)) {
+        const { error } = await supabase
+          .from('premium_features')
+          .upsert({
+            client_id: effectiveClientId,
+            [fieldName]: value,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'client_id'
+          });
+        if (error) throw error;
+      } else {
+        // Default to admin_content for visibility toggles
+        const { error } = await supabase
+          .from('admin_content')
+          .upsert({
+            client_id: effectiveClientId,
+            [fieldName]: value,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'client_id'
+          });
+        if (error) throw error;
+      }
+      
+      toast({
+        title: 'Guardado',
+        description: 'Configuración actualizada automáticamente',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo guardar: ' + error.message,
+        variant: 'destructive',
+      });
+      // Revert the state change on error
+      setFormData({ ...formData, [fieldName]: !value });
+    }
+  };
+
   const handleSave = async () => {
     if (!clientId) return;
     
@@ -3433,7 +3506,7 @@ setReviewForm({
                   <Switch
                     id="use_coordinates"
                     checked={formData.use_coordinates}
-                    onCheckedChange={(checked) => setFormData({...formData, use_coordinates: checked})}
+                    onCheckedChange={(checked) => handleToggleAutoSave('use_coordinates', checked)}
                   />
                 </div>
               </div>
@@ -3775,7 +3848,7 @@ setReviewForm({
                       <Switch
                         id="hide_whatsapp_button_menu"
                         checked={formData.hide_whatsapp_button_menu}
-                        onCheckedChange={(checked) => setFormData({...formData, hide_whatsapp_button_menu: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('hide_whatsapp_button_menu', checked)}
                       />
                       <Label htmlFor="hide_whatsapp_button_menu" className="text-sm text-muted-foreground">
                         {formData.hide_whatsapp_button_menu ? t('general.hidden') : t('general.visible')}
@@ -3789,7 +3862,7 @@ setReviewForm({
                       <Switch
                         id="hide_phone_button_menu"
                         checked={formData.hide_phone_button_menu}
-                        onCheckedChange={(checked) => setFormData({...formData, hide_phone_button_menu: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('hide_phone_button_menu', checked)}
                       />
                       <Label htmlFor="hide_phone_button_menu" className="text-sm text-muted-foreground">
                         {formData.hide_phone_button_menu ? t('general.hidden') : t('general.visible')}
@@ -3803,7 +3876,7 @@ setReviewForm({
                       <Switch
                         id="show_whatsapp_popup"
                         checked={formData.show_whatsapp_popup}
-                        onCheckedChange={(checked) => setFormData({...formData, show_whatsapp_popup: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('show_whatsapp_popup', checked)}
                       />
                       <Label htmlFor="show_whatsapp_popup" className="text-sm text-muted-foreground">
                         {formData.show_whatsapp_popup ? t('general.enabled') : t('general.disabled')}
@@ -3851,7 +3924,7 @@ setReviewForm({
                       <Switch
                         id="homepage_about_section_visible"
                         checked={formData.homepage_about_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_about_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_about_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3859,7 +3932,7 @@ setReviewForm({
                       <Switch
                         id="homepage_about_stats_visible"
                         checked={formData.homepage_about_stats_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_about_stats_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_about_stats_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3867,7 +3940,7 @@ setReviewForm({
                       <Switch
                         id="homepage_menu_section_visible"
                         checked={formData.homepage_menu_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_menu_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_menu_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3875,7 +3948,7 @@ setReviewForm({
                       <Switch
                         id="homepage_services_section_visible"
                         checked={formData.homepage_services_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_services_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_services_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3883,7 +3956,7 @@ setReviewForm({
                       <Switch
                         id="homepage_reservations_section_visible"
                         checked={formData.homepage_reservations_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_reservations_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_reservations_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3891,7 +3964,7 @@ setReviewForm({
                       <Switch
                         id="homepage_reviews_section_visible"
                         checked={formData.homepage_reviews_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_reviews_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_reviews_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3899,7 +3972,7 @@ setReviewForm({
                       <Switch
                         id="homepage_contact_section_visible"
                         checked={formData.homepage_contact_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_contact_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3907,7 +3980,7 @@ setReviewForm({
                       <Switch
                         id="homepage_contact_map_visible"
                         checked={formData.homepage_contact_map_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_map_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_contact_map_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3915,7 +3988,7 @@ setReviewForm({
                       <Switch
                         id="homepage_delivery_section_visible"
                         checked={formData.homepage_delivery_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_delivery_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_delivery_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3923,7 +3996,7 @@ setReviewForm({
                       <Switch
                         id="homepage_faq_section_visible"
                         checked={formData.homepage_faq_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_faq_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_faq_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3931,7 +4004,7 @@ setReviewForm({
                       <Switch
                         id="homepage_contact_hide_reservation_box"
                         checked={!formData.homepage_contact_hide_reservation_box}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: !checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('homepage_contact_hide_reservation_box', !checked)}
                       />
                     </div>
                   </div>
@@ -3946,7 +4019,7 @@ setReviewForm({
                       <Switch
                         id="about_page_about_section_visible"
                         checked={formData.about_page_about_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, about_page_about_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('about_page_about_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3954,7 +4027,7 @@ setReviewForm({
                       <Switch
                         id="about_page_about_stats_visible"
                         checked={formData.about_page_about_stats_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, about_page_about_stats_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('about_page_about_stats_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3962,7 +4035,7 @@ setReviewForm({
                       <Switch
                         id="about_page_stats_section_visible"
                         checked={formData.about_page_stats_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, about_page_stats_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('about_page_stats_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3970,7 +4043,7 @@ setReviewForm({
                       <Switch
                         id="about_page_team_section_visible"
                         checked={formData.about_page_team_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, about_page_team_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('about_page_team_section_visible', checked)}
                       />
                     </div>
                   </div>
@@ -3985,7 +4058,7 @@ setReviewForm({
                       <Switch
                         id="contact_page_contact_section_visible"
                         checked={formData.contact_page_contact_section_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, contact_page_contact_section_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('contact_page_contact_section_visible', checked)}
                       />
                     </div>
                     <div className="flex items-center justify-between space-x-2">
@@ -3993,7 +4066,7 @@ setReviewForm({
                       <Switch
                         id="contact_page_map_visible"
                         checked={formData.contact_page_map_visible}
-                        onCheckedChange={(checked) => setFormData({...formData, contact_page_map_visible: checked})}
+                        onCheckedChange={(checked) => handleToggleAutoSave('contact_page_map_visible', checked)}
                       />
                     </div>
                   </div>
@@ -6657,7 +6730,7 @@ setReviewForm({
                 <h3 className="text-lg font-semibold">Google Analytics 4</h3>
                 <Switch
                   checked={formData.analytics_enabled}
-                  onCheckedChange={(checked) => setFormData({...formData, analytics_enabled: checked})}
+                  onCheckedChange={(checked) => handleToggleAutoSave('analytics_enabled', checked)}
                 />
               </div>
               
@@ -6713,7 +6786,7 @@ setReviewForm({
                   <Switch
                     id="monthly_reports_enabled"
                     checked={formData.monthly_reports_enabled}
-                    onCheckedChange={(checked) => setFormData({...formData, monthly_reports_enabled: checked})}
+                    onCheckedChange={(checked) => handleToggleAutoSave('monthly_reports_enabled', checked)}
                   />
                 </div>
                 
@@ -6725,7 +6798,7 @@ setReviewForm({
                   <Switch
                     id="premium_support_enabled"
                     checked={formData.premium_support_enabled}
-                    onCheckedChange={(checked) => setFormData({...formData, premium_support_enabled: checked})}
+                    onCheckedChange={(checked) => handleToggleAutoSave('premium_support_enabled', checked)}
                   />
                 </div>
               </div>
