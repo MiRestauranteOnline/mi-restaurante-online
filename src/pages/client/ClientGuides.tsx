@@ -940,76 +940,272 @@ export default function ClientGuides() {
 
       case "horarios-apertura":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Horarios de Apertura</CardTitle>
-              <CardDescription>
-                Configura los horarios de atención de tu restaurante
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
-                <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Configuración</strong> → sección <strong>"Horarios de Atención"</strong>
-                </p>
-              </div>
+          <div className="space-y-6">
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <FileText className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Horarios de Apertura</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Configura los horarios de atención de tu restaurante para cada día de la semana
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
 
-              <Separator />
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → Pestaña <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Horarios</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Esta pestaña te permite configurar los horarios de apertura y cierre para cada día de la semana
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cómo Configurar</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Para cada día de la semana:</h4>
-                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                      <li>Usa el switch para marcar si el restaurante está <strong>Abierto</strong> o <strong>Cerrado</strong></li>
-                      <li>Si está abierto, selecciona la <strong>hora de apertura</strong> (primer campo de tiempo)</li>
-                      <li>Selecciona la <strong>hora de cierre</strong> (segundo campo de tiempo)</li>
-                      <li>Los horarios se muestran en formato 24 horas</li>
-                    </ol>
+            {/* How it Works Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Cómo Configurar los Horarios</CardTitle>
+                <CardDescription>
+                  Sigue estos pasos para establecer los horarios de atención de tu restaurante
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  {/* Step by Step */}
+                  <div className="p-4 border-2 border-primary/30 rounded-lg bg-primary/5">
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <span className="text-primary">📝</span>
+                      Para cada día de la semana
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                          1
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">Activa o desactiva el día</p>
+                          <p className="text-sm text-muted-foreground">
+                            Usa el <Badge variant="outline">Switch</Badge> para indicar si el restaurante está <strong>Abierto</strong> (switch activado) o <strong>Cerrado</strong> (switch desactivado) ese día
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                          2
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">Selecciona hora de apertura</p>
+                          <p className="text-sm text-muted-foreground">
+                            Si el día está abierto, elige la hora en que abres usando el <strong>primer campo de tiempo</strong>
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                          3
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">Selecciona hora de cierre</p>
+                          <p className="text-sm text-muted-foreground">
+                            Establece la hora de cierre en el <strong>segundo campo de tiempo</strong>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                          4
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">Guarda los cambios</p>
+                          <p className="text-sm text-muted-foreground">
+                            Haz clic en el botón <strong>"Guardar"</strong> en la parte superior derecha cuando termines
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
-                    <h4 className="font-medium mb-2 text-blue-900 dark:text-blue-100">📌 Ejemplo</h4>
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
-                      <strong>Lunes:</strong> Switch en "Abierto" → Apertura: 09:00 → Cierre: 22:00
-                      <br />
-                      <strong>Domingo:</strong> Switch en "Cerrado"
+                  {/* Visual Example */}
+                  <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border-2 border-blue-200 dark:border-blue-800 rounded-lg">
+                    <h4 className="font-semibold mb-3 text-blue-900 dark:text-blue-100 flex items-center gap-2">
+                      <span>📌</span> Ejemplo Visual
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="p-3 bg-background rounded border">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium">🗓️ Lunes</span>
+                          <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">Abierto</Badge>
+                        </div>
+                        <div className="flex gap-2 text-sm">
+                          <div className="flex-1 p-2 bg-muted rounded">
+                            <span className="text-muted-foreground">Apertura:</span> <strong>09:00</strong>
+                          </div>
+                          <div className="flex-1 p-2 bg-muted rounded">
+                            <span className="text-muted-foreground">Cierre:</span> <strong>22:00</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-3 bg-background rounded border opacity-60">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">🗓️ Domingo</span>
+                          <Badge variant="secondary">Cerrado</Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Los campos de hora están deshabilitados cuando el día está marcado como cerrado
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Days of the Week Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Días Disponibles para Configurar</CardTitle>
+                <CardDescription>
+                  Puedes configurar horarios individuales para cada uno de estos días
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { day: 'Lunes', emoji: '📅' },
+                    { day: 'Martes', emoji: '📅' },
+                    { day: 'Miércoles', emoji: '📅' },
+                    { day: 'Jueves', emoji: '📅' },
+                    { day: 'Viernes', emoji: '📅' },
+                    { day: 'Sábado', emoji: '📅' },
+                    { day: 'Domingo', emoji: '📅' },
+                  ].map((item) => (
+                    <div key={item.day} className="p-3 border rounded-lg text-center hover:border-primary/50 transition-colors">
+                      <div className="text-2xl mb-1">{item.emoji}</div>
+                      <div className="font-medium text-sm">{item.day}</div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Important Notes Card */}
+            <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-amber-900 dark:text-amber-100">
+                  <span>⚠️</span> Notas Importantes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-amber-600 dark:text-amber-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Formato de 24 horas:</strong> Los horarios se muestran y guardan en formato de 24 horas (ejemplo: 14:00 para 2:00 PM)
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-amber-600 dark:text-amber-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Horario continuo:</strong> Si tu restaurante tiene horarios de almuerzo y cena separados, usa el horario más amplio (desde que abres hasta que cierras definitivamente)
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-amber-600 dark:text-amber-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Actualización automática:</strong> Los horarios configurados aparecerán automáticamente en todas las páginas relevantes de tu sitio web
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-amber-600 dark:text-amber-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Días festivos:</strong> Recuerda actualizar los horarios temporalmente para días festivos o eventos especiales
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Best Practices Card */}
+            <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <span>💡</span> Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Sé preciso:</strong> Usa horarios exactos para evitar confusión con tus clientes
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Mantén actualizado:</strong> Revisa y actualiza tus horarios regularmente, especialmente en temporadas altas o bajas
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Coherencia:</strong> Asegúrate de que los horarios en tu sitio web coincidan con los de tus redes sociales y Google My Business
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Comunicación:</strong> Si cierras temporalmente por mantenimiento o vacaciones, actualiza los horarios o añade un mensaje en la página de contacto
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Sistema de reservas:</strong> Si usas reservas online, asegúrate de que los horarios reflejen correctamente cuándo aceptas reservas
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Save Reminder Card */}
+            <Card className="border-2 border-primary/30 bg-primary/5">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl">💾</div>
+                  <div>
+                    <h4 className="font-semibold text-primary mb-1">
+                      No Olvides Guardar
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Después de configurar los horarios de todos los días, haz clic en <strong>"Guardar"</strong> en la parte superior derecha. El indicador de estado cambiará de <span className="text-destructive font-medium">"Sin guardar"</span> (punto rojo) a <span className="text-green-600 dark:text-green-400 font-medium">"Guardado"</span> (punto verde) cuando se apliquen los cambios exitosamente.
                     </p>
                   </div>
                 </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Días de la Semana</h3>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• Lunes</li>
-                  <li>• Martes</li>
-                  <li>• Miércoles</li>
-                  <li>• Jueves</li>
-                  <li>• Viernes</li>
-                  <li>• Sábado</li>
-                  <li>• Domingo</li>
-                </ul>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Los horarios aparecerán automáticamente en tu sitio web</li>
-                  <li>Actualiza los horarios para días festivos o eventos especiales</li>
-                  <li>Si tienes horarios de almuerzo y cena separados, usa el horario más amplio</li>
-                  <li>No olvides guardar los cambios haciendo clic en "Guardar Configuración"</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "redes-sociales":
