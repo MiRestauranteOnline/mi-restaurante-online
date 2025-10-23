@@ -14,8 +14,10 @@ import {
   Clock,
   Headphones
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const BenefitsSection = () => {
+  const navigate = useNavigate();
   const benefits = [
     {
       icon: DollarSign,
@@ -155,7 +157,7 @@ export const BenefitsSection = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-semibold transition-smooth shadow-primary"
-                onClick={() => document.getElementById('application')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => navigate('/registro')}
               >
                 Aplicar Ahora
               </button>

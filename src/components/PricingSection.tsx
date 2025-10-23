@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Star, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface Plan {
   id: string;
@@ -20,6 +21,7 @@ interface Plan {
 export const PricingSection = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -131,7 +133,7 @@ export const PricingSection = () => {
                   <div className="pt-6">
                     <Button 
                       className={`w-full ${plan.is_popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary' : 'bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent'}`}
-                      onClick={() => window.location.href = '/registro'}
+                      onClick={() => navigate('/registro')}
                     >
                       <CheckCircle className="w-4 h-4 mr-2" aria-hidden="true" />
                       Registrarse con {plan.name}

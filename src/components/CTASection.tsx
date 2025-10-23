@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { businessData } from "@/config/businessData";
 import restaurantInterior from "@/assets/restaurant-interior.jpg";
+import { useNavigate } from "react-router-dom";
 
 export const CTASection = () => {
+  const navigate = useNavigate();
+  
   const handleWhatsAppClick = () => {
     window.open(`${businessData.contact.whatsapp.url}?text=${encodeURIComponent(businessData.contact.whatsapp.message)}`, "_blank");
   };
@@ -33,7 +36,7 @@ export const CTASection = () => {
             <Button 
               size="lg" 
               className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary transition-smooth text-lg px-8 py-4"
-              onClick={() => window.location.href = '/registro'}
+              onClick={() => navigate('/registro')}
             >
               Registrarse Ahora
             </Button>
