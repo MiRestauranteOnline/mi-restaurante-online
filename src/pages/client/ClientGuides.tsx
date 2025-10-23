@@ -2762,6 +2762,12 @@ export default function ClientGuides() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  ℹ️ <strong>Nota importante:</strong> Todas las analíticas detalladas, así como la integración con Google Analytics y Google Search Console, están disponibles exclusivamente para clientes con el <strong>plan Avanzado</strong>.
+                </p>
+              </div>
+
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">¿Qué son las Analíticas?</h3>
                 <p className="text-muted-foreground">
@@ -2774,7 +2780,8 @@ export default function ClientGuides() {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">¿Dónde encuentro mis Analíticas?</h3>
                 <p className="text-muted-foreground">
-                  Ve a <strong>Analíticas</strong> desde el menú principal de tu dashboard.
+                  En el <strong>Panel Principal</strong> (para clientes con plan Avanzado), encontrarás la pestaña <strong>"Analíticas"</strong>. 
+                  También puedes acceder desde <strong>Configuración → Analíticas</strong> para configurar tus integraciones con Google.
                 </p>
               </div>
 
@@ -2832,6 +2839,12 @@ export default function ClientGuides() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  ℹ️ <strong>Nota:</strong> Las métricas avanzadas y detalladas descritas aquí están disponibles exclusivamente para clientes con el <strong>plan Avanzado</strong>.
+                </p>
+              </div>
+
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Métricas Principales</h3>
                 
@@ -3040,6 +3053,12 @@ export default function ClientGuides() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                  ⭐ <strong>Función Premium:</strong> La integración con Google Analytics solo está disponible para clientes con el <strong>plan Avanzado</strong>. Si tienes el plan Básico, actualiza tu plan para acceder a esta funcionalidad.
+                </p>
+              </div>
+
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">¿Qué es Google Analytics?</h3>
                 <p className="text-muted-foreground">
@@ -3224,6 +3243,12 @@ export default function ClientGuides() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                  ⭐ <strong>Función Premium:</strong> La integración con Google Search Console solo está disponible para clientes con el <strong>plan Avanzado</strong>. Si tienes el plan Básico, actualiza tu plan para acceder a esta funcionalidad.
+                </p>
+              </div>
+
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">¿Qué es Google Search Console?</h3>
                 <p className="text-muted-foreground">

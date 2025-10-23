@@ -119,6 +119,7 @@ export default function ClientDashboard() {
   const [adminContent, setAdminContent] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("basic");
+  const [planType, setPlanType] = useState<string>('basic');
   const { toast } = useToast();
   const { t } = useDashboardLanguage();
   const isMobile = useIsMobile();
@@ -131,7 +132,7 @@ export default function ClientDashboard() {
     { value: "menu", label: "Menú" },
     { value: "team", label: "Equipo" },
     { value: "reviews", label: "Reseñas" },
-    { value: "analytics", label: "Analíticas" },
+    ...(planType === 'advanced' ? [{ value: "analytics", label: "Analíticas" }] : []),
     { value: "carousel", label: "Carrusel" },
     { value: "custom-images", label: "Imágenes" },
   ];
@@ -152,6 +153,9 @@ export default function ClientDashboard() {
         .single();
 
       if (clientError) throw clientError;
+      
+      // Set plan type for conditional rendering
+      setPlanType(client.plan_type || 'basic');
 
       // Fetch client settings
       const { data: settings, error: settingsError } = await supabase

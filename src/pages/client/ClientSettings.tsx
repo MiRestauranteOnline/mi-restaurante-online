@@ -29,6 +29,7 @@ export default function ClientSettings() {
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<any>({});
   const [premiumFeatures, setPremiumFeatures] = useState<any>(null);
+  const [planType, setPlanType] = useState<string>('basic');
   const { toast } = useToast();
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("general");
@@ -73,6 +74,9 @@ export default function ClientSettings() {
         .single();
 
       if (clientError) throw clientError;
+      
+      // Set plan type for conditional rendering
+      setPlanType(client.plan_type || 'basic');
 
       const { data: settings, error: settingsError } = await supabase
         .from('client_settings')
@@ -204,7 +208,7 @@ export default function ClientSettings() {
               <SelectItem value="general">{t('settings.general')}</SelectItem>
               <SelectItem value="appearance">{t('settings.appearance')}</SelectItem>
               <SelectItem value="contact">{t('settings.contact')}</SelectItem>
-              <SelectItem value="analytics">Analíticas</SelectItem>
+              {planType === 'advanced' && <SelectItem value="analytics">Analíticas</SelectItem>}
             </SelectContent>
           </Select>
         </div>
@@ -450,7 +454,7 @@ export default function ClientSettings() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="analytics" className="space-y-4">
+        {planType === 'advanced' && <TabsContent value="analytics" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Configuración de Analíticas</CardTitle>
@@ -538,7 +542,7 @@ export default function ClientSettings() {
               <AnalyticsOverview clientId={selectedClientId} />
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent>}
       </Tabs>
     </div>
   );
