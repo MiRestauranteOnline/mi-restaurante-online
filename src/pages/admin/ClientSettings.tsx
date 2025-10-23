@@ -610,7 +610,7 @@ function SortableTeamMember({ member, onEdit, onDelete, onMoveUp, onMoveDown, is
   isLast: boolean
 }) {
   return (
-    <div className="flex flex-col gap-3 p-3 border rounded bg-card">
+    <div className="flex flex-col gap-3 p-4 border-2 border-border rounded-lg bg-card shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200">
       <div className="flex items-start gap-3">
         <div className="flex items-start gap-3 min-w-0 flex-1">
           {member.image_url && (
@@ -618,16 +618,16 @@ function SortableTeamMember({ member, onEdit, onDelete, onMoveUp, onMoveDown, is
           )}
           <div className="min-w-0 flex-1">
             <div className="flex flex-col gap-1 mb-2">
-              <span className="font-medium truncate">{member.name}</span>
+              <span className="font-semibold text-base truncate">{member.name}</span>
               <p className="text-sm text-muted-foreground truncate">{member.title}</p>
             </div>
             {member.bio && (
-              <p className="text-xs text-muted-foreground line-clamp-2">{member.bio}</p>
+              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{member.bio}</p>
             )}
           </div>
         </div>
       </div>
-      <div className="flex gap-2 justify-end pt-2 border-t">
+      <div className="flex gap-2 justify-end pt-3 border-t-2">
         <Button variant="outline" size="sm" onClick={() => onMoveUp(member.id)} disabled={isFirst}>
           <ArrowUp className="h-4 w-4" />
         </Button>
@@ -670,17 +670,17 @@ function SortableReview({ review, onEdit, onDelete, onMoveUp, onMoveDown, isFirs
   };
 
   return (
-    <div className="flex flex-col gap-3 p-3 border rounded bg-card">
+    <div className="flex flex-col gap-3 p-4 border-2 border-border rounded-lg bg-card shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200">
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-            <span className="font-medium truncate">{review.reviewer_name}</span>
-            <div className="flex gap-0.5">{renderStars(review.star_rating)}</div>
+            <span className="font-semibold text-base truncate">{review.reviewer_name}</span>
+            <div className="flex gap-0.5 text-lg">{renderStars(review.star_rating)}</div>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-3">{review.review_text}</p>
+          <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{review.review_text}</p>
         </div>
       </div>
-      <div className="flex gap-2 justify-end pt-2 border-t">
+      <div className="flex gap-2 justify-end pt-3 border-t-2">
         <Button variant="outline" size="sm" onClick={() => onMoveUp(review.id)} disabled={isFirst}>
           <ArrowUp className="h-4 w-4" />
         </Button>
