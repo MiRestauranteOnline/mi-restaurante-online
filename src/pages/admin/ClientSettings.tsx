@@ -4409,29 +4409,32 @@ setReviewForm({
           )}
           <div className="space-y-6">
             {/* PAGE SELECTOR */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-4">
-                  <Label htmlFor="content-page-select" className="whitespace-nowrap font-medium">Seleccionar Página:</Label>
+            <div className="sticky top-0 z-10 bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm border-2 border-primary/30 rounded-lg shadow-lg">
+              <div className="p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-5 w-5 text-primary" />
+                    <Label htmlFor="content-page-select" className="text-base font-semibold text-primary">Seleccionar Página:</Label>
+                  </div>
                   <Select value={selectedContentPage} onValueChange={setSelectedContentPage}>
-                    <SelectTrigger id="content-page-select" className="w-full max-w-md">
+                    <SelectTrigger id="content-page-select" className="w-full sm:flex-1 border-primary/50 bg-background hover:bg-muted/50 transition-colors">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-background border border-border shadow-md z-50">
-                      <SelectItem value="homepage">Página Principal</SelectItem>
-                      <SelectItem value="about">Página Acerca de</SelectItem>
-                      <SelectItem value="menu">Página Menú</SelectItem>
-                      <SelectItem value="contact">Página Contacto</SelectItem>
-                      <SelectItem value="reviews">Página de Reseñas</SelectItem>
-                      <SelectItem value="services">Contenido de Servicios</SelectItem>
-                      <SelectItem value="stats">Contenido de Estadísticas</SelectItem>
-                      <SelectItem value="footer">Footer</SelectItem>
-                      <SelectItem value="whatsapp">Mensajes de WhatsApp</SelectItem>
+                      <SelectItem value="homepage">🏠 Página Principal</SelectItem>
+                      <SelectItem value="about">ℹ️ Página Acerca de</SelectItem>
+                      <SelectItem value="menu">🍽️ Página Menú</SelectItem>
+                      <SelectItem value="contact">📞 Página Contacto</SelectItem>
+                      <SelectItem value="reviews">⭐ Página de Reseñas</SelectItem>
+                      <SelectItem value="services">🛎️ Contenido de Servicios</SelectItem>
+                      <SelectItem value="stats">📊 Contenido de Estadísticas</SelectItem>
+                      <SelectItem value="footer">📄 Footer</SelectItem>
+                      <SelectItem value="whatsapp">💬 Mensajes de WhatsApp</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
               
               {/* HOMEPAGE SECTION */}
               {selectedContentPage === "homepage" && (
