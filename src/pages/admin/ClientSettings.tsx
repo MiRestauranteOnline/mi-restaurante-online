@@ -3926,6 +3926,14 @@ setReviewForm({
                         onCheckedChange={(checked) => setFormData({...formData, homepage_faq_section_visible: checked})}
                       />
                     </div>
+                    <div className="flex items-center justify-between space-x-2">
+                      <Label htmlFor="homepage_contact_hide_reservation_box" className="flex-1">Ocultar Caja de Reserva en Sección de Contacto</Label>
+                      <Switch
+                        id="homepage_contact_hide_reservation_box"
+                        checked={formData.homepage_contact_hide_reservation_box}
+                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: checked})}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -4754,16 +4762,6 @@ setReviewForm({
                         value={formData.homepage_contact_section_description}
                         onChange={(e) => setFormData({...formData, homepage_contact_section_description: e.target.value})}
                         rows={2}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>{t('content.hideReservationBox')}</Label>
-                        <p className="text-sm text-muted-foreground">{t('content.hideReservationBoxDesc')}</p>
-                      </div>
-                      <Switch
-                        checked={formData.homepage_contact_hide_reservation_box}
-                        onCheckedChange={(checked) => setFormData({...formData, homepage_contact_hide_reservation_box: checked})}
                       />
                     </div>
                   </CardContent>
