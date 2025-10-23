@@ -8,9 +8,20 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
+// SSR-safe storage: use in-memory stub on Workers/SSR
+const memoryStorage = {
+  getItem: (_key: string) => null,
+  setItem: (_key: string, _value: string) => {},
+  removeItem: (_key: string) => {},
+};
+
+const ssrSafeStorage = typeof window !== 'undefined' && 'localStorage' in window
+  ? window.localStorage
+  : memoryStorage;
+
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: localStorage,
+    storage: ssrSafeStorage as any,
     persistSession: true,
     autoRefreshToken: true,
   }
