@@ -2282,7 +2282,7 @@ export default function ClientGuides() {
                   
                   <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
                     <div className="flex-1">
-                      <p className="font-medium text-sm">🏠 Página de Inicio</p>
+                      <p className="font-medium text-sm">🏠 Página Principal</p>
                       <p className="text-xs text-muted-foreground">
                         La página principal de tu sitio. Aquí puedes editar todas las secciones principales como Hero, Acerca de, Menú, Servicios, Reservaciones, Reseñas, y Contacto.
                       </p>
@@ -2291,7 +2291,7 @@ export default function ClientGuides() {
 
                   <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
                     <div className="flex-1">
-                      <p className="font-medium text-sm">📖 Página "Acerca de"</p>
+                      <p className="font-medium text-sm">📖 Página Acerca de</p>
                       <p className="text-xs text-muted-foreground">
                         Página dedicada con información detallada sobre tu restaurante. Incluye la sección principal "Acerca de", estadísticas, y sección de equipo.
                       </p>
@@ -2300,9 +2300,63 @@ export default function ClientGuides() {
 
                   <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
                     <div className="flex-1">
-                      <p className="font-medium text-sm">📞 Página de Contacto</p>
+                      <p className="font-medium text-sm">📋 Página Menú</p>
+                      <p className="text-xs text-muted-foreground">
+                        Página dedicada para mostrar tu menú completo. Personaliza los títulos, descripciones y cómo se presenta tu menú a los visitantes.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">📞 Página Contacto</p>
                       <p className="text-xs text-muted-foreground">
                         Página dedicada para que los visitantes se comuniquen contigo. Incluye el formulario de contacto y el mapa de ubicación.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">⭐ Página de Reseñas</p>
+                      <p className="text-xs text-muted-foreground">
+                        Página dedicada para mostrar todas las reseñas y testimonios de tus clientes. Edita títulos, descripciones y cómo se presentan las reseñas.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">🍕 Contenido de Servicios</p>
+                      <p className="text-xs text-muted-foreground">
+                        Personaliza el contenido de tus servicios adicionales como delivery, catering, eventos privados, etc. Edita títulos, descripciones e íconos de cada servicio.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">📊 Contenido de Estadísticas</p>
+                      <p className="text-xs text-muted-foreground">
+                        Edita las estadísticas que aparecen en tu sitio, como años de experiencia, platos en el menú, clientes satisfechos, premios ganados, etc.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">📄 Footer</p>
+                      <p className="text-xs text-muted-foreground">
+                        Personaliza el contenido del pie de página de tu sitio. Incluye información de contacto, enlaces a redes sociales, horarios y derechos de autor.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">💬 Mensajes de WhatsApp</p>
+                      <p className="text-xs text-muted-foreground">
+                        Configura los mensajes automáticos que se envían cuando alguien hace clic en el botón de WhatsApp. Personaliza el saludo y mensaje inicial.
                       </p>
                     </div>
                   </div>
