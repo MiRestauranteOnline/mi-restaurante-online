@@ -48,6 +48,12 @@ export const Footer = () => {
                 Acerca de Nosotros
               </Link>
               <Link 
+                to="/libro-reclamaciones"
+                className="block text-muted-foreground hover:text-primary text-sm transition-colors"
+              >
+                Libro de Reclamaciones
+              </Link>
+              <Link 
                 to="/privacy"
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >

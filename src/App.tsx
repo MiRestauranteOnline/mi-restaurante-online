@@ -12,6 +12,7 @@ import Soporte from "./pages/Soporte";
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import LibroReclamaciones from "./pages/LibroReclamaciones";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import BlogGenerationAdmin from "./components/BlogGenerationAdmin";
@@ -79,6 +80,7 @@ const AppContent = () => {
         <Route path="/contacto" element={<Contact />} />
         <Route path="/soporte" element={<Soporte />} />
         <Route path="/acerca-de" element={<About />} />
+        <Route path="/libro-reclamaciones" element={<LibroReclamaciones />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/blog" element={<Blog />} />
