@@ -60,6 +60,12 @@ export const Footer = () => {
                 Política de Privacidad
               </Link>
               <Link 
+                to="/cookies"
+                className="block text-muted-foreground hover:text-primary text-sm transition-colors"
+              >
+                Política de Cookies
+              </Link>
+              <Link 
                 to="/terms"
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >

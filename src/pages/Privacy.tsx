@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { businessData } from "@/config/businessData";
+import { Link } from "react-router-dom";
 
 const Privacy = () => {
   return (
@@ -236,39 +237,30 @@ const Privacy = () => {
             </CardContent>
           </Card>
 
-          {/* Cookies Policy */}
+          {/* Cookies Policy Reference */}
           <Card>
             <CardHeader>
-              <CardTitle>Política de Cookies</CardTitle>
+              <CardTitle>Cookies y Tecnologías de Seguimiento</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
               <p>
-                Utilizamos cookies y tecnologías similares para mejorar tu experiencia en nuestro sitio web y servicios.
+                Utilizamos cookies y tecnologías similares (como píxeles de seguimiento y almacenamiento local) 
+                para mejorar tu experiencia en nuestro sitio web y servicios.
               </p>
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">Cookies Necesarias:</h3>
-                <p className="mb-2">
-                  Esenciales para el funcionamiento del sitio. Incluyen cookies de autenticación, seguridad, y preferencias 
-                  de sesión. No se pueden desactivar sin afectar funcionalidades básicas.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">Cookies Analíticas:</h3>
-                <p className="mb-2">
-                  Nos ayudan a entender cómo los usuarios interactúan con nuestro sitio para mejorar la experiencia. 
-                  Usamos Google Analytics en nuestro sitio corporativo y, para clientes del Plan Avanzado, en sus sitios web.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-2">Cookies de Funcionalidad:</h3>
-                <p className="mb-2">
-                  Recuerdan tus preferencias (idioma, región) para una experiencia personalizada.
-                </p>
-              </div>
+              <p>
+                Las cookies que utilizamos incluyen:
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong>Cookies Estrictamente Necesarias:</strong> Esenciales para el funcionamiento del sitio (autenticación, seguridad, gestión de sesiones).</li>
+                <li><strong>Cookies de Análisis:</strong> Google Analytics para entender cómo los usuarios interactúan con nuestro sitio y mejorar la experiencia.</li>
+                <li><strong>Cookies de Funcionalidad:</strong> Recuerdan tus preferencias (idioma, región) para una experiencia personalizada.</li>
+              </ul>
               <p className="pt-4 border-t">
-                <strong>Control de Cookies:</strong> Puedes configurar tu navegador para rechazar cookies, pero esto puede 
-                limitar tu capacidad de usar ciertas funcionalidades del sitio. La mayoría de navegadores aceptan cookies 
-                automáticamente, pero puedes modificar esta configuración.
+                Para información detallada sobre qué cookies utilizamos, cómo funcionan, cuánto tiempo permanecen 
+                activas, y cómo puedes gestionarlas o desactivarlas, consulta nuestra{" "}
+                <Link to="/cookies" className="text-primary hover:underline font-semibold">
+                  Política de Cookies completa
+                </Link>.
               </p>
             </CardContent>
           </Card>

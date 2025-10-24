@@ -11,6 +11,7 @@ import Contact from "./pages/Contact";
 import Soporte from "./pages/Soporte";
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
 import Terms from "./pages/Terms";
 import LibroReclamaciones from "./pages/LibroReclamaciones";
 import Blog from "./pages/Blog";
@@ -82,6 +83,7 @@ const AppContent = () => {
         <Route path="/acerca-de" element={<About />} />
         <Route path="/libro-reclamaciones" element={<LibroReclamaciones />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/cookies" element={<Cookies />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:category/:slug" element={<BlogPost />} />
