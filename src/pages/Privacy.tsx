@@ -68,7 +68,7 @@ const Privacy = () => {
                 <h3 className="font-semibold text-foreground mb-2">Información que Proporcionas Directamente:</h3>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Datos de Registro:</strong> Nombre, apellidos, email, teléfono, nombre del restaurante, dirección del restaurante.</li>
-                  <li><strong>Información de Pago:</strong> Datos de tarjeta de crédito/débito (procesados de forma segura por OpenPay Perú, operado por KUSHKI PERU S.A.C.).</li>
+                  <li><strong>Información de Pago:</strong> Datos de tarjeta de crédito/débito (procesados de forma segura por Openpay Perú S.A., RUC N° 20607489433).</li>
                   <li><strong>Contenido del Sitio Web:</strong> Menú, fotos, logo, horarios, descripción del negocio, información de contacto que publicas en tu sitio.</li>
                   <li><strong>Comunicaciones:</strong> Mensajes que envías a nuestro equipo de soporte por email o WhatsApp.</li>
                 </ul>
@@ -94,7 +94,7 @@ const Privacy = () => {
               <p>Utilizamos tus datos personales para los siguientes propósitos:</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Prestación del Servicio:</strong> Crear, alojar y mantener tu sitio web profesional.</li>
-                <li><strong>Procesamiento de Pagos:</strong> Facturar tu suscripción mensual mediante nuestro procesador de pagos OpenPay.</li>
+                <li><strong>Procesamiento de Pagos:</strong> Facturar tu suscripción mensual mediante nuestro procesador de pagos Openpay Perú S.A., RUC N° 20607489433.</li>
                 <li><strong>Soporte Técnico:</strong> Responder a tus consultas y resolver problemas técnicos.</li>
                 <li><strong>Comunicaciones del Servicio:</strong> Enviarte recibos, notificaciones sobre tu cuenta, mantenimiento programado, cambios en términos.</li>
                 <li><strong>Mejora del Servicio:</strong> Analizar el uso de nuestros servicios para mejorar funcionalidades y experiencia de usuario.</li>
@@ -130,7 +130,7 @@ const Privacy = () => {
               <div>
                 <h3 className="font-semibold text-foreground mb-2">Procesadores de Pagos:</h3>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>OpenPay Perú:</strong> Nuestro procesador de pagos (operado por KUSHKI PERU S.A.C.) que maneja de forma segura la información de tu tarjeta y procesa los cobros mensuales. OpenPay actúa como procesador de datos y cumple con estándares PCI-DSS. Tu información de tarjeta nunca es almacenada en nuestros servidores.</li>
+                  <li><strong>Openpay Perú S.A., RUC N° 20607489433:</strong> Nuestro procesador de pagos que maneja de forma segura la información de tu tarjeta y procesa los cobros mensuales. Openpay actúa como procesador de datos y cumple con estándares PCI-DSS. Tu información de tarjeta nunca es almacenada en nuestros servidores.</li>
                 </ul>
               </div>
               <div>
@@ -167,7 +167,7 @@ const Privacy = () => {
                 tu información, incluyendo contratos de procesamiento de datos que cumplen con estándares internacionales.
               </p>
               <p>
-                OpenPay, nuestro procesador de pagos, cumple con estándares internacionales de protección de datos y PCI-DSS.
+                Openpay Perú S.A., RUC N° 20607489433, nuestro procesador de pagos, cumple con estándares internacionales de protección de datos y PCI-DSS.
               </p>
             </CardContent>
           </Card>
@@ -202,7 +202,7 @@ const Privacy = () => {
                 <li>Encriptación de datos en tránsito (HTTPS/TLS) y en reposo</li>
                 <li>Autenticación segura y control de acceso</li>
                 <li>Auditorías regulares de seguridad</li>
-                <li>Procesamiento de pagos mediante procesador PCI-DSS certificado (OpenPay)</li>
+                <li>Procesamiento de pagos mediante procesador PCI-DSS certificado (Openpay Perú S.A., RUC N° 20607489433)</li>
                 <li>Backups regulares y planes de recuperación ante desastres</li>
                 <li>Capacitación del personal en protección de datos</li>
               </ul>

@@ -472,9 +472,9 @@ const Terms = () => {
             <CardContent className="text-muted-foreground space-y-4">
               <p>
                 <strong>Procesadores de Pago:</strong> Utilizamos proveedores externos de procesamiento de pagos, 
-                incluyendo OpenPay Perú (operado por KUSHKI PERU S.A.C.) y otros procesadores autorizados, para 
+                incluyendo Openpay Perú S.A., RUC N° 20607489433, para 
                 manejar de forma segura tus pagos con tarjeta de crédito/débito. La pasarela de pagos es 
-                proporcionada por OpenPay. Al proporcionar tu información de pago, aceptas también los términos 
+                proporcionada por Openpay Perú S.A., RUC N° 20607489433. Al proporcionar tu información de pago, aceptas también los términos 
                 y condiciones de estos proveedores.
               </p>
               <p>
