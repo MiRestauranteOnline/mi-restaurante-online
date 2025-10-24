@@ -12,19 +12,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
+const contractedItemOptions = ["producto", "servicio"] as const;
+const claimTypeOptions = ["reclamo", "queja"] as const;
+
 const formSchema = z.object({
   fullName: z.string().min(2, "El nombre completo es requerido").max(200),
   documentNumber: z.string().min(8, "Número de documento inválido").max(20),
   email: z.string().email("Correo electrónico inválido").max(255),
   phone: z.string().min(9, "Teléfono inválido").max(20),
-  contractedItem: z.enum(["producto", "servicio"], {
-    required_error: "Selecciona producto o servicio",
+  contractedItem: z.union([z.literal("producto"), z.literal("servicio")], {
+    message: "Selecciona producto o servicio",
   }),
   amount: z.string().optional(),
   purchaseDate: z.string().optional(),
   purchaseDocument: z.string().max(100).optional(),
-  claimType: z.enum(["reclamo", "queja"], {
-    required_error: "Selecciona el tipo de solicitud",
+  claimType: z.union([z.literal("reclamo"), z.literal("queja")], {
+    message: "Selecciona el tipo de solicitud",
   }),
   purchaseChannel: z.string().optional(),
   description: z.string().min(10, "La descripción debe tener al menos 10 caracteres").max(2000),
