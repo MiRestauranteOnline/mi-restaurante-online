@@ -1904,9 +1904,110 @@ export default function ClientGuides() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Esta sección te permite controlar qué secciones y elementos de tu sitio web son visibles para 
-                  los visitantes. Puedes mostrar u ocultar secciones completas en diferentes páginas.
+                  Esta sección te permite controlar la navegación de tu sitio web: botones del menú, 
+                  popups de WhatsApp, y qué secciones son visibles en cada página.
                 </p>
+              </CardContent>
+            </Card>
+
+            {/* Controles de Navegación y Botones */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Controles de Navegación y Botones
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Configura la visibilidad y comportamiento de los botones en el menú de navegación.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      Ocultar Botón de WhatsApp del Menú
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Controla si el botón de WhatsApp aparece en el menú de navegación superior.
+                    </p>
+                    <Badge variant="outline">Switch: Visible / Oculto</Badge>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      Ocultar Botón de Teléfono del Menú
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Controla si el botón de teléfono aparece en el menú de navegación superior.
+                    </p>
+                    <Badge variant="outline">Switch: Visible / Oculto</Badge>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      Mostrar Popup de WhatsApp
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Habilita un popup flotante de WhatsApp que aparece en todas las páginas del sitio.
+                    </p>
+                    <Badge variant="outline">Switch: Habilitado / Deshabilitado</Badge>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Type className="h-4 w-4 text-primary" />
+                      Texto del Botón CTA Personalizado
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Personaliza el texto del botón de llamada a la acción en el menú de navegación.
+                    </p>
+                    <div className="mt-2">
+                      <code className="text-sm bg-background px-3 py-1.5 rounded border">
+                        Ejemplo: "Contactar", "Reservar", "Ordenar Ahora"
+                      </code>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Link2 className="h-4 w-4 text-primary" />
+                      Enlace del Botón CTA Personalizado
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Define a dónde lleva el botón CTA cuando los usuarios hacen clic.
+                    </p>
+                    <div className="mt-2 space-y-2">
+                      <div>
+                        <p className="text-xs font-medium mb-1">Ejemplos de enlaces:</p>
+                        <div className="space-y-1">
+                          <code className="text-xs bg-background px-2 py-1 rounded border block">
+                            #contacto (sección en la misma página)
+                          </code>
+                          <code className="text-xs bg-background px-2 py-1 rounded border block">
+                            /menu (página del menú)
+                          </code>
+                          <code className="text-xs bg-background px-2 py-1 rounded border block">
+                            https://ejemplo.com (enlace externo)
+                          </code>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>Sobre los Botones del Menú</AlertTitle>
+                  <AlertDescription className="text-sm">
+                    Los botones de WhatsApp y teléfono ayudan a que los clientes te contacten fácilmente. 
+                    Solo ocúltalos si no usas esos canales de comunicación. El botón CTA personalizado 
+                    es ideal para destacar tu acción principal (reservar, ver menú, etc.).
+                  </AlertDescription>
+                </Alert>
               </CardContent>
             </Card>
 
@@ -1914,8 +2015,8 @@ export default function ClientGuides() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
-                  Controles de Visibilidad
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Controles de Visibilidad de Secciones
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -2031,7 +2132,7 @@ export default function ClientGuides() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
                   Cómo Usar los Controles
                 </CardTitle>
               </CardHeader>
