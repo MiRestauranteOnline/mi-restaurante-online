@@ -49,6 +49,11 @@ const guideMetadata: Record<string, { title: string; description: string; catego
     description: "Personaliza los colores, logo y estilo de tu sitio web para reflejar la identidad única de tu restaurante.",
     category: "Panel Principal"
   },
+  "navegacion-visibilidad": {
+    title: "Controlar Navegación y Visibilidad de Secciones",
+    description: "Gestiona qué secciones se muestran u ocultan en tu sitio web de restaurante.",
+    category: "Panel Principal"
+  },
   "contenido-sitio": {
     title: "Gestionar el Contenido de tu Sitio Web de Restaurante",
     description: "Edita y actualiza el contenido de tu sitio web: textos, imágenes y secciones principales.",
@@ -1880,44 +1885,30 @@ export default function ClientGuides() {
           </div>
         );
 
-      case "contenido-sitio":
+      case "navegacion-visibilidad":
         return (
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Contenido del Sitio Web</h1>
+              <h1 className="text-3xl font-bold mb-2">Navegación y Visibilidad</h1>
               <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Pestaña <Badge variant="secondary" className="mx-1">Contenido</Badge>
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Pestaña <Badge variant="secondary" className="mx-1">Navegación y Visibilidad</Badge>
               </p>
             </div>
 
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileEdit className="h-5 w-5 text-primary" />
-                  ¿Qué Puedes Editar?
+                  <Eye className="h-5 w-5 text-primary" />
+                  ¿Qué Controla Esta Sección?
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Esta sección te permite personalizar todos los textos, imágenes y la visibilidad de las secciones 
-                  de tu sitio web. Controla completamente qué información muestras a tus visitantes.
+                  Esta sección te permite controlar qué secciones y elementos de tu sitio web son visibles para 
+                  los visitantes. Puedes mostrar u ocultar secciones completas en diferentes páginas.
                 </p>
               </CardContent>
             </Card>
-
-            <Alert className="border-amber-500/50 bg-amber-500/10">
-              <AlertCircle className="h-4 w-4 text-amber-500" />
-              <AlertTitle className="text-amber-700 dark:text-amber-400">Confirmación Requerida</AlertTitle>
-              <AlertDescription className="text-foreground/80 text-sm space-y-2">
-                <p>
-                  Al entrar a la pestaña "Contenido" aparecerá un popup de confirmación porque los cambios aquí 
-                  afectan directamente cómo los visitantes ven tu restaurante.
-                </p>
-                <p className="text-xs">
-                  <strong>Tip:</strong> Revisa cuidadosamente cada cambio antes de guardarlo y verifica tu sitio después.
-                </p>
-              </AlertDescription>
-            </Alert>
 
             {/* Controles de Visibilidad */}
             <Card>
@@ -2036,11 +2027,146 @@ export default function ClientGuides() {
               </CardContent>
             </Card>
 
-            {/* Sección Hero */}
+            {/* Cómo Usar */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Cómo Usar los Controles
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">1.</span>
+                    <span className="text-sm">Navega a la pestaña <Badge variant="outline">Navegación y Visibilidad</Badge></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">2.</span>
+                    <span className="text-sm">Busca la página que quieres configurar (Inicio, Acerca de, Contacto)</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">3.</span>
+                    <span className="text-sm">Activa o desactiva los switches según qué secciones quieras mostrar</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">4.</span>
+                    <span className="text-sm">Haz clic en <strong>"Guardar"</strong> para aplicar los cambios</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">5.</span>
+                    <span className="text-sm">Verifica tu sitio web para confirmar los cambios</span>
+                  </li>
+                </ol>
+              </CardContent>
+            </Card>
+
+            {/* Best Practices */}
+            <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <span>💡</span> Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Mantén lo esencial visible:</strong> No ocultes secciones críticas como Menú o Contacto
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Simplifica tu sitio:</strong> Si una sección no aporta valor, es mejor ocultarla
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Piensa en el usuario:</strong> Oculta solo lo que realmente no necesitan ver
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Prueba después de cambios:</strong> Visita tu sitio como visitante para verificar que todo funciona bien
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Considera el mapa:</strong> Si tienes ubicación física, mantén el mapa visible
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Save Button */}
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Save className="h-5 w-5" />
+                  Guardar Cambios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Después de configurar la visibilidad de las secciones, haz clic en el botón <strong>"Guardar"</strong>. 
+                  Los cambios se aplicarán inmediatamente. Te recomendamos revisar todas las páginas de tu sitio 
+                  después de guardar para confirmar que todo se ve como esperas.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case "contenido-sitio":
+        return (
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Contenido del Sitio Web</h1>
+              <p className="text-muted-foreground">
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Pestaña <Badge variant="secondary" className="mx-1">Contenido</Badge>
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileEdit className="h-5 w-5 text-primary" />
+                  ¿Qué Puedes Editar?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Esta sección te permite personalizar todos los textos, imágenes y la visibilidad de las secciones 
+                  de tu sitio web. Controla completamente qué información muestras a tus visitantes.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Alert className="border-amber-500/50 bg-amber-500/10">
+              <AlertCircle className="h-4 w-4 text-amber-500" />
+              <AlertTitle className="text-amber-700 dark:text-amber-400">Confirmación Requerida</AlertTitle>
+              <AlertDescription className="text-foreground/80 text-sm space-y-2">
+                <p>
+                  Al entrar a la pestaña "Contenido" aparecerá un popup de confirmación porque los cambios aquí 
+                  afectan directamente cómo los visitantes ven tu restaurante.
+                </p>
+                <p className="text-xs">
+                  <strong>Tip:</strong> Revisa cuidadosamente cada cambio antes de guardarlo y verifica tu sitio después.
+                </p>
+              </AlertDescription>
+            </Alert>
+
+            {/* Sección Hero */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
                   Sección Hero (Portada)
                 </CardTitle>
               </CardHeader>
@@ -2086,7 +2212,7 @@ export default function ClientGuides() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
                   Otras Secciones del Sitio
                 </CardTitle>
               </CardHeader>
@@ -2145,7 +2271,7 @@ export default function ClientGuides() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
                   Cómo Hacer Cambios
                 </CardTitle>
               </CardHeader>
