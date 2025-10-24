@@ -183,6 +183,11 @@ const guideMetadata: Record<string, { title: string; description: string; catego
     title: "Información de Facturación y Pagos - Restaurantes",
     description: "Consulta tu información de facturación, historial de pagos y descarga facturas.",
     category: "Suscripción"
+  },
+  "libro-reclamaciones": {
+    title: "Libro de Reclamaciones - Configuración para Restaurantes",
+    description: "Configura el Libro de Reclamaciones virtual de tu restaurante para cumplir con las normativas legales.",
+    category: "Políticas"
   }
 };
 
@@ -260,6 +265,13 @@ const guideCategories = [
       { id: "metodos-pago", title: "Métodos de Pago", icon: FileText },
       { id: "cambios-plan", title: "Cambios de Plan", icon: FileText },
       { id: "informacion-facturacion", title: "Información de Facturación", icon: FileText },
+    ],
+  },
+  {
+    title: "Políticas",
+    slug: "politicas",
+    items: [
+      { id: "libro-reclamaciones", title: "Libro de Reclamaciones", icon: FileText },
     ],
   },
 ];
@@ -6010,6 +6022,364 @@ export default function ClientGuides() {
           </Card>
         );
       
+      case "libro-reclamaciones":
+        return (
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Libro de Reclamaciones</h1>
+              <p className="text-muted-foreground">
+                Navega a: Políticas → Pestaña <Badge variant="secondary" className="mx-1">Libro de Reclamaciones</Badge>
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  ¿Qué es el Libro de Reclamaciones?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground">
+                  El Libro de Reclamaciones es un formulario digital obligatorio para restaurantes en Perú, establecido por el Código de Protección y Defensa del Consumidor. Permite a tus clientes registrar quejas o reclamos sobre tu servicio o productos.
+                </p>
+                <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Requisito Legal:</strong> En Perú, todos los restaurantes están obligados por ley a tener un Libro de Reclamaciones disponible para sus clientes, tanto físico como virtual.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Activar/Desactivar el Libro de Reclamaciones
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground mb-3">
+                  Controla si el Libro de Reclamaciones está visible en tu sitio web usando el interruptor <strong>"Habilitar Libro de Reclamaciones"</strong>.
+                </p>
+                
+                <div className="grid gap-3">
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-green-600" />
+                      Activado (Recomendado)
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      El enlace "Libro de Reclamaciones" aparece en el footer de tu sitio web. Los clientes pueden acceder y completar el formulario de reclamo.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <EyeOff className="h-4 w-4 text-orange-600" />
+                      Desactivado
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      El enlace y la página no están disponibles. Los visitantes no podrán acceder al formulario desde tu sitio web.
+                    </p>
+                  </div>
+                </div>
+
+                <Alert className="border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-950/20">
+                  <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Advertencia Legal:</strong> Aunque puedes desactivar temporalmente esta función, recuerda que en Perú es obligatorio tener un Libro de Reclamaciones disponible para los consumidores. Asegúrate de cumplir con la normativa vigente.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Configurar Email para Recibir Reclamaciones
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground mb-3">
+                  Configura el correo electrónico donde deseas recibir las copias de las reclamaciones que envíen tus clientes.
+                </p>
+
+                <div className="p-4 border rounded-lg bg-primary/5">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-primary" />
+                    Email de Reclamaciones
+                  </h4>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex gap-2">
+                      <span className="font-bold text-primary flex-shrink-0">•</span>
+                      <span className="text-muted-foreground">
+                        Por defecto, se usa el email de tu cuenta registrada
+                      </span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="font-bold text-primary flex-shrink-0">•</span>
+                      <span className="text-muted-foreground">
+                        Puedes cambiarlo a cualquier email corporativo o personal que prefieras
+                      </span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="font-bold text-primary flex-shrink-0">•</span>
+                      <span className="text-muted-foreground">
+                        Recibirás una copia completa de cada reclamo enviado
+                      </span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="font-bold text-primary flex-shrink-0">•</span>
+                      <span className="text-muted-foreground">
+                        El cliente también recibirá una copia de confirmación en su propio email
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <Alert className="border-primary/30 bg-primary/5">
+                  <Lightbulb className="h-4 w-4 text-primary" />
+                  <AlertDescription className="text-sm">
+                    <strong>Consejo:</strong> Usa un email que revises frecuentemente para atender las reclamaciones de manera oportuna. La ley establece que debes responder dentro de 30 días calendario.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Datos que se Incluyen Automáticamente
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground mb-3">
+                  El sistema incluye automáticamente ciertos datos de tu restaurante en el formulario de reclamaciones para cumplir con los requisitos legales:
+                </p>
+
+                <div className="grid gap-3">
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2">📋 RUC del Restaurante</h4>
+                    <p className="text-sm text-muted-foreground">
+                      El número de RUC de tu restaurante se muestra automáticamente en el formulario. Este dato se toma de la pestaña <Badge variant="outline" className="mx-1">Información General</Badge> del Panel Principal.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2">🏢 Razón Social</h4>
+                    <p className="text-sm text-muted-foreground">
+                      La razón social de tu negocio también se incluye automáticamente, tomada desde la pestaña <Badge variant="outline" className="mx-1">Información General</Badge> del Panel Principal.
+                    </p>
+                  </div>
+                </div>
+
+                <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Importante:</strong> Asegúrate de que tu RUC y Razón Social estén correctamente configurados en el Panel Principal → Información General. Estos datos son obligatorios para el Libro de Reclamaciones.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Cómo Funciona el Formulario
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground mb-3">
+                  Cuando un cliente accede al Libro de Reclamaciones desde tu sitio web:
+                </p>
+
+                <ol className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">1.</span>
+                    <div className="text-sm">
+                      <strong>Cliente completa el formulario:</strong> Proporciona su información personal, tipo de documento, y describe su reclamo o queja
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">2.</span>
+                    <div className="text-sm">
+                      <strong>Detalla el reclamo:</strong> Selecciona si es un reclamo o queja, especifica si es por producto o servicio, y describe la situación
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">3.</span>
+                    <div className="text-sm">
+                      <strong>Envía el formulario:</strong> Al enviar, el sistema genera dos correos automáticamente
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">4.</span>
+                    <div className="text-sm">
+                      <strong>Email al restaurante:</strong> Recibes una copia completa con todos los detalles del reclamo en el email configurado
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">5.</span>
+                    <div className="text-sm">
+                      <strong>Email al cliente:</strong> El cliente recibe una confirmación con copia de su reclamo
+                    </div>
+                  </li>
+                </ol>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">5</span>
+                  Ubicación en tu Sitio Web
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground mb-3">
+                  Cuando el Libro de Reclamaciones está activado:
+                </p>
+
+                <div className="p-4 border rounded-lg bg-primary/5">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-primary" />
+                    Enlace en el Footer
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Un enlace llamado "Libro de Reclamaciones" aparece en el footer (pie de página) de tu sitio web, junto a otros enlaces importantes.
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Los visitantes pueden hacer clic en este enlace para acceder al formulario de reclamos en cualquier momento.
+                  </p>
+                </div>
+
+                <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Cumplimiento Visible:</strong> El enlace en el footer garantiza que el Libro de Reclamaciones sea fácilmente accesible para tus clientes, cumpliendo con los requisitos de visibilidad establecidos por ley.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-950/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-orange-800 dark:text-orange-200">
+                  <span>⚖️</span> Obligaciones Legales
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-orange-600 dark:text-orange-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Disponibilidad:</strong> El Libro de Reclamaciones debe estar disponible y accesible para los consumidores en todo momento
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-orange-600 dark:text-orange-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Tiempo de respuesta:</strong> Debes responder a las reclamaciones dentro de 30 días calendario
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-orange-600 dark:text-orange-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Registro obligatorio:</strong> Todas las reclamaciones deben ser registradas y conservadas
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-orange-600 dark:text-orange-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Confidencialidad:</strong> Protege la información personal de tus clientes según la Ley de Protección de Datos
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-orange-600 dark:text-orange-400 shrink-0">•</span>
+                    <span className="text-sm">
+                      <strong>Sanciones:</strong> El incumplimiento puede generar multas de hasta 450 UIT por parte de INDECOPI
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Revisa tu email frecuentemente:</strong> Responde a las reclamaciones de manera oportuna
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Datos actualizados:</strong> Mantén tu RUC y Razón Social correctos en la Información General
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Mantén activado:</strong> Deja el Libro de Reclamaciones siempre visible para cumplir con la ley
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Usa un email corporativo:</strong> Preferiblemente uno que todo tu equipo pueda monitorear
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Archiva las reclamaciones:</strong> Guarda copias de todos los emails de reclamos que recibas
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Actúa proactivamente:</strong> Usa las reclamaciones como oportunidad para mejorar tu servicio
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Documenta las soluciones:</strong> Registra cómo resolviste cada reclamo
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Save className="h-5 w-5" />
+                  Guardar Cambios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Después de configurar el email o cambiar la visibilidad del Libro de Reclamaciones, haz clic en el botón <strong>"Guardar Cambios"</strong> al final de la página. Los cambios se aplicarán inmediatamente en tu sitio web.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
       default:
         return (
           <Card>

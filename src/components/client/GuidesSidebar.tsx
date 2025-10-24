@@ -26,6 +26,7 @@ const categoryToSlug: Record<string, string> = {
   "Analíticas": "analiticas",
   "Soporte": "soporte",
   "Suscripción": "suscripcion",
+  "Políticas": "politicas",
 };
 
 const guideCategories: GuideCategory[] = [
@@ -98,6 +99,12 @@ const guideCategories: GuideCategory[] = [
       { id: "metodos-pago", title: "Métodos de Pago", icon: FileText },
       { id: "cambios-plan", title: "Cambios de Plan", icon: FileText },
       { id: "informacion-facturacion", title: "Información de Facturación", icon: FileText },
+    ],
+  },
+  {
+    title: "Políticas",
+    items: [
+      { id: "libro-reclamaciones", title: "Libro de Reclamaciones", icon: FileText },
     ],
   },
 ];
