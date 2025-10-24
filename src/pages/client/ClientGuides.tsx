@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -1537,12 +1538,13 @@ export default function ClientGuides() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Esta sección te permite personalizar los elementos visuales y de formato de tu sitio web 
-                  para que refleje la identidad única de tu restaurante.
+                  Esta sección te permite personalizar completamente el diseño visual de tu sitio web: 
+                  colores, logos, fuentes, tema y más.
                 </p>
               </CardContent>
             </Card>
 
+            {/* Color Principal */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1568,10 +1570,6 @@ export default function ClientGuides() {
                     <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                     <span className="text-sm">Elementos destacados y llamadas a la acción</span>
                   </div>
-                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Iconos y detalles de diseño</span>
-                  </div>
                 </div>
 
                 <div className="mt-4 p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
@@ -1582,135 +1580,245 @@ export default function ClientGuides() {
                   <ol className="space-y-2 text-sm">
                     <li className="flex gap-2">
                       <span className="font-bold text-primary">1.</span>
-                      <span>Haz clic en el <strong>selector de color</strong> (el cuadrado de color)</span>
+                      <span>Haz clic en el <strong>selector de color</strong></span>
                     </li>
                     <li className="flex gap-2">
                       <span className="font-bold text-primary">2.</span>
-                      <span>Elige tu color visualmente usando el selector desplegable</span>
+                      <span>Elige tu color visualmente usando el selector</span>
                     </li>
                     <li className="flex gap-2">
                       <span className="font-bold text-primary">3.</span>
-                      <span>O ingresa directamente un código hexadecimal (ej: <code className="bg-background px-2 py-0.5 rounded">#22c55e</code>)</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="font-bold text-primary">4.</span>
-                      <span>Verás una vista previa del color en tiempo real</span>
+                      <span>O ingresa un código hexadecimal (ej: <code className="bg-background px-2 py-0.5 rounded">#22c55e</code>)</span>
                     </li>
                   </ol>
                 </div>
+
+                <Alert className="border-amber-500/50 bg-amber-500/10">
+                  <AlertCircle className="h-4 w-4 text-amber-500" />
+                  <AlertTitle className="text-amber-700 dark:text-amber-400">Confirmación de Cambio</AlertTitle>
+                  <AlertDescription className="text-foreground/80 text-sm">
+                    Al cambiar el color principal aparecerá un popup de confirmación porque el cambio afecta 
+                    toda la identidad visual de tu sitio web instantáneamente.
+                  </AlertDescription>
+                </Alert>
               </CardContent>
             </Card>
 
-            <Card className="border-amber-500/50 bg-amber-500/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
-                  <AlertCircle className="h-5 w-5" />
-                  Importante: Confirmación de Cambio de Color
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-foreground/90">
-                  Al cambiar el color principal, aparecerá un <strong>popup de confirmación</strong>. 
-                  Esto es porque el cambio afecta toda la identidad visual de tu sitio web.
-                </p>
-                <div className="space-y-2 text-sm">
-                  <p className="font-semibold text-foreground">¿Por qué aparece esta confirmación?</p>
-                  <ul className="space-y-1.5 text-foreground/80">
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>El color se aplicará <strong>instantáneamente</strong> en todo tu sitio web</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>Cambia la <strong>identidad visual</strong> que tus clientes conocen</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>Afecta botones, enlaces y elementos interactivos</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>Los visitantes verán el cambio <strong>inmediatamente</strong></span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="mt-3 p-3 bg-amber-100/50 dark:bg-amber-900/20 rounded border border-amber-300/50 dark:border-amber-700/50">
-                  <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
-                    💡 <strong>Recomendación:</strong> Antes de confirmar, asegúrate de que el nuevo color:
-                  </p>
-                  <ul className="mt-2 space-y-1 text-sm text-amber-800 dark:text-amber-300">
-                    <li>• Representa bien la identidad de tu restaurante</li>
-                    <li>• Combina con tus fotos y contenido existente</li>
-                    <li>• Tiene buen contraste y es legible</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-
+            {/* Configuración de Tema */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
-                  Símbolo de Moneda
+                  Configuración de Tema
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  Define el símbolo que aparecerá junto a todos los precios en tu menú y sitio web.
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <Card className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <code className="text-lg font-bold bg-background px-3 py-1.5 rounded">$</code>
-                        <span className="font-medium">Dólar / Peso</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">USD, MXN, ARS, CLP, etc.</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <code className="text-lg font-bold bg-background px-3 py-1.5 rounded">S/</code>
-                        <span className="font-medium">Sol Peruano</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">PEN</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <code className="text-lg font-bold bg-background px-3 py-1.5 rounded">€</code>
-                        <span className="font-medium">Euro</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">EUR</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <code className="text-lg font-bold bg-background px-3 py-1.5 rounded">R$</code>
-                        <span className="font-medium">Real Brasileño</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">BRL</p>
-                    </CardContent>
-                  </Card>
+                <div>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Moon className="h-4 w-4" />
+                    Tema (Claro u Oscuro)
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Controla el tema visual general de tu sitio web. Puedes elegir entre tema claro u oscuro.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 border rounded-lg bg-muted/30">
+                      <Sun className="h-5 w-5 mb-2" />
+                      <p className="font-medium text-sm">Tema Claro</p>
+                      <p className="text-xs text-muted-foreground">Fondos blancos, profesional</p>
+                    </div>
+                    <div className="p-3 border rounded-lg bg-muted/30">
+                      <Moon className="h-5 w-5 mb-2" />
+                      <p className="font-medium text-sm">Tema Oscuro</p>
+                      <p className="text-xs text-muted-foreground">Fondos oscuros, moderno</p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="p-4 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                  <p className="text-sm text-blue-900 dark:text-blue-200">
-                    <Info className="h-4 w-4 inline mr-1.5" />
-                    <strong>Nota:</strong> Solo necesitas configurar la moneda una vez, a menos que cambies 
-                    de país o decidas mostrar precios en otra divisa.
+                <Separator />
+
+                <div>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Sliders className="h-4 w-4" />
+                    Opacidad de Superposición del Hero
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Controla qué tan oscura es la capa sobre la imagen de fondo del hero (sección principal). 
+                    Un valor más alto (ej: 80%) hace que el texto sea más legible, pero oscurece más la imagen.
                   </p>
                 </div>
               </CardContent>
             </Card>
 
+            {/* Plantilla del Sitio */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Plantilla del Sitio
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <Layout className="h-5 w-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-medium mb-1">Modern Restaurant (Plantilla Actual)</p>
+                    <p className="text-sm text-muted-foreground">
+                      La plantilla controla el diseño y estructura general de tu sitio web, 
+                      incluyendo la disposición de las secciones y el estilo visual.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Configuración de Logo */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Configuración de Logo
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Image className="h-4 w-4 text-primary" />
+                      Logo del Header
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Logo que aparece en la parte superior de tu sitio (barra de navegación).
+                    </p>
+                    <div className="flex gap-2 text-sm">
+                      <Badge variant="outline">Subir Imagen</Badge>
+                      <span className="text-muted-foreground">o</span>
+                      <Badge variant="outline">URL</Badge>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Image className="h-4 w-4 text-primary" />
+                      Logo del Footer
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Logo que aparece en el pie de página de tu sitio.
+                    </p>
+                    <div className="flex gap-2 text-sm">
+                      <Badge variant="outline">Subir Imagen</Badge>
+                      <span className="text-muted-foreground">o</span>
+                      <Badge variant="outline">URL</Badge>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Image className="h-4 w-4 text-primary" />
+                      Favicon
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Icono pequeño que aparece en la pestaña del navegador junto al título de tu página. 
+                      Se recomienda formato PNG o ICO, con tamaño de 32x32px o 512x512px.
+                    </p>
+                    <div className="flex gap-2 text-sm">
+                      <Badge variant="outline">Subir Imagen</Badge>
+                      <span className="text-muted-foreground">o</span>
+                      <Badge variant="outline">URL</Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>Formatos de Imagen</AlertTitle>
+                  <AlertDescription className="text-sm">
+                    Para mejores resultados, usa imágenes PNG con fondo transparente para los logos. 
+                    El favicon debe ser cuadrado (32x32 o 512x512 píxeles).
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            {/* Tipografía */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">5</span>
+                  Tipografía
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Personaliza las fuentes que se usan en tu sitio web para darle un estilo único.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Type className="h-4 w-4 text-primary" />
+                      Fuente de Títulos
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Tipografía utilizada para todos los títulos de tu sitio (H1, H2, H3, etc.)
+                    </p>
+                    <p className="text-sm">
+                      <Badge variant="secondary">Ejemplo: Merriweather</Badge>
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Sliders className="h-4 w-4 text-primary" />
+                      Peso de Fuente de Títulos
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Grosor de la fuente para los títulos. Valores más altos = texto más grueso.
+                    </p>
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                      <div className="p-2 bg-background rounded text-center">
+                        <p className="font-light text-lg">Aa</p>
+                        <p className="text-muted-foreground">300 - Light</p>
+                      </div>
+                      <div className="p-2 bg-background rounded text-center">
+                        <p className="font-normal text-lg">Aa</p>
+                        <p className="text-muted-foreground">400 - Normal</p>
+                      </div>
+                      <div className="p-2 bg-background rounded text-center">
+                        <p className="font-bold text-lg">Aa</p>
+                        <p className="text-muted-foreground">700 - Bold</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Type className="h-4 w-4 text-primary" />
+                      Fuente del Cuerpo
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Tipografía para el texto del cuerpo de tu sitio (párrafos, descripciones, etc.)
+                    </p>
+                    <p className="text-sm">
+                      <Badge variant="secondary">Ejemplo: Montserrat</Badge>
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Sliders className="h-4 w-4 text-primary" />
+                      Escala de Tamaño de Títulos
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Ajusta el tamaño de todos los títulos proporcionalmente. Opciones: 25% más pequeño, 
+                      tamaño normal, o 25% más grande.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Best Practices */}
             <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2 text-green-800 dark:text-green-200">
@@ -1722,37 +1830,38 @@ export default function ClientGuides() {
                   <li className="flex gap-3">
                     <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
                     <span className="text-sm">
-                      <strong>Usa colores de tu marca:</strong> Si ya tienes un logo o material de marca, usa esos colores para mantener coherencia
+                      <strong>Coherencia de marca:</strong> Usa colores y fuentes que ya uses en otros materiales de tu restaurante
                     </span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
                     <span className="text-sm">
-                      <strong>Contraste adecuado:</strong> Asegúrate de que el color sea legible sobre fondos claros y oscuros
+                      <strong>Legibilidad primero:</strong> Asegúrate de que el texto sea fácil de leer en todos los dispositivos
                     </span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
                     <span className="text-sm">
-                      <strong>Colores profesionales:</strong> Elige colores que transmitan profesionalismo y confianza
+                      <strong>Logos de alta calidad:</strong> Usa imágenes PNG con fondo transparente para mejor apariencia
                     </span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
                     <span className="text-sm">
-                      <strong>Prueba antes de confirmar:</strong> Visualiza cómo se ve el color en el selector antes de aplicarlo
+                      <strong>Prueba en diferentes dispositivos:</strong> Revisa cómo se ve tu sitio en móvil, tablet y desktop
                     </span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
                     <span className="text-sm">
-                      <strong>Consistencia:</strong> Una vez elegido un color, mantenlo por un tiempo para que tus clientes lo asocien con tu marca
+                      <strong>Evita cambios frecuentes:</strong> Mantén tu identidad visual consistente para que tus clientes te reconozcan
                     </span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
+            {/* Save Button */}
             <Card className="border-primary/30 bg-primary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1762,7 +1871,7 @@ export default function ClientGuides() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Después de personalizar tu color y moneda, haz clic en el botón <strong>"Guardar Configuración"</strong>. 
+                  Después de realizar tus personalizaciones, haz clic en el botón <strong>"Guardar Configuración"</strong>. 
                   Los cambios se aplicarán inmediatamente en tu sitio web. Te recomendamos visitar tu sitio en una 
                   ventana privada para ver cómo se ve con los nuevos cambios.
                 </p>
