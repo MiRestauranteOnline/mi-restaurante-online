@@ -11,8 +11,11 @@ const corsHeaders = {
 interface ReclamacionRequest {
   claimCode: string;
   formData: {
+    personType: string;
     fullName: string;
     documentNumber: string;
+    ruc: string;
+    businessName: string;
     email: string;
     phone: string;
     contractedItem: string;
@@ -45,6 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
       : "Queja (malestar o descontento con la atención)";
     
     const contractedItemText = formData.contractedItem === "producto" ? "Producto" : "Servicio";
+    const personTypeText = formData.personType === "natural" ? "Persona Natural" : "Persona Jurídica";
 
     // Email to customer (confirmation)
     const customerEmailContent = `
@@ -55,8 +59,9 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
           <h3 style="color: #333; margin-top: 0;">Datos del Reclamo</h3>
           
-          <p><strong>Nombre:</strong> ${formData.fullName}</p>
-          <p><strong>Documento:</strong> ${formData.documentNumber}</p>
+          <p><strong>Tipo de Persona:</strong> ${personTypeText}</p>
+          <p><strong>${formData.personType === "natural" ? "Nombre" : "Representante Legal"}:</strong> ${formData.fullName}</p>
+          ${formData.personType === "natural" ? `<p><strong>Documento:</strong> ${formData.documentNumber}</p>` : `<p><strong>RUC:</strong> ${formData.ruc}</p><p><strong>Razón Social:</strong> ${formData.businessName}</p>`}
           <p><strong>Correo:</strong> ${formData.email}</p>
           <p><strong>Teléfono:</strong> ${formData.phone}</p>
           <p><strong>Bien Contratado:</strong> ${contractedItemText}</p>
@@ -96,8 +101,9 @@ const handler = async (req: Request): Promise<Response> => {
         
         <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107;">
           <h3 style="color: #333; margin-top: 0;">Datos del Consumidor</h3>
-          <p><strong>Nombre:</strong> ${formData.fullName}</p>
-          <p><strong>Documento:</strong> ${formData.documentNumber}</p>
+          <p><strong>Tipo de Persona:</strong> ${personTypeText}</p>
+          <p><strong>${formData.personType === "natural" ? "Nombre" : "Representante Legal"}:</strong> ${formData.fullName}</p>
+          ${formData.personType === "natural" ? `<p><strong>Documento:</strong> ${formData.documentNumber}</p>` : `<p><strong>RUC:</strong> ${formData.ruc}</p><p><strong>Razón Social:</strong> ${formData.businessName}</p>`}
           <p><strong>Correo:</strong> ${formData.email}</p>
           <p><strong>Teléfono:</strong> ${formData.phone}</p>
         </div>

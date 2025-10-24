@@ -16,8 +16,13 @@ const contractedItemOptions = ["producto", "servicio"] as const;
 const claimTypeOptions = ["reclamo", "queja"] as const;
 
 const formSchema = z.object({
+  personType: z.union([z.literal("natural"), z.literal("juridica")], {
+    message: "Selecciona el tipo de persona",
+  }),
   fullName: z.string().min(2, "El nombre completo es requerido").max(200),
-  documentNumber: z.string().min(8, "Número de documento inválido").max(20),
+  documentNumber: z.string().optional(),
+  ruc: z.string().optional(),
+  businessName: z.string().optional(),
   email: z.string().email("Correo electrónico inválido").max(255),
   phone: z.string().min(9, "Teléfono inválido").max(20),
   contractedItem: z.union([z.literal("producto"), z.literal("servicio")], {
@@ -35,6 +40,19 @@ const formSchema = z.object({
   dataConsent: z.boolean().refine(val => val === true, {
     message: "Debes autorizar el tratamiento de tus datos",
   }),
+}).refine((data) => {
+  // If natural person, documentNumber is required
+  if (data.personType === "natural" && !data.documentNumber) {
+    return false;
+  }
+  // If business, RUC and businessName are required
+  if (data.personType === "juridica" && (!data.ruc || !data.businessName)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Por favor completa todos los campos requeridos según el tipo de persona",
+  path: ["personType"],
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -46,8 +64,11 @@ export const ReclamacionesForm = () => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      personType: undefined,
       fullName: "",
       documentNumber: "",
+      ruc: "",
+      businessName: "",
       email: "",
       phone: "",
       amount: "",
@@ -59,6 +80,8 @@ export const ReclamacionesForm = () => {
       dataConsent: false,
     },
   });
+
+  const personType = form.watch("personType");
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -75,8 +98,11 @@ export const ReclamacionesForm = () => {
         body: {
           claimCode,
           formData: {
+            personType: data.personType,
             fullName: data.fullName,
-            documentNumber: data.documentNumber,
+            documentNumber: data.documentNumber || "N/A",
+            ruc: data.ruc || "N/A",
+            businessName: data.businessName || "N/A",
             email: data.email,
             phone: data.phone,
             contractedItem: data.contractedItem,
@@ -126,36 +152,97 @@ export const ReclamacionesForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Personal Information */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombre completo *</FormLabel>
+        {/* Person Type Selection */}
+        <FormField
+          control={form.control}
+          name="personType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de persona *</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <Input placeholder="Ingresa tu nombre completo" {...field} />
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona..." />
+                  </SelectTrigger>
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <SelectContent>
+                  <SelectItem value="natural">Persona Natural (Individual)</SelectItem>
+                  <SelectItem value="juridica">Persona Jurídica (Empresa)</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="documentNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>DNI / CE / Pasaporte *</FormLabel>
-                <FormControl>
-                  <Input placeholder="Número de documento" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+        {/* Personal/Business Information */}
+        {personType && (
+          <>
+            <div className="grid md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{personType === "natural" ? "Nombre completo *" : "Representante legal *"}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={personType === "natural" ? "Ingresa tu nombre completo" : "Nombre del representante"} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {personType === "natural" && (
+                <FormField
+                  control={form.control}
+                  name="documentNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>DNI / CE / Pasaporte *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Número de documento" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {personType === "juridica" && (
+                <FormField
+                  control={form.control}
+                  name="ruc"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>RUC *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Número de RUC" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+            </div>
+
+            {personType === "juridica" && (
+              <FormField
+                control={form.control}
+                name="businessName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Razón Social *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Razón social de la empresa" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-          />
-        </div>
+          </>
+        )}
 
         <div className="grid md:grid-cols-2 gap-4">
           <FormField
