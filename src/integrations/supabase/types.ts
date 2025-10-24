@@ -792,6 +792,59 @@ export type Database = {
           },
         ]
       }
+      client_policies: {
+        Row: {
+          client_id: string
+          cookies_policy_content: string | null
+          cookies_policy_enabled: boolean
+          created_at: string
+          id: string
+          privacy_policy_content: string | null
+          privacy_policy_enabled: boolean
+          reclamaciones_email: string | null
+          reclamaciones_enabled: boolean
+          terms_of_service_content: string | null
+          terms_of_service_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          cookies_policy_content?: string | null
+          cookies_policy_enabled?: boolean
+          created_at?: string
+          id?: string
+          privacy_policy_content?: string | null
+          privacy_policy_enabled?: boolean
+          reclamaciones_email?: string | null
+          reclamaciones_enabled?: boolean
+          terms_of_service_content?: string | null
+          terms_of_service_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          cookies_policy_content?: string | null
+          cookies_policy_enabled?: boolean
+          created_at?: string
+          id?: string
+          privacy_policy_content?: string | null
+          privacy_policy_enabled?: boolean
+          reclamaciones_email?: string | null
+          reclamaciones_enabled?: boolean
+          terms_of_service_content?: string | null
+          terms_of_service_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_policies_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_settings: {
         Row: {
           body_font: string | null
@@ -915,9 +968,11 @@ export type Database = {
           phone: string | null
           phone_country_code: string | null
           plan_type: string | null
+          razon_social: string | null
           referral_source: string | null
           reservations_email: string | null
           restaurant_name: string
+          ruc: string | null
           social_media_links: Json | null
           ssl_issued_date: string | null
           ssl_status: string | null
@@ -979,9 +1034,11 @@ export type Database = {
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
+          razon_social?: string | null
           referral_source?: string | null
           reservations_email?: string | null
           restaurant_name: string
+          ruc?: string | null
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
@@ -1043,9 +1100,11 @@ export type Database = {
           phone?: string | null
           phone_country_code?: string | null
           plan_type?: string | null
+          razon_social?: string | null
           referral_source?: string | null
           reservations_email?: string | null
           restaurant_name?: string
+          ruc?: string | null
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null

@@ -41,6 +41,7 @@ import ClientSettingsPage from "./pages/client/ClientSettings";
 import ClientSubscription from "./pages/client/ClientSubscription";
 import ClientSupport from "./pages/client/ClientSupport";
 import ClientGuides from "./pages/client/ClientGuides";
+import ClientPolicies from "./pages/client/ClientPolicies";
 // Reuse ClientGuides for public docs (renamed internally)
 const Guias = ClientGuides;
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
@@ -118,6 +119,7 @@ const AppContent = () => {
           <Route path="dashboard/:clientId" element={<AdminClientSettings allowedTabs={["basic","hours","social","delivery","branding","navigation-visibility","content","menu","team","reviews","faqs","carousel","custom-images"]} />} />
           <Route path="reservations/:clientId" element={<ClientReservations />} />
           <Route path="analytics/:clientId" element={<ClientAnalytics />} />
+          <Route path="policies/:clientId" element={<ClientPolicies />} />
           <Route path="support/:clientId" element={<ClientSupport />} />
           <Route path="subscription" element={<ClientSubscription />} />
         </Route>
