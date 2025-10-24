@@ -2935,92 +2935,194 @@ export default function ClientGuides() {
 
       case "categorias-menu":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Categorías del Menú</CardTitle>
-              <CardDescription>
-                Organiza tu menú con categorías personalizadas
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Categorías del Menú</h1>
+              <p className="text-muted-foreground">
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Menú</Badge> → Sección <Badge variant="secondary" className="mx-1">Categorías</Badge>
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Layout className="h-5 w-5 text-primary" />
+                  ¿Qué son las Categorías?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Menú</strong> → sección <strong>"Categorías"</strong>
+                  Las categorías te permiten organizar los elementos de tu menú en grupos lógicos 
+                  como "Entradas", "Platos Principales", "Bebidas", "Postres", etc. Esto hace que 
+                  tu menú sea más fácil de navegar para tus clientes.
                 </p>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Qué son las Categorías?</h3>
-                <p className="text-muted-foreground">
-                  Las categorías te permiten organizar los elementos de tu menú en grupos lógicos como "Entradas", "Platos Principales", "Bebidas", "Postres", etc.
-                </p>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Crear una Nueva Categoría</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Haz clic en el botón <strong>"Nueva Categoría"</strong></li>
-                  <li>Ingresa el nombre de la categoría (ej: "Platos Principales")</li>
-                  <li>Usa el switch para marcar si la categoría está activa o no</li>
-                  <li>Haz clic en <strong>"Crear"</strong></li>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Crear una Nueva Categoría
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">1.</span>
+                    <span className="text-sm">Haz clic en el botón <Badge variant="outline">Nueva Categoría</Badge></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">2.</span>
+                    <span className="text-sm">Ingresa el nombre de la categoría (ej: "Platos Principales")</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">3.</span>
+                    <span className="text-sm">Usa el switch para marcar si la categoría está activa</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">4.</span>
+                    <span className="text-sm">Haz clic en <Badge variant="outline">Crear</Badge></span>
+                  </li>
                 </ol>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Gestionar Categorías Existentes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <ArrowUpDown className="h-4 w-4 text-primary" />
+                    Reordenar
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Arrastra y suelta las categorías usando el ícono de líneas verticales para cambiar 
+                    el orden en que aparecen en tu sitio web. El orden es importante porque afecta cómo 
+                    los clientes navegan tu menú.
+                  </p>
+                </div>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Gestionar Categorías Existentes</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🔄 Reordenar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Arrastra y suelta las categorías usando el ícono de líneas verticales para cambiar el orden en que aparecen en tu sitio web.
-                    </p>
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Edit className="h-4 w-4 text-primary" />
+                    Editar
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Haz clic en el botón de editar (ícono de lápiz) para modificar el nombre de la categoría.
+                  </p>
+                </div>
+
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Eye className="h-4 w-4 text-primary" />
+                    Activar/Desactivar
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Usa el switch para activar o desactivar categorías sin eliminarlas. Las categorías 
+                    inactivas no aparecen en el sitio web pero conservan sus elementos.
+                  </p>
+                </div>
+
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Trash2 className="h-4 w-4 text-primary" />
+                    Eliminar
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Haz clic en el botón de eliminar (ícono de basura). Se te pedirá confirmación antes 
+                    de eliminar la categoría.
+                  </p>
+                  <Alert className="border-amber-500/50 bg-amber-500/10 mt-3">
+                    <AlertCircle className="h-4 w-4 text-amber-500" />
+                    <AlertDescription className="text-sm">
+                      <strong>Advertencia:</strong> Al eliminar una categoría, también se eliminan todos 
+                      los elementos del menú asociados a ella.
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Ejemplos de Categorías Comunes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="p-3 border rounded-lg bg-muted/50 text-center">
+                    <p className="font-medium text-sm">🥗 Entradas</p>
                   </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">✏️ Editar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón de editar (ícono de lápiz) para modificar el nombre de la categoría.
-                    </p>
+                  <div className="p-3 border rounded-lg bg-muted/50 text-center">
+                    <p className="font-medium text-sm">🍲 Sopas</p>
                   </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🔘 Activar/Desactivar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Usa el switch para activar o desactivar categorías sin eliminarlas. Las categorías inactivas no aparecen en el sitio web.
-                    </p>
+                  <div className="p-3 border rounded-lg bg-muted/50 text-center">
+                    <p className="font-medium text-sm">🍝 Pastas</p>
                   </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón de eliminar (ícono de basura). Se te pedirá confirmación antes de eliminar.
-                    </p>
+                  <div className="p-3 border rounded-lg bg-muted/50 text-center">
+                    <p className="font-medium text-sm">🥩 Platos Principales</p>
+                  </div>
+                  <div className="p-3 border rounded-lg bg-muted/50 text-center">
+                    <p className="font-medium text-sm">🍹 Bebidas</p>
+                  </div>
+                  <div className="p-3 border rounded-lg bg-muted/50 text-center">
+                    <p className="font-medium text-sm">🍰 Postres</p>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Crea las categorías antes de agregar elementos del menú</li>
-                  <li>Usa nombres descriptivos y claros para tus categorías</li>
-                  <li>El orden de las categorías afecta cómo se muestra tu menú</li>
-                  <li>Mantén solo las categorías activas que estés usando</li>
-                  <li>Ejemplos de categorías: "Entradas", "Sopas", "Platos Principales", "Bebidas", "Postres"</li>
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Crea categorías primero:</strong> Antes de agregar elementos del menú
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Nombres descriptivos:</strong> Usa nombres claros que los clientes entiendan fácilmente
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Orden lógico:</strong> Ordena las categorías como quieres que aparezcan (ej: Entradas → Principales → Postres)
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Solo activas:</strong> Mantén activas solo las categorías que estés usando actualmente
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Revisa periódicamente:</strong> Actualiza las categorías según las temporadas o cambios en tu menú
+                    </span>
+                  </li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "elementos-menu":
