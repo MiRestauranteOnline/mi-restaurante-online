@@ -105,6 +105,7 @@ const guideCategories: GuideCategory[] = [
     title: "Políticas",
     items: [
       { id: "libro-reclamaciones", title: "Libro de Reclamaciones", icon: FileText },
+      { id: "paginas-politicas", title: "Páginas de Políticas", icon: FileText },
     ],
   },
 ];

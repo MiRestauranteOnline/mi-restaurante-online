@@ -188,6 +188,11 @@ const guideMetadata: Record<string, { title: string; description: string; catego
     title: "Libro de Reclamaciones - Configuración para Restaurantes",
     description: "Configura el Libro de Reclamaciones virtual de tu restaurante para cumplir con las normativas legales.",
     category: "Políticas"
+  },
+  "paginas-politicas": {
+    title: "Páginas de Políticas - Privacidad, Cookies y Términos",
+    description: "Configura y personaliza las páginas de Política de Privacidad, Política de Cookies y Términos de Servicio de tu restaurante.",
+    category: "Políticas"
   }
 };
 
@@ -272,6 +277,7 @@ const guideCategories = [
     slug: "politicas",
     items: [
       { id: "libro-reclamaciones", title: "Libro de Reclamaciones", icon: FileText },
+      { id: "paginas-politicas", title: "Páginas de Políticas", icon: FileText },
     ],
   },
 ];
@@ -6374,6 +6380,450 @@ export default function ClientGuides() {
               <CardContent>
                 <p className="text-muted-foreground">
                   Después de configurar el email o cambiar la visibilidad del Libro de Reclamaciones, haz clic en el botón <strong>"Guardar Cambios"</strong> al final de la página. Los cambios se aplicarán inmediatamente en tu sitio web.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case "paginas-politicas":
+        return (
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Páginas de Políticas</h1>
+              <p className="text-muted-foreground">
+                Navega a: Políticas → Pestañas <Badge variant="secondary" className="mx-1">Política de Privacidad</Badge>, <Badge variant="secondary" className="mx-1">Política de Cookies</Badge>, <Badge variant="secondary" className="mx-1">Términos de Servicio</Badge>
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  ¿Qué son las Páginas de Políticas?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground">
+                  Las páginas de políticas son documentos legales esenciales que protegen a tu restaurante y a tus clientes. Establecen las reglas, derechos y responsabilidades relacionadas con el uso de tu sitio web y el manejo de datos personales.
+                </p>
+                <div className="grid md:grid-cols-3 gap-3 mt-4">
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1">🔒 Política de Privacidad</h4>
+                    <p className="text-xs text-muted-foreground">Explica cómo recopilas, usas y proteges los datos personales de tus clientes</p>
+                  </div>
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1">🍪 Política de Cookies</h4>
+                    <p className="text-xs text-muted-foreground">Informa sobre el uso de cookies y tecnologías de seguimiento en tu sitio web</p>
+                  </div>
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1">📜 Términos de Servicio</h4>
+                    <p className="text-xs text-muted-foreground">Define las condiciones de uso de tu sitio web y servicios</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Activar/Desactivar las Páginas de Políticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Cada página de política tiene su propio interruptor de activación/desactivación independiente. Esto te permite controlar qué páginas se muestran en tu sitio web.
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-green-50/50 dark:bg-green-950/20">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-green-600" />
+                      Cuando está Activada
+                    </h4>
+                    <ul className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        El enlace aparece automáticamente en el footer de tu sitio web
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        Los visitantes pueden acceder y leer la política completa
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        La página está disponible en la URL correspondiente
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      Cuando está Desactivada
+                    </h4>
+                    <ul className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        El enlace NO aparece en el footer
+                      </li>
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        La página no es accesible públicamente
+                      </li>
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        El contenido se conserva pero permanece oculto
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Importante:</strong> Aunque las políticas son opcionales técnicamente, se recomienda activar al menos la Política de Privacidad si recopilas datos personales (reservas, formularios de contacto) para cumplir con regulaciones como GDPR y leyes locales de protección de datos.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Editar el Contenido de las Políticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Cada pestaña incluye un editor de texto enriquecido que te permite personalizar completamente el contenido de las políticas.
+                </p>
+
+                <div className="p-4 border rounded-lg bg-primary/5">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <FileEdit className="h-4 w-4 text-primary" />
+                    Contenido Pre-generado
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Al crear tu cuenta, el sistema genera automáticamente contenido inicial para cada política usando:
+                  </p>
+                  <ul className="space-y-1 text-sm">
+                    <li className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      <span className="text-muted-foreground">Nombre de tu restaurante</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      <span className="text-muted-foreground">Razón Social</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      <span className="text-muted-foreground">RUC</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      <span className="text-muted-foreground">Email de contacto</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      <span className="text-muted-foreground">Teléfono y dirección</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-sm">Herramientas del Editor:</h4>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div className="p-3 border rounded-lg bg-muted/30">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Type className="h-3 w-3" />
+                        <span className="text-sm font-medium">Formato de Texto</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Negrita, cursiva, subrayado, títulos y párrafos</p>
+                    </div>
+                    
+                    <div className="p-3 border rounded-lg bg-muted/30">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Layout className="h-3 w-3" />
+                        <span className="text-sm font-medium">Listas</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Viñetas y listas numeradas</p>
+                    </div>
+                    
+                    <div className="p-3 border rounded-lg bg-muted/30">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Link2 className="h-3 w-3" />
+                        <span className="text-sm font-medium">Enlaces</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Añade hipervínculos a recursos externos</p>
+                    </div>
+                    
+                    <div className="p-3 border rounded-lg bg-muted/30">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Sliders className="h-3 w-3" />
+                        <span className="text-sm font-medium">Alineación</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Izquierda, centro, derecha, justificado</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert className="border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-950/20">
+                  <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Precaución Legal:</strong> El contenido pre-generado es una plantilla general. Te recomendamos revisarlo y adaptarlo a tu situación específica. Si tienes dudas legales, consulta con un abogado especializado en derecho digital o protección de datos.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Detalles de Cada Política
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-primary/10 p-3 border-b">
+                      <h4 className="font-semibold flex items-center gap-2">
+                        🔒 Política de Privacidad
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        <strong>Qué incluye:</strong>
+                      </p>
+                      <ul className="space-y-1 text-sm text-muted-foreground pl-4">
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Qué datos personales recopilas (nombre, email, teléfono)</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Cómo los usas (reservas, comunicación, mejorar el servicio)</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Con quién los compartes (proveedores de servicios)</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Medidas de seguridad implementadas</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Derechos de los usuarios (acceso, rectificación, eliminación)</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Información de contacto para ejercer derechos</span>
+                        </li>
+                      </ul>
+                      <div className="mt-3 p-2 bg-green-50 dark:bg-green-950/20 rounded">
+                        <p className="text-xs text-green-800 dark:text-green-200">
+                          <strong>URL:</strong> turestaurante.com/privacidad
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-primary/10 p-3 border-b">
+                      <h4 className="font-semibold flex items-center gap-2">
+                        🍪 Política de Cookies
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        <strong>Qué incluye:</strong>
+                      </p>
+                      <ul className="space-y-1 text-sm text-muted-foreground pl-4">
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Qué son las cookies y para qué se usan</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Tipos de cookies que usa tu sitio (técnicas, analíticas, publicidad)</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Cookies de terceros (Google Analytics, Facebook Pixel, etc.)</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Duración de las cookies</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Cómo desactivar o gestionar las cookies</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Impacto de desactivar cookies en la funcionalidad</span>
+                        </li>
+                      </ul>
+                      <div className="mt-3 p-2 bg-green-50 dark:bg-green-950/20 rounded">
+                        <p className="text-xs text-green-800 dark:text-green-200">
+                          <strong>URL:</strong> turestaurante.com/cookies
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-primary/10 p-3 border-b">
+                      <h4 className="font-semibold flex items-center gap-2">
+                        📜 Términos de Servicio
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        <strong>Qué incluye:</strong>
+                      </p>
+                      <ul className="space-y-1 text-sm text-muted-foreground pl-4">
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Condiciones de uso del sitio web</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Reglas sobre reservas y cancelaciones</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Política de precios y pagos</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Propiedad intelectual (logos, imágenes, contenido)</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Limitaciones de responsabilidad</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span>•</span>
+                          <span>Ley aplicable y jurisdicción</span>
+                        </li>
+                      </ul>
+                      <div className="mt-3 p-2 bg-green-50 dark:bg-green-950/20 rounded">
+                        <p className="text-xs text-green-800 dark:text-green-200">
+                          <strong>URL:</strong> turestaurante.com/terminos
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Ubicación en tu Sitio Web
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground">
+                  Cuando una política está activada, su enlace aparece automáticamente en el footer de tu sitio web:
+                </p>
+
+                <div className="p-4 border rounded-lg bg-primary/5">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-primary" />
+                    Enlaces en el Footer
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    El footer (pie de página) es la ubicación estándar para estos enlaces, cumpliendo con las mejores prácticas web:
+                  </p>
+                  <div className="grid md:grid-cols-3 gap-2">
+                    <div className="p-2 bg-muted/50 rounded text-center">
+                      <p className="text-xs font-medium">Política de Privacidad</p>
+                    </div>
+                    <div className="p-2 bg-muted/50 rounded text-center">
+                      <p className="text-xs font-medium">Política de Cookies</p>
+                    </div>
+                    <div className="p-2 bg-muted/50 rounded text-center">
+                      <p className="text-xs font-medium">Términos de Servicio</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Buenas Prácticas:</strong> Los enlaces en el footer son fácilmente accesibles desde cualquier página, lo que mejora la transparencia y cumple con requisitos legales de visibilidad.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Revisa y personaliza:</strong> Aunque el contenido pre-generado es útil, revísalo y ajústalo a tu situación específica
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Mantén actualizado:</strong> Revisa las políticas periódicamente, especialmente cuando cambies servicios o prácticas
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Sé transparente:</strong> Usa lenguaje claro y directo que tus clientes puedan entender fácilmente
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Activa Política de Privacidad:</strong> Si recopilas datos (reservas, contacto), es esencial tenerla activa
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Considera Política de Cookies:</strong> Importante si usas Google Analytics u otras herramientas de seguimiento
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Consulta legal si es necesario:</strong> Para situaciones complejas o si tienes dudas, busca asesoría legal profesional
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Save className="h-5 w-5" />
+                  Guardar Cambios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Después de editar el contenido de cualquier política o cambiar su estado de activación, haz clic en el botón <strong>"Guardar Cambios"</strong> al final de la página. Los cambios se aplicarán inmediatamente en tu sitio web.
                 </p>
               </CardContent>
             </Card>
