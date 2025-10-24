@@ -764,14 +764,34 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   useEffect(() => {
     const order = ['basic','domain','metadata','hours','social','delivery','branding','navigation-visibility','content','briefing','menu','team','reviews','faqs','carousel','custom-images'];
     const adminOnly = ['discounts','advanced'];
-    const ordered = userRole === 'admin' ? [...order, ...adminOnly] : order;
+    const ordered = userRole === 'admin' ? [...order, ...adminOnly] : [...order, ...adminOnly];
     const firstAllowed = ordered.find((v) => showTab(v));
     if (firstAllowed && !showTab(activeTab)) {
       setActiveTab(firstAllowed);
     }
-  }, [allowedTabs, userRole]);
+  }, [allowedTabs, userRole, client]);
 
-  const showTab = (name: string) => !allowedTabs || allowedTabs.includes(name);
+  const showTab = (name: string) => {
+    // Always allow when no restrictions
+    if (!allowedTabs) {
+      if (name === 'advanced') {
+        // Admins always see it; clients only if plan is advanced
+        return userRole === 'admin' || (client && (client as any).plan_type === 'advanced');
+      }
+      return true;
+    }
+    // Respect allowedTabs first
+    if (!allowedTabs.includes(name)) {
+      // Exception: allow 'advanced' for clients with advanced plan even if not in allowedTabs
+      if (name === 'advanced') {
+        return userRole === 'admin' || (client && (client as any).plan_type === 'advanced');
+      }
+      return false;
+    }
+    // For 'discounts', still limit to admin unless explicitly allowed
+    if (name === 'discounts' && userRole !== 'admin') return false;
+    return true;
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -3444,8 +3464,8 @@ setReviewForm({
                   {showTab('faqs') && <SelectItem value="faqs">Preguntas Frecuentes</SelectItem>}
                   {showTab('carousel') && <SelectItem value="carousel">{t('nav.carousel')}</SelectItem>}
                   {showTab('custom-images') && <SelectItem value="custom-images">{t('nav.images')}</SelectItem>}
-                  {userRole === 'admin' && <SelectItem value="discounts">Descuentos</SelectItem>}
-                  {userRole === 'admin' && <SelectItem value="advanced">Avanzado</SelectItem>}
+                  {showTab('discounts') && <SelectItem value="discounts">Descuentos</SelectItem>}
+                  {showTab('advanced') && <SelectItem value="advanced">Avanzado</SelectItem>}
                 </SelectContent>
               </Select>
             </CardContent>
@@ -3470,8 +3490,8 @@ setReviewForm({
                 {showTab('faqs') && <TabsTrigger value="faqs" className="whitespace-nowrap">FAQ</TabsTrigger>}
                 {showTab('carousel') && <TabsTrigger value="carousel" className="whitespace-nowrap">{t('nav.carousel')}</TabsTrigger>}
                 {showTab('custom-images') && <TabsTrigger value="custom-images" className="whitespace-nowrap">{t('nav.images')}</TabsTrigger>}
-                {userRole === 'admin' && <TabsTrigger value="discounts" className="whitespace-nowrap">Descuentos</TabsTrigger>}
-                {userRole === 'admin' && <TabsTrigger value="advanced" className="whitespace-nowrap">Avanzado</TabsTrigger>}
+                {showTab('discounts') && <TabsTrigger value="discounts" className="whitespace-nowrap">Descuentos</TabsTrigger>}
+                {showTab('advanced') && <TabsTrigger value="advanced" className="whitespace-nowrap">Avanzado</TabsTrigger>}
               </TabsList>
             </div>
           </div>
