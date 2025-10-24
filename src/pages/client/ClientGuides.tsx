@@ -2263,11 +2263,72 @@ export default function ClientGuides() {
               </AlertDescription>
             </Alert>
 
-            {/* Sección Hero */}
+            {/* Seleccionar Página */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Seleccionar Página para Editar
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  En la parte superior de la pestaña "Contenido" encontrarás un menú desplegable llamado <strong>"Seleccionar Página"</strong>. 
+                  Este te permite elegir qué página del sitio quieres editar.
+                </p>
+
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm mb-3">Páginas Disponibles:</h4>
+                  
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">🏠 Página de Inicio</p>
+                      <p className="text-xs text-muted-foreground">
+                        La página principal de tu sitio. Aquí puedes editar todas las secciones principales como Hero, Acerca de, Menú, Servicios, Reservaciones, Reseñas, y Contacto.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">📖 Página "Acerca de"</p>
+                      <p className="text-xs text-muted-foreground">
+                        Página dedicada con información detallada sobre tu restaurante. Incluye la sección principal "Acerca de", estadísticas, y sección de equipo.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">📞 Página de Contacto</p>
+                      <p className="text-xs text-muted-foreground">
+                        Página dedicada para que los visitantes se comuniquen contigo. Incluye el formulario de contacto y el mapa de ubicación.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>Cómo Usar el Selector de Página</AlertTitle>
+                  <AlertDescription className="text-sm">
+                    <ol className="list-decimal list-inside space-y-1 mt-2">
+                      <li>Haz clic en el menú desplegable "Seleccionar Página"</li>
+                      <li>Elige la página que deseas editar</li>
+                      <li>El contenido cambiará para mostrar las secciones de esa página</li>
+                      <li>Edita el contenido que necesites</li>
+                      <li>Recuerda guardar los cambios antes de salir o cambiar a otra página</li>
+                    </ol>
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            {/* Sección Hero */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
                   Sección Hero (Portada)
                 </CardTitle>
               </CardHeader>
@@ -2313,7 +2374,7 @@ export default function ClientGuides() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
                   Otras Secciones del Sitio
                 </CardTitle>
               </CardHeader>
@@ -2372,7 +2433,7 @@ export default function ClientGuides() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
                   Cómo Hacer Cambios
                 </CardTitle>
               </CardHeader>
