@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2 } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -3166,162 +3166,561 @@ export default function ClientGuides() {
 
       case "elementos-menu":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Elementos del Menú</CardTitle>
-              <CardDescription>
-                Agrega y gestiona los platos y bebidas de tu restaurante
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Elementos del Menú</h1>
+              <p className="text-muted-foreground">
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Menú</Badge>
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  ¿Qué son los Elementos del Menú?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Menú</strong> → sección <strong>"Elementos del Menú"</strong>
+                  Los elementos del menú son los platos, bebidas y productos que ofreces en tu restaurante. Cada elemento pertenece a una categoría y puede tener imagen, descripción, precio y opciones de visualización personalizadas.
                 </p>
-              </div>
+                <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Organización por Categorías:</strong> Los elementos del menú están organizados dentro de las categorías que creaste. Primero debes crear categorías (Entrantes, Platos Principales, etc.) y luego agregar elementos dentro de cada una.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <Separator />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Agregar un Nuevo Elemento
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Los elementos se agregan dentro de cada categoría. Hay dos formas de hacerlo:
+                </p>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Crear un Nuevo Elemento</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Haz clic en el botón <strong>"Nuevo Elemento"</strong></li>
-                  <li>Completa el formulario con la información del plato</li>
-                  <li>Haz clic en <strong>"Crear"</strong></li>
-                </ol>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Campos del Formulario</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Nombre del Plato *</h4>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="p-4 border rounded-lg bg-primary/5">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <span className="text-primary">1️⃣</span>
+                      Desde el Encabezado de la Categoría
+                    </h4>
                     <p className="text-sm text-muted-foreground">
-                      Nombre del plato o bebida (ej: "Lomo Saltado"). Campo obligatorio.
+                      En cada categoría colapsable, haz clic en el botón <strong>"Agregar Plato"</strong> ubicado en la parte superior derecha del encabezado.
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Precio *</h4>
+                  <div className="p-4 border rounded-lg bg-primary/5">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <span className="text-primary">2️⃣</span>
+                      Desde una Categoría Vacía
+                    </h4>
                     <p className="text-sm text-muted-foreground">
-                      Precio del elemento. Solo números (ej: 25.50). Campo obligatorio.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Categoría *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Selecciona la categoría a la que pertenece este elemento. Si no ves categorías, créalas primero.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Descripción</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Descripción detallada del plato, ingredientes, preparación, etc. (Opcional)
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Imagen del Plato</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Sube una foto del plato. Se optimizará automáticamente. (Opcional pero recomendado)
+                      Si una categoría no tiene elementos, verás un botón <strong>"Agregar primer plato"</strong> en el centro de la sección colapsada.
                     </p>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
+                <Alert className="border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-950/20">
+                  <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Categorías Primero:</strong> Si no ves ninguna categoría disponible, primero debes crear al menos una categoría antes de poder agregar elementos del menú.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Opciones de Visualización</h3>
-                
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Campos del Formulario
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Elemento Activo</h4>
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-primary/10 p-3 border-b">
+                      <h4 className="font-semibold">Información Básica (Obligatoria)</h4>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div>
+                        <h5 className="font-medium text-sm mb-1">Nombre del Plato *</h5>
+                        <p className="text-xs text-muted-foreground">
+                          Nombre del plato o bebida (ej: "Lomo Saltado", "Pisco Sour"). <strong>Campo obligatorio.</strong>
+                        </p>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-sm mb-1">Precio *</h5>
+                        <p className="text-xs text-muted-foreground">
+                          Precio en soles (S/). Solo números con máximo 2 decimales (ej: 25.50). <strong>Campo obligatorio.</strong>
+                        </p>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-sm mb-1">Categoría *</h5>
+                        <p className="text-xs text-muted-foreground">
+                          Se pre-selecciona automáticamente según desde qué categoría agregaste el elemento. Puedes cambiarla si es necesario. <strong>Campo obligatorio.</strong>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-muted/50 p-3 border-b">
+                      <h4 className="font-semibold">Información Adicional (Opcional)</h4>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div>
+                        <h5 className="font-medium text-sm mb-1">Descripción</h5>
+                        <p className="text-xs text-muted-foreground">
+                          Describe el plato: ingredientes, preparación, origen, acompañamientos, etc. Esto ayuda a tus clientes a decidir qué ordenar. <strong>Opcional pero muy recomendado.</strong>
+                        </p>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-sm mb-1 flex items-center gap-2">
+                          <Image className="h-3 w-3" />
+                          Imagen del Plato
+                        </h5>
+                        <p className="text-xs text-muted-foreground">
+                          Sube una foto apetitosa del plato. Se optimizará automáticamente para web. Formatos: JPG, PNG, WEBP. <strong>Opcional pero muy recomendado.</strong>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-green-50 dark:bg-green-950/20 p-3 border-b border-green-200 dark:border-green-800">
+                      <h4 className="font-semibold">Opciones de Visualización</h4>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div className="flex items-start gap-3">
+                        <Power className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h5 className="font-medium text-sm mb-1">Elemento Activo</h5>
+                          <p className="text-xs text-muted-foreground">
+                            Switch para activar/desactivar el elemento. Los elementos inactivos NO aparecen en tu sitio web. Útil para platos temporalmente no disponibles sin eliminarlos.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Home className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h5 className="font-medium text-sm mb-1">Mostrar en Página de Inicio</h5>
+                          <p className="text-xs text-muted-foreground">
+                            Marca este elemento para que aparezca en la sección de platos destacados de tu página principal. <strong>Máximo 8 elementos destacados.</strong> Usa esto para tus mejores platos.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Eye className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h5 className="font-medium text-sm mb-1">Mostrar Imagen en Menú</h5>
+                          <p className="text-xs text-muted-foreground">
+                            Si está activado, la imagen del plato aparece en la página del menú completo. Desactívalo si prefieres un menú solo con texto y precios.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Eye className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h5 className="font-medium text-sm mb-1">Mostrar Imagen en Inicio</h5>
+                          <p className="text-xs text-muted-foreground">
+                            Si está activado, la imagen aparece cuando el plato se muestra en la sección destacada de la página de inicio (si "Mostrar en Página de Inicio" está activo).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Entender las Tarjetas de Elementos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Cada elemento del menú se muestra como una tarjeta visual con información clave y controles rápidos:
+                </p>
+
+                <div className="border rounded-lg overflow-hidden">
+                  <div className="bg-muted/30 p-3 border-b">
+                    <h4 className="font-semibold text-sm">Estructura de la Tarjeta</h4>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">1.</span>
+                      <div>
+                        <p className="font-medium text-sm">Imagen del Plato</p>
+                        <p className="text-xs text-muted-foreground">Ocupa la parte superior. Si no hay imagen, se muestra un ícono de placeholder.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">2.</span>
+                      <div>
+                        <p className="font-medium text-sm">Badges en la Imagen</p>
+                        <p className="text-xs text-muted-foreground">
+                          <Badge variant="secondary" className="mr-1 text-xs"><Home className="h-2 w-2 mr-1 inline" />Inicio</Badge> indica que el elemento está destacado en la página principal.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">3.</span>
+                      <div>
+                        <p className="font-medium text-sm">Nombre y Precio</p>
+                        <p className="text-xs text-muted-foreground">En la parte superior del contenido. El precio se muestra en formato S/ XX.XX</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">4.</span>
+                      <div>
+                        <p className="font-medium text-sm">Switch de Estado + Badge</p>
+                        <p className="text-xs text-muted-foreground">
+                          Switch para activar/desactivar rápidamente + badge <Badge variant="default" className="text-xs">Activo</Badge> o <Badge variant="secondary" className="text-xs">Inactivo</Badge>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">5.</span>
+                      <div>
+                        <p className="font-medium text-sm">Descripción</p>
+                        <p className="text-xs text-muted-foreground">Muestra las primeras 2 líneas de la descripción (si existe).</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">6.</span>
+                      <div>
+                        <p className="font-medium text-sm">Badges de Visualización</p>
+                        <p className="text-xs text-muted-foreground">
+                          <Badge variant="outline" className="text-xs mr-1"><Eye className="h-2 w-2 mr-1 inline" />IMG-Inicio</Badge>
+                          <Badge variant="outline" className="text-xs"><Eye className="h-2 w-2 mr-1 inline" />IMG-Menú</Badge> indican dónde se muestra la imagen.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">7.</span>
+                      <div>
+                        <p className="font-medium text-sm">Botones de Acción</p>
+                        <p className="text-xs text-muted-foreground">
+                          <Edit className="h-3 w-3 inline mr-1" /> Editar y <Trash2 className="h-3 w-3 inline mr-1" /> Eliminar en la esquina inferior derecha.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert className="border-primary/30 bg-primary/5">
+                  <Lightbulb className="h-4 w-4 text-primary" />
+                  <AlertDescription className="text-sm">
+                    <strong>Consejo:</strong> El switch de activación/desactivación te permite ocultar platos temporalmente sin perder su información. Muy útil para platos estacionales o cuando se te acaba un ingrediente.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Reordenar Elementos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  El orden de los elementos determina cómo aparecen en tu sitio web. El sistema ofrece diferentes métodos según el dispositivo:
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-blue-50 dark:bg-blue-950/20 p-3 border-b border-blue-200 dark:border-blue-800">
+                      <h4 className="font-semibold text-sm flex items-center gap-2">
+                        💻 En Computadora
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <GripVertical className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-sm mb-1">Arrastrar y Soltar</p>
+                          <p className="text-xs text-muted-foreground">
+                            Verás un ícono de agarre (⋮⋮) en la esquina superior izquierda de cada tarjeta. Haz clic y arrastra para reordenar.
+                          </p>
+                        </div>
+                      </div>
+                      <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20 mt-3">
+                        <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
+                        <AlertDescription className="text-xs">
+                          Los cambios se guardan automáticamente al soltar el elemento.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-orange-50 dark:bg-orange-950/20 p-3 border-b border-orange-200 dark:border-orange-800">
+                      <h4 className="font-semibold text-sm flex items-center gap-2">
+                        📱 En Móvil/Tablet
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <ArrowUpDown className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-sm mb-1">Botones de Flecha</p>
+                          <p className="text-xs text-muted-foreground">
+                            En dispositivos móviles, el drag-and-drop no está disponible. Los elementos mantienen su orden actual (por fecha de creación).
+                          </p>
+                        </div>
+                      </div>
+                      <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 mt-3">
+                        <Info className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                        <AlertDescription className="text-xs">
+                          <strong>Recomendación:</strong> Ordena los elementos desde una computadora para tener control total del ordenamiento.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">5</span>
+                  Editar y Eliminar Elementos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-primary/5">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Edit className="h-4 w-4 text-primary" />
+                      Editar un Elemento
+                    </h4>
+                    <ol className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="font-bold">1.</span>
+                        <span>Haz clic en el botón de editar <Edit className="h-3 w-3 inline" /> en la tarjeta del elemento</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">2.</span>
+                        <span>Se abre el mismo formulario con los datos actuales pre-cargados</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">3.</span>
+                        <span>Modifica lo que necesites y haz clic en <strong>"Guardar"</strong></span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">4.</span>
+                        <span>Los cambios se reflejan inmediatamente en tu sitio web</span>
+                      </li>
+                    </ol>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-red-50/50 dark:bg-red-950/20">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                      Eliminar un Elemento
+                    </h4>
+                    <ol className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="font-bold">1.</span>
+                        <span>Haz clic en el botón de eliminar <Trash2 className="h-3 w-3 inline" /> en la tarjeta del elemento</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">2.</span>
+                        <span>Aparece un diálogo de confirmación para prevenir eliminaciones accidentales</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">3.</span>
+                        <span>Confirma la eliminación haciendo clic en <strong>"Eliminar"</strong></span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">4.</span>
+                        <span>El elemento desaparece permanentemente del sistema</span>
+                      </li>
+                    </ol>
+                    <Alert className="border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-950/20 mt-3">
+                      <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                      <AlertDescription className="text-xs">
+                        <strong>Precaución:</strong> La eliminación es permanente. Si solo quieres ocultar temporalmente un plato, usa el switch de activación/desactivación en lugar de eliminarlo.
+                      </AlertDescription>
+                    </Alert>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">6</span>
+                  Navegación por Categorías
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground">
+                  Los elementos están organizados dentro de categorías colapsables para facilitar la navegación:
+                </p>
+
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <ChevronDown className="h-4 w-4" />
+                      Expandir/Colapsar Categorías
+                    </h4>
                     <p className="text-sm text-muted-foreground">
-                      Los elementos inactivos no aparecen en el sitio web. Útil para platos temporalmente no disponibles.
+                      Haz clic en el encabezado de cualquier categoría para expandirla y ver sus elementos, o colapsarla para ocultarlos. El ícono <ChevronRight className="h-3 w-3 inline" /> indica colapsado y <ChevronDown className="h-3 w-3 inline" /> indica expandido.
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Mostrar en Página de Inicio</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Marca los platos destacados que quieres mostrar en la página principal. <strong>Máximo 8 elementos.</strong>
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2">Vista de Grid Responsiva</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Los elementos se muestran en una cuadrícula que se adapta automáticamente:
                     </p>
+                    <ul className="space-y-1 text-xs text-muted-foreground pl-4">
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        <span><strong>Móvil:</strong> 1 columna (tarjetas apiladas)</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        <span><strong>Tablet:</strong> 2 columnas</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        <span><strong>Desktop:</strong> 3 columnas</span>
+                      </li>
+                    </ul>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Mostrar Imagen en Menú</h4>
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2">Contador de Elementos</h4>
                     <p className="text-sm text-muted-foreground">
-                      Si está activado, la imagen del plato aparece en la página del menú completo.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Mostrar Imagen en Inicio</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si está activado, la imagen aparece cuando el plato se muestra en la página de inicio.
+                      Cada categoría muestra un badge <Badge variant="outline" className="text-xs">X platos</Badge> indicando cuántos elementos contiene, facilitando la gestión de inventario.
                     </p>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Gestionar Elementos</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🔍 Buscar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Usa el cuadro de búsqueda para encontrar elementos por nombre, descripción o categoría.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🔄 Reordenar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Arrastra y suelta elementos dentro de cada categoría para cambiar su orden de aparición.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">✏️ Editar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón de editar para modificar cualquier información del elemento.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón rojo de eliminar. Se te pedirá confirmación.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Usa fotos de alta calidad para tus platos principales</li>
-                  <li>Escribe descripciones atractivas que hagan querer ordenar</li>
-                  <li>Actualiza los precios regularmente</li>
-                  <li>Selecciona tus mejores 8 platos para la página de inicio</li>
-                  <li>Usa la opción "inactivo" en lugar de eliminar platos de temporada</li>
-                  <li>Agrupa elementos similares en la misma categoría</li>
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Fotos de calidad:</strong> Usa fotos bien iluminadas y apetitosas para tus platos principales. Una buena foto puede aumentar las ventas hasta un 30%
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Descripciones atractivas:</strong> No solo listes ingredientes, describe sabores, texturas y experiencias. Ejemplo: "Jugoso lomo saltado con trozos de carne tierna salteados al wok"
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Selecciona 8 platos destacados:</strong> Escoge tus mejores platos para mostrar en la página de inicio. Estos son los que más venderás
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Usa inactivo en lugar de eliminar:</strong> Para platos de temporada o temporalmente no disponibles, desactívalos en lugar de eliminarlos para conservar su información
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Precios actualizados:</strong> Revisa y actualiza los precios regularmente. Los precios desactualizados generan mala experiencia al cliente
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Orden estratégico:</strong> Ordena los elementos poniendo primero los más populares o rentables de cada categoría
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Agrupa correctamente:</strong> Asegúrate de que cada elemento esté en la categoría correcta para facilitar la navegación del cliente
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Ordena desde desktop:</strong> Si necesitas reordenar elementos, hazlo desde una computadora para tener acceso a la funcionalidad de arrastrar y soltar
+                    </span>
+                  </li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-800 dark:text-blue-200">
+                  <HelpCircle className="h-5 w-5" />
+                  Preguntas Frecuentes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Cuántos elementos puedo agregar?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      No hay límite. Puedes agregar tantos elementos como necesites en cada categoría.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Puedo cambiar un elemento de categoría?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Sí, al editar un elemento puedes seleccionar una categoría diferente en el desplegable de categorías.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Qué pasa si elimino un elemento destacado en inicio?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Se elimina completamente, incluyendo su aparición en la página de inicio. Si solo quieres quitarlo del inicio, edítalo y desactiva "Mostrar en Página de Inicio".
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Las imágenes se optimizan automáticamente?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Sí, el sistema optimiza automáticamente todas las imágenes que subes para mejorar la velocidad de carga del sitio.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Puedo no mostrar imágenes en el menú?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Sí, desactiva "Mostrar Imagen en Menú" al crear o editar el elemento. Esto creará un menú estilo tradicional solo con texto y precios.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "equipo":
