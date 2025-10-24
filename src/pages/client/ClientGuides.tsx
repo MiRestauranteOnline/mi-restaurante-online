@@ -710,6 +710,27 @@ export default function ClientGuides() {
 
                   <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      🏢 Razón Social
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Nombre legal o razón social de tu empresa o restaurante. Este nombre se utilizará para la facturación y documentos oficiales. Es importante mantenerlo actualizado para cumplir con requisitos fiscales.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      📄 RUC
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Registro Único de Contribuyentes (RUC) de tu restaurante. Este número es requerido para la emisión de comprobantes electrónicos y facturación. Ingresa solo los dígitos, sin guiones ni espacios.
+                    </p>
+                    <div className="mt-2 p-2 bg-muted/50 rounded text-xs">
+                      <strong>Formato Perú:</strong> 11 dígitos (ejemplo: 20123456789)
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
                       📞 Teléfono
                     </h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
