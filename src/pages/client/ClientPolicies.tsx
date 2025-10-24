@@ -80,7 +80,7 @@ export default function ClientPolicies() {
       if (policiesData) {
         setFormData(policiesData);
       } else {
-        // Generate initial policies from templates
+        // Generate initial policies from templates and persist immediately
         const { data: clientData } = await supabase
           .from('clients')
           .select('restaurant_name, razon_social, ruc, email, phone, address')
@@ -97,14 +97,27 @@ export default function ClientPolicies() {
             address: clientData.address || 'Lima, Perú',
           };
 
-          setFormData(prev => ({
-            ...prev,
+          const dataToInsert = {
             client_id: selectedClientId,
-            reclamaciones_email: selectedClient?.email || null,
+            reclamaciones_enabled: true,
+            reclamaciones_email: selectedClient?.email || clientData.email || null,
+            privacy_policy_enabled: false,
             privacy_policy_content: generatePrivacyPolicy(policyData),
+            cookies_policy_enabled: false,
             cookies_policy_content: generateCookiesPolicy(policyData),
+            terms_of_service_enabled: false,
             terms_of_service_content: generateTermsOfService(policyData),
-          }));
+          };
+
+          const { data: inserted, error: insertError } = await supabase
+            .from('client_policies')
+            .insert(dataToInsert)
+            .select('*')
+            .single();
+
+          if (insertError) throw insertError;
+
+          setFormData(inserted as ClientPoliciesData);
         }
       }
     } catch (error: any) {
