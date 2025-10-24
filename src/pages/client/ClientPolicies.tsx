@@ -135,11 +135,27 @@ export default function ClientPolicies() {
         terms_of_service_content: formData.terms_of_service_content,
       };
 
-      const { error } = await supabase
+      // Check if record exists
+      const { data: existing } = await supabase
         .from('client_policies')
-        .upsert(dataToSave, { onConflict: 'client_id' });
+        .select('id')
+        .eq('client_id', selectedClientId)
+        .single();
 
-      if (error) throw error;
+      if (existing) {
+        // Update existing record
+        const { error } = await supabase
+          .from('client_policies')
+          .update(dataToSave)
+          .eq('id', existing.id);
+        if (error) throw error;
+      } else {
+        // Insert new record
+        const { error } = await supabase
+          .from('client_policies')
+          .insert(dataToSave);
+        if (error) throw error;
+      }
 
       toast({
         title: 'Éxito',
