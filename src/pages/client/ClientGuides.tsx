@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -1882,226 +1882,379 @@ export default function ClientGuides() {
 
       case "contenido-sitio":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Contenido del Sitio Web</CardTitle>
-              <CardDescription>
-                Personaliza todos los textos, imágenes y secciones de tu sitio web
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Contenido del Sitio Web</h1>
+              <p className="text-muted-foreground">
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Pestaña <Badge variant="secondary" className="mx-1">Contenido</Badge>
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileEdit className="h-5 w-5 text-primary" />
+                  ¿Qué Puedes Editar?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Configuración</strong> → busca la pestaña <strong>"Contenido"</strong> (si estás en el panel de administrador)
+                  Esta sección te permite personalizar todos los textos, imágenes y la visibilidad de las secciones 
+                  de tu sitio web. Controla completamente qué información muestras a tus visitantes.
                 </p>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
+            <Alert className="border-amber-500/50 bg-amber-500/10">
+              <AlertCircle className="h-4 w-4 text-amber-500" />
+              <AlertTitle className="text-amber-700 dark:text-amber-400">Confirmación Requerida</AlertTitle>
+              <AlertDescription className="text-foreground/80 text-sm space-y-2">
+                <p>
+                  Al entrar a la pestaña "Contenido" aparecerá un popup de confirmación porque los cambios aquí 
+                  afectan directamente cómo los visitantes ven tu restaurante.
+                </p>
+                <p className="text-xs">
+                  <strong>Tip:</strong> Revisa cuidadosamente cada cambio antes de guardarlo y verifica tu sitio después.
+                </p>
+              </AlertDescription>
+            </Alert>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">⚠️ Advertencia Importante</h3>
-                <div className="p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                  <h4 className="font-medium mb-2 text-yellow-900 dark:text-yellow-100">
-                    Al entrar a la pestaña "Contenido", aparecerá un popup de confirmación
-                  </h4>
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200 mb-3">
-                    <strong>¿Por qué?</strong> Cambiar el contenido puede afectar directamente cómo los visitantes ven y perciben tu restaurante.
-                  </p>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">El popup te advierte porque:</p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800 dark:text-yellow-200">
-                      <li>Modificarás textos visibles para tus clientes</li>
-                      <li>Cambiarás imágenes importantes de tu sitio</li>
-                      <li>Podrás ocultar/mostrar secciones completas</li>
-                      <li>Los cambios afectan la experiencia del usuario</li>
-                    </ul>
-                  </div>
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200 mt-3">
-                    <strong>Recomendación:</strong> Revisa cuidadosamente cada cambio antes de guardarlo y verifica tu sitio web después de guardar.
-                  </p>
-                </div>
-              </div>
+            {/* Controles de Visibilidad */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Controles de Visibilidad
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Usa los switches (interruptores) para mostrar u ocultar secciones completas de tu sitio web.
+                </p>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Secciones Principales</h3>
-                
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">1. Controles de Visibilidad de Secciones</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Controla qué secciones se muestran u ocultan en cada página de tu sitio web.
-                    </p>
-                    <div className="ml-4 space-y-2">
-                      <p className="text-sm font-medium">Página de Inicio:</p>
-                      <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                        <li>Sección "Acerca de Nosotros"</li>
-                        <li>Estadísticas en la sección Acerca</li>
-                        <li>Sección de Menú</li>
-                        <li>Sección de Servicios</li>
-                        <li>Sección de Reservaciones</li>
-                        <li>Sección de Reseñas</li>
-                        <li>Sección de Contacto</li>
-                        <li>Mapa en sección de Contacto</li>
-                        <li>Sección de Delivery</li>
-                        <li>Sección de FAQ</li>
-                      </ul>
-                      
-                      <p className="text-sm font-medium mt-3">Página "Acerca de Nosotros":</p>
-                      <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                        <li>Sección Acerca de</li>
-                        <li>Estadísticas en texto</li>
-                        <li>Sección de Estadísticas</li>
-                        <li>Sección de Equipo</li>
-                      </ul>
-
-                      <p className="text-sm font-medium mt-3">Página de Contacto:</p>
-                      <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                        <li>Formulario de Contacto</li>
-                        <li>Mapa</li>
-                      </ul>
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-green-500" />
+                      Página de Inicio
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Acerca de Nosotros</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Estadísticas</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Menú</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Servicios</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Reservaciones</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Reseñas</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Contacto</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Mapa</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Delivery</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>FAQs</span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">2. Sección Hero (Portada)</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      La primera sección que ven los visitantes al entrar a tu sitio.
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li><strong>Primera línea del título:</strong> Texto principal de la portada</li>
-                      <li><strong>Segunda línea del título:</strong> Subtítulo o complemento</li>
-                      <li><strong>Descripción:</strong> Texto descriptivo debajo del título</li>
-                      <li><strong>Imagen de fondo:</strong> Imagen principal de la portada</li>
-                      <li><strong>Botón derecho:</strong> Texto y enlace del botón de acción</li>
-                    </ul>
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-green-500" />
+                      Página "Acerca de"
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Sección Acerca de</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Estadísticas en texto</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Sección de Estadísticas</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Sección de Equipo</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">3. Sección "Acerca de Nosotros"</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Cuenta la historia de tu restaurante.
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li><strong>Etiqueta "Nuestra Historia":</strong> Título de la sección</li>
-                      <li><strong>Títulos de sección:</strong> Primera y segunda línea del título</li>
-                      <li><strong>Texto principal:</strong> Descripción de tu restaurante</li>
-                      <li><strong>Imágenes:</strong> Imágenes para ilustrar tu historia</li>
-                      <li><strong>Estadísticas:</strong> Números destacados (años, clientes, etc.)</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">4. Sección de Menú</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Vista previa del menú en la página de inicio.
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li><strong>Etiqueta del menú:</strong> Título de la sección</li>
-                      <li><strong>Primera y segunda línea:</strong> Títulos principales</li>
-                      <li><strong>Descripción:</strong> Texto descriptivo del menú</li>
-                      <li><strong>Texto del botón:</strong> Texto del botón "Ver menú completo"</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">5. Sección de Servicios</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Destaca los servicios que ofreces.
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li><strong>Etiqueta de servicios:</strong> Título de la sección</li>
-                      <li><strong>Títulos de sección:</strong> Primera y segunda línea</li>
-                      <li><strong>Descripción:</strong> Texto descriptivo de los servicios</li>
-                      <li><strong>Tarjetas de servicio:</strong> Cada servicio con su título, descripción e ícono</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">6. Sección de Reservaciones</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Invita a tus clientes a hacer reservas.
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li><strong>Títulos:</strong> Primera y segunda línea del título</li>
-                      <li><strong>Descripción:</strong> Texto de invitación</li>
-                      <li><strong>Textos de botones:</strong> Botón de reservar y WhatsApp</li>
-                      <li><strong>Imagen de fondo:</strong> Imagen de la sección</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">7. Sección de Reseñas</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Muestra testimonios de tus clientes.
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li><strong>Etiqueta:</strong> Título de la sección</li>
-                      <li><strong>Títulos:</strong> Primera y segunda línea del título</li>
-                      <li><strong>Descripción:</strong> Texto introductorio</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">8. Sección de Contacto</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Facilita que los clientes se comuniquen contigo.
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li><strong>Títulos:</strong> Primera y segunda línea del título</li>
-                      <li><strong>Descripción:</strong> Texto de invitación al contacto</li>
-                      <li><strong>Formulario:</strong> Textos de placeholder y botón</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-card">
-                    <h4 className="font-medium mb-2">9. Páginas Adicionales</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      También puedes personalizar:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                      <li><strong>Página de Menú:</strong> Hero, categorías, llamada a la acción</li>
-                      <li><strong>Página "Acerca de":</strong> Hero, estadísticas, equipo</li>
-                      <li><strong>Página de Contacto:</strong> Hero, formulario, información</li>
-                    </ul>
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-green-500" />
+                      Página de Contacto
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Formulario de Contacto</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span>Mapa</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>Sobre Mostrar/Ocultar Secciones</AlertTitle>
+                  <AlertDescription className="text-sm">
+                    Ocultar una sección la elimina completamente del sitio. Los visitantes no podrán verla ni acceder a ella. 
+                    Úsalo para simplificar tu sitio o remover secciones que no necesites.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cómo Hacer Cambios</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Navega a la pestaña "Contenido" y acepta el popup de advertencia</li>
-                  <li>Desplázate a la sección que deseas modificar</li>
-                  <li>Haz clic en los campos de texto para editar títulos y descripciones</li>
-                  <li>Usa los switches para mostrar/ocultar secciones completas</li>
-                  <li>Sube nuevas imágenes haciendo clic en "Subir Imagen"</li>
-                  <li>Haz clic en <strong>"Guardar Cambios"</strong> al final de la página</li>
-                  <li>Verifica tu sitio web para ver los cambios aplicados</li>
+            {/* Sección Hero */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Sección Hero (Portada)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground">
+                  La primera sección que ven los visitantes al entrar a tu sitio. Es la más importante para causar una buena primera impresión.
+                </p>
+                
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <Type className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">Primera y Segunda Línea del Título</p>
+                      <p className="text-xs text-muted-foreground">El texto principal que destaca en grande</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <FileText className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">Descripción</p>
+                      <p className="text-xs text-muted-foreground">Texto descriptivo debajo del título</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <ImagePlus className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">Imagen de Fondo</p>
+                      <p className="text-xs text-muted-foreground">La imagen principal de tu portada</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">Botón de Acción</p>
+                      <p className="text-xs text-muted-foreground">Texto y enlace del botón (ej: "Ver Menú", "Reservar Mesa")</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Otras Secciones */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Otras Secciones del Sitio
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground mb-3">
+                  Cada sección tiene campos personalizables similares:
+                </p>
+
+                <div className="grid gap-3">
+                  <div className="p-3 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1 text-sm">🏠 Acerca de Nosotros</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Títulos, descripción, imágenes y estadísticas destacadas
+                    </p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1 text-sm">🍽️ Menú</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Títulos, descripción y botón para ver menú completo
+                    </p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1 text-sm">✨ Servicios</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Títulos, descripción y tarjetas de cada servicio
+                    </p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1 text-sm">📅 Reservaciones</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Títulos, descripción, imagen de fondo y textos de botones
+                    </p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1 text-sm">⭐ Reseñas</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Títulos y descripción de la sección de testimonios
+                    </p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-1 text-sm">📞 Contacto</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Títulos, descripción, placeholders del formulario
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Cómo Hacer Cambios */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Cómo Hacer Cambios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">1.</span>
+                    <span className="text-sm">Navega a la pestaña <Badge variant="outline">Contenido</Badge> y acepta el popup de advertencia</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">2.</span>
+                    <span className="text-sm">Desplázate a la sección que deseas modificar</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">3.</span>
+                    <span className="text-sm">Haz clic en los campos de texto para editar títulos y descripciones</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">4.</span>
+                    <span className="text-sm">Usa los switches para mostrar/ocultar secciones completas</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">5.</span>
+                    <span className="text-sm">Sube nuevas imágenes haciendo clic en <Badge variant="outline">Subir Imagen</Badge></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">6.</span>
+                    <span className="text-sm">Haz clic en <strong>"Guardar Cambios"</strong> al final de la página</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">7.</span>
+                    <span className="text-sm">Verifica tu sitio web para ver los cambios aplicados</span>
+                  </li>
                 </ol>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Mantén los textos concisos y claros - los visitantes prefieren mensajes breves</li>
-                  <li>Usa imágenes de alta calidad que representen bien tu restaurante</li>
-                  <li>No ocultes secciones importantes como "Menú" o "Contacto"</li>
-                  <li>Revisa la ortografía antes de guardar cambios</li>
-                  <li>Guarda cambios con frecuencia para no perder tu trabajo</li>
-                  <li>Prueba tu sitio en móvil después de hacer cambios importantes</li>
-                  <li>Si no estás seguro de un cambio, haz una captura de pantalla antes</li>
-                  <li>Actualiza el contenido regularmente para mantener tu sitio fresco</li>
+            {/* Best Practices */}
+            <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <span>💡</span> Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Textos concisos:</strong> Los visitantes prefieren mensajes breves y claros
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Imágenes de calidad:</strong> Usa fotos profesionales que representen bien tu restaurante
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>No ocultes lo importante:</strong> Mantén visibles secciones clave como Menú y Contacto
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Revisa ortografía:</strong> Errores de escritura afectan tu profesionalismo
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Guarda frecuentemente:</strong> No pierdas tu trabajo, guarda cada vez que hagas cambios importantes
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Prueba en móvil:</strong> Verifica cómo se ve en teléfonos, la mayoría de visitantes usa móvil
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Actualiza regularmente:</strong> Mantén tu contenido fresco y actualizado
+                    </span>
+                  </li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {/* Save Button */}
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Save className="h-5 w-5" />
+                  Guardar Cambios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Después de editar el contenido, haz clic en el botón <strong>"Guardar Cambios"</strong> al final de la página. 
+                  Los cambios se aplicarán inmediatamente en tu sitio web. Te recomendamos tomar una captura de pantalla 
+                  antes de hacer cambios grandes, por si necesitas recordar cómo estaba antes.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "preguntas-frecuentes":
