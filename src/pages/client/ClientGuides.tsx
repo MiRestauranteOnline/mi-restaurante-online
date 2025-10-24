@@ -2424,44 +2424,6 @@ export default function ClientGuides() {
               </CardContent>
             </Card>
 
-            {/* Otras Secciones */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
-                  Otras Secciones del Sitio
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-muted-foreground mb-3">
-                  Todas las secciones restantes comparten los mismos tipos de campos editables:
-                </p>
-
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>Títulos principales y secundarios</strong> de cada sección</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>Descripciones y textos</strong> de apoyo</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>Imágenes de fondo</strong> y elementos visuales</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>Textos de botones</strong> y llamadas a la acción</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>Placeholders</strong> de formularios (cuando aplique)</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
             {/* SEO Warning */}
             <Alert className="border-amber-500/50 bg-amber-500/10">
               <AlertCircle className="h-4 w-4 text-amber-500" />
