@@ -2434,54 +2434,45 @@ export default function ClientGuides() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-muted-foreground mb-3">
-                  Cada sección tiene campos personalizables similares:
+                  Todas las secciones restantes comparten los mismos tipos de campos editables:
                 </p>
 
-                <div className="grid gap-3">
-                  <div className="p-3 border rounded-lg bg-muted/30">
-                    <h4 className="font-semibold mb-1 text-sm">🏠 Acerca de Nosotros</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Títulos, descripción, imágenes y estadísticas destacadas
-                    </p>
-                  </div>
-
-                  <div className="p-3 border rounded-lg bg-muted/30">
-                    <h4 className="font-semibold mb-1 text-sm">🍽️ Menú</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Títulos, descripción y botón para ver menú completo
-                    </p>
-                  </div>
-
-                  <div className="p-3 border rounded-lg bg-muted/30">
-                    <h4 className="font-semibold mb-1 text-sm">✨ Servicios</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Títulos, descripción y tarjetas de cada servicio
-                    </p>
-                  </div>
-
-                  <div className="p-3 border rounded-lg bg-muted/30">
-                    <h4 className="font-semibold mb-1 text-sm">📅 Reservaciones</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Títulos, descripción, imagen de fondo y textos de botones
-                    </p>
-                  </div>
-
-                  <div className="p-3 border rounded-lg bg-muted/30">
-                    <h4 className="font-semibold mb-1 text-sm">⭐ Reseñas</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Títulos y descripción de la sección de testimonios
-                    </p>
-                  </div>
-
-                  <div className="p-3 border rounded-lg bg-muted/30">
-                    <h4 className="font-semibold mb-1 text-sm">📞 Contacto</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Títulos, descripción, placeholders del formulario
-                    </p>
-                  </div>
-                </div>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span><strong>Títulos principales y secundarios</strong> de cada sección</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span><strong>Descripciones y textos</strong> de apoyo</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span><strong>Imágenes de fondo</strong> y elementos visuales</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span><strong>Textos de botones</strong> y llamadas a la acción</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span><strong>Placeholders</strong> de formularios (cuando aplique)</span>
+                  </li>
+                </ul>
               </CardContent>
             </Card>
+
+            {/* SEO Warning */}
+            <Alert className="border-amber-500/50 bg-amber-500/10">
+              <AlertCircle className="h-4 w-4 text-amber-500" />
+              <AlertTitle className="text-amber-700 dark:text-amber-400">⚠️ Importante para SEO</AlertTitle>
+              <AlertDescription className="text-foreground/80 text-sm">
+                Cambiar los textos de tu sitio puede afectar tu posicionamiento en Google. 
+                Los títulos y descripciones están optimizados para aparecer en búsquedas relevantes. 
+                Si haces cambios, asegúrate de mantener las palabras clave importantes relacionadas 
+                con tu negocio y ubicación (ej: "restaurante", tu tipo de cocina, tu ciudad).
+              </AlertDescription>
+            </Alert>
 
             {/* Cómo Hacer Cambios */}
             <Card>
