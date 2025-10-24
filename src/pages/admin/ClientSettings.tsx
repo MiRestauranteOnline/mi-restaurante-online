@@ -80,8 +80,9 @@ interface Client {
   subdomain: string;
   domain?: string;
   email?: string;
+  razon_social?: string;
+  ruc?: string;
   phone?: string;
-  phone_country_code?: string;
   address?: string;
   whatsapp?: string;
   whatsapp_country_code?: string;
@@ -915,6 +916,8 @@ const [faqForm, setFaqForm] = useState({
     subdomain: '',
     domain: '',
     email: '',
+    razon_social: '',
+    ruc: '',
     phone: '',
     phone_country_code: '+51',
     address: '',
@@ -1205,6 +1208,8 @@ const [faqForm, setFaqForm] = useState({
         subdomain: data.subdomain || '',
         domain: (data as any).domain || '',
         email: data.email || '',
+        razon_social: (data as any).razon_social || '',
+        ruc: (data as any).ruc || '',
         phone: data.phone || '',
         phone_country_code: (data as any).phone_country_code || '+51',
         address: data.address || '',
@@ -1911,6 +1916,8 @@ const [faqForm, setFaqForm] = useState({
           restaurant_name: formData.restaurant_name,
           subdomain: formData.subdomain,
           email: formData.email,
+          razon_social: formData.razon_social,
+          ruc: formData.ruc,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
           address: formData.address,
@@ -3520,6 +3527,22 @@ setReviewForm({
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="razon_social">Razón Social</Label>
+                  <Input
+                    id="razon_social"
+                    value={formData.razon_social || ''}
+                    onChange={(e) => setFormData({...formData, razon_social: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="ruc">RUC</Label>
+                  <Input
+                    id="ruc"
+                    value={formData.ruc || ''}
+                    onChange={(e) => setFormData({...formData, ruc: e.target.value})}
                   />
                 </div>
                 <div>
