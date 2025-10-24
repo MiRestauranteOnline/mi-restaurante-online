@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, Users, ArrowUp, ArrowDown, PowerOff } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -4280,114 +4280,591 @@ export default function ClientGuides() {
 
       case "resenas":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Reseñas de Clientes</CardTitle>
-              <CardDescription>
-                Muestra testimonios y reseñas en tu sitio web
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Reseñas de Clientes</h1>
+              <p className="text-muted-foreground">
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Reseñas</Badge>
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="h-5 w-5 text-primary fill-primary" />
+                  ¿Qué son las Reseñas?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Reseñas</strong>
+                  Las reseñas son testimonios de clientes satisfechos que aparecen en tu sitio web. Son una de las herramientas de marketing más poderosas: el 93% de los consumidores lee reseñas antes de elegir un restaurante. Mostrar reseñas positivas genera confianza y puede aumentar significativamente tus reservas.
                 </p>
-              </div>
+                <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Social Proof Importante:</strong> Las reseñas actúan como "prueba social". Los clientes potenciales confían más en las opiniones de otros clientes que en tu propia publicidad.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <Separator />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Agregar una Reseña
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Para agregar una nueva reseña a tu sitio web:
+                </p>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Agregar una Reseña</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Haz clic en el botón <strong>"Agregar Reseña"</strong></li>
-                  <li>Completa el formulario con los datos de la reseña</li>
-                  <li>Selecciona la calificación (1-5 estrellas)</li>
-                  <li>Haz clic en <strong>"Guardar"</strong></li>
-                </ol>
-              </div>
+                <div className="p-4 border rounded-lg bg-primary/5">
+                  <ol className="space-y-2 text-sm">
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">1.</span>
+                      <span className="text-muted-foreground">
+                        Haz clic en el botón <strong>"Agregar Reseña"</strong> ubicado en la esquina superior derecha
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">2.</span>
+                      <span className="text-muted-foreground">
+                        Se abre un diálogo modal con el formulario de nueva reseña
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">3.</span>
+                      <span className="text-muted-foreground">
+                        Completa los campos requeridos: nombre del cliente, texto de la reseña y calificación
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">4.</span>
+                      <span className="text-muted-foreground">
+                        Opcionalmente añade una fecha específica para la reseña
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">5.</span>
+                      <span className="text-muted-foreground">
+                        Haz clic en <strong>"Guardar"</strong> para publicar la reseña
+                      </span>
+                    </li>
+                  </ol>
+                </div>
 
-              <Separator />
+                <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Auto-guardado:</strong> Las reseñas nuevas aparecen inmediatamente al final de la lista y están activas por defecto.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Información de la Reseña</h3>
-                
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Campos del Formulario
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Nombre del Cliente *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Nombre del cliente que dejó la reseña. Campo obligatorio.
-                    </p>
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-primary/10 p-3 border-b">
+                      <h4 className="font-semibold">Información Básica (Obligatoria)</h4>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div>
+                        <h5 className="font-medium text-sm mb-1">Nombre del Cliente *</h5>
+                        <p className="text-xs text-muted-foreground">
+                          Nombre de la persona que dejó la reseña (ej: "Carlos Rodríguez", "María S."). <strong>Campo obligatorio.</strong>
+                        </p>
+                        <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded text-xs mt-2">
+                          <strong>Tip:</strong> Puedes usar solo nombre y apellido inicial si prefieres proteger la privacidad (ej: "Ana M.")
+                        </div>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-sm mb-1 flex items-center gap-2">
+                          <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                          Calificación (Estrellas) *
+                        </h5>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Calificación en estrellas de 0.5 a 5.0. Permite medias estrellas para mayor precisión. <strong>Campo obligatorio.</strong>
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div className="p-2 bg-muted/30 rounded">
+                            <strong>Opciones disponibles:</strong>
+                            <div className="mt-1 space-y-0.5 text-muted-foreground">
+                              <div>0.5★, 1★, 1.5★, 2★, 2.5★</div>
+                              <div>3★, 3.5★, 4★, 4.5★, 5★</div>
+                            </div>
+                          </div>
+                          <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded">
+                            <strong>Recomendación:</strong>
+                            <div className="mt-1 text-muted-foreground">
+                              Muestra principalmente reseñas de 4★ o más para generar mejor impresión
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-sm mb-1 flex items-center gap-2">
+                          <MessageSquare className="h-3 w-3" />
+                          Texto de la Reseña *
+                        </h5>
+                        <p className="text-xs text-muted-foreground">
+                          El comentario o testimonio completo del cliente. Puede incluir menciones específicas sobre platos, servicio, ambiente, etc. <strong>Campo obligatorio.</strong>
+                        </p>
+                        <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded text-xs mt-2">
+                          <strong>Ejemplo:</strong> "Excelente experiencia. El lomo saltado estaba delicioso y el servicio fue muy atento. Sin duda volveremos."
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Calificación *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Número de estrellas (1 a 5). Campo obligatorio.
-                    </p>
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-muted/50 p-3 border-b">
+                      <h4 className="font-semibold">Información Adicional (Opcional)</h4>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-start gap-3">
+                        <CalendarIcon className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h5 className="font-medium text-sm mb-1">Fecha de la Reseña</h5>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Fecha específica en que se recibió la reseña. Si no especificas una fecha, se usará la fecha de creación automáticamente. <strong>Opcional.</strong>
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Útil si estás importando reseñas antiguas de Google, TripAdvisor u otras plataformas y quieres mantener la fecha original.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Comentario *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      El texto completo de la reseña o testimonio. Campo obligatorio.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Fecha</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Se registra automáticamente la fecha en que se agregó la reseña.
-                    </p>
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-green-50 dark:bg-green-950/20 p-3 border-b border-green-200 dark:border-green-800">
+                      <h4 className="font-semibold">Estado de Visibilidad</h4>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-start gap-3">
+                        <Power className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h5 className="font-medium text-sm mb-1">Reseña Activa</h5>
+                          <p className="text-xs text-muted-foreground">
+                            Switch para activar/desactivar la visibilidad de la reseña. Las reseñas inactivas NO aparecen en tu sitio web. Útil para reseñas que quieres mantener archivadas sin mostrarlas públicamente.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Entender las Tarjetas de Reseñas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Cada reseña se muestra como una tarjeta horizontal elegante con toda la información y controles integrados:
+                </p>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Gestionar Reseñas</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">✏️ Editar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón de editar para actualizar la información de una reseña.
-                    </p>
+                <div className="border rounded-lg overflow-hidden">
+                  <div className="bg-muted/30 p-3 border-b">
+                    <h4 className="font-semibold text-sm">Estructura de la Tarjeta</h4>
                   </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón de eliminar. Se te pedirá confirmación.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">👁️ Visualización</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Las reseñas aparecen en tu sitio web ordenadas por fecha, mostrando las más recientes primero.
-                    </p>
+                  <div className="p-4 space-y-3">
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">1.</span>
+                      <div>
+                        <p className="font-medium text-sm">Control de Orden (Izquierda)</p>
+                        <p className="text-xs text-muted-foreground">
+                          <strong>Desktop:</strong> Ícono de agarre <GripVertical className="h-3 w-3 inline" /> para arrastrar y soltar
+                          <br />
+                          <strong>Móvil:</strong> Flechas <ArrowUp className="h-3 w-3 inline" /> <ArrowDown className="h-3 w-3 inline" /> apiladas para mover arriba/abajo
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">2.</span>
+                      <div>
+                        <p className="font-medium text-sm">Encabezado de la Reseña</p>
+                        <p className="text-xs text-muted-foreground">
+                          <strong>Nombre del cliente</strong> a la izquierda en texto grande
+                          <br />
+                          <strong>Calificación de estrellas</strong> a la derecha con estrellas visuales (★★★★★) y número
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">3.</span>
+                      <div>
+                        <p className="font-medium text-sm">Texto de la Reseña</p>
+                        <p className="text-xs text-muted-foreground">
+                          El comentario completo entre comillas ("...") en texto gris con espaciado cómodo para lectura
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">4.</span>
+                      <div>
+                        <p className="font-medium text-sm">Controles Rápidos (Derecha)</p>
+                        <p className="text-xs text-muted-foreground">
+                          <strong>Switch:</strong> Activar/desactivar visibilidad rápidamente
+                          <br />
+                          <strong>Botón Editar:</strong> <Edit className="h-3 w-3 inline" /> Abre el formulario de edición
+                          <br />
+                          <strong>Botón Eliminar:</strong> <Trash2 className="h-3 w-3 inline" /> Elimina la reseña (con confirmación)
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
+                <Alert className="border-primary/30 bg-primary/5">
+                  <Lightbulb className="h-4 w-4 text-primary" />
+                  <AlertDescription className="text-sm">
+                    <strong>Visualización de Estrellas:</strong> El sistema muestra estrellas completas (★), medias estrellas (½★) y estrellas vacías (☆) automáticamente según la calificación. Por ejemplo: 4.5 estrellas = ★★★★½
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Solicita permiso a los clientes antes de publicar sus reseñas</li>
-                  <li>Puedes copiar reseñas de Google, TripAdvisor o redes sociales (con permiso)</li>
-                  <li>Enfócate en reseñas de 4-5 estrellas para mostrar lo mejor</li>
-                  <li>Incluye reseñas que mencionen platos específicos o el servicio</li>
-                  <li>Mantén entre 5-10 reseñas visibles para no saturar</li>
-                  <li>Actualiza regularmente con nuevas reseñas</li>
-                  <li>Verifica que los comentarios sean auténticos y representativos</li>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Reordenar Reseñas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  El orden de las reseñas determina cómo aparecen en tu sitio web. Es estratégico poner primero tus mejores reseñas (5 estrellas con comentarios detallados).
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-blue-50 dark:bg-blue-950/20 p-3 border-b border-blue-200 dark:border-blue-800">
+                      <h4 className="font-semibold text-sm flex items-center gap-2">
+                        💻 En Computadora
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <GripVertical className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-sm mb-1">Arrastrar y Soltar</p>
+                          <p className="text-xs text-muted-foreground">
+                            Haz clic y mantén presionado en el ícono de agarre (⋮⋮) en el lado izquierdo de la tarjeta. Arrastra la reseña a la nueva posición y suelta.
+                          </p>
+                        </div>
+                      </div>
+                      <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20 mt-3">
+                        <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
+                        <AlertDescription className="text-xs">
+                          Los cambios se guardan automáticamente al soltar el elemento.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-orange-50 dark:bg-orange-950/20 p-3 border-b border-orange-200 dark:border-orange-800">
+                      <h4 className="font-semibold text-sm flex items-center gap-2">
+                        📱 En Móvil/Tablet
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <ArrowUpDown className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-sm mb-1">Botones de Flecha</p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Usa los botones de flecha <ArrowUp className="h-3 w-3 inline" /> (mover arriba) y <ArrowDown className="h-3 w-3 inline" /> (mover abajo) apilados en el lado izquierdo de cada tarjeta.
+                          </p>
+                          <ul className="space-y-1 text-xs text-muted-foreground pl-3">
+                            <li>• La primera reseña tiene la flecha arriba deshabilitada</li>
+                            <li>• La última reseña tiene la flecha abajo deshabilitada</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 mt-3">
+                        <Info className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                        <AlertDescription className="text-xs">
+                          Cada clic mueve la reseña una posición. Los cambios se guardan automáticamente.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">5</span>
+                  Editar y Eliminar Reseñas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-primary/5">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Edit className="h-4 w-4 text-primary" />
+                      Editar una Reseña
+                    </h4>
+                    <ol className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="font-bold">1.</span>
+                        <span>Haz clic en el botón de editar <Edit className="h-3 w-3 inline" /> en la tarjeta de la reseña</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">2.</span>
+                        <span>Se abre el mismo diálogo modal con los datos actuales pre-cargados</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">3.</span>
+                        <span>Modifica los campos que necesites (nombre, calificación, texto, fecha, estado)</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">4.</span>
+                        <span>Haz clic en <strong>"Guardar"</strong> para aplicar los cambios</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">5.</span>
+                        <span>Los cambios se reflejan inmediatamente en la lista y en tu sitio web</span>
+                      </li>
+                    </ol>
+                    <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-950/20 rounded text-xs">
+                      <strong>Caso de Uso:</strong> Editar es útil para corregir errores tipográficos, actualizar calificaciones o ajustar el texto de reseñas existentes.
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-red-50/50 dark:bg-red-950/20">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                      Eliminar una Reseña
+                    </h4>
+                    <ol className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="font-bold">1.</span>
+                        <span>Haz clic en el botón de eliminar <Trash2 className="h-3 w-3 inline" /> en la tarjeta de la reseña</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">2.</span>
+                        <span>Aparece un diálogo de confirmación: "¿Estás seguro de que quieres eliminar esta reseña?"</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">3.</span>
+                        <span>Confirma la eliminación haciendo clic en <strong>"Aceptar"</strong></span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">4.</span>
+                        <span>La reseña desaparece permanentemente del sistema</span>
+                      </li>
+                    </ol>
+                    <Alert className="border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-950/20 mt-3">
+                      <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                      <AlertDescription className="text-xs">
+                        <strong>Precaución:</strong> La eliminación es permanente y no se puede deshacer. Si solo quieres ocultar temporalmente una reseña, usa el switch de activación/desactivación en lugar de eliminarla.
+                      </AlertDescription>
+                    </Alert>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">6</span>
+                  Control de Visibilidad con Switch
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground">
+                  Cada reseña tiene un switch de activación/desactivación que te permite controlar rápidamente su visibilidad en el sitio web:
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950/20">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Power className="h-4 w-4 text-green-600" />
+                      Reseña Activa
+                    </h4>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        Aparece en la sección de reseñas de tu sitio web
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        Visible para todos los visitantes
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        Se muestra con nombre, calificación y texto completo
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <PowerOff className="h-4 w-4 text-muted-foreground" />
+                      Reseña Inactiva
+                    </h4>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        NO aparece en tu sitio web
+                      </li>
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        La información se conserva en el sistema
+                      </li>
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        Puedes reactivarla en cualquier momento
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Casos de Uso:</strong> Ideal para rotar reseñas periódicamente, ocultar temporalmente reseñas antiguas, o mantener un archivo de todas las reseñas sin mostrarlas todas públicamente.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Solicita permiso siempre:</strong> Antes de publicar la reseña de un cliente, pídele permiso explícito. Es una buena práctica legal y ética
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Importa de plataformas:</strong> Puedes copiar reseñas de Google My Business, TripAdvisor, Facebook o Instagram (con permiso). Mantén la fecha original usando el campo de fecha opcional
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Enfócate en 4-5 estrellas:</strong> Muestra principalmente reseñas excelentes. No publiques reseñas negativas en tu sitio (aunque deben ser respondidas en las plataformas donde aparecen)
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Reseñas específicas y detalladas:</strong> Prioriza reseñas que mencionan platos específicos, el servicio, el ambiente o experiencias concretas. Son más creíbles que comentarios genéricos
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Cantidad ideal: 5-10 reseñas:</strong> Mostrar entre 5 y 10 reseñas es el punto óptimo. Menos de 5 puede parecer poco convincente, más de 10 puede saturar a los visitantes
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Actualiza regularmente:</strong> Rota las reseñas cada 2-3 meses agregando nuevas reseñas recientes y desactivando (no eliminando) las más antiguas
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Variedad de clientes:</strong> Intenta mostrar reseñas de diferentes tipos de clientes: familias, parejas, grupos de amigos, comensales de negocios, etc.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Orden estratégico:</strong> Coloca tus mejores reseñas (5 estrellas con comentarios detallados) al principio. Los primeros 2-3 testimonios tienen el mayor impacto
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Autenticidad ante todo:</strong> Nunca inventes reseñas falsas. Los clientes detectan rápidamente testimonios falsos y dañará tu reputación gravemente
+                    </span>
+                  </li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-800 dark:text-blue-200">
+                  <HelpCircle className="h-5 w-5" />
+                  Preguntas Frecuentes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Puedo usar reseñas de Google o TripAdvisor?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Sí, pero solicita permiso al cliente primero. Las reseñas públicas pueden copiarse legalmente citando la fuente, pero es mejor práctica pedir autorización. Usa el campo de fecha para mantener la fecha original.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Debo mostrar reseñas de 3 estrellas o menos?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      No es recomendable. Tu sitio web es tu espacio de marketing, no una plataforma de reseñas. Enfócate en mostrar tu mejor versión con reseñas de 4-5 estrellas.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Cuántas reseñas necesito para empezar?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Mínimo 3-5 reseñas para que sea creíble. Si estás empezando y no tienes suficientes, solicita activamente feedback a tus primeros clientes satisfechos.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Puedo editar el texto de una reseña del cliente?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Puedes hacer correcciones menores (errores tipográficos), pero no cambies el significado. Si necesitas acortar una reseña muy larga, hazlo con "..." y pide permiso al cliente. La autenticidad es crucial.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Dónde aparecen las reseñas en mi sitio web?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Las reseñas típicamente aparecen en una sección dedicada de tu página principal y/o en una página "Reseñas" o "Testimonios", dependiendo de tu configuración de navegación.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Las medias estrellas se ven en el sitio web?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Sí, el sistema renderiza automáticamente medias estrellas visualmente. Una calificación de 4.5 mostrará 4 estrellas completas y media estrella, no 5 estrellas.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "configuracion-email":
