@@ -112,6 +112,8 @@ export default function ClientSettings() {
         .update({
           restaurant_name: formData.restaurant_name,
           email: formData.email,
+          razon_social: formData.razon_social,
+          ruc: formData.ruc,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
           address: formData.address,
@@ -235,6 +237,24 @@ export default function ClientSettings() {
                   type="email"
                   value={formData.email || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="razon_social">Razón Social</Label>
+                <Input
+                  id="razon_social"
+                  value={formData.razon_social || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, razon_social: e.target.value }))}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="ruc">RUC</Label>
+                <Input
+                  id="ruc"
+                  value={formData.ruc || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, ruc: e.target.value }))}
                 />
               </div>
 
