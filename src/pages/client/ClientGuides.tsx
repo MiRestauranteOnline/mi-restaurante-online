@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, Users, ArrowUp, ArrowDown, PowerOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -3725,106 +3725,557 @@ export default function ClientGuides() {
 
       case "equipo":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Gestión del Equipo</CardTitle>
-              <CardDescription>
-                Presenta a tu equipo en tu sitio web
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Gestión del Equipo</h1>
+              <p className="text-muted-foreground">
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Equipo</Badge>
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  ¿Qué es la Sección de Equipo?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>Equipo</strong>
+                  La sección de equipo te permite presentar a las personas clave detrás de tu restaurante. Mostrar tu equipo humaniza tu marca, genera confianza con los clientes y destaca la experiencia profesional que respalda tu negocio.
                 </p>
-              </div>
+                <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Credibilidad y Confianza:</strong> Los clientes valoran saber quién prepara su comida. Presentar a tu chef ejecutivo, sommelier o gerente puede aumentar significativamente la confianza en tu restaurante.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <Separator />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Agregar un Miembro del Equipo
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Para agregar un nuevo miembro a tu equipo:
+                </p>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Agregar un Miembro del Equipo</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Haz clic en el botón <strong>"Agregar Miembro del Equipo"</strong></li>
-                  <li>Completa el formulario con la información</li>
-                  <li>Sube una foto del miembro (opcional pero recomendado)</li>
-                  <li>Haz clic en <strong>"Guardar"</strong></li>
-                </ol>
-              </div>
+                <div className="p-4 border rounded-lg bg-primary/5">
+                  <ol className="space-y-2 text-sm">
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">1.</span>
+                      <span className="text-muted-foreground">
+                        Haz clic en el botón <strong>"Agregar Miembro"</strong> ubicado en la esquina superior derecha
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">2.</span>
+                      <span className="text-muted-foreground">
+                        Se abre un diálogo modal con el formulario de nuevo miembro
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">3.</span>
+                      <span className="text-muted-foreground">
+                        Completa los campos requeridos: nombre y cargo
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">4.</span>
+                      <span className="text-muted-foreground">
+                        Opcionalmente añade biografía y foto del miembro
+                      </span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary flex-shrink-0">5.</span>
+                      <span className="text-muted-foreground">
+                        Haz clic en <strong>"Guardar"</strong> para crear el miembro
+                      </span>
+                    </li>
+                  </ol>
+                </div>
 
-              <Separator />
+                <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Auto-guardado:</strong> Los miembros nuevos aparecen inmediatamente al final de la lista y están activos por defecto.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Información del Miembro</h3>
-                
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Campos del Formulario
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Nombre *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Nombre completo del miembro del equipo. Campo obligatorio.
-                    </p>
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-primary/10 p-3 border-b">
+                      <h4 className="font-semibold">Información Básica (Obligatoria)</h4>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div>
+                        <h5 className="font-medium text-sm mb-1">Nombre *</h5>
+                        <p className="text-xs text-muted-foreground">
+                          Nombre completo del miembro del equipo (ej: "María García López"). <strong>Campo obligatorio.</strong>
+                        </p>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-sm mb-1">Cargo/Título *</h5>
+                        <p className="text-xs text-muted-foreground">
+                          Posición o rol en el restaurante. Ejemplos: "Chef Ejecutivo", "Sommelier", "Gerente General", "Pastelero", "Maître". <strong>Campo obligatorio.</strong>
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Cargo *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Posición o rol en el restaurante (ej: "Chef Ejecutivo", "Sommelier", "Gerente"). Campo obligatorio.
-                    </p>
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-muted/50 p-3 border-b">
+                      <h4 className="font-semibold">Información Adicional (Opcional)</h4>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div>
+                        <h5 className="font-medium text-sm mb-1">Biografía</h5>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Breve descripción del miembro: experiencia, especialidades, logros, formación o filosofía culinaria. <strong>Opcional pero muy recomendado.</strong>
+                        </p>
+                        <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded text-xs">
+                          <strong>Ejemplo:</strong> "Con más de 15 años de experiencia en cocina peruana contemporánea, Carlos se especializa en fusionar técnicas tradicionales con presentaciones modernas."
+                        </div>
+                      </div>
+                      <div>
+                        <h5 className="font-medium text-sm mb-1 flex items-center gap-2">
+                          <Image className="h-3 w-3" />
+                          Foto del Miembro
+                        </h5>
+                        <p className="text-xs text-muted-foreground">
+                          Foto profesional del miembro. Se mostrará como un avatar circular en la tarjeta. Formatos: JPG, PNG, WEBP. <strong>Opcional pero muy recomendado.</strong>
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Biografía</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Una breve descripción sobre el miembro, su experiencia y especialidades. (Opcional)
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Foto</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Foto profesional del miembro del equipo. Se optimizará automáticamente.
-                    </p>
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-green-50 dark:bg-green-950/20 p-3 border-b border-green-200 dark:border-green-800">
+                      <h4 className="font-semibold">Estado de Visibilidad</h4>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-start gap-3">
+                        <Power className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h5 className="font-medium text-sm mb-1">Miembro Activo</h5>
+                          <p className="text-xs text-muted-foreground">
+                            Switch para activar/desactivar la visibilidad del miembro. Los miembros inactivos NO aparecen en tu sitio web. Útil para miembros temporalmente ausentes o que dejaron el equipo sin eliminar su registro.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Entender las Tarjetas de Miembros
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Cada miembro del equipo se muestra como una tarjeta horizontal con diseño limpio y controles integrados:
+                </p>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Gestionar Miembros</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">✏️ Editar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón de editar para actualizar la información de un miembro.
-                    </p>
+                <div className="border rounded-lg overflow-hidden">
+                  <div className="bg-muted/30 p-3 border-b">
+                    <h4 className="font-semibold text-sm">Estructura de la Tarjeta</h4>
                   </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón de eliminar. Se te pedirá confirmación antes de proceder.
-                    </p>
+                  <div className="p-4 space-y-3">
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">1.</span>
+                      <div>
+                        <p className="font-medium text-sm">Control de Orden (Izquierda)</p>
+                        <p className="text-xs text-muted-foreground">
+                          <strong>Desktop:</strong> Ícono de agarre <GripVertical className="h-3 w-3 inline" /> para arrastrar y soltar
+                          <br />
+                          <strong>Móvil:</strong> Flechas <ArrowUp className="h-3 w-3 inline" /> <ArrowDown className="h-3 w-3 inline" /> para mover arriba/abajo
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">2.</span>
+                      <div>
+                        <p className="font-medium text-sm">Avatar Circular</p>
+                        <p className="text-xs text-muted-foreground">
+                          Foto del miembro en formato circular (si fue subida). Si no hay foto, se omite esta sección.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">3.</span>
+                      <div>
+                        <p className="font-medium text-sm">Información del Miembro</p>
+                        <p className="text-xs text-muted-foreground">
+                          <strong>Nombre</strong> en texto grande y destacado
+                          <br />
+                          <strong>Cargo</strong> en texto más pequeño debajo del nombre
+                          <br />
+                          <strong>Biografía</strong> (si existe) en texto gris más pequeño
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-primary font-bold">4.</span>
+                      <div>
+                        <p className="font-medium text-sm">Controles Rápidos (Derecha)</p>
+                        <p className="text-xs text-muted-foreground">
+                          <strong>Switch:</strong> Activar/desactivar visibilidad rápidamente
+                          <br />
+                          <strong>Botón Editar:</strong> <Edit className="h-3 w-3 inline" /> Abre el formulario de edición
+                          <br />
+                          <strong>Botón Eliminar:</strong> <Trash2 className="h-3 w-3 inline" /> Elimina el miembro (con confirmación)
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
+                <Alert className="border-primary/30 bg-primary/5">
+                  <Lightbulb className="h-4 w-4 text-primary" />
+                  <AlertDescription className="text-sm">
+                    <strong>Diseño Responsivo:</strong> Las tarjetas se adaptan automáticamente a móviles y tablets, manteniendo toda la funcionalidad pero reorganizando los controles para facilitar el uso táctil.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Usa fotos profesionales con fondo neutro o uniforme</li>
-                  <li>Presenta solo al personal clave (chef, sommelier, gerente)</li>
-                  <li>Escribe biografías breves pero informativas (2-3 oraciones)</li>
-                  <li>Destaca experiencia relevante y especialidades</li>
-                  <li>Mantén un tono profesional pero cercano</li>
-                  <li>Actualiza cuando haya cambios en el equipo</li>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Reordenar Miembros del Equipo
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  El orden de los miembros determina cómo aparecen en tu sitio web. Generalmente se recomienda poner primero a las personas de mayor jerarquía (Chef Ejecutivo, Gerente) y luego al resto del equipo.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-blue-50 dark:bg-blue-950/20 p-3 border-b border-blue-200 dark:border-blue-800">
+                      <h4 className="font-semibold text-sm flex items-center gap-2">
+                        💻 En Computadora
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <GripVertical className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-sm mb-1">Arrastrar y Soltar</p>
+                          <p className="text-xs text-muted-foreground">
+                            Haz clic y mantén presionado en el ícono de agarre (⋮⋮) en la parte izquierda de la tarjeta. Arrastra el miembro a la nueva posición y suelta.
+                          </p>
+                        </div>
+                      </div>
+                      <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20 mt-3">
+                        <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
+                        <AlertDescription className="text-xs">
+                          Los cambios se guardan automáticamente al soltar el elemento.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-orange-50 dark:bg-orange-950/20 p-3 border-b border-orange-200 dark:border-orange-800">
+                      <h4 className="font-semibold text-sm flex items-center gap-2">
+                        📱 En Móvil/Tablet
+                      </h4>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <ArrowUpDown className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-sm mb-1">Botones de Flecha</p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Usa los botones de flecha <ArrowUp className="h-3 w-3 inline" /> (mover arriba) y <ArrowDown className="h-3 w-3 inline" /> (mover abajo) ubicados en la parte izquierda de cada tarjeta.
+                          </p>
+                          <ul className="space-y-1 text-xs text-muted-foreground pl-3">
+                            <li>• El primer miembro tiene la flecha arriba deshabilitada</li>
+                            <li>• El último miembro tiene la flecha abajo deshabilitada</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 mt-3">
+                        <Info className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                        <AlertDescription className="text-xs">
+                          Cada clic mueve el miembro una posición. Los cambios se guardan automáticamente.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">5</span>
+                  Editar y Eliminar Miembros
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-primary/5">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Edit className="h-4 w-4 text-primary" />
+                      Editar un Miembro
+                    </h4>
+                    <ol className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="font-bold">1.</span>
+                        <span>Haz clic en el botón de editar <Edit className="h-3 w-3 inline" /> en la tarjeta del miembro</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">2.</span>
+                        <span>Se abre el mismo diálogo modal con los datos actuales pre-cargados</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">3.</span>
+                        <span>Modifica los campos que necesites (nombre, cargo, biografía, foto, estado)</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">4.</span>
+                        <span>Haz clic en <strong>"Guardar"</strong> para aplicar los cambios</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">5.</span>
+                        <span>Los cambios se reflejan inmediatamente en la lista y en tu sitio web</span>
+                      </li>
+                    </ol>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-red-50/50 dark:bg-red-950/20">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                      Eliminar un Miembro
+                    </h4>
+                    <ol className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="font-bold">1.</span>
+                        <span>Haz clic en el botón de eliminar <Trash2 className="h-3 w-3 inline" /> en la tarjeta del miembro</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">2.</span>
+                        <span>Aparece un diálogo de confirmación: "¿Estás seguro de que quieres eliminar este miembro del equipo?"</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">3.</span>
+                        <span>Confirma la eliminación haciendo clic en <strong>"Aceptar"</strong></span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-bold">4.</span>
+                        <span>El miembro desaparece permanentemente del sistema</span>
+                      </li>
+                    </ol>
+                    <Alert className="border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-950/20 mt-3">
+                      <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                      <AlertDescription className="text-xs">
+                        <strong>Precaución:</strong> La eliminación es permanente y no se puede deshacer. Si solo quieres ocultar temporalmente a un miembro (ej: vacaciones, licencia), usa el switch de activación/desactivación en lugar de eliminarlo.
+                      </AlertDescription>
+                    </Alert>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">6</span>
+                  Control de Visibilidad con Switch
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-muted-foreground">
+                  Cada miembro tiene un switch de activación/desactivación que te permite controlar rápidamente su visibilidad en el sitio web sin eliminar su información:
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950/20">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Power className="h-4 w-4 text-green-600" />
+                      Miembro Activo
+                    </h4>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        Aparece en la sección de equipo de tu sitio web
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        Visible para todos los visitantes
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-green-600">•</span>
+                        Se muestra con foto, nombre, cargo y biografía
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <PowerOff className="h-4 w-4 text-muted-foreground" />
+                      Miembro Inactivo
+                    </h4>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        NO aparece en tu sitio web
+                      </li>
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        La información se conserva en el sistema
+                      </li>
+                      <li className="flex gap-2">
+                        <span>•</span>
+                        Puedes reactivarlo en cualquier momento
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-sm">
+                    <strong>Casos de Uso:</strong> Ideal para miembros temporalmente ausentes (vacaciones, licencia médica), rotación de personal, o cuando quieres mantener el historial de equipo sin mostrarlo públicamente.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Fotos profesionales:</strong> Usa fotos con buena iluminación, fondo neutro o uniforme, y expresión amigable. Las fotos de perfil profesional generan más confianza que fotos casuales
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Personal clave solamente:</strong> No es necesario mostrar todo el personal. Enfócate en posiciones de liderazgo: Chef Ejecutivo, Sommelier, Pastelero, Gerente, Maître. Esto mantiene la sección más impactante
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Biografías concisas:</strong> 2-3 oraciones son suficientes. Destaca experiencia relevante, especialidades y logros significativos sin extenderte demasiado
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Orden jerárquico:</strong> Ordena los miembros por jerarquía o importancia: primero el Chef Ejecutivo, luego el Sommelier, después el Gerente, etc.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Mantén actualizado:</strong> Actualiza la sección cuando haya cambios en el equipo. Información desactualizada puede generar confusión o mala impresión
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Tono profesional pero cercano:</strong> Escribe biografías en tercera persona con tono profesional, pero sin ser demasiado formal. Humaniza a tu equipo
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Destaca credenciales relevantes:</strong> Menciona formación en escuelas culinarias reconocidas, experiencia internacional, premios o reconocimientos
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Usa inactivo en lugar de eliminar:</strong> Si un miembro deja el equipo pero quieres conservar su historial, desactívalo en lugar de eliminarlo
+                    </span>
+                  </li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-800 dark:text-blue-200">
+                  <HelpCircle className="h-5 w-5" />
+                  Preguntas Frecuentes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Cuántos miembros debo mostrar?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      No hay un número fijo, pero generalmente entre 3-8 miembros clave es ideal. Más de 10 puede ser abrumador para los visitantes. Enfócate en calidad sobre cantidad.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Es obligatorio subir fotos?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      No es obligatorio técnicamente, pero es muy recomendado. Las fotos humanizan tu marca y generan mayor confianza. Los perfiles sin foto tienen menos impacto.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Qué hago si un miembro temporal se va de vacaciones?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Usa el switch para desactivarlo temporalmente. Cuando regrese, simplemente reactívalo sin tener que volver a ingresar toda su información.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Las fotos se optimizan automáticamente?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Sí, el sistema optimiza automáticamente todas las fotos que subes para mejorar la velocidad de carga sin sacrificar calidad visual.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Puedo reordenar en dispositivos móviles?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Sí, en móviles usa los botones de flechas arriba/abajo para mover miembros una posición a la vez. Es igual de funcional que el arrastrar y soltar de desktop.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">¿Dónde aparece esta sección en mi sitio web?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      La sección de equipo típicamente aparece en la página "Acerca de" o "Sobre Nosotros" de tu sitio web, dependiendo de tu configuración de navegación.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "resenas":
