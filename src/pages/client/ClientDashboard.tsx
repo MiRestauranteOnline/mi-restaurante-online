@@ -57,6 +57,9 @@ interface ClientSettings {
   show_whatsapp_popup?: boolean;
   delivery_info?: any;
   whatsapp_messages?: any;
+  google_analytics_id?: string;
+  google_search_console_verification?: string;
+  analytics_enabled?: boolean;
 }
 
 interface MenuCategory {
@@ -135,6 +138,7 @@ export default function ClientDashboard() {
     ...(planType === 'advanced' ? [{ value: "analytics", label: "Analíticas" }] : []),
     { value: "carousel", label: "Carrusel" },
     { value: "custom-images", label: "Imágenes" },
+    ...(planType === 'advanced' ? [{ value: "advanced", label: "Avanzado" }] : []),
   ];
 
   useEffect(() => {
@@ -223,6 +227,21 @@ export default function ClientDashboard() {
 
       if (carouselError) throw carouselError;
 
+      // Fetch premium features for advanced plan
+      let premiumData = null;
+      if (client.plan_type === 'advanced') {
+        const { data: premium, error: premiumError } = await supabase
+          .from('premium_features')
+          .select('*')
+          .eq('client_id', selectedClientId)
+          .maybeSingle();
+
+        if (premiumError && premiumError.code !== 'PGRST116') {
+          throw premiumError;
+        }
+        premiumData = premium;
+      }
+
       setFormData({
         ...client,
         ...settings,
@@ -232,7 +251,10 @@ export default function ClientDashboard() {
         opening_hours: client?.opening_hours || {},
         social_media_links: client?.social_media_links || {},
         delivery: client?.delivery || {},
-        brand_colors: client?.brand_colors || {}
+        brand_colors: client?.brand_colors || {},
+        google_analytics_id: premiumData?.google_analytics_id || '',
+        google_search_console_verification: premiumData?.google_search_console_verification || '',
+        analytics_enabled: premiumData?.analytics_enabled || false,
       });
       setMenuCategories(categories || []);
       setMenuItems(items || []);
@@ -294,6 +316,24 @@ export default function ClientDashboard() {
         });
 
       if (settingsError) throw settingsError;
+
+      // Update premium features for advanced plan
+      if (planType === 'advanced' && (formData.google_analytics_id || formData.google_search_console_verification)) {
+        const { error: premiumError } = await supabase
+          .from('premium_features')
+          .upsert({
+            client_id: selectedClientId,
+            google_analytics_id: formData.google_analytics_id,
+            google_search_console_verification: formData.google_search_console_verification,
+            analytics_enabled: formData.analytics_enabled,
+            analytics_setup_date: formData.analytics_enabled && formData.google_analytics_id ? new Date().toISOString() : null,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'client_id'
+          });
+
+        if (premiumError) throw premiumError;
+      }
 
       toast({
         title: "Guardado",
@@ -1089,6 +1129,65 @@ export default function ClientDashboard() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {planType === 'advanced' && (
+          <TabsContent value="advanced">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configuración Avanzada</CardTitle>
+                <CardDescription>
+                  Configura herramientas avanzadas de análisis y SEO para tu sitio web
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Google Analytics */}
+                <div className="space-y-4 pb-6 border-b">
+                  <h3 className="text-lg font-semibold">Google Analytics</h3>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="google_analytics_id">ID de Google Analytics (GA4)</Label>
+                    <Input
+                      id="google_analytics_id"
+                      value={formData.google_analytics_id || ''}
+                      onChange={(e) => setFormData({...formData, google_analytics_id: e.target.value})}
+                      placeholder="G-XXXXXXXXXX"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Introduce tu ID de medición de GA4 para habilitar el seguimiento de analytics en tu sitio.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="analytics_enabled"
+                      checked={formData.analytics_enabled || false}
+                      onCheckedChange={(checked) => setFormData({...formData, analytics_enabled: checked})}
+                    />
+                    <Label htmlFor="analytics_enabled">Habilitar Google Analytics</Label>
+                  </div>
+                </div>
+
+                {/* Google Search Console */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Google Search Console</h3>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="google_search_console_verification">Código de verificación GSC</Label>
+                    <Input
+                      id="google_search_console_verification"
+                      value={formData.google_search_console_verification || ''}
+                      onChange={(e) => setFormData({...formData, google_search_console_verification: e.target.value})}
+                      placeholder="google-site-verification=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Copia el código de verificación meta tag de Google Search Console para verificar tu sitio.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );
