@@ -60,6 +60,7 @@
     "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.63.0",
+    "react-quill": "^2.0.0",
     "react-resizable-panels": "^2.1.9",
     "react-router-dom": "^7.9.3",
     "sonner": "^1.7.4",

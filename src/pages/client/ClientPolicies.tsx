@@ -10,6 +10,9 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Loader2, FileText, Shield, Cookie, FileCheck } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { generatePrivacyPolicy, generateCookiesPolicy, generateTermsOfService } from '@/lib/policyTemplates';
 
 interface ClientPoliciesData {
   id?: string;
@@ -23,6 +26,18 @@ interface ClientPoliciesData {
   terms_of_service_enabled: boolean;
   terms_of_service_content: string | null;
 }
+
+const quillModules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    ['link'],
+    ['clean']
+  ],
+};
+
+const quillFormats = ['header', 'bold', 'italic', 'underline', 'list', 'bullet', 'link'];
 
 export default function ClientPolicies() {
   const { selectedClientId, selectedClient } = useOutletContext<any>();
@@ -65,12 +80,32 @@ export default function ClientPolicies() {
       if (policiesData) {
         setFormData(policiesData);
       } else {
-        // Set default email from client if no policies exist yet
-        setFormData(prev => ({
-          ...prev,
-          client_id: selectedClientId,
-          reclamaciones_email: selectedClient?.email || null,
-        }));
+        // Generate initial policies from templates
+        const { data: clientData } = await supabase
+          .from('clients')
+          .select('restaurant_name, razon_social, ruc, email, phone, address')
+          .eq('id', selectedClientId)
+          .single();
+
+        if (clientData) {
+          const policyData = {
+            restaurantName: clientData.restaurant_name,
+            razonSocial: clientData.razon_social,
+            ruc: clientData.ruc,
+            email: clientData.email || 'info@ejemplo.com',
+            phone: clientData.phone || '+51 999 999 999',
+            address: clientData.address || 'Lima, Perú',
+          };
+
+          setFormData(prev => ({
+            ...prev,
+            client_id: selectedClientId,
+            reclamaciones_email: selectedClient?.email || null,
+            privacy_policy_content: generatePrivacyPolicy(policyData),
+            cookies_policy_content: generateCookiesPolicy(policyData),
+            terms_of_service_content: generateTermsOfService(policyData),
+          }));
+        }
       }
     } catch (error: any) {
       console.error('Error loading policies:', error);
@@ -238,17 +273,47 @@ export default function ClientPolicies() {
             <CardHeader>
               <CardTitle>Política de Privacidad</CardTitle>
               <CardDescription>
-                Próximamente: Configura tu política de privacidad personalizada
+                Personaliza tu política de privacidad
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="privacy-enabled">Habilitar Política de Privacidad</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Mostrar en el footer de tu sitio web
+                  </p>
+                </div>
+                <Switch
+                  id="privacy-enabled"
+                  checked={formData.privacy_policy_enabled}
+                  onCheckedChange={(checked) => setFormData({ ...formData, privacy_policy_enabled: checked })}
+                />
+              </div>
+
               <Alert>
                 <Shield className="h-4 w-4" />
                 <AlertDescription>
-                  Esta funcionalidad estará disponible próximamente. Podrás crear y gestionar
-                  tu política de privacidad desde aquí.
+                  Los datos dinámicos (nombre, RUC, Razón Social) se actualizan desde <strong>Información General</strong>.
                 </AlertDescription>
               </Alert>
+
+              <div className="space-y-2">
+                <Label>Contenido</Label>
+                <ReactQuill
+                  theme="snow"
+                  value={formData.privacy_policy_content || ''}
+                  onChange={(content) => setFormData({ ...formData, privacy_policy_content: content })}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  style={{ minHeight: '300px' }}
+                />
+              </div>
+
+              <Button onClick={handleSave} disabled={saving}>
+                {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Guardar Cambios
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -259,17 +324,47 @@ export default function ClientPolicies() {
             <CardHeader>
               <CardTitle>Política de Cookies</CardTitle>
               <CardDescription>
-                Próximamente: Configura tu política de cookies personalizada
+                Personaliza tu política de cookies
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="cookies-enabled">Habilitar Política de Cookies</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Mostrar en el footer de tu sitio web
+                  </p>
+                </div>
+                <Switch
+                  id="cookies-enabled"
+                  checked={formData.cookies_policy_enabled}
+                  onCheckedChange={(checked) => setFormData({ ...formData, cookies_policy_enabled: checked })}
+                />
+              </div>
+
               <Alert>
                 <Cookie className="h-4 w-4" />
                 <AlertDescription>
-                  Esta funcionalidad estará disponible próximamente. Podrás crear y gestionar
-                  tu política de cookies desde aquí.
+                  Los datos dinámicos (nombre, RUC, Razón Social) se actualizan desde <strong>Información General</strong>.
                 </AlertDescription>
               </Alert>
+
+              <div className="space-y-2">
+                <Label>Contenido</Label>
+                <ReactQuill
+                  theme="snow"
+                  value={formData.cookies_policy_content || ''}
+                  onChange={(content) => setFormData({ ...formData, cookies_policy_content: content })}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  style={{ minHeight: '300px' }}
+                />
+              </div>
+
+              <Button onClick={handleSave} disabled={saving}>
+                {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Guardar Cambios
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -280,17 +375,47 @@ export default function ClientPolicies() {
             <CardHeader>
               <CardTitle>Términos de Servicio</CardTitle>
               <CardDescription>
-                Próximamente: Configura tus términos de servicio personalizados
+                Personaliza tus términos de servicio
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="terms-enabled">Habilitar Términos de Servicio</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Mostrar en el footer de tu sitio web
+                  </p>
+                </div>
+                <Switch
+                  id="terms-enabled"
+                  checked={formData.terms_of_service_enabled}
+                  onCheckedChange={(checked) => setFormData({ ...formData, terms_of_service_enabled: checked })}
+                />
+              </div>
+
               <Alert>
                 <FileCheck className="h-4 w-4" />
                 <AlertDescription>
-                  Esta funcionalidad estará disponible próximamente. Podrás crear y gestionar
-                  tus términos de servicio desde aquí.
+                  Los datos dinámicos (nombre, RUC, Razón Social) se actualizan desde <strong>Información General</strong>.
                 </AlertDescription>
               </Alert>
+
+              <div className="space-y-2">
+                <Label>Contenido</Label>
+                <ReactQuill
+                  theme="snow"
+                  value={formData.terms_of_service_content || ''}
+                  onChange={(content) => setFormData({ ...formData, terms_of_service_content: content })}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  style={{ minHeight: '300px' }}
+                />
+              </div>
+
+              <Button onClick={handleSave} disabled={saving}>
+                {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Guardar Cambios
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
