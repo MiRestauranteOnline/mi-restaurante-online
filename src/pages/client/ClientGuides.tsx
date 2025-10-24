@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -2554,136 +2554,212 @@ export default function ClientGuides() {
 
       case "preguntas-frecuentes":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Preguntas Frecuentes (FAQs)</CardTitle>
-              <CardDescription>
-                Gestiona las preguntas frecuentes que aparecen en tu sitio web
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
-                <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>"FAQs"</strong> (o <strong>"Preguntas Frecuentes"</strong>)
-                </p>
-              </div>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Preguntas Frecuentes (FAQs)</h1>
+              <p className="text-muted-foreground">
+                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">FAQs</Badge>
+              </p>
+            </div>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Qué son las FAQs?</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <HelpCircle className="h-5 w-5 text-primary" />
+                  ¿Qué son las FAQs?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-muted-foreground">
                   Las Preguntas Frecuentes (FAQs) te permiten responder de manera anticipada las dudas más comunes de tus clientes sobre tu restaurante, menú, horarios, reservas, etc. Esto reduce consultas repetitivas y mejora la experiencia del usuario.
                 </p>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Crear una Nueva FAQ</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Haz clic en el botón <strong>"Agregar FAQ"</strong> o <strong>"Nueva Pregunta"</strong></li>
-                  <li>En el campo <strong>"Pregunta"</strong>, escribe la pregunta que tus clientes suelen hacer</li>
-                  <li>En el campo <strong>"Respuesta"</strong>, proporciona una respuesta clara y completa</li>
-                  <li>Haz clic en <strong>"Guardar"</strong></li>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Crear una Nueva FAQ
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">1.</span>
+                    <span className="text-sm">Haz clic en el botón <Badge variant="outline">Agregar FAQ</Badge></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">2.</span>
+                    <span className="text-sm">En el campo <strong>"Pregunta"</strong>, escribe la pregunta que tus clientes suelen hacer</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">3.</span>
+                    <span className="text-sm">En el campo <strong>"Respuesta"</strong>, proporciona una respuesta clara y completa</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-bold text-primary flex-shrink-0">4.</span>
+                    <span className="text-sm">Haz clic en <Badge variant="outline">Guardar</Badge></span>
+                  </li>
                 </ol>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Gestionar FAQs Existentes</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🔄 Reordenar</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Cambia el orden en que aparecen las preguntas usando los botones de flechas arriba/abajo.
-                    </p>
-                    <p className="text-sm text-muted-foreground">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Gestionar FAQs Existentes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <ArrowUpDown className="h-4 w-4 text-primary" />
+                    Reordenar
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Cambia el orden en que aparecen las preguntas usando los botones de flechas arriba/abajo.
+                  </p>
+                  <Alert className="border-primary/30 bg-primary/5 mt-3">
+                    <Lightbulb className="h-4 w-4 text-primary" />
+                    <AlertDescription className="text-sm">
                       <strong>Consejo:</strong> Coloca las preguntas más importantes o frecuentes al principio.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">✏️ Editar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Haz clic en el botón de editar (ícono de lápiz) para modificar tanto la pregunta como la respuesta de una FAQ existente.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🗑️ Eliminar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Usa el botón de eliminar (ícono de basurero) para quitar una FAQ que ya no sea relevante.
-                    </p>
-                  </div>
+                    </AlertDescription>
+                  </Alert>
                 </div>
-              </div>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Ejemplos de Buenas FAQs</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg bg-muted/50">
-                    <p className="font-medium text-sm mb-1">❓ ¿Aceptan reservas?</p>
-                    <p className="text-sm text-muted-foreground">
-                      ✅ Sí, aceptamos reservas por teléfono al [tu número] o a través de nuestro formulario en línea. Recomendamos reservar con al menos 24 horas de anticipación.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-muted/50">
-                    <p className="font-medium text-sm mb-1">❓ ¿Tienen opciones vegetarianas/veganas?</p>
-                    <p className="text-sm text-muted-foreground">
-                      ✅ Sí, ofrecemos varias opciones vegetarianas y veganas en nuestro menú. Consulta la sección "Vegetariano" en nuestro menú o pregunta a tu mesero.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-muted/50">
-                    <p className="font-medium text-sm mb-1">❓ ¿Cuál es el horario de atención?</p>
-                    <p className="text-sm text-muted-foreground">
-                      ✅ Abrimos de lunes a sábado de 12:00 PM a 11:00 PM. Los domingos abrimos de 12:00 PM a 9:00 PM. Cerrados los martes.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg bg-muted/50">
-                    <p className="font-medium text-sm mb-1">❓ ¿Tienen estacionamiento?</p>
-                    <p className="text-sm text-muted-foreground">
-                      ✅ Sí, contamos con estacionamiento gratuito para nuestros clientes en la parte trasera del restaurante.
-                    </p>
-                  </div>
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Edit className="h-4 w-4 text-primary" />
+                    Editar
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Haz clic en el botón de editar (ícono de lápiz) para modificar tanto la pregunta como la respuesta de una FAQ existente.
+                  </p>
                 </div>
-              </div>
 
-              <Separator />
+                <div className="p-4 border rounded-lg bg-muted/30">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Trash2 className="h-4 w-4 text-primary" />
+                    Eliminar
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Usa el botón de eliminar (ícono de basurero) para quitar una FAQ que ya no sea relevante.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Mostrar/Ocultar Sección de FAQs</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Ejemplos de Buenas FAQs
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <p className="font-medium text-sm mb-1">❓ ¿Aceptan reservas?</p>
+                  <p className="text-sm text-muted-foreground">
+                    ✅ Sí, aceptamos reservas por teléfono al [tu número] o a través de nuestro formulario en línea. Recomendamos reservar con al menos 24 horas de anticipación.
+                  </p>
+                </div>
+
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <p className="font-medium text-sm mb-1">❓ ¿Tienen opciones vegetarianas/veganas?</p>
+                  <p className="text-sm text-muted-foreground">
+                    ✅ Sí, ofrecemos varias opciones vegetarianas y veganas en nuestro menú. Consulta la sección "Vegetariano" en nuestro menú o pregunta a tu mesero.
+                  </p>
+                </div>
+
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <p className="font-medium text-sm mb-1">❓ ¿Cuál es el horario de atención?</p>
+                  <p className="text-sm text-muted-foreground">
+                    ✅ Abrimos de lunes a sábado de 12:00 PM a 11:00 PM. Los domingos abrimos de 12:00 PM a 9:00 PM. Cerrados los martes.
+                  </p>
+                </div>
+
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <p className="font-medium text-sm mb-1">❓ ¿Tienen estacionamiento?</p>
+                  <p className="text-sm text-muted-foreground">
+                    ✅ Sí, contamos con estacionamiento gratuito para nuestros clientes en la parte trasera del restaurante.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Controlar Visibilidad de FAQs
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-muted-foreground">
-                  Puedes controlar si la sección de FAQs aparece en tu página de inicio desde la pestaña <strong>"Contenido"</strong> → <strong>"Controles de Visibilidad"</strong> → <strong>"Mostrar sección de FAQ en página principal"</strong>
+                  Puedes mostrar u ocultar la sección de FAQs desde: 
+                  Panel Principal → Pestaña <Badge variant="outline" className="mx-1">Navegación</Badge> → 
+                  Switch <strong>"Mostrar sección de FAQ"</strong>
                 </p>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Mantén las preguntas cortas y directas (máximo 1-2 líneas)</li>
-                  <li>Las respuestas deben ser claras, completas pero concisas</li>
-                  <li>Actualiza las FAQs basándote en las preguntas que recibes frecuentemente</li>
-                  <li>Incluye información práctica: horarios, métodos de pago, políticas</li>
-                  <li>Evita jerga o términos técnicos - escribe para que todos entiendan</li>
-                  <li>Revisa y actualiza las FAQs cada 3-6 meses</li>
-                  <li>Entre 5-10 FAQs es un buen número - ni muy pocas ni demasiadas</li>
-                  <li>Si una pregunta ya no es frecuente, elimínala</li>
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Preguntas cortas:</strong> Máximo 1-2 líneas por pregunta
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Respuestas claras:</strong> Completas pero concisas
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Actualiza regularmente:</strong> Basándote en las preguntas que recibes frecuentemente
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Información práctica:</strong> Incluye horarios, métodos de pago, políticas
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Lenguaje simple:</strong> Evita jerga o términos técnicos
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Cantidad ideal:</strong> Entre 5-10 FAQs (ni muy pocas ni demasiadas)
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Limpia periódicamente:</strong> Elimina preguntas que ya no sean frecuentes
+                    </span>
+                  </li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "carrusel-imagenes":
