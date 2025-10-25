@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -90,6 +90,7 @@ const Soporte = () => {
     priority?: string;
     ttl?: string;
   }>>([]);
+  const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<SupportFormData>({
@@ -107,6 +108,64 @@ const Soporte = () => {
       dnsRecords: [],
     },
   });
+
+  // Check if user is authenticated and prefill form
+  useEffect(() => {
+    const checkAuthAndPrefill = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user) {
+        setIsAuthenticatedUser(true);
+        
+        // Get user's client data
+        const { data: userClients } = await supabase
+          .from('user_clients')
+          .select('client_id')
+          .eq('user_id', session.user.id)
+          .limit(1);
+        
+        if (userClients && userClients.length > 0) {
+          const clientId = userClients[0].client_id;
+          
+          // Get client details
+          const { data: client } = await supabase
+            .from('clients')
+            .select('restaurant_name, email, subdomain, plan_type')
+            .eq('id', clientId)
+            .single();
+          
+          if (client) {
+            // Prefill form fields
+            form.setValue('name', client.restaurant_name || '');
+            form.setValue('email', client.email || session.user.email || '');
+            form.setValue('clientId', client.subdomain || '');
+            
+            // Set support type based on plan
+            if (client.plan_type === 'advanced') {
+              form.setValue('supportType', 'premium');
+              form.setValue('premiumEmail', client.email || '');
+              
+              // Get premium support PIN
+              const { data: premiumFeatures } = await supabase
+                .from('premium_features')
+                .select('unique_support_pin')
+                .eq('client_id', clientId)
+                .maybeSingle();
+              
+              if (premiumFeatures?.unique_support_pin) {
+                form.setValue('premiumPin', premiumFeatures.unique_support_pin);
+                setIsPremiumVerified(true);
+              }
+            } else {
+              form.setValue('supportType', 'general');
+            }
+          }
+        }
+      }
+    };
+    
+    checkAuthAndPrefill();
+  }, []);
 
   const supportType = form.watch("supportType");
   const consultType = form.watch("consultType");

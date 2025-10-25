@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { MessageSquare, Clock, User, Mail, Calendar, Plus, MessageCircle } from "lucide-react";
+import { MessageSquare, Clock, User, Mail, Calendar, Plus, MessageCircle, Copy, Shield } from "lucide-react";
 import { format } from "date-fns";
 import { businessData } from "@/config/businessData";
 
@@ -187,6 +187,16 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
     fetchTicketResponses(ticket.id);
   };
 
+  const copyPinToClipboard = () => {
+    if (premiumFeatures?.unique_support_pin) {
+      navigator.clipboard.writeText(premiumFeatures.unique_support_pin);
+      toast({
+        title: "PIN copiado",
+        description: "El PIN único ha sido copiado al portapapeles"
+      });
+    }
+  };
+
   const handleWhatsAppSupport = () => {
     let message = `Hola, soy cliente de ${clientData?.restaurant_name || 'Mi Restaurante Online'}.`;
     message += `\n\nMi email es: ${clientData?.email || ''}`;
@@ -227,6 +237,39 @@ export function TicketViewer({ clientId }: TicketViewerProps) {
           </Button>
         </div>
       </div>
+
+      {/* Premium Support PIN Card */}
+      {clientData?.plan_type === 'advanced' && premiumFeatures?.unique_support_pin && (
+        <Card className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-900">Tu PIN Único de Soporte Premium</p>
+                  <p className="text-lg font-bold text-blue-600 tracking-wider">
+                    {premiumFeatures.unique_support_pin}
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={copyPinToClipboard}
+                className="gap-2"
+              >
+                <Copy className="h-4 w-4" />
+                Copiar PIN
+              </Button>
+            </div>
+            <p className="text-xs text-blue-700 mt-2">
+              Usa este PIN cuando contactes soporte por otros canales para recibir atención prioritaria.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tickets List */}
