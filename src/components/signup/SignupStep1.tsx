@@ -15,6 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { SignupData } from "@/pages/Signup";
 
 const signupSchema = z.object({
@@ -53,6 +55,8 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
   const [domainCheckTimeout, setDomainCheckTimeout] = useState<NodeJS.Timeout | null>(null);
   const [countryCode, setCountryCode] = useState("+51"); // Default to Peru
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showCaptchaWarning, setShowCaptchaWarning] = useState(false);
 
   const { toast } = useToast();
 
@@ -227,6 +231,17 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
 
   const onSubmit = async (data: SignupFormData) => {
     try {
+      // Check if CAPTCHA token is present
+      if (!captchaToken) {
+        setShowCaptchaWarning(true);
+        toast({
+          title: "Verificación de seguridad requerida",
+          description: "Por favor, completa la verificación de seguridad antes de continuar.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Final validation before submission
       if (subdomainError) {
         toast({
@@ -777,11 +792,47 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             </div>
           </div>
 
+          {/* CAPTCHA Widget */}
+          {showCaptchaWarning && !captchaToken && (
+            <Alert variant="destructive">
+              <Shield className="h-4 w-4" />
+              <AlertDescription>
+                Por favor, completa la verificación de seguridad antes de continuar.
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          <TurnstileWidget
+            onVerify={(token) => {
+              setCaptchaToken(token);
+              setShowCaptchaWarning(false);
+            }}
+            onError={() => {
+              setCaptchaToken(null);
+              toast({
+                title: "Error de verificación",
+                description: "Error en la verificación de seguridad. Por favor, recarga la página.",
+                variant: "destructive",
+              });
+            }}
+            onExpire={() => {
+              setCaptchaToken(null);
+              setShowCaptchaWarning(true);
+            }}
+          />
+
           <Button 
             type="submit" 
             className="w-full" 
             size="lg"
-            disabled={isProcessingPayment || !!subdomainError || isCheckingSubdomain || !!domainError || isCheckingDomain}
+            disabled={
+              isProcessingPayment || 
+              !!subdomainError || 
+              isCheckingSubdomain || 
+              !!domainError || 
+              isCheckingDomain ||
+              !captchaToken
+            }
           >
             {isProcessingPayment ? (
               <>

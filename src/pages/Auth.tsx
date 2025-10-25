@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { TurnstileWidget } from '@/components/TurnstileWidget';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Shield } from 'lucide-react';
 
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -32,6 +35,8 @@ export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showCaptchaWarning, setShowCaptchaWarning] = useState(false);
   const navigate = useNavigate();
 
   const loginForm = useForm<AuthFormData>({
@@ -128,15 +133,29 @@ export default function Auth() {
 
   const handleLogin = async (data: AuthFormData) => {
     setIsLoading(true);
+    
+    // Check if CAPTCHA is configured and token is present
+    if (!captchaToken) {
+      setShowCaptchaWarning(true);
+      setIsLoading(false);
+      return;
+    }
+    
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
+        options: {
+          captchaToken: captchaToken,
+        },
       });
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           toast.error('Email o contraseña incorrectos');
+        } else if (error.message.includes('captcha')) {
+          toast.error('Verificación de seguridad fallida. Por favor, intenta de nuevo.');
+          setCaptchaToken(null); // Reset CAPTCHA
         } else {
           toast.error(error.message);
         }
@@ -146,6 +165,7 @@ export default function Auth() {
       toast.success('¡Bienvenido!');
     } catch (error) {
       toast.error('Error al iniciar sesión');
+      setCaptchaToken(null); // Reset CAPTCHA on error
     } finally {
       setIsLoading(false);
     }
@@ -274,7 +294,32 @@ export default function Auth() {
                   )}
                 />
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                {/* CAPTCHA Widget */}
+                {showCaptchaWarning && !captchaToken && (
+                  <Alert variant="destructive">
+                    <Shield className="h-4 w-4" />
+                    <AlertDescription>
+                      Por favor, completa la verificación de seguridad antes de continuar.
+                    </AlertDescription>
+                  </Alert>
+                )}
+                
+                <TurnstileWidget
+                  onVerify={(token) => {
+                    setCaptchaToken(token);
+                    setShowCaptchaWarning(false);
+                  }}
+                  onError={() => {
+                    setCaptchaToken(null);
+                    toast.error('Error en la verificación de seguridad. Por favor, recarga la página.');
+                  }}
+                  onExpire={() => {
+                    setCaptchaToken(null);
+                    setShowCaptchaWarning(true);
+                  }}
+                />
+
+                <Button type="submit" className="w-full" disabled={isLoading || !captchaToken}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
