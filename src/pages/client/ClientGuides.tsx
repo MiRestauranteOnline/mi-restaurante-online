@@ -684,7 +684,7 @@ export default function ClientGuides() {
               <CardContent>
                 <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
                   <p className="font-medium">
-                    Panel Principal → Pestaña <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">General</span>
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">General</span>
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
                     Esta es la primera pestaña que verás al entrar a tu panel de control
@@ -983,7 +983,7 @@ export default function ClientGuides() {
               <CardContent>
                 <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
                   <p className="font-medium">
-                    Panel Principal → Pestaña <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Horarios</span>
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Horarios</span>
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
                     Esta pestaña te permite configurar los horarios de apertura y cierre para cada día de la semana
@@ -1381,17 +1381,21 @@ export default function ClientGuides() {
               </p>
             </div>
 
-            <Card className="border-primary/20">
+            <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
-                  Ubicación de la Configuración
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground mb-2">Navega a:</p>
-                <div className="bg-muted/50 p-3 rounded-lg font-mono text-sm">
-                  Panel Principal → Pestaña <Badge variant="outline">Contacto</Badge> → Sección "Información de Delivery"
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Información de Delivery</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Aquí puedes agregar enlaces a plataformas de delivery como Rappi, PedidosYa y Uber Eats
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -1535,12 +1539,42 @@ export default function ClientGuides() {
       case "marca-personalizacion":
         return (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Marca y Personalización</h1>
-              <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Sección "Personalización"
-              </p>
-            </div>
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Palette className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Marca y Personalización</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Personaliza los colores, logos y estilo visual de tu sitio web
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Marca</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Configura la identidad visual de tu restaurante
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -2202,12 +2236,42 @@ export default function ClientGuides() {
       case "contenido-sitio":
         return (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Contenido del Sitio Web</h1>
-              <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Pestaña <Badge variant="secondary" className="mx-1">Contenido</Badge>
-              </p>
-            </div>
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <FileEdit className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Contenido del Sitio Web</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Edita textos, imágenes y controla la visibilidad de las secciones de tu sitio
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Contenido</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Personaliza todos los textos e imágenes de tu sitio web
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -2530,12 +2594,42 @@ export default function ClientGuides() {
       case "preguntas-frecuentes":
         return (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Preguntas Frecuentes (FAQs)</h1>
-              <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">FAQs</Badge>
-              </p>
-            </div>
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <HelpCircle className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Preguntas Frecuentes (FAQs)</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Responde anticipadamente las dudas más comunes de tus clientes
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Preguntas Frecuentes</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Gestiona las preguntas frecuentes que aparecerán en tu sitio
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -2739,34 +2833,60 @@ export default function ClientGuides() {
 
       case "carrusel-imagenes":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Carrusel de Imágenes</CardTitle>
-              <CardDescription>
-                Gestiona el carrusel de imágenes rotatorio en tu sitio web
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro esta configuración?</h3>
-                <p className="text-muted-foreground">
-                  Ve a <strong>Panel Principal</strong> → pestaña <strong>"Carousel"</strong> o <strong>"Carrusel de Imágenes"</strong>
-                </p>
-              </div>
+          <div className="space-y-6">
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <ImagePlus className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Carrusel de Imágenes</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Gestiona el carrusel de imágenes rotatorio en tu sitio web
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
 
-              <Separator />
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Carousel</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Sube y gestiona imágenes para el carrusel de tu sitio
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Qué es el Carrusel?</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">¿Qué es el Carrusel?</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
                   El carrusel es una sección que muestra múltiples imágenes rotando automáticamente en tu página de inicio. Es ideal para destacar platos especiales, el ambiente de tu restaurante, eventos especiales, o promociones.
                 </p>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Configuración del Carrusel</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Configuración del Carrusel</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 
                 <div className="space-y-3">
                   <div className="p-4 border rounded-lg">
@@ -2791,12 +2911,14 @@ export default function ClientGuides() {
                     </ul>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Agregar Imágenes al Carrusel</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Agregar Imágenes al Carrusel</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
                   <li>Busca el área de <strong>"Subir Imagen"</strong> o <strong>"Agregar Imagen al Carousel"</strong></li>
                   <li>Haz clic en el botón de carga o arrastra una imagen</li>
@@ -2804,12 +2926,14 @@ export default function ClientGuides() {
                   <li>Espera a que la imagen se suba correctamente</li>
                   <li>La imagen aparecerá automáticamente en la lista de imágenes del carrusel</li>
                 </ol>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Gestionar Imágenes del Carrusel</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Gestionar Imágenes del Carrusel</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 
                 <div className="space-y-3">
                   <div className="p-4 border rounded-lg">
@@ -2833,12 +2957,14 @@ export default function ClientGuides() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Recomendaciones de Imágenes</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Recomendaciones de Imágenes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 
                 <div className="space-y-3">
                   <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
@@ -2872,12 +2998,14 @@ export default function ClientGuides() {
                     </ul>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Cuántas Imágenes Subir?</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">¿Cuántas Imágenes Subir?</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <div className="p-4 border rounded-lg">
                   <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
                     <li><strong>Mínimo recomendado:</strong> 3-4 imágenes para tener variedad</li>
@@ -2886,12 +3014,14 @@ export default function ClientGuides() {
                     <li>Menos es más: elige calidad sobre cantidad</li>
                   </ul>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">💡 Consejos</h3>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">💡 Consejos</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                   <li>Actualiza las imágenes del carrusel regularmente (cada 2-3 meses)</li>
                   <li>Usa imágenes que cuenten una historia sobre tu restaurante</li>
@@ -2903,20 +3033,50 @@ export default function ClientGuides() {
                   <li>Si desactivas el carrusel, considera activar otra sección destacada</li>
                   <li>Guarda tus mejores imágenes para el carrusel - es lo primero que ven</li>
                 </ul>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "categorias-menu":
         return (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Categorías del Menú</h1>
-              <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Menú</Badge> → Sección <Badge variant="secondary" className="mx-1">Categorías</Badge>
-              </p>
-            </div>
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Layout className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Categorías del Menú</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Organiza tu menú en grupos lógicos como Entradas, Platos Principales y Postres
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Menú</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Crea y gestiona las categorías de tu menú digital
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -3103,12 +3263,42 @@ export default function ClientGuides() {
       case "elementos-menu":
         return (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Elementos del Menú</h1>
-              <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Menú</Badge>
-              </p>
-            </div>
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <FileText className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Elementos del Menú</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Agrega platos, bebidas y productos a tu menú digital con precios y descripciones
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Menú</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Gestiona los elementos de tu menú digital organizados por categorías
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -3662,12 +3852,42 @@ export default function ClientGuides() {
       case "equipo":
         return (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Gestión del Equipo</h1>
-              <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Equipo</Badge>
-              </p>
-            </div>
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Gestión del Equipo</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Presenta a las personas clave detrás de tu restaurante
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Equipo</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Agrega y gestiona los miembros de tu equipo para mostrarlos en el sitio
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -4217,12 +4437,42 @@ export default function ClientGuides() {
       case "resenas":
         return (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Reseñas de Clientes</h1>
-              <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Reseñas</Badge>
-              </p>
-            </div>
+            {/* Header Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Star className="h-6 w-6 text-primary fill-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl">Reseñas de Clientes</CardTitle>
+                    <CardDescription className="text-base mt-1">
+                      Gestiona testimonios y reseñas que generan confianza en tu restaurante
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Navigation Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Panel Principal → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Reseñas</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Administra las reseñas y testimonios de clientes en tu sitio
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
