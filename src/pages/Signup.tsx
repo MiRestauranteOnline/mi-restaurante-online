@@ -812,12 +812,17 @@ const Signup = () => {
                 />
               )}
               
-              {currentStep === 8 && (
-                <SignupSuccess 
-                  signupData={signupData}
-                  websiteRequirements={websiteRequirements}
-                />
-              )}
+              {currentStep === 8 && (() => {
+                // Navigate to success page with data
+                navigate('/registro-exitoso', {
+                  state: {
+                    signupData,
+                    websiteRequirements
+                  },
+                  replace: true
+                });
+                return null;
+              })()}
             </CardContent>
           </Card>
         </div>

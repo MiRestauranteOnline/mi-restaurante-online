@@ -20,6 +20,7 @@ import BlogGenerationAdmin from "./components/BlogGenerationAdmin";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Signup from "./pages/Signup";
+import SignupSuccessPage from "./pages/SignupSuccess";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import UnifiedDashboard from "./pages/dashboard/UnifiedDashboard";
 import ClientManagement from "./pages/admin/ClientManagement";
@@ -91,6 +92,7 @@ const AppContent = () => {
         <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/registro" element={<Signup />} />
+        <Route path="/registro-exitoso" element={<SignupSuccessPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-error" element={<PaymentError />} />
