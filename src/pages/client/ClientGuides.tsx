@@ -848,43 +848,10 @@ export default function ClientGuides() {
                   </div>
                 </div>
 
-                {/* Navigation & Display Group */}
+                {/* Custom CTA Button Configuration */}
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-sm uppercase text-muted-foreground tracking-wide">Botones de Navegación</h4>
+                  <h4 className="font-semibold text-sm uppercase text-muted-foreground tracking-wide">Botón CTA Personalizado</h4>
                   
-                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      👁️ Ocultar Botón de WhatsApp del Menú
-                      <Badge variant="outline">Switch</Badge>
-                    </h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Activa este interruptor si NO quieres que aparezca el botón de WhatsApp en la barra de navegación superior de tu sitio web. Por defecto está visible y es útil para que los clientes te contacten fácilmente.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      👁️ Ocultar Botón de Teléfono del Menú
-                      <Badge variant="outline">Switch</Badge>
-                    </h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Activa este interruptor si NO quieres que aparezca el botón de teléfono en la barra de navegación superior. Por defecto está visible para facilitar que los clientes te llamen directamente.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      💬 Mostrar Popup de WhatsApp
-                      <Badge variant="outline">Switch</Badge>
-                    </h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Activa este interruptor para mostrar un botón flotante de WhatsApp que permanece visible mientras los visitantes navegan por tu sitio. Este botón facilita el contacto directo.
-                    </p>
-                    <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-950/30 rounded text-xs text-blue-800 dark:text-blue-200">
-                      <strong>💡 Tip:</strong> El botón flotante puede aumentar las conversiones, pero úsalo con moderación para no saturar la interfaz
-                    </div>
-                  </div>
-
                   <div className="p-4 border rounded-lg hover:border-primary/50 transition-colors bg-gradient-to-br from-primary/5 to-transparent">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
                       ⭐ Texto del Botón CTA Personalizado
