@@ -99,13 +99,20 @@ const AppContent = () => {
         <Route path="/dashboard" element={<DashboardLanguageProvider><DashboardLayout /></DashboardLanguageProvider>}>
           <Route index element={<UnifiedDashboard />} />
         </Route>
-        <Route path="/admin" element={<DashboardLanguageProvider><AdminDashboardLayout /></DashboardLanguageProvider>}>
+        {/* SECURITY: All admin routes protected with server-side role validation */}
+        <Route path="/admin" element={
+          <ProtectedRoute requireAdmin>
+            <DashboardLanguageProvider>
+              <AdminDashboardLayout />
+            </DashboardLanguageProvider>
+          </ProtectedRoute>
+        }>
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="client-management" element={<ClientManagement />} />
           <Route path="custom-domains" element={<CustomDomainPage />} />
           <Route path="custom-dns" element={<CustomDNS />} />
-          <Route path="cloudflare-monitoring" element={<ProtectedRoute requireAdmin><CloudflareMonitoring /></ProtectedRoute>} />
+          <Route path="cloudflare-monitoring" element={<CloudflareMonitoring />} />
           <Route path="billing" element={<BillingInvoicing />} />
           <Route path="tickets" element={<TicketManagement />} />
           <Route path="client-images" element={<ClientImages />} />

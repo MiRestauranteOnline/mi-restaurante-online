@@ -1780,11 +1780,23 @@ const [faqForm, setFaqForm] = useState({
     }
   };
 
-  const handleSwitchToUser = () => {
+  const handleSwitchToUser = async () => {
     if (!currentUser || !effectiveClientId) return;
-    startImpersonation(currentUser.id, effectiveClientId);
-    navigate(`/client/dashboard/${effectiveClientId}`);
-    toast({ title: 'Switched to client view', description: 'You are now viewing as the client' });
+    
+    try {
+      await startImpersonation(currentUser.id, effectiveClientId);
+      navigate(`/client/dashboard/${effectiveClientId}`);
+      toast({ 
+        title: 'Switched to client view', 
+        description: 'You are now viewing as the client' 
+      });
+    } catch (error: any) {
+      toast({ 
+        title: 'Error', 
+        description: error.message || 'Failed to switch to client view',
+        variant: 'destructive'
+      });
+    }
   };
 
   const handleDeactivationToggle = async (checked: boolean) => {
@@ -3403,7 +3415,9 @@ setReviewForm({
                   className="gap-2 shrink-0"
                 >
                   <UserCog className="h-4 w-4" />
-                  <span className="hidden sm:inline">Switch to User</span>
+                  <span className="hidden sm:inline">
+                    {location.pathname.startsWith('/client/') ? 'Switch Back to Admin' : 'Switch to User'}
+                  </span>
                 </Button>
               )}
             </div>

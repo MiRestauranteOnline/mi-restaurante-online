@@ -7,6 +7,11 @@ interface ProtectedRouteProps {
   requireAdmin?: boolean;
 }
 
+/**
+ * SECURITY: This component enforces route-level access control.
+ * CRITICAL: All authorization checks MUST be server-side via RLS and database queries.
+ * Never rely on client-side state (localStorage, cookies) for access control.
+ */
 export default function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
@@ -14,21 +19,25 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
 
   useEffect(() => {
     const checkAuth = async () => {
+      // SECURITY: Verify session with Supabase server
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        navigate('/auth');
+        navigate('/auth', { replace: true });
         return;
       }
 
       if (requireAdmin) {
-        const { data: isAdmin } = await supabase.rpc('has_role', {
+        // SECURITY: Server-side role check via RLS-protected function
+        // This cannot be bypassed by localStorage manipulation
+        const { data: isAdmin, error } = await supabase.rpc('has_role', {
           _user_id: session.user.id,
           _role: 'admin'
         });
 
-        if (!isAdmin) {
-          navigate('/client');
+        if (error || !isAdmin) {
+          console.warn('Unauthorized admin access attempt');
+          navigate('/client', { replace: true });
           return;
         }
       }
@@ -38,6 +47,15 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
     };
 
     checkAuth();
+    
+    // SECURITY: Re-check auth on session changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        navigate('/auth', { replace: true });
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate, requireAdmin]);
 
   if (loading) {
@@ -51,7 +69,7 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
   if (!authorized) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Unauthorized</div>
+        <div className="text-lg">Unauthorized Access</div>
       </div>
     );
   }
