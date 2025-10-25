@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, ChevronLeft, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon, Pencil, Search, Filter, Download, CheckCircle2, XCircle, RefreshCw, Sparkles } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, ChevronLeft, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon, Pencil, Search, Filter, Download, CheckCircle2, XCircle, RefreshCw, Sparkles, MessageCircle, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -8933,106 +8933,282 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Cómo Obtener Soporte</CardTitle>
               <CardDescription>
-                Aprende cómo contactarnos y obtener ayuda cuando la necesites
+                Todo lo que necesitas saber para obtener ayuda rápida y efectiva
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Introduction */}
+              <div className="space-y-3">
+                <p className="text-muted-foreground">
+                  Ofrecemos múltiples canales de soporte para ayudarte cuando lo necesites. Dependiendo de tu plan, tendrás acceso a diferentes opciones y tiempos de respuesta.
+                </p>
+              </div>
+
+              <Separator />
+
+              {/* Support Channels */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Canales de Soporte Disponibles</h3>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  Canales de Soporte Disponibles
+                </h3>
                 
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Sistema de Tickets (Recomendado)</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Crea tickets desde tu dashboard para soporte técnico y consultas. Este es el método más eficiente ya que:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                      <li>Queda registro de toda la conversación</li>
-                      <li>Puedes adjuntar capturas de pantalla</li>
-                      <li>Recibes notificaciones de respuestas por email</li>
-                      <li>Puedes revisar el historial en cualquier momento</li>
-                    </ul>
-                    <div className="mt-3">
-                      <Button variant="outline" asChild>
-                        <a href="/client/support">Ir a Soporte</a>
-                      </Button>
+                <div className="space-y-4">
+                  {/* Ticket System */}
+                  <div className="p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <MessageSquare className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">Sistema de Tickets</h4>
+                          <Badge variant="outline" className="text-xs">Recomendado</Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          El método más eficiente para obtener soporte. Disponible desde tu dashboard o desde la página pública de soporte.
+                        </p>
+                        
+                        <div className="space-y-2 mb-3">
+                          <p className="text-sm font-medium">✓ Ventajas:</p>
+                          <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                            <li>• Registro completo de toda la conversación</li>
+                            <li>• Notificaciones por email de cada respuesta</li>
+                            <li>• Historial accesible en cualquier momento</li>
+                            <li>• Seguimiento del estado del ticket</li>
+                            <li>• Auto-prefill cuando estás logueado</li>
+                          </ul>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          <Button variant="default" size="sm" asChild>
+                            <a href="/client/support">Acceder desde Dashboard</a>
+                          </Button>
+                          <Button variant="outline" size="sm" asChild>
+                            <a href="/soporte" target="_blank">Página Pública de Soporte</a>
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
+                  {/* WhatsApp - Advanced Plan Only */}
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">WhatsApp</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Para consultas rápidas o emergencias urgentes, también puedes contactarnos por WhatsApp. Encontrarás el botón de WhatsApp en la esquina inferior derecha de tu sitio.
-                    </p>
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-green-100 rounded-lg">
+                        <MessageCircle className="h-5 w-5 text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">Soporte por WhatsApp</h4>
+                          <Badge className="text-xs bg-purple-600">Plan Avanzado</Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Atención prioritaria por WhatsApp para clientes del plan avanzado. Usa tu PIN único para verificación rápida.
+                        </p>
+                        <p className="text-xs text-muted-foreground italic">
+                          Si tienes el plan avanzado, encontrarás tu PIN único en la sección de Soporte del dashboard.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
+                  {/* Public Support Form */}
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Guías y Documentación</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Antes de contactarnos, revisa esta sección de guías. Muchas preguntas comunes están respondidas aquí con instrucciones paso a paso.
-                    </p>
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <Mail className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">Formulario Público de Soporte</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Accesible desde <a href="/soporte" className="text-primary hover:underline" target="_blank">mirestaurante.online/soporte</a> sin necesidad de iniciar sesión.
+                        </p>
+                        <Alert className="mt-2">
+                          <Info className="h-4 w-4" />
+                          <AlertDescription className="text-xs">
+                            <strong>Auto-prefill inteligente:</strong> Si accedes mientras estás logueado, el formulario se completará automáticamente con tu información y credenciales de soporte premium (si aplica).
+                          </AlertDescription>
+                        </Alert>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Documentation */}
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-amber-100 rounded-lg">
+                        <FileText className="h-5 w-5 text-amber-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-2">Guías y Documentación</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Antes de contactar soporte, revisa estas guías. Muchas preguntas comunes tienen respuestas detalladas con instrucciones paso a paso.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <Separator />
 
+              {/* Premium Support PIN */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Horarios de Atención</h3>
-                <div className="p-4 border rounded-lg">
-                  <p className="text-sm text-muted-foreground">
-                    Nuestro equipo de soporte está disponible:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground mt-2">
-                    <li>Lunes a Viernes: 9:00 AM - 6:00 PM (hora local)</li>
-                    <li>Sábados: 10:00 AM - 2:00 PM</li>
-                    <li>Domingos y festivos: Cerrado</li>
-                  </ul>
-                  <p className="text-sm text-muted-foreground mt-3">
-                    Los tickets creados fuera de horario serán respondidos al inicio del siguiente día hábil.
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-purple-600" />
+                  PIN de Soporte Premium
+                </h3>
+
+                <Alert className="border-purple-200 bg-purple-50 dark:bg-purple-950">
+                  <Shield className="h-4 w-4 text-purple-600" />
+                  <AlertTitle className="text-purple-900 dark:text-purple-100">Solo Plan Avanzado</AlertTitle>
+                  <AlertDescription className="text-purple-800 dark:text-purple-200 space-y-2">
+                    <p>
+                      Los clientes del plan avanzado reciben un <strong>PIN único de 8 dígitos</strong> para verificación rápida y acceso a soporte prioritario.
+                    </p>
+                  </AlertDescription>
+                </Alert>
+
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                      1
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Ubicación del PIN</p>
+                      <p className="text-sm text-muted-foreground">
+                        Encontrarás tu PIN en la parte superior de la sección <strong>Soporte</strong> en tu dashboard, dentro de una tarjeta destacada con fondo azul.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                      2
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Copiar PIN</p>
+                      <p className="text-sm text-muted-foreground">
+                        Usa el botón "Copiar PIN" para copiarlo al portapapeles y usarlo en el formulario de soporte o WhatsApp.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                      3
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Uso del PIN</p>
+                      <p className="text-sm text-muted-foreground">
+                        Proporciona tu PIN al contactar soporte para recibir atención prioritaria y acceso a funciones premium.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Business Hours */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-primary" />
+                  Horarios de Atención
+                </h3>
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Lunes a Viernes</span>
+                      <span className="text-sm text-muted-foreground">9:00 AM - 6:00 PM</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Sábados</span>
+                      <span className="text-sm text-muted-foreground">10:00 AM - 2:00 PM</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Domingos y Festivos</span>
+                      <span className="text-sm text-muted-foreground">Cerrado</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3 italic">
+                    Tickets creados fuera de horario serán respondidos al inicio del siguiente día hábil.
                   </p>
                 </div>
               </div>
 
               <Separator />
 
+              {/* Response Times */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Tiempos de Respuesta</h3>
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <span className="text-red-600">🔴</span> Urgente
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Sitio caído, errores críticos: Respuesta en 2-4 horas durante horario laboral
-                    </p>
+                
+                <div className="grid gap-3">
+                  <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <div className="w-3 h-3 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-sm">Urgente</span>
+                        <Badge variant="destructive" className="text-xs">Alta Prioridad</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Sitio caído, errores críticos que impiden uso
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        <strong>Plan Básico:</strong> 2-4 horas • <strong className="text-purple-600">Plan Avanzado:</strong> 1-2 horas
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <span className="text-amber-600">🟡</span> Normal
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Consultas generales, configuraciones: Respuesta en 24 horas
-                    </p>
+                  <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <div className="w-3 h-3 rounded-full bg-amber-500 mt-1.5 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-sm">Normal</span>
+                        <Badge variant="outline" className="text-xs">Prioridad Media</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Consultas generales, configuraciones, problemas no críticos
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        <strong>Plan Básico:</strong> 24-48 horas • <strong className="text-purple-600">Plan Avanzado:</strong> 12-24 horas
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <span className="text-blue-600">🔵</span> Baja Prioridad
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Sugerencias, mejoras: Respuesta en 48-72 horas
-                    </p>
+                  <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <div className="w-3 h-3 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-sm">Baja Prioridad</span>
+                        <Badge variant="secondary" className="text-xs">No Urgente</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Sugerencias, mejoras, consultas informativas
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        <strong>Ambos planes:</strong> 48-72 horas
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> Cuando crees un ticket, incluye toda la información relevante: qué estabas intentando hacer, qué sucedió, capturas de pantalla, etc. Esto nos ayuda a resolver tu problema más rápido.
-                </p>
-              </div>
+              {/* Pro Tip */}
+              <Alert>
+                <Lightbulb className="h-4 w-4" />
+                <AlertTitle>Consejo Profesional</AlertTitle>
+                <AlertDescription className="space-y-2">
+                  <p>
+                    Proporciona toda la información relevante en tu primer mensaje: qué intentabas hacer, qué sucedió, capturas de pantalla, navegador y dispositivo. Esto acelera significativamente el tiempo de resolución.
+                  </p>
+                </AlertDescription>
+              </Alert>
             </CardContent>
           </Card>
         );
@@ -9043,159 +9219,342 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Crear Tickets de Soporte</CardTitle>
               <CardDescription>
-                Guía paso a paso para crear tickets efectivos
+                Guía completa para crear tickets efectivos y obtener respuestas rápidas
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Cómo Crear un Ticket?</h3>
+              {/* Introduction */}
+              <div className="space-y-3">
                 <p className="text-muted-foreground">
-                  Ve a <strong>Soporte</strong> desde el menú principal y sigue estos pasos:
+                  Los tickets de soporte son la forma más eficiente de obtener ayuda. Aprende a crear tickets que obtengan respuestas rápidas y soluciones efectivas.
                 </p>
+              </div>
+
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  <strong>Auto-prefill disponible:</strong> Si accedes al formulario de soporte mientras estás logueado, tus datos se completarán automáticamente, incluyendo tu PIN premium si tienes plan avanzado.
+                </AlertDescription>
+              </Alert>
+
+              <Separator />
+
+              {/* Where to Create Tickets */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">¿Dónde Crear un Ticket?</h3>
+                
+                <div className="grid gap-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <MessageSquare className="h-4 w-4 text-primary" />
+                      Desde tu Dashboard
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Ve a <strong>Soporte</strong> en el menú lateral y haz clic en <strong>"Nuevo Ticket"</strong>
+                    </p>
+                    <Button variant="outline" size="sm" asChild>
+                      <a href="/client/support">Ir a Soporte en Dashboard</a>
+                    </Button>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-primary" />
+                      Página Pública de Soporte
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Accede a <a href="/soporte" className="text-primary hover:underline" target="_blank">mirestaurante.online/soporte</a> sin necesidad de iniciar sesión
+                    </p>
+                    <Button variant="outline" size="sm" asChild>
+                      <a href="/soporte" target="_blank">Ir a Formulario Público</a>
+                    </Button>
+                  </div>
+                </div>
               </div>
 
               <Separator />
 
+              {/* Step by Step */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                    1
+                <h3 className="text-lg font-semibold">Pasos para Crear un Ticket</h3>
+
+                <div className="space-y-6">
+                  {/* Step 1 */}
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+                      1
+                    </div>
+                    <div className="flex-1 space-y-3">
+                      <h4 className="font-semibold text-lg">Información Básica</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Completa los campos de identificación:
+                      </p>
+                      
+                      <div className="space-y-2 ml-2">
+                        <div className="p-3 border rounded-lg bg-muted/30">
+                          <p className="font-medium text-sm mb-1">Nombre Completo</p>
+                          <p className="text-xs text-muted-foreground">
+                            Tu nombre o el nombre de tu restaurante
+                          </p>
+                          {/* If logged in badge */}
+                          <Badge variant="secondary" className="mt-2 text-xs">
+                            Auto-completado si estás logueado
+                          </Badge>
+                        </div>
+
+                        <div className="p-3 border rounded-lg bg-muted/30">
+                          <p className="font-medium text-sm mb-1">Email</p>
+                          <p className="text-xs text-muted-foreground">
+                            Donde recibirás las respuestas
+                          </p>
+                          <Badge variant="secondary" className="mt-2 text-xs">
+                            Auto-completado si estás logueado
+                          </Badge>
+                        </div>
+
+                        <div className="p-3 border rounded-lg bg-muted/30">
+                          <p className="font-medium text-sm mb-1">ID de Cliente o Subdominio (Opcional)</p>
+                          <p className="text-xs text-muted-foreground">
+                            Ej: "turestaurante" de turestaurante.mirestaurante.online
+                          </p>
+                          <Badge variant="secondary" className="mt-2 text-xs">
+                            Auto-completado si estás logueado
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-2 flex-1">
-                    <h4 className="font-medium">Haz clic en "Crear Nuevo Ticket"</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Encontrarás este botón en la parte superior de la página de soporte.
-                    </p>
+
+                  {/* Step 2 */}
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+                      2
+                    </div>
+                    <div className="flex-1 space-y-3">
+                      <h4 className="font-semibold text-lg">Tipo de Soporte</h4>
+                      
+                      <div className="space-y-3">
+                        <div className="p-4 border-2 border-muted rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h5 className="font-medium">Soporte General</h5>
+                            <Badge variant="outline">Plan Básico y Avanzado</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Para consultas estándar y soporte técnico básico
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            <strong>Tiempo de respuesta:</strong> 24-48 horas
+                          </p>
+                        </div>
+
+                        <div className="p-4 border-2 border-purple-200 rounded-lg bg-purple-50/50 dark:bg-purple-950/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Shield className="h-4 w-4 text-purple-600" />
+                            <h5 className="font-medium">Soporte Premium</h5>
+                            <Badge className="bg-purple-600">Solo Plan Avanzado</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Atención prioritaria con tiempos de respuesta más rápidos. Requiere PIN único.
+                          </p>
+                          
+                          <Alert className="border-purple-200 bg-purple-50 dark:bg-purple-900/30">
+                            <AlertCircle className="h-4 w-4 text-purple-600" />
+                            <AlertDescription className="text-xs space-y-1">
+                              <p><strong>Verificación automática:</strong></p>
+                              <ul className="ml-4 space-y-1 mt-1">
+                                <li>• Si estás logueado con plan avanzado, tu email y PIN se auto-completan</li>
+                                <li>• Si no estás logueado, necesitarás ingresar manualmente tu email registrado y PIN</li>
+                                <li>• Tu PIN está disponible en la sección Soporte de tu dashboard</li>
+                              </ul>
+                            </AlertDescription>
+                          </Alert>
+                          
+                          <p className="text-xs text-purple-700 dark:text-purple-300 mt-2 font-medium">
+                            <strong>Tiempo de respuesta:</strong> 12-24 horas (1-2 horas para urgencias)
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+                      3
+                    </div>
+                    <div className="flex-1 space-y-3">
+                      <h4 className="font-semibold text-lg">Tipo de Consulta</h4>
+                      
+                      <div className="grid gap-2">
+                        <div className="p-3 border rounded-lg">
+                          <p className="font-medium text-sm">General</p>
+                          <p className="text-xs text-muted-foreground">Consultas generales y preguntas</p>
+                        </div>
+                        <div className="p-3 border rounded-lg">
+                          <p className="font-medium text-sm">Técnico</p>
+                          <p className="text-xs text-muted-foreground">Problemas técnicos con tu sitio</p>
+                        </div>
+                        <div className="p-3 border rounded-lg">
+                          <p className="font-medium text-sm">Facturación</p>
+                          <p className="text-xs text-muted-foreground">Consultas sobre pagos y suscripciones</p>
+                        </div>
+                        <div className="p-3 border rounded-lg">
+                          <p className="font-medium text-sm">DNS</p>
+                          <p className="text-xs text-muted-foreground">Configuración de dominio personalizado</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 4 */}
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+                      4
+                    </div>
+                    <div className="flex-1 space-y-3">
+                      <h4 className="font-semibold text-lg">Detalles del Problema</h4>
+                      
+                      <div className="space-y-3">
+                        <div className="p-3 border rounded-lg">
+                          <p className="font-medium text-sm mb-2">Asunto</p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Un título claro y descriptivo (mínimo 5 caracteres)
+                          </p>
+                          <div className="bg-green-50 dark:bg-green-950/30 p-2 rounded border border-green-200 dark:border-green-800">
+                            <p className="text-xs text-green-700 dark:text-green-300">
+                              ✓ Bueno: "Error 500 al subir imágenes del menú"
+                            </p>
+                          </div>
+                          <div className="bg-red-50 dark:bg-red-950/30 p-2 rounded border border-red-200 dark:border-red-800 mt-2">
+                            <p className="text-xs text-red-700 dark:text-red-300">
+                              ✗ Malo: "Ayuda" o "No funciona"
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="p-3 border rounded-lg">
+                          <p className="font-medium text-sm mb-2">Mensaje</p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Descripción detallada (mínimo 20 caracteres). Incluye:
+                          </p>
+                          <ul className="text-xs text-muted-foreground space-y-1 ml-4">
+                            <li>• <strong>Qué intentabas hacer:</strong> "Estaba subiendo una imagen del menú..."</li>
+                            <li>• <strong>Qué sucedió:</strong> "Apareció un error 500 y la imagen no se guardó"</li>
+                            <li>• <strong>Qué esperabas:</strong> "Esperaba que la imagen se subiera correctamente"</li>
+                            <li>• <strong>Pasos para reproducir:</strong> Lista numerada de acciones</li>
+                            <li>• <strong>Navegador y dispositivo:</strong> "Chrome en Windows 10"</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 5 */}
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+                      5
+                    </div>
+                    <div className="flex-1 space-y-3">
+                      <h4 className="font-semibold text-lg">Enviar Ticket</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Revisa que toda la información sea correcta y haz clic en <strong>"Enviar"</strong>. Recibirás:
+                      </p>
+                      <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                        <li>• Confirmación inmediata en pantalla</li>
+                        <li>• Email de confirmación con número de ticket</li>
+                        <li>• Notificaciones por email cuando recibas respuestas</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                    2
+              <Separator />
+
+              {/* Example */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Ejemplo de Ticket Bien Redactado</h3>
+                
+                <div className="p-4 bg-green-50 dark:bg-green-950/30 border-2 border-green-200 dark:border-green-800 rounded-lg space-y-3">
+                  <div>
+                    <p className="text-xs font-medium text-green-900 dark:text-green-100 mb-1">ASUNTO:</p>
+                    <p className="text-sm text-green-900 dark:text-green-100 font-medium">
+                      Error 500 al actualizar horarios de apertura del lunes
+                    </p>
                   </div>
-                  <div className="space-y-2 flex-1">
-                    <h4 className="font-medium">Completa los Campos Requeridos</h4>
-                    <div className="space-y-3 mt-3">
-                      <div className="p-3 border rounded-lg">
-                        <h5 className="font-medium text-sm mb-1">Asunto *</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Un título claro y descriptivo del problema o consulta
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-2 italic">
-                          Ejemplo: "Error al subir imágenes del menú" en lugar de solo "Ayuda"
-                        </p>
-                      </div>
-
-                      <div className="p-3 border rounded-lg">
-                        <h5 className="font-medium text-sm mb-1">Categoría *</h5>
-                        <p className="text-sm text-muted-foreground">
-                          Selecciona la categoría que mejor describe tu consulta:
-                        </p>
-                        <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground mt-2">
-                          <li>Técnico: Problemas con el sitio o funcionalidades</li>
-                          <li>Facturación: Consultas sobre pagos y suscripciones</li>
-                          <li>Configuración: Ayuda con ajustes del dashboard</li>
-                          <li>General: Otras consultas</li>
-                        </ul>
-                      </div>
-
-                      <div className="p-3 border rounded-lg">
-                        <h5 className="font-medium text-sm mb-1">Prioridad *</h5>
-                        <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                          <li><strong>Baja:</strong> Consultas generales, no urgentes</li>
-                          <li><strong>Normal:</strong> Problemas que afectan funcionalidad pero no bloquean</li>
-                          <li><strong>Alta:</strong> Problemas que impiden usar el sitio</li>
-                          <li><strong>Urgente:</strong> Sitio completamente caído o error crítico</li>
-                        </ul>
-                      </div>
-
-                      <div className="p-3 border rounded-lg">
-                        <h5 className="font-medium text-sm mb-1">Descripción *</h5>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Explica el problema en detalle. Incluye:
-                        </p>
-                        <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                          <li>Qué estabas intentando hacer</li>
-                          <li>Qué sucedió (el error o problema)</li>
-                          <li>Qué esperabas que sucediera</li>
-                          <li>Pasos para reproducir el problema</li>
-                          <li>Navegador y dispositivo que usas</li>
-                        </ul>
-                      </div>
+                  
+                  <Separator className="bg-green-200 dark:bg-green-800" />
+                  
+                  <div>
+                    <p className="text-xs font-medium text-green-900 dark:text-green-100 mb-1">TIPO:</p>
+                    <p className="text-sm text-green-900 dark:text-green-100">
+                      Soporte General • Consulta Técnica
+                    </p>
+                  </div>
+                  
+                  <Separator className="bg-green-200 dark:bg-green-800" />
+                  
+                  <div>
+                    <p className="text-xs font-medium text-green-900 dark:text-green-100 mb-2">MENSAJE:</p>
+                    <div className="text-sm text-green-900 dark:text-green-100 space-y-2">
+                      <p>
+                        Hola, estoy intentando actualizar los horarios de apertura de mi restaurante desde Panel Principal → Configuración → Horarios.
+                      </p>
+                      <p>
+                        <strong>Problema:</strong> Cuando hago clic en "Guardar Cambios" después de modificar el horario del lunes, aparece un error 500 y los cambios no se guardan.
+                      </p>
+                      <p>
+                        <strong>Pasos para reproducir:</strong>
+                      </p>
+                      <ol className="ml-4 space-y-1 text-sm">
+                        <li>1. Ir a Panel Principal → Horarios</li>
+                        <li>2. Cambiar hora de apertura del lunes de 10:00 a 11:00</li>
+                        <li>3. Hacer clic en "Guardar Cambios"</li>
+                        <li>4. Aparece error 500</li>
+                      </ol>
+                      <p>
+                        <strong>Información adicional:</strong>
+                        <br />
+                        • Navegador: Chrome versión 120
+                        <br />
+                        • Dispositivo: MacBook Pro
+                        <br />
+                        • Adjunto captura del mensaje de error
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                    3
-                  </div>
-                  <div className="space-y-2 flex-1">
-                    <h4 className="font-medium">Adjunta Capturas de Pantalla (Opcional)</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Las imágenes nos ayudan a entender mejor el problema. Captura:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                      <li>Mensajes de error completos</li>
-                      <li>La pantalla donde ocurre el problema</li>
-                      <li>Cualquier comportamiento inesperado</li>
+                <Alert className="border-green-200 bg-green-50/50 dark:bg-green-950/20">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertTitle className="text-green-900 dark:text-green-100">¿Por qué este ticket es bueno?</AlertTitle>
+                  <AlertDescription className="text-green-800 dark:text-green-200 text-xs space-y-1">
+                    <ul className="ml-4 space-y-1">
+                      <li>• Asunto específico y descriptivo</li>
+                      <li>• Explica qué intentaba hacer</li>
+                      <li>• Describe claramente el problema</li>
+                      <li>• Incluye pasos para reproducir</li>
+                      <li>• Proporciona información técnica relevante</li>
+                      <li>• Menciona que adjuntará evidencia</li>
                     </ul>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                    4
-                  </div>
-                  <div className="space-y-2 flex-1">
-                    <h4 className="font-medium">Envía el Ticket</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Revisa que toda la información sea correcta y haz clic en "Crear Ticket". Recibirás una confirmación por email.
-                    </p>
-                  </div>
-                </div>
+                  </AlertDescription>
+                </Alert>
               </div>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Ejemplo de Buen Ticket</h3>
-                <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg space-y-2">
-                  <p className="font-medium text-green-900 dark:text-green-100">Asunto:</p>
-                  <p className="text-sm text-green-900 dark:text-green-100">
-                    Error 500 al intentar actualizar horarios de apertura
-                  </p>
-                  
-                  <p className="font-medium text-green-900 dark:text-green-100 mt-3">Descripción:</p>
-                  <p className="text-sm text-green-900 dark:text-green-100">
-                    Hola, estoy intentando actualizar los horarios de apertura de mi restaurante desde Panel Principal → Configuración → Horarios.
-                    <br /><br />
-                    Cuando hago clic en "Guardar Cambios" después de modificar el horario del lunes, aparece un error 500 y los cambios no se guardan.
-                    <br /><br />
-                    Pasos para reproducir:
-                    <br />
-                    1. Ir a Panel Principal → Horarios
-                    <br />
-                    2. Cambiar hora de apertura del lunes de 10:00 a 11:00
-                    <br />
-                    3. Hacer clic en "Guardar Cambios"
-                    <br />
-                    4. Aparece error 500
-                    <br /><br />
-                    Navegador: Chrome, versión 120
-                    <br />
-                    Dispositivo: MacBook Pro
-                    <br /><br />
-                    Adjunto captura del error.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> Cuanta más información proporciones, más rápido podremos resolver tu problema. No te preocupes por dar "demasiados" detalles.
-                </p>
-              </div>
+              {/* Pro Tips */}
+              <Alert>
+                <Lightbulb className="h-4 w-4" />
+                <AlertTitle>Consejos para Tickets Efectivos</AlertTitle>
+                <AlertDescription className="space-y-2 text-sm">
+                  <ul className="ml-4 space-y-1">
+                    <li>• Sé específico en el asunto - ayuda a priorizar tu ticket</li>
+                    <li>• Incluye toda la información posible en el primer mensaje</li>
+                    <li>• Las capturas de pantalla son muy valiosas para problemas visuales</li>
+                    <li>• Menciona si el problema es recurrente o solo ocurrió una vez</li>
+                    <li>• Si es urgente, selecciona la prioridad correcta y explica por qué</li>
+                  </ul>
+                </AlertDescription>
+              </Alert>
             </CardContent>
           </Card>
         );
@@ -9206,59 +9565,294 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Historial de Tickets</CardTitle>
               <CardDescription>
-                Cómo revisar y gestionar tus tickets de soporte
+                Aprende a revisar, responder y gestionar tus tickets de soporte
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Acceder a tu Historial</h3>
+              {/* Introduction */}
+              <div className="space-y-3">
                 <p className="text-muted-foreground">
-                  Ve a <strong>Soporte</strong> desde el menú principal. Verás una lista de todos tus tickets anteriores y actuales.
+                  Tu historial de tickets te permite revisar todas tus conversaciones de soporte, ver el estado de cada ticket y continuar conversaciones abiertas.
                 </p>
               </div>
 
               <Separator />
 
+              {/* How to Access */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  Acceder a tu Historial
+                </h3>
+                
+                <div className="p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Para ver todos tus tickets:
+                  </p>
+                  <ol className="space-y-2 ml-4 text-sm text-muted-foreground">
+                    <li>1. Ve a <strong>Soporte</strong> desde el menú lateral de tu dashboard</li>
+                    <li>2. Verás una lista de todos tus tickets en la parte izquierda</li>
+                    <li>3. Haz clic en cualquier ticket para ver los detalles completos</li>
+                  </ol>
+                  <Button variant="outline" size="sm" className="mt-3" asChild>
+                    <a href="/client/support">Ir a Historial de Tickets</a>
+                  </Button>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Ticket Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Información de cada Ticket</h3>
+                
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Cada ticket en tu historial muestra:
+                  </p>
+                  
+                  <div className="grid gap-3">
+                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                      <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                        <FileText className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">Número de Ticket</p>
+                        <p className="text-xs text-muted-foreground">
+                          ID único (ej: #TK-2024-001) para referencia rápida
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                      <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">Estado Actual</p>
+                        <p className="text-xs text-muted-foreground">
+                          Nuevo, En Progreso, Resuelto o Cerrado
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                      <div className="p-2 bg-amber-100 rounded-lg flex-shrink-0">
+                        <AlertCircle className="h-4 w-4 text-amber-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">Prioridad</p>
+                        <p className="text-xs text-muted-foreground">
+                          Baja, Media, Alta o Urgente
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                      <div className="p-2 bg-purple-100 rounded-lg flex-shrink-0">
+                        <MessageSquare className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">Contador de Respuestas</p>
+                        <p className="text-xs text-muted-foreground">
+                          Número total de mensajes en la conversación
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                      <div className="p-2 bg-gray-100 rounded-lg flex-shrink-0">
+                        <Clock className="h-4 w-4 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">Fechas</p>
+                        <p className="text-xs text-muted-foreground">
+                          Fecha de creación y última actualización
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Ticket States */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Estados de Tickets</h3>
+                
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                      <h4 className="font-medium">Abierto</h4>
+                  <div className="flex items-start gap-3 p-4 border-2 border-blue-200 rounded-lg bg-blue-50/50 dark:bg-blue-950/20">
+                    <div className="w-4 h-4 rounded-full bg-blue-500 mt-1 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold">Nuevo</h4>
+                        <Badge className="bg-blue-500 text-xs">Activo</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Ticket recién creado. Nuestro equipo lo revisará pronto y comenzará a trabajar en él.
+                      </p>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Ticket nuevo o en proceso de resolución. Nuestro equipo está trabajando en él.
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 border-2 border-yellow-200 rounded-lg bg-yellow-50/50 dark:bg-yellow-950/20">
+                    <div className="w-4 h-4 rounded-full bg-yellow-500 mt-1 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold">En Progreso</h4>
+                        <Badge className="bg-yellow-500 text-xs">Activo</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        El equipo está trabajando activamente en tu ticket. Es posible que te pidan más información o que ya estén implementando una solución.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 border-2 border-green-200 rounded-lg bg-green-50/50 dark:bg-green-950/20">
+                    <div className="w-4 h-4 rounded-full bg-green-500 mt-1 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold">Resuelto</h4>
+                        <Badge className="bg-green-500 text-xs">Puede reabrirse</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        El problema ha sido solucionado. Si el problema persiste o no estás satisfecho con la solución, puedes agregar una respuesta explicando la situación.
+                      </p>
+                      <p className="text-xs text-green-700 dark:text-green-300">
+                        <strong>Nota:</strong> Los tickets resueltos pueden reabrirse automáticamente si agregas una nueva respuesta.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg bg-gray-50/50 dark:bg-gray-950/20">
+                    <div className="w-4 h-4 rounded-full bg-gray-500 mt-1 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold">Cerrado</h4>
+                        <Badge variant="secondary" className="text-xs">Finalizado</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Ticket finalizado y archivado. No se pueden agregar más respuestas.
+                      </p>
+                      <p className="text-xs text-gray-700 dark:text-gray-300">
+                        <strong>Nota:</strong> Si tienes un problema relacionado, crea un nuevo ticket y menciona el número del ticket anterior.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* How to Respond */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Cómo Responder a un Ticket</h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                      1
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium mb-1">Selecciona el Ticket</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Haz clic en el ticket que deseas revisar desde la lista en la izquierda. Los detalles aparecerán en el panel derecho.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                      2
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium mb-1">Revisa la Conversación</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Lee todos los mensajes anteriores para entender el contexto completo. Verás:
+                      </p>
+                      <ul className="text-sm text-muted-foreground ml-4 mt-2 space-y-1">
+                        <li>• Tu mensaje original</li>
+                        <li>• Respuestas del equipo de soporte (fondo verde)</li>
+                        <li>• Tus respuestas anteriores (fondo azul)</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                      3
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium mb-1">Escribe tu Respuesta</h4>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        En el campo de texto al final (solo visible si el ticket no está cerrado):
+                      </p>
+                      <ul className="text-sm text-muted-foreground ml-4 space-y-1">
+                        <li>• Responde las preguntas del equipo</li>
+                        <li>• Proporciona información adicional solicitada</li>
+                        <li>• Confirma si la solución funcionó</li>
+                        <li>• Explica si el problema persiste</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                      4
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium mb-1">Envía la Respuesta</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Haz clic en <strong>"Enviar Respuesta"</strong>. Recibirás una confirmación y el equipo será notificado automáticamente.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert>
+                  <Mail className="h-4 w-4" />
+                  <AlertDescription className="text-sm">
+                    Recibirás un email cada vez que el equipo responda a tu ticket. El email incluirá un resumen de la respuesta y un enlace directo al ticket.
+                  </AlertDescription>
+                </Alert>
+              </div>
+
+              <Separator />
+
+              {/* Viewing Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Panel de Detalles del Ticket</h3>
+                
+                <p className="text-sm text-muted-foreground">
+                  Cuando seleccionas un ticket, verás:
+                </p>
+
+                <div className="space-y-2">
+                  <div className="p-3 border rounded-lg">
+                    <p className="font-medium text-sm mb-1">Información del Cliente</p>
+                    <p className="text-xs text-muted-foreground">
+                      Tu nombre y email registrado en el ticket
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                      <h4 className="font-medium">Esperando Respuesta</h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      El equipo ha respondido y está esperando más información de tu parte.
+                  <div className="p-3 border rounded-lg">
+                    <p className="font-medium text-sm mb-1">Mensaje Original</p>
+                    <p className="text-xs text-muted-foreground">
+                      Tu consulta o problema inicial tal como lo describiste
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      <h4 className="font-medium">Resuelto</h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      El problema ha sido solucionado. Puedes reabrirlo si el problema persiste.
+                  <div className="p-3 border rounded-lg">
+                    <p className="font-medium text-sm mb-1">Conversación Completa</p>
+                    <p className="text-xs text-muted-foreground">
+                      Todos los intercambios de mensajes en orden cronológico
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-3 h-3 rounded-full bg-gray-500"></div>
-                      <h4 className="font-medium">Cerrado</h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Ticket finalizado. Si tienes un problema relacionado, crea un nuevo ticket.
+                  <div className="p-3 border rounded-lg">
+                    <p className="font-medium text-sm mb-1">Campo de Respuesta</p>
+                    <p className="text-xs text-muted-foreground">
+                      Área de texto para agregar nuevos mensajes (si el ticket está abierto)
                     </p>
                   </div>
                 </div>
@@ -9266,68 +9860,46 @@ export default function ClientGuides() {
 
               <Separator />
 
+              {/* Premium Support PIN Card */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Responder a un Ticket</h3>
-                <ol className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Haz clic en el ticket que deseas revisar</li>
-                  <li>Lee la respuesta del equipo de soporte</li>
-                  <li>Escribe tu respuesta en el campo de texto al final</li>
-                  <li>Puedes adjuntar archivos adicionales si es necesario</li>
-                  <li>Haz clic en "Enviar Respuesta"</li>
-                </ol>
-                <p className="text-muted-foreground mt-3">
-                  Recibirás un email cada vez que el equipo responda a tu ticket.
-                </p>
-              </div>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-purple-600" />
+                  PIN de Soporte Premium
+                </h3>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Filtrar y Buscar Tickets</h3>
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Por Estado</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Usa los filtros para ver solo tickets abiertos, resueltos o cerrados.
+                <Alert className="border-purple-200 bg-purple-50 dark:bg-purple-950">
+                  <Shield className="h-4 w-4 text-purple-600" />
+                  <AlertTitle className="text-purple-900 dark:text-purple-100">Solo Plan Avanzado</AlertTitle>
+                  <AlertDescription className="text-purple-800 dark:text-purple-200 text-sm">
+                    <p className="mb-2">
+                      Si tienes el plan avanzado, verás una tarjeta destacada en la parte superior de esta página con tu PIN único de 8 dígitos.
                     </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Por Fecha</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Los tickets más recientes aparecen primero. Puedes ordenar por fecha de creación o última actualización.
+                    <p className="text-xs">
+                      <strong>Usa este PIN cuando:</strong>
                     </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Búsqueda</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Usa la barra de búsqueda para encontrar tickets por palabras clave en el asunto o descripción.
-                    </p>
-                  </div>
-                </div>
+                    <ul className="text-xs ml-4 mt-1 space-y-1">
+                      <li>• Contactes soporte por WhatsApp</li>
+                      <li>• Crees tickets desde la página pública de soporte</li>
+                      <li>• Necesites verificación rápida de tu cuenta</li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
               </div>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Reabrir un Ticket Cerrado</h3>
-                <p className="text-muted-foreground">
-                  Si el problema persiste después de que un ticket fue marcado como resuelto:
-                </p>
-                <ol className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Abre el ticket desde tu historial</li>
-                  <li>Haz clic en "Reabrir Ticket"</li>
-                  <li>Explica por qué el problema aún no está resuelto</li>
-                  <li>Incluye información adicional si es relevante</li>
-                </ol>
-              </div>
-
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> Revisa tu historial de tickets antes de crear uno nuevo. Es posible que un problema similar ya haya sido resuelto anteriormente.
-                </p>
-              </div>
+              {/* Pro Tips */}
+              <Alert>
+                <Lightbulb className="h-4 w-4" />
+                <AlertTitle>Consejos Útiles</AlertTitle>
+                <AlertDescription className="space-y-2 text-sm">
+                  <ul className="ml-4 space-y-1">
+                    <li>• <strong>Revisa el historial antes de crear un nuevo ticket</strong> - Puedes encontrar soluciones a problemas similares</li>
+                    <li>• <strong>Responde rápidamente</strong> cuando el equipo pida información - Acelera la resolución</li>
+                    <li>• <strong>Usa el mismo ticket</strong> para problemas relacionados en lugar de crear múltiples tickets</li>
+                    <li>• <strong>Confirma cuando el problema esté resuelto</strong> - Ayuda al equipo a cerrar tickets correctamente</li>
+                    <li>• <strong>Sé claro y específico</strong> en tus respuestas para evitar malentendidos</li>
+                  </ul>
+                </AlertDescription>
+              </Alert>
             </CardContent>
           </Card>
         );
