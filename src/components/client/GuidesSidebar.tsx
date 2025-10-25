@@ -82,6 +82,8 @@ const guideCategories: GuideCategory[] = [
       { id: "introduccion-analiticas", title: "Introducción a Analíticas", icon: FileText },
       { id: "metricas", title: "Entendiendo las Métricas", icon: FileText },
       { id: "estadisticas-uso", title: "Estadísticas de Uso", icon: FileText },
+      { id: "configurar-google-analytics", title: "Configurar Google Analytics", icon: FileText },
+      { id: "configurar-google-search-console", title: "Configurar Google Search Console", icon: FileText },
     ],
   },
   {
