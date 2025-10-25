@@ -13,6 +13,7 @@ import { GuidesSidebar } from "@/components/client/GuidesSidebar";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { SmartSupportLink } from "@/components/SmartSupportLink";
 import namecheapStep1 from "@/assets/namecheap-step-1.webp";
 import namecheapStep2 from "@/assets/namecheap-step-2.webp";
 import namecheapStep3 from "@/assets/namecheap-step-3.webp";
@@ -8981,9 +8982,9 @@ export default function ClientGuides() {
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                          <Button variant="default" size="sm" asChild>
-                            <a href="/client/support">Acceder desde Dashboard</a>
-                          </Button>
+                          <SmartSupportLink variant="default" size="sm">
+                            Acceder desde Dashboard
+                          </SmartSupportLink>
                           <Button variant="outline" size="sm" asChild>
                             <a href="/soporte" target="_blank">Página Pública de Soporte</a>
                           </Button>
@@ -9252,9 +9253,9 @@ export default function ClientGuides() {
                     <p className="text-sm text-muted-foreground mb-2">
                       Ve a <strong>Soporte</strong> en el menú lateral y haz clic en <strong>"Nuevo Ticket"</strong>
                     </p>
-                    <Button variant="outline" size="sm" asChild>
-                      <a href="/client/support">Ir a Soporte en Dashboard</a>
-                    </Button>
+                    <SmartSupportLink variant="outline" size="sm">
+                      Ir a Soporte en Dashboard
+                    </SmartSupportLink>
                   </div>
 
                   <div className="p-4 border rounded-lg">
@@ -9594,9 +9595,9 @@ export default function ClientGuides() {
                     <li>2. Verás una lista de todos tus tickets en la parte izquierda</li>
                     <li>3. Haz clic en cualquier ticket para ver los detalles completos</li>
                   </ol>
-                  <Button variant="outline" size="sm" className="mt-3" asChild>
-                    <a href="/client/support">Ir a Historial de Tickets</a>
-                  </Button>
+                  <SmartSupportLink variant="outline" size="sm" className="mt-3">
+                    Ir a Historial de Tickets
+                  </SmartSupportLink>
                 </div>
               </div>
 
