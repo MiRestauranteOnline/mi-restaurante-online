@@ -5634,44 +5634,60 @@ export default function ClientGuides() {
       case "configuracion-mesas":
         return (
           <div className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold mb-4">Configuración Global de Mesas</h2>
+              <p className="text-lg text-muted-foreground">
+                Define los tipos de mesa que tiene tu restaurante para gestionar las reservas online.
+              </p>
+            </div>
+
             <Card>
               <CardHeader>
-                <CardTitle className="text-3xl">Configuración Global de Mesas</CardTitle>
-                <CardDescription className="text-base">
-                  Navega a: Reservas → Configuración de Mesas
-                </CardDescription>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <AlertTitle className="text-blue-900 dark:text-blue-100">¿Qué es la Configuración Global de Mesas?</AlertTitle>
-                  <AlertDescription className="text-blue-800 dark:text-blue-200">
-                    Esta es tu configuración <strong>predeterminada de mesas</strong> que se aplica a todos los horarios de reserva. Aquí defines los tipos de mesa que tiene tu restaurante físicamente (ej: mesas de 2, 4, 6 personas) y esta información se usa para calcular automáticamente la disponibilidad de reservas.
-                  </AlertDescription>
-                </Alert>
-
-                <Alert className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
-                  <Lightbulb className="h-4 w-4 text-green-600 dark:text-green-400" />
-                  <AlertTitle className="text-green-900 dark:text-green-100">Indicadores Visuales en el Sistema</AlertTitle>
-                  <AlertDescription className="text-green-800 dark:text-green-200 space-y-2">
-                    <p>En la sección "Horarios de Reserva" verás indicadores que te muestran qué configuración usa cada horario:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li><strong>🌐 Global:</strong> El horario usa las mesas configuradas aquí (configuración global)</li>
-                      <li><strong>🎯 Personalizada:</strong> El horario tiene su propia configuración de mesas específica</li>
-                    </ul>
-                    <p className="mt-2">Puedes pasar el cursor sobre estos indicadores para ver más información.</p>
-                  </AlertDescription>
-                </Alert>
-
-                <Alert>
-                  <Info className="h-4 w-4" />
-                  <AlertTitle>¿Cuándo usar Configuración Personalizada?</AlertTitle>
-                  <AlertDescription>
-                    Si en ciertos horarios (ej: cenas de viernes y sábado) tienes una distribución diferente de mesas disponibles para reservas, puedes sobrescribir esta configuración global en la sección "Horarios de Reserva". Simplemente edita el horario específico y activa la opción de personalizar mesas.
-                  </AlertDescription>
-                </Alert>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Reservas → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Capacidad</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Aquí defines los tipos de mesa que tiene tu restaurante físicamente
+                  </p>
+                </div>
               </CardContent>
             </Card>
+
+            <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+              <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <AlertTitle className="text-blue-900 dark:text-blue-100">¿Qué es la Configuración Global de Mesas?</AlertTitle>
+              <AlertDescription className="text-blue-800 dark:text-blue-200">
+                Esta es tu configuración <strong>predeterminada de mesas</strong> que se aplica a todos los horarios de reserva. Aquí defines los tipos de mesa que tiene tu restaurante físicamente (ej: mesas de 2, 4, 6 personas) y esta información se usa para calcular automáticamente la disponibilidad de reservas.
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+              <Lightbulb className="h-4 w-4 text-green-600 dark:text-green-400" />
+              <AlertTitle className="text-green-900 dark:text-green-100">Indicadores Visuales en el Sistema</AlertTitle>
+              <AlertDescription className="text-green-800 dark:text-green-200 space-y-2">
+                <p>En la sección "Horarios de Reserva" verás indicadores que te muestran qué configuración usa cada horario:</p>
+                <ul className="list-disc list-inside space-y-1 ml-2">
+                  <li><strong>🌐 Global:</strong> El horario usa las mesas configuradas aquí (configuración global)</li>
+                  <li><strong>🎯 Personalizada:</strong> El horario tiene su propia configuración de mesas específica</li>
+                </ul>
+                <p className="mt-2">Puedes pasar el cursor sobre estos indicadores para ver más información.</p>
+              </AlertDescription>
+            </Alert>
+
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertTitle>¿Cuándo usar Configuración Personalizada?</AlertTitle>
+              <AlertDescription>
+                Si en ciertos horarios (ej: cenas de viernes y sábado) tienes una distribución diferente de mesas disponibles para reservas, puedes sobrescribir esta configuración global en la sección "Horarios de Reserva". Simplemente edita el horario específico y activa la opción de personalizar mesas.
+              </AlertDescription>
+            </Alert>
 
             <Card>
               <CardHeader>
