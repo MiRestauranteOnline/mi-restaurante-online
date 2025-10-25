@@ -6205,7 +6205,7 @@ export default function ClientGuides() {
                         <Alert className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800 mt-2">
                           <AlertCircle className="h-3 w-3 text-amber-600 dark:text-amber-400" />
                           <AlertDescription className="text-xs text-amber-800 dark:text-amber-200">
-                            <strong>Importante:</strong> Al rechazar una reserva, se abrirá un diálogo para que selecciones o especifiques el motivo (ej: "No hay mesas disponibles", "Fuera del horario", etc.). Este motivo se guarda en el campo de solicitudes especiales.
+                            <strong>Importante:</strong> Al rechazar una reserva, se abrirá un diálogo para que selecciones o especifiques el motivo (ej: "No hay mesas disponibles", "Fuera del horario", etc.). Este motivo se guarda por separado en "Motivo de Rechazo", preservando las solicitudes especiales originales del cliente.
                           </AlertDescription>
                         </Alert>
                       </div>
@@ -6275,10 +6275,11 @@ export default function ClientGuides() {
 
                 <Alert>
                   <MessageSquare className="h-4 w-4" />
-                  <AlertTitle>Notas vs. Solicitudes Especiales</AlertTitle>
-                  <AlertDescription className="text-sm">
-                    <strong>Notas Internas:</strong> Solo las ves tú. Para tu gestión interna.<br/>
-                    <strong>Solicitudes Especiales:</strong> Lo que el cliente escribió al hacer la reserva (visible en los detalles).
+                  <AlertTitle>Campos en los Detalles de Reserva</AlertTitle>
+                  <AlertDescription className="text-sm space-y-1">
+                    <p><strong>Solicitudes Especiales del Cliente:</strong> Lo que el cliente escribió al hacer la reserva.</p>
+                    <p><strong>Motivo de Rechazo:</strong> El motivo que registraste al declinar una reserva (solo visible si fue cancelada).</p>
+                    <p><strong>Notas Internas:</strong> Solo las ves tú. Para tu gestión interna privada.</p>
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -6444,14 +6445,14 @@ export default function ClientGuides() {
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-semibold text-sm mb-2">¿Cuál es la diferencia entre "Cancelado" y eliminar?</h4>
                     <p className="text-xs text-muted-foreground">
-                      "Cancelado" mantiene un registro de la reserva en el sistema (útil para historial). Eliminar borra permanentemente la reserva. Recomendamos usar "Cancelado" en lugar de eliminar.
+                      "Cancelado" mantiene un registro de la reserva en el sistema (útil para historial). Eliminar borra permanentemente la reserva. Recomendamos usar "Cancelado" en lugar de eliminar. El motivo del rechazo se guarda por separado del campo de solicitudes especiales del cliente.
                     </p>
                   </div>
 
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-semibold text-sm mb-2">¿El cliente puede ver mis notas internas?</h4>
+                    <h4 className="font-semibold text-sm mb-2">¿El cliente puede ver mis notas internas o el motivo de rechazo?</h4>
                     <p className="text-xs text-muted-foreground">
-                      No, las notas internas son completamente privadas y solo visibles en tu panel de administración.
+                      Las notas internas son completamente privadas y solo visibles en tu panel de administración. El motivo de rechazo tampoco es visible para el cliente actualmente, pero se guarda en el sistema para tu referencia y análisis interno.
                     </p>
                   </div>
 

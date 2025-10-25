@@ -1729,6 +1729,86 @@ export type Database = {
           },
         ]
       }
+      reclamaciones: {
+        Row: {
+          address: string | null
+          business_name: string | null
+          claim_code: string
+          claim_type: string
+          client_id: string
+          created_at: string
+          description: string
+          dni: string | null
+          email: string
+          full_name: string
+          id: string
+          person_type: string
+          phone: string | null
+          product_description: string
+          purchase_amount: number | null
+          purchase_date: string
+          resolved_at: string | null
+          ruc: string | null
+          status: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          business_name?: string | null
+          claim_code: string
+          claim_type: string
+          client_id: string
+          created_at?: string
+          description: string
+          dni?: string | null
+          email: string
+          full_name: string
+          id?: string
+          person_type: string
+          phone?: string | null
+          product_description: string
+          purchase_amount?: number | null
+          purchase_date: string
+          resolved_at?: string | null
+          ruc?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          business_name?: string | null
+          claim_code?: string
+          claim_type?: string
+          client_id?: string
+          created_at?: string
+          description?: string
+          dni?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          person_type?: string
+          phone?: string | null
+          product_description?: string
+          purchase_amount?: number | null
+          purchase_date?: string
+          resolved_at?: string | null
+          ruc?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reclamaciones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reservation_schedules: {
         Row: {
           capacity: number
@@ -1801,6 +1881,7 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          decline_reason: string | null
           duration_minutes: number
           id: string
           internal_notes: string | null
@@ -1818,6 +1899,7 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+          decline_reason?: string | null
           duration_minutes?: number
           id?: string
           internal_notes?: string | null
@@ -1835,6 +1917,7 @@ export type Database = {
           customer_email?: string
           customer_name?: string
           customer_phone?: string
+          decline_reason?: string | null
           duration_minutes?: number
           id?: string
           internal_notes?: string | null

@@ -28,6 +28,7 @@ interface Reservation {
   customer_email: string;
   customer_phone: string;
   special_requests: string | null;
+  decline_reason: string | null;
   internal_notes: string | null;
   status: string;
   created_at: string;
@@ -92,6 +93,12 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   useEffect(() => {
     filterReservations();
   }, [reservations, searchTerm, statusFilter]);
+
+  useEffect(() => {
+    if (selectedReservation) {
+      setInternalNotes(selectedReservation.internal_notes || "");
+    }
+  }, [selectedReservation]);
 
   const fetchClientTimezone = async () => {
     try {
@@ -217,7 +224,7 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
         .from("reservations")
         .update({ 
           status: "cancelled",
-          special_requests: finalReason 
+          decline_reason: finalReason 
         })
         .eq("id", reservationToDecline);
 
@@ -271,7 +278,7 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
   };
 
   const exportToCSV = () => {
-    const headers = ["Fecha", "Hora", "Cliente", "Email", "Teléfono", "Personas", "Estado", "Solicitudes Especiales"];
+    const headers = ["Fecha", "Hora", "Cliente", "Email", "Teléfono", "Personas", "Estado", "Solicitudes Especiales", "Motivo de Rechazo"];
     const rows = filteredReservations.map(r => [
       r.reservation_date,
       r.reservation_time,
@@ -280,7 +287,8 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
       r.customer_phone,
       r.party_size,
       STATUS_OPTIONS.find(o => o.value === r.status)?.label || r.status,
-      r.special_requests || ""
+      r.special_requests || "",
+      r.decline_reason || ""
     ]);
 
     const csvContent = [
@@ -651,8 +659,14 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
               </div>
               {selectedReservation.special_requests && (
                 <div>
-                  <h4 className="font-semibold mb-2">Solicitudes Especiales</h4>
+                  <h4 className="font-semibold mb-2">Solicitudes Especiales del Cliente</h4>
                   <p className="text-sm text-muted-foreground">{selectedReservation.special_requests}</p>
+                </div>
+              )}
+              {selectedReservation.decline_reason && (
+                <div>
+                  <h4 className="font-semibold mb-2 text-destructive">Motivo de Rechazo</h4>
+                  <p className="text-sm text-muted-foreground">{selectedReservation.decline_reason}</p>
                 </div>
               )}
               <div>
@@ -673,7 +687,10 @@ const ReservationsList = ({ clientId }: ReservationsListProps) => {
                 <Button onClick={handleSaveNotes} className="flex-1">
                   Guardar Notas
                 </Button>
-                <Button variant="outline" onClick={() => setSelectedReservation(null)}>
+                <Button variant="outline" onClick={() => {
+                  setDetailsDialogOpen(false);
+                  setSelectedReservation(null);
+                }}>
                   Cerrar
                 </Button>
               </div>
