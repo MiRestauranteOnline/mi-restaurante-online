@@ -5268,23 +5268,39 @@ export default function ClientGuides() {
       case "horarios-reserva":
         return (
           <div className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold mb-4">Horarios de Reserva</h2>
+              <p className="text-lg text-muted-foreground">
+                Configura las franjas horarias en las que tu restaurante acepta reservas online.
+              </p>
+            </div>
+
             <Card>
               <CardHeader>
-                <CardTitle className="text-3xl">Horarios de Reserva</CardTitle>
-                <CardDescription className="text-base">
-                  Configura las franjas horarias en las que tu restaurante acepta reservas online
-                </CardDescription>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-primary">📍</span>
+                  ¿Dónde encuentro esta configuración?
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <Alert>
-                  <Info className="h-4 w-4" />
-                  <AlertTitle>¿Qué son los Horarios de Reserva?</AlertTitle>
-                  <AlertDescription>
-                    Los horarios de reserva definen cuándo tu restaurante acepta reservas online. Puedes crear diferentes franjas horarias para cada día de la semana, establecer capacidades específicas y configurar reglas especiales para grupos grandes.
-                  </AlertDescription>
-                </Alert>
+              <CardContent>
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Reservas → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Horarios</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Aquí defines las franjas horarias en las que aceptas reservas
+                  </p>
+                </div>
               </CardContent>
             </Card>
+
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertTitle>¿Qué son los Horarios de Reserva?</AlertTitle>
+              <AlertDescription>
+                Los horarios de reserva definen cuándo tu restaurante acepta reservas online. Puedes crear diferentes franjas horarias para cada día de la semana, establecer capacidades específicas y configurar reglas especiales para grupos grandes.
+              </AlertDescription>
+            </Alert>
 
             <Card>
               <CardHeader>
