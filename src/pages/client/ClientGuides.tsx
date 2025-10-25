@@ -6,12 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon, Pencil, Search, Filter, Download, CheckCircle2, XCircle } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, ChevronLeft, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon, Pencil, Search, Filter, Download, CheckCircle2, XCircle, RefreshCw, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import namecheapStep1 from "@/assets/namecheap-step-1.webp";
 import namecheapStep2 from "@/assets/namecheap-step-2.webp";
 import namecheapStep3 from "@/assets/namecheap-step-3.webp";
@@ -6954,67 +6955,41 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Calendario de Reservas</CardTitle>
               <CardDescription>
-                Visualiza tus reservas en formato de calendario mensual
+                Vista visual mensual interactiva de todas tus reservas con actualizaciones en tiempo real
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Para Qué Sirve el Calendario?</h3>
-                <p className="text-muted-foreground">
-                  El calendario te ofrece una vista mensual de todas tus reservas, permitiéndote identificar rápidamente los días con mayor demanda y planificar recursos en consecuencia.
+              {/* Introducción */}
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  📅 El calendario de reservas te proporciona una vista visual mensual intuitiva de todas tus reservas, 
+                  facilitando la planificación, organización y gestión del flujo de clientes en tu restaurante.
                 </p>
               </div>
 
-              <Separator />
-
+              {/* Navegación del Calendario */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cómo Usar el Calendario</h3>
-                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
-                  <li>Navega entre meses usando las flechas en la parte superior</li>
-                  <li>Cada día muestra el número total de reservas</li>
-                  <li>Los indicadores de color muestran los estados de las reservas del día</li>
-                  <li>Haz clic en cualquier día con reservas para ver los detalles</li>
-                </ol>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Indicadores Visuales</h3>
-                
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <CalendarIcon className="h-5 w-5 text-primary" />
+                  Navegación del Calendario
+                </h3>
                 <div className="space-y-3">
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Número de Reservas</h4>
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <ChevronLeft className="h-4 w-4 text-primary" />
+                      Cambiar de Mes
+                    </h4>
                     <p className="text-sm text-muted-foreground">
-                      Cada día muestra claramente cuántas reservas tienes programadas. Los días sin reservas aparecen sin indicadores.
+                      Utiliza las flechas <strong>← y →</strong> en la parte superior para navegar entre meses anteriores y futuros. 
+                      El calendario carga automáticamente todas las reservas del mes seleccionado.
                     </p>
                   </div>
 
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Código de Colores</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Los puntos de color bajo cada día indican los estados:
-                    </p>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <span>Amarillo: Pendientes</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span>Verde: Confirmadas</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                        <span>Rojo: Canceladas</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Vista Detallada</h4>
+                    <h4 className="font-medium mb-2">Mes Actual</h4>
                     <p className="text-sm text-muted-foreground">
-                      Al hacer clic en un día, se abre un diálogo mostrando todas las reservas de ese día con información completa: nombre, hora, personas, contacto y estado.
+                      El nombre del mes y año se muestra centrado en el encabezado (ejemplo: "enero 2025"). 
+                      La vista se actualiza instantáneamente al cambiar de mes.
                     </p>
                   </div>
                 </div>
@@ -7022,35 +6997,398 @@ export default function ClientGuides() {
 
               <Separator />
 
+              {/* Lectura del Calendario */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Ventajas de la Vista de Calendario</h3>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Identifica rápidamente los días con alta demanda</li>
-                  <li>Planifica la asignación de personal según la ocupación prevista</li>
-                  <li>Detecta patrones de reservas (días populares, temporadas altas)</li>
-                  <li>Anticipa necesidades de inventario y preparación</li>
-                  <li>Visualiza la distribución de reservas a lo largo del mes</li>
-                </ul>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Eye className="h-5 w-5 text-primary" />
+                  Cómo Leer el Calendario
+                </h3>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <h4 className="font-medium mb-3">Días con Reservas</h4>
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <p className="font-medium mb-1">📊 Badge Numérico</p>
+                        <p className="text-muted-foreground">
+                          Muestra el número total de reservas ese día (ejemplo: "3 reservas"). 
+                          Este contador incluye reservas de todos los estados.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="font-medium mb-2">🎨 Indicadores de Color</p>
+                        <p className="text-muted-foreground mb-2">
+                          Pequeños círculos de colores que representan el estado de cada reserva:
+                        </p>
+                        <div className="space-y-2 ml-4">
+                          <div className="flex items-center gap-2">
+                            <div className="h-3 w-3 rounded-full bg-yellow-500 flex-shrink-0"></div>
+                            <span><strong>Amarillo:</strong> Pendiente de confirmación</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="h-3 w-3 rounded-full bg-green-500 flex-shrink-0"></div>
+                            <span><strong>Verde:</strong> Confirmada</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="h-3 w-3 rounded-full bg-red-500 flex-shrink-0"></div>
+                            <span><strong>Rojo:</strong> Cancelada</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="h-3 w-3 rounded-full bg-blue-500 flex-shrink-0"></div>
+                            <span><strong>Azul:</strong> Completada</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <p className="font-medium mb-1">👆 Interactividad</p>
+                        <p className="text-muted-foreground">
+                          Los días con reservas son clickeables y cambian de color al pasar el mouse sobre ellos, 
+                          indicando que puedes hacer click para ver más detalles.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Días sin Reservas</h4>
+                    <ul className="space-y-1 text-sm text-muted-foreground ml-4">
+                      <li>• Solo muestran el número del día</li>
+                      <li>• No son clickeables ni interactivos</li>
+                      <li>• Perfectos para identificar espacios disponibles de un vistazo</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Días de Otros Meses</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Los días que pertenecen al mes anterior o siguiente aparecen atenuados (color gris claro). 
+                      Estos días ayudan a mantener la estructura visual del calendario. Para ver sus reservas, 
+                      navega al mes correspondiente.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <Separator />
 
+              {/* Ver Detalles de Reservas */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Actualizaciones en Tiempo Real</h3>
-                <p className="text-muted-foreground">
-                  El calendario se actualiza automáticamente cuando:
-                </p>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Se crea una nueva reserva (manual o desde el sitio web)</li>
-                  <li>Un cliente cancela su reserva</li>
-                  <li>Cambias el estado de una reserva</li>
-                  <li>Se elimina una reserva</li>
-                </ul>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Ver Detalles de un Día
+                </h3>
+                
+                <div className="p-4 border rounded-lg bg-accent/10">
+                  <ol className="space-y-3 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold text-primary flex-shrink-0">1.</span>
+                      <div>
+                        <strong>Click en el Día:</strong> Haz click en cualquier día que tenga reservas 
+                        (identificables por el badge numérico y los puntos de colores).
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold text-primary flex-shrink-0">2.</span>
+                      <div>
+                        <strong>Ventana de Detalles:</strong> Se abre un diálogo modal mostrando la fecha completa 
+                        (ejemplo: "23 de enero de 2025") y todas las reservas de ese día ordenadas por hora.
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold text-primary flex-shrink-0">3.</span>
+                      <div>
+                        <strong>Información Mostrada:</strong> Para cada reserva verás:
+                        <ul className="mt-2 space-y-1 ml-4">
+                          <li>• <strong>Nombre del cliente</strong></li>
+                          <li>• <strong>Hora de reserva</strong> y número de personas (ejemplo: "19:00 • 4 personas")</li>
+                          <li>• <strong>Teléfono</strong> con enlace clickeable para llamar directamente</li>
+                          <li>• <strong>Email</strong> con enlace clickeable para enviar correo</li>
+                          <li>• <strong>Estado actual</strong> con badge de color correspondiente</li>
+                        </ul>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold text-primary flex-shrink-0">4.</span>
+                      <div>
+                        <strong>Cerrar Detalles:</strong> Click fuera del diálogo o en el botón × (cerrar) 
+                        en la esquina superior derecha para volver a la vista del calendario.
+                      </div>
+                    </li>
+                  </ol>
+                </div>
               </div>
 
+              <Separator />
+
+              {/* Actualizaciones en Tiempo Real */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <RefreshCw className="h-5 w-5 text-primary" />
+                  Actualizaciones en Tiempo Real
+                </h3>
+                
+                <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
+                  <p className="text-sm font-medium mb-3">
+                    El calendario se actualiza automáticamente en tiempo real sin necesidad de recargar la página:
+                  </p>
+                  <ul className="space-y-2 text-sm text-muted-foreground ml-4">
+                    <li>• <strong>Nueva Reserva:</strong> Aparece inmediatamente en el calendario</li>
+                    <li>• <strong>Cambio de Estado:</strong> Los indicadores de color se actualizan al instante</li>
+                    <li>• <strong>Cancelación:</strong> El contador y los indicadores se ajustan automáticamente</li>
+                    <li>• <strong>Eliminación:</strong> La reserva desaparece del calendario en tiempo real</li>
+                    <li>• <strong>Sincronización:</strong> Funciona incluso si tienes múltiples pestañas abiertas</li>
+                  </ul>
+                  
+                  <div className="mt-3 p-3 bg-background border rounded-lg">
+                    <p className="text-sm">
+                      <strong>💡 Nota:</strong> No necesitas refrescar manualmente. El sistema mantiene tu calendario 
+                      sincronizado automáticamente con cualquier cambio en tus reservas, ya sea que lo hagas tú mismo, 
+                      otro usuario, o que llegue desde el sitio web.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Casos de Uso Prácticos */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Casos de Uso Prácticos
+                </h3>
+                
+                <div className="grid gap-3">
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl">📊</span>
+                      <div>
+                        <h4 className="font-semibold mb-1">Planificación de Personal</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Identifica rápidamente los días con mayor volumen de reservas para ajustar el número 
+                          de meseros y cocineros necesarios. Un vistazo al calendario te muestra toda la semana 
+                          o mes completo.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl">🎯</span>
+                      <div>
+                        <h4 className="font-semibold mb-1">Gestión de Capacidad</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Visualiza la distribución de reservas a lo largo del mes para detectar patrones y 
+                          optimizar tu disponibilidad. Si un día está muy lleno, puedes prepararte mejor.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl">📞</span>
+                      <div>
+                        <h4 className="font-semibold mb-1">Seguimiento Rápido</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Accede fácilmente a la información de contacto de todos los clientes de un día específico 
+                          para confirmaciones proactivas, avisos sobre cambios en el servicio, o emergencias.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl">📈</span>
+                      <div>
+                        <h4 className="font-semibold mb-1">Análisis de Tendencias</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Observa patrones semanales y mensuales (por ejemplo, "los viernes siempre tenemos más reservas") 
+                          para tomar decisiones estratégicas sobre horarios especiales u ofertas.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Preguntas Frecuentes */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Preguntas Frecuentes</h3>
+                
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="faq-1">
+                    <AccordionTrigger className="text-left">
+                      ¿Por qué algunos días tienen varios círculos de colores?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        Cada círculo representa el estado de una reserva individual. Si un día tiene múltiples 
+                        reservas con diferentes estados (por ejemplo, 2 confirmadas y 1 pendiente), verás varios 
+                        círculos de diferentes colores. La cantidad de círculos del mismo color indica cuántas 
+                        reservas tienen ese estado específico. Esto te permite identificar de un vistazo la 
+                        composición del día (por ejemplo, si tienes muchas pendientes que necesitas confirmar).
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-2">
+                    <AccordionTrigger className="text-left">
+                      ¿Puedo gestionar reservas desde el calendario?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        El calendario está diseñado principalmente para <strong>visualización</strong> y 
+                        <strong>acceso rápido a información de contacto</strong>. Para gestionar reservas 
+                        (confirmar, cancelar, agregar notas internas, etc.), debes ir a la pestaña 
+                        <strong>"Lista de Reservas"</strong> donde encontrarás todas las opciones de gestión 
+                        disponibles. Este diseño separa la vista general de la gestión detallada para mantener 
+                        el calendario limpio y fácil de leer.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-3">
+                    <AccordionTrigger className="text-left">
+                      ¿El calendario muestra todas las reservas o solo algunas?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        El calendario muestra <strong>TODAS</strong> las reservas del mes seleccionado, 
+                        independientemente de su estado (pendiente, confirmada, cancelada o completada). 
+                        Esto te permite tener una visión completa del historial y las reservas activas de cada día. 
+                        Los indicadores de color te ayudan a distinguir rápidamente el estado de cada una, 
+                        permitiéndote, por ejemplo, ver cuántas reservas confirmadas vs pendientes tienes 
+                        en un día determinado.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-4">
+                    <AccordionTrigger className="text-left">
+                      ¿Necesito refrescar para ver nuevas reservas?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        <strong>No.</strong> El calendario utiliza tecnología de actualización en tiempo real 
+                        (WebSocket/Supabase Realtime) que sincroniza automáticamente la información sin necesidad 
+                        de recargar la página.
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Cuando llegue una nueva reserva (ya sea creada manualmente por ti, por otro usuario con 
+                        acceso, o desde el formulario del sitio web) o cambie el estado de una existente, 
+                        los cambios aparecerán <strong>instantáneamente</strong> en tu calendario. Esto es 
+                        especialmente útil si tienes varios dispositivos o usuarios gestionando reservas 
+                        simultáneamente.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-5">
+                    <AccordionTrigger className="text-left">
+                      ¿Puedo ver reservas de meses pasados?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        Sí, utiliza la flecha izquierda (←) para navegar a meses anteriores. Esto es muy útil para:
+                      </p>
+                      <ul className="mt-2 space-y-1 text-sm text-muted-foreground ml-4">
+                        <li>• Revisar el historial de reservas</li>
+                        <li>• Analizar patrones de reservas pasadas</li>
+                        <li>• Verificar información de clientes que visitaron anteriormente</li>
+                        <li>• Planificar eventos especiales basándote en años anteriores</li>
+                      </ul>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        Todas las reservas se conservan en el sistema indefinidamente, independientemente de 
+                        su antigüedad, permitiéndote acceder a datos históricos cuando los necesites.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-6">
+                    <AccordionTrigger className="text-left">
+                      ¿El calendario tiene en cuenta mi zona horaria?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        Sí, el calendario respeta completamente la zona horaria configurada en los ajustes 
+                        de tu cliente. Las fechas de las reservas se muestran correctamente según tu ubicación, 
+                        evitando confusiones con fechas que pudieran aparecer desplazadas por diferencias horarias. 
+                        Por ejemplo, si tu restaurante está en Lima (UTC-5) y recibes una reserva cerca de la 
+                        medianoche, el sistema asegura que aparezca en el día correcto según tu zona horaria local.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+
+              <Separator />
+
+              {/* Consejos Profesionales */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Consejos Profesionales
+                </h3>
+                
+                <div className="p-4 border rounded-lg bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 dark:text-amber-400 font-bold flex-shrink-0">💡</span>
+                      <div>
+                        <strong>Revisión Matutina:</strong> Consulta el calendario cada mañana para preparar 
+                        el servicio del día y anticipar el flujo de clientes. Revisa especialmente las reservas 
+                        pendientes que necesitan confirmación.
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 dark:text-amber-400 font-bold flex-shrink-0">💡</span>
+                      <div>
+                        <strong>Planificación Semanal:</strong> Al inicio de cada semana, revisa los próximos 
+                        7 días para coordinar compras de ingredientes según el volumen esperado y organizar 
+                        turnos de personal adecuadamente.
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 dark:text-amber-400 font-bold flex-shrink-0">💡</span>
+                      <div>
+                        <strong>Identificación de Patrones:</strong> Observa qué días de la semana suelen tener 
+                        más reservas para optimizar ofertas y promociones. Por ejemplo, si los martes son lentos, 
+                        podrías ofrecer un descuento especial.
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 dark:text-amber-400 font-bold flex-shrink-0">💡</span>
+                      <div>
+                        <strong>Contacto Proactivo:</strong> Usa los enlaces de teléfono y email en el diálogo 
+                        de detalles para confirmar reservas importantes con anticipación o avisar sobre cambios 
+                        en el servicio (por ejemplo, eventos especiales o cambios en el menú).
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 dark:text-amber-400 font-bold flex-shrink-0">💡</span>
+                      <div>
+                        <strong>Vista Complementaria:</strong> Combina el calendario con la vista de "Lista de Reservas". 
+                        Usa el calendario para obtener una vista general y planificación mensual, y la lista para 
+                        gestión detallada día a día (confirmaciones, notas, etc.).
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Consejo Final */}
               <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
                 <p className="text-sm font-medium text-green-900 dark:text-green-100">
-                  ✅ <strong>Consejo:</strong> Usa el calendario junto con la lista de reservas. El calendario es ideal para planificación a largo plazo, mientras que la lista es mejor para gestión detallada del día a día.
+                  ✅ <strong>Recuerda:</strong> El calendario es tu herramienta de vista rápida y planificación. 
+                  Para gestión detallada (confirmar, rechazar, agregar notas), usa la "Lista de Reservas". 
+                  Juntas forman un sistema completo de gestión de reservas.
                 </p>
               </div>
             </CardContent>
