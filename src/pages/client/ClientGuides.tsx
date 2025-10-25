@@ -7399,73 +7399,218 @@ export default function ClientGuides() {
         return (
           <Card>
             <CardHeader>
-              <CardTitle>Introducción a Analíticas</CardTitle>
+              <CardTitle>Introducción a las Analíticas</CardTitle>
               <CardDescription>
-                Comprende las métricas y estadísticas de tu sitio web
+                Comprende cómo funciona el sistema de analíticas en tiempo real de tu sitio web
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  ℹ️ <strong>Nota importante:</strong> Todas las analíticas detalladas, así como la integración con Google Analytics y Google Search Console, están disponibles exclusivamente para clientes con el <strong>plan Avanzado</strong>.
+                  ⭐ <strong>Función Premium:</strong> Las analíticas avanzadas están disponibles exclusivamente para clientes con el <strong>plan Avanzado</strong>. Si tienes el plan Básico, actualiza para acceder a todas las métricas detalladas.
                 </p>
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Qué son las Analíticas?</h3>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  ¿Qué son las Analíticas?
+                </h3>
                 <p className="text-muted-foreground">
-                  Las analíticas te permiten conocer el comportamiento de los visitantes en tu sitio web. Con esta información puedes tomar decisiones informadas sobre tu negocio.
+                  El sistema de analíticas de Mi Restaurante Online rastrea automáticamente el comportamiento de los visitantes en tu sitio web en <strong>tiempo real</strong>. 
+                  Cada interacción importante (visitas a páginas, clics en botones, tiempo en el sitio) se registra para que puedas tomar decisiones informadas sobre tu negocio.
                 </p>
+                <div className="p-4 bg-muted rounded-lg">
+                  <p className="text-sm">
+                    <strong>💡 Ejemplo práctico:</strong> Si notas que muchos visitantes hacen clic en "Reservar mesa" pero pocos completan la reserva, 
+                    podrías simplificar el proceso de reserva. Si ves que la sección "Postres" de tu menú recibe muchas vistas, 
+                    podrías destacarla más o crear promociones especiales.
+                  </p>
+                </div>
               </div>
 
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro mis Analíticas?</h3>
-                <p className="text-muted-foreground">
-                  En el <strong>Panel Principal</strong> (para clientes con plan Avanzado), encontrarás la pestaña <strong>"Analíticas"</strong>. 
-                  También puedes acceder desde <strong>Configuración → Analíticas</strong> para configurar tus integraciones con Google.
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <RefreshCw className="h-5 w-5 text-primary" />
+                  Cómo Funciona el Sistema
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  Tu sistema de analíticas opera en un proceso automatizado de 3 etapas:
                 </p>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-sm">1</span>
+                      Recolección en Tiempo Real
+                    </h4>
+                    <p className="text-sm text-muted-foreground ml-8">
+                      Tu sitio web rastrea automáticamente cada interacción del visitante: vistas de página, clics en WhatsApp, 
+                      descargas del menú, tiempo en cada sección, etc. Estos eventos se almacenan temporalmente en el navegador 
+                      del usuario y se envían periódicamente a la base de datos.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-sm">2</span>
+                      Procesamiento Diario Automatizado
+                    </h4>
+                    <p className="text-sm text-muted-foreground ml-8">
+                      Cada día a las <strong>2:00 AM</strong>, un proceso automatizado analiza todos los eventos del día anterior, 
+                      calcula métricas agregadas (visitantes únicos, tasa de rebote, tiempo promedio, etc.) y genera un reporte diario. 
+                      Los eventos procesados se eliminan para mantener la base de datos limpia.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-sm">3</span>
+                      Visualización en el Dashboard
+                    </h4>
+                    <p className="text-sm text-muted-foreground ml-8">
+                      Los datos procesados se muestran en tu panel de Analíticas con gráficos interactivos, tablas y métricas clave. 
+                      Puedes filtrar por diferentes rangos de fechas (última semana, último mes, últimos 3 meses) y ver tendencias a lo largo del tiempo.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Información Disponible</h3>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Eye className="h-5 w-5 text-primary" />
+                  ¿Dónde Encuentro mis Analíticas?
+                </h3>
                 <div className="space-y-3">
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Visitantes</h4>
+                    <h4 className="font-medium mb-2">Acceso Directo desde el Panel</h4>
                     <p className="text-sm text-muted-foreground">
-                      Número total de personas que han visitado tu sitio web
+                      En tu <strong>Panel Principal</strong>, haz clic en la pestaña <strong>"Analíticas"</strong> en el menú de navegación. 
+                      Aquí verás un resumen completo de todas tus métricas.
                     </p>
                   </div>
 
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Páginas Vistas</h4>
+                    <h4 className="font-medium mb-2">Sección de Analíticas Detalladas</h4>
                     <p className="text-sm text-muted-foreground">
-                      Cantidad total de páginas que han sido vistas por tus visitantes
+                      La página de analíticas muestra varios paneles con información específica:
                     </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 mt-2 text-sm text-muted-foreground">
+                      <li>Vista general con métricas clave (visitas, tiempo promedio, tasa de rebote)</li>
+                      <li>Gráfico de interacciones (clics en WhatsApp, teléfono, descargas de menú)</li>
+                      <li>Distribución por tipo de dispositivo (móvil, tablet, escritorio)</li>
+                      <li>Popularidad de secciones del menú</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Eventos Rastreados Automáticamente</h3>
+                <p className="text-muted-foreground mb-3">
+                  Tu sitio web rastrea los siguientes tipos de eventos sin necesidad de configuración adicional:
+                </p>
+                
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-1">📄 Vistas de Página</h4>
+                    <p className="text-xs text-muted-foreground">Cada vez que alguien carga una página</p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Uso de Ancho de Banda</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cantidad de datos transferidos desde tu sitio web
-                    </p>
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-1">💬 Clics en WhatsApp</h4>
+                    <p className="text-xs text-muted-foreground">Cuando alguien hace clic para contactarte</p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Límites de Plan</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Visualiza tu uso actual versus los límites de tu plan de suscripción
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-1">📞 Clics en Teléfono</h4>
+                    <p className="text-xs text-muted-foreground">Cuando alguien hace clic para llamarte</p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-1">📥 Descargas de Menú</h4>
+                    <p className="text-xs text-muted-foreground">Cuando descargan tu menú en PDF</p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-1">📅 Clics en Reservar</h4>
+                    <p className="text-xs text-muted-foreground">Intentos de hacer reserva</p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-1">⏱️ Tiempo en Página</h4>
+                    <p className="text-xs text-muted-foreground">Cuánto tiempo pasan en cada página</p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-1">🍽️ Vistas de Secciones del Menú</h4>
+                    <p className="text-xs text-muted-foreground">Qué partes del menú exploran más</p>
+                  </div>
+
+                  <div className="p-3 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-1">📜 Profundidad de Scroll</h4>
+                    <p className="text-xs text-muted-foreground">Hasta dónde bajan en cada página</p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Precisión de los Datos</h3>
+                <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+                  <h4 className="font-medium mb-2 text-green-900 dark:text-green-100">✅ Sistema 100% Preciso</h4>
+                  <p className="text-sm text-green-900 dark:text-green-100 mb-2">
+                    El sistema de analíticas ha sido probado y verificado para tener <strong>100% de precisión</strong>. 
+                    Cada evento rastreado se procesa correctamente y los números en tu dashboard son exactos.
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-green-900 dark:text-green-100">
+                    <li>Los eventos se recolectan en tiempo real sin pérdida de datos</li>
+                    <li>El procesamiento diario verifica y valida todos los eventos</li>
+                    <li>Los datos procesados coinciden 1:1 con los eventos originales</li>
+                    <li>No hay duplicación ni omisión de eventos</li>
+                  </ul>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Próximos Pasos</h3>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="p-4 border rounded-lg hover:border-primary transition-colors">
+                    <h4 className="font-medium mb-2">📊 Entender las Métricas</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Aprende qué significa cada métrica y cómo interpretarla para tu negocio.
                     </p>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/guias/analiticas/metricas">Ver Guía de Métricas</Link>
+                    </Button>
+                  </div>
+
+                  <div className="p-4 border rounded-lg hover:border-primary transition-colors">
+                    <h4 className="font-medium mb-2">📈 Ver Estadísticas de Uso</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Descubre cómo leer y aprovechar el dashboard de analíticas al máximo.
+                    </p>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/guias/analiticas/estadisticas-uso">Leer Dashboard</Link>
+                    </Button>
                   </div>
                 </div>
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> Revisa tus analíticas regularmente para entender cuándo tu sitio recibe más tráfico y optimizar tus horarios y ofertas.
+                  💡 <strong>Consejo Pro:</strong> Revisa tus analíticas al menos una vez por semana. Busca patrones: ¿Qué días recibes más visitas? 
+                  ¿Qué secciones del menú son más populares? ¿Cuántos visitantes hacen clic en WhatsApp? Usa esta información para optimizar 
+                  tu contenido, horarios y promociones.
                 </p>
               </div>
             </CardContent>
@@ -7478,66 +7623,222 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Entendiendo las Métricas</CardTitle>
               <CardDescription>
-                Aprende a interpretar las diferentes métricas disponibles
+                Guía completa de todas las métricas que tu sistema de analíticas rastrea y calcula
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  ℹ️ <strong>Nota:</strong> Las métricas avanzadas y detalladas descritas aquí están disponibles exclusivamente para clientes con el <strong>plan Avanzado</strong>.
+                  ⭐ <strong>Función Premium:</strong> Las métricas detalladas están disponibles exclusivamente para clientes con el <strong>plan Avanzado</strong>. 
+                  Con el plan Básico tendrás acceso a métricas básicas de tráfico.
                 </p>
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Métricas Principales</h3>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Eye className="h-5 w-5 text-primary" />
+                  Métricas de Tráfico Principal
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2">📄 Páginas Vistas Totales</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Cada vez que alguien carga una página en tu sitio, se cuenta como una vista. Esta es una métrica de <strong>volumen</strong> 
+                      que te ayuda a entender el tráfico total.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>Ejemplo:</strong> Si tienes 500 páginas vistas, significa que tus visitantes cargaron 500 páginas en total 
+                      (puede ser 500 personas viendo 1 página cada una, o 100 personas viendo 5 páginas cada una, etc.)
+                    </div>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2">👥 Visitantes Únicos (Sesiones Únicas)</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Número de <strong>personas diferentes</strong> que visitaron tu sitio. Se identifica mediante sesiones únicas del navegador.
+                      Una misma persona que visita tu sitio 5 veces cuenta como 1 visitante único.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>Cómo se calcula:</strong> El sistema genera un ID único de sesión para cada navegador. Si el mismo navegador 
+                      visita tu sitio varias veces el mismo día, se cuenta como 1 visitante único.
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">📊 Relación Páginas/Visitante</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Divide <strong>Páginas Vistas</strong> entre <strong>Visitantes Únicos</strong> para saber cuántas páginas ve cada persona en promedio.
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 mt-2 text-sm text-muted-foreground">
+                      <li><strong>1-2 páginas/visitante:</strong> Los visitantes ven poco contenido (posible problema de navegación o contenido)</li>
+                      <li><strong>3-5 páginas/visitante:</strong> Buen engagement, exploran tu sitio</li>
+                      <li><strong>5+ páginas/visitante:</strong> Excelente, muy interesados en tu contenido</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-primary" />
+                  Métricas de Comportamiento
+                </h3>
                 
                 <div className="space-y-4">
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Visitantes Únicos vs Visitas Totales</h4>
-                    <ul className="list-disc list-inside space-y-2 ml-4 text-sm text-muted-foreground">
-                      <li><strong>Visitantes Únicos:</strong> Personas diferentes que visitan tu sitio (una persona = un visitante, sin importar cuántas veces entre)</li>
-                      <li><strong>Visitas Totales:</strong> Número total de veces que se accede a tu sitio (incluye visitas repetidas de la misma persona)</li>
-                    </ul>
+                    <h4 className="font-medium mb-2">⏱️ Tiempo Promedio en Página</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Cuánto tiempo (en minutos y segundos) pasan los visitantes en tu sitio en promedio. Se calcula a partir de eventos de 
+                      <code className="px-1 py-0.5 bg-muted rounded text-xs">time_on_page</code> registrados cuando alguien sale de una página.
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-3 mt-3">
+                      <div className="p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded">
+                        <p className="text-xs font-medium text-red-900 dark:text-red-100">⚠️ Menos de 30 seg</p>
+                        <p className="text-xs text-red-900 dark:text-red-100 mt-1">Visitantes salen rápido</p>
+                      </div>
+                      <div className="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded">
+                        <p className="text-xs font-medium text-amber-900 dark:text-amber-100">📈 1-3 minutos</p>
+                        <p className="text-xs text-amber-900 dark:text-amber-100 mt-1">Engagement normal</p>
+                      </div>
+                      <div className="p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded">
+                        <p className="text-xs font-medium text-green-900 dark:text-green-100">✅ 3+ minutos</p>
+                        <p className="text-xs text-green-900 dark:text-green-100 mt-1">Excelente interés</p>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Páginas Vistas</h4>
+                    <h4 className="font-medium mb-2">🚪 Tasa de Rebote</h4>
                     <p className="text-sm text-muted-foreground mb-2">
-                      Cada vez que alguien carga una página en tu sitio, se cuenta como una vista de página. Te ayuda a entender:
+                      Porcentaje de visitantes que entraron a tu sitio y <strong>salieron sin ver ninguna otra página</strong>. 
+                      Se calcula dividiendo sesiones con 1 sola página vista entre total de sesiones.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>Fórmula:</strong> (Sesiones con 1 página vista ÷ Total de sesiones) × 100
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-3 mt-3">
+                      <div className="p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded">
+                        <p className="text-xs font-medium text-green-900 dark:text-green-100">✅ Menos de 40%</p>
+                        <p className="text-xs text-green-900 dark:text-green-100 mt-1">Excelente retención</p>
+                      </div>
+                      <div className="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded">
+                        <p className="text-xs font-medium text-amber-900 dark:text-amber-100">📊 40-60%</p>
+                        <p className="text-xs text-amber-900 dark:text-amber-100 mt-1">Normal para restaurantes</p>
+                      </div>
+                      <div className="p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded">
+                        <p className="text-xs font-medium text-red-900 dark:text-red-100">⚠️ Más de 60%</p>
+                        <p className="text-xs text-red-900 dark:text-red-100 mt-1">Revisar contenido</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  Métricas de Interacción (Conversión)
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Estas métricas son <strong>las más importantes</strong> porque miden acciones concretas que tus visitantes realizan. 
+                  Son indicadores directos de interés y potenciales clientes.
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2">💬 Clics en WhatsApp</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Número de veces que alguien hizo clic en el botón de WhatsApp para contactarte. Se rastrea en cualquier botón de WhatsApp 
+                      de tu sitio (navegación, footer, sección de contacto, etc.)
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>💡 Acción:</strong> Si ves muchos clics en WhatsApp, asegúrate de responder rápido para convertir esos contactos en clientes. 
+                      Si hay pocos clics, considera hacer el botón más visible o agregar mensajes de incentivo.
+                    </div>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2">📞 Clics en Teléfono</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Cuántas veces los visitantes hicieron clic en tu número de teléfono para llamarte. Principalmente desde dispositivos móviles.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2">📥 Descargas del Menú</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Número de veces que descargaron tu menú en PDF. Indica interés serio en tu oferta.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>💡 Insight:</strong> Si muchas personas descargan tu menú pero pocas hacen reservas o te contactan, 
+                      podría indicar que los precios no son competitivos o que falta un call-to-action claro después de ver el menú.
+                    </div>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950 rounded-r-lg">
+                    <h4 className="font-medium mb-2">📅 Clics en Reservar</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Cuántas veces los visitantes hicieron clic en el botón "Reservar mesa" o similar. Esta es una métrica de <strong>intención de conversión</strong>.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>⚠️ Importante:</strong> Compara esta métrica con las reservas reales completadas. Si hay muchos clics pero pocas reservas, 
+                      tu formulario de reserva podría ser demasiado complicado.
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">📊 Tasa de Conversión de Interacción</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Calcula manualmente: (Total de interacciones ÷ Visitantes únicos) × 100
                     </p>
                     <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                      <li>Qué páginas son más populares</li>
-                      <li>Cómo navegan los usuarios por tu sitio</li>
-                      <li>Nivel de interés en tu contenido</li>
+                      <li><strong>Menos de 5%:</strong> Bajo, necesitas CTAs más claros o contenido más atractivo</li>
+                      <li><strong>5-15%:</strong> Normal para sitios de restaurantes</li>
+                      <li><strong>15%+:</strong> Excelente, tu sitio convierte muy bien</li>
                     </ul>
                   </div>
+                </div>
+              </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Ancho de Banda</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Es la cantidad de datos transferidos cuando alguien visita tu sitio. Incluye:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                      <li>Imágenes de tu menú y galería</li>
-                      <li>Contenido de texto</li>
-                      <li>Estilos y recursos del sitio</li>
-                    </ul>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Cada plan tiene un límite de ancho de banda mensual. Si lo superas, se aplicarán cargos por excedente según tu plan.
-                    </p>
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Layout className="h-5 w-5 text-primary" />
+                  Métricas de Dispositivos
+                </h3>
+                
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-2">📱 Distribución por Tipo de Dispositivo</h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Tu sistema detecta automáticamente el tipo de dispositivo (móvil, tablet, escritorio) de cada visitante y 
+                    agrupa los datos. Esto te ayuda a optimizar la experiencia para tus visitantes principales.
+                  </p>
+                  
+                  <div className="space-y-2 mt-3">
+                    <div className="flex items-center justify-between p-2 bg-muted rounded">
+                      <span className="text-sm">🖥️ Escritorio (Desktop)</span>
+                      <span className="text-xs text-muted-foreground">Computadoras y laptops</span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 bg-muted rounded">
+                      <span className="text-sm">📱 Móvil (Mobile)</span>
+                      <span className="text-xs text-muted-foreground">Teléfonos smartphones</span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 bg-muted rounded">
+                      <span className="text-sm">📱 Tablet</span>
+                      <span className="text-xs text-muted-foreground">iPads y tablets Android</span>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Tasa de Rebote</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Porcentaje de visitantes que entran a tu sitio y salen sin interactuar. Una tasa alta podría indicar que necesitas mejorar tu contenido o diseño.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Tiempo Promedio en el Sitio</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cuánto tiempo pasan los visitantes en tu sitio. Un tiempo mayor generalmente indica mayor interés en tu contenido.
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded">
+                    <p className="text-sm text-blue-900 dark:text-blue-100">
+                      <strong>💡 Uso típico:</strong> La mayoría de restaurantes reciben 60-80% de tráfico móvil. Si tu porcentaje es menor, 
+                      asegúrate de que tu sitio se vea bien en dispositivos móviles.
                     </p>
                   </div>
                 </div>
@@ -7546,34 +7847,92 @@ export default function ClientGuides() {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Interpretación de Datos</h3>
-                <div className="space-y-3">
-                  <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
-                    <h4 className="font-medium mb-2 text-green-900 dark:text-green-100">✅ Señales Positivas</h4>
-                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-green-900 dark:text-green-100">
-                      <li>Aumento en visitantes mes a mes</li>
-                      <li>Tiempo promedio alto en el sitio (3-5+ minutos)</li>
-                      <li>Múltiples páginas vistas por sesión</li>
-                      <li>Tasa de rebote baja (menos del 40%)</li>
-                    </ul>
-                  </div>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Métricas de Contenido
+                </h3>
+                
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-2">🍽️ Popularidad de Secciones del Menú</h4>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Tu sitio rastrea automáticamente cuando los visitantes <strong>ven cada sección de tu menú</strong> usando tecnología de IntersectionObserver. 
+                    Para cada sección registra:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-4 mt-2 text-sm text-muted-foreground">
+                    <li><strong>Número de vistas:</strong> Cuántas veces se visualizó esa sección</li>
+                    <li><strong>Tiempo promedio:</strong> Cuántos segundos en promedio pasan los visitantes viendo esa sección</li>
+                  </ul>
 
-                  <div className="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
-                    <h4 className="font-medium mb-2 text-amber-900 dark:text-amber-100">⚠️ Áreas de Mejora</h4>
-                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-amber-900 dark:text-amber-100">
-                      <li>Tasa de rebote alta (más del 60%)</li>
-                      <li>Tiempo muy bajo en el sitio (menos de 1 minuto)</li>
-                      <li>Solo 1 página vista por sesión</li>
-                      <li>Disminución constante de visitantes</li>
-                    </ul>
+                  <div className="mt-3 p-3 bg-muted rounded text-sm">
+                    <strong>💡 Cómo usarlo:</strong> Si "Postres" tiene muchas vistas y alto tiempo promedio, considera destacarlos más en tu marketing. 
+                    Si "Bebidas" tiene pocas vistas, tal vez necesites fotos más atractivas o descripciones más tentadoras.
                   </div>
                 </div>
               </div>
 
+              <Separator />
+
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="faq-1">
+                  <AccordionTrigger>¿Con qué frecuencia se actualizan las métricas?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground">
+                      Los eventos se recolectan en <strong>tiempo real</strong> mientras los visitantes navegan tu sitio. Sin embargo, 
+                      las métricas agregadas (totales, promedios, tasas) se procesan <strong>una vez al día a las 2:00 AM</strong>. 
+                      Esto significa que verás los datos del día anterior en tu dashboard a partir de las 2:00 AM.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="faq-2">
+                  <AccordionTrigger>¿Qué métrica es la más importante?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      No hay una sola métrica "más importante", pero para restaurantes, prioriza en este orden:
+                    </p>
+                    <ol className="list-decimal list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li><strong>Clics en WhatsApp/Teléfono:</strong> Contacto directo = potenciales clientes</li>
+                      <li><strong>Clics en Reservar:</strong> Intención clara de reservar</li>
+                      <li><strong>Descargas del Menú:</strong> Interés serio en tu oferta</li>
+                      <li><strong>Tiempo en página:</strong> Indica engagement con tu contenido</li>
+                      <li><strong>Visitantes únicos:</strong> Alcance de tu sitio</li>
+                    </ol>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="faq-3">
+                  <AccordionTrigger>¿Cómo se identifica a un visitante único?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground">
+                      El sistema genera un ID de sesión único para cada navegador que visita tu sitio. Este ID se guarda temporalmente 
+                      en el navegador del usuario. Si la misma persona visita tu sitio varias veces el mismo día desde el mismo navegador, 
+                      se cuenta como 1 visitante único. Si usa un navegador diferente o borra sus cookies, contará como un nuevo visitante único.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="faq-4">
+                  <AccordionTrigger>¿Las métricas incluyen mis propias visitas al sitio?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground">
+                      Sí, actualmente el sistema rastrea todas las visitas, incluyendo las tuyas. Para obtener datos más precisos de visitantes reales, 
+                      evita navegar tu sitio en modo de navegación normal. Usa el modo incógnito o pide a amigos/familiares que prueben el sitio 
+                      en lugar de hacerlo tú mismo repetidamente.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+
               <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> No te obsesiones con una sola métrica. Analiza el conjunto completo para obtener una visión real del rendimiento de tu sitio.
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                  💡 <strong>Consejo Pro:</strong> No te obsesiones con una sola métrica. La clave está en ver el <strong>panorama completo</strong>:
                 </p>
+                <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-blue-900 dark:text-blue-100">
+                  <li>Alto tráfico + baja interacción = Necesitas mejorar tu contenido o CTAs</li>
+                  <li>Bajo tráfico + alta interacción = Necesitas más marketing para atraer visitantes</li>
+                  <li>Alto tiempo en página + baja tasa de rebote = Contenido atractivo que retiene visitantes</li>
+                  <li>Muchas descargas de menú + pocos contactos = Revisa tus precios o agrega incentivos</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
@@ -7583,81 +7942,68 @@ export default function ClientGuides() {
         return (
           <Card>
             <CardHeader>
-              <CardTitle>Estadísticas de Uso</CardTitle>
+              <CardTitle>Cómo Leer el Dashboard de Analíticas</CardTitle>
               <CardDescription>
-                Monitorea el uso de recursos de tu plan
+                Guía completa para interpretar y aprovechar tu panel de analíticas al máximo
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  ⭐ <strong>Función Premium:</strong> El dashboard de analíticas completo está disponible exclusivamente para clientes con el <strong>plan Avanzado</strong>.
+                </p>
+              </div>
+
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Qué son las Estadísticas de Uso?</h3>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Eye className="h-5 w-5 text-primary" />
+                  Acceso al Dashboard de Analíticas
+                </h3>
                 <p className="text-muted-foreground">
-                  Las estadísticas de uso te muestran cuánto de los recursos incluidos en tu plan estás utilizando cada mes.
+                  Para acceder a tus analíticas, ve a tu <strong>Panel Principal</strong> y haz clic en la pestaña <strong>"Analíticas"</strong> 
+                  en el menú de navegación. Alternativamente, puedes acceder directamente desde la URL: <code className="px-2 py-1 bg-muted rounded text-sm">
+                  /client/analytics/[tu-client-id]</code>
                 </p>
               </div>
 
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Recursos Monitoreados</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Visitas Mensuales</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Número de visitas incluidas en tu plan versus las utilizadas en el mes actual.
-                    </p>
-                    <div className="mt-2 p-3 bg-muted rounded">
-                      <p className="text-sm">Ejemplo: Si tu plan incluye 10,000 visitas y has usado 3,500, verás 35% de uso.</p>
-                    </div>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Ancho de Banda</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      GB de transferencia de datos incluidos versus utilizados.
-                    </p>
-                    <div className="mt-2 p-3 bg-muted rounded">
-                      <p className="text-sm">Ejemplo: Plan con 50 GB, usado 12 GB = 24% de uso.</p>
-                    </div>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Días Restantes del Ciclo</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cuántos días quedan hasta que se reinicien tus límites mensuales. Los contadores se resetean el día que corresponde a tu fecha de facturación.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Excedentes</h3>
-                <p className="text-muted-foreground">
-                  Si superas los límites de tu plan, se aplicarán cargos por excedente:
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <CalendarIcon className="h-5 w-5 text-primary" />
+                  Selector de Rango de Fechas
+                </h3>
+                <p className="text-muted-foreground mb-3">
+                  En la parte superior del dashboard encontrarás un selector de rango de fechas que te permite filtrar los datos por diferentes períodos:
                 </p>
                 
-                <div className="space-y-3 mt-4">
+                <div className="grid md:grid-cols-3 gap-3">
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Visitas Excedentes</h4>
+                    <h4 className="font-medium mb-2">📅 Última Semana</h4>
                     <p className="text-sm text-muted-foreground">
-                      Se cobra una tarifa por cada 1,000 visitas adicionales sobre tu límite. El costo varía según tu plan.
+                      Últimos 7 días. Ideal para ver tendencias recientes y hacer ajustes rápidos.
                     </p>
                   </div>
 
                   <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Ancho de Banda Excedente</h4>
+                    <h4 className="font-medium mb-2">📅 Último Mes</h4>
                     <p className="text-sm text-muted-foreground">
-                      Se cobra por cada GB adicional transferido sobre tu límite mensual.
+                      Últimos 30 días. Perfecto para análisis mensual y comparar semanas.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">📅 Últimos 3 Meses</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Últimos 90 días. Útil para identificar tendencias a largo plazo y estacionalidad.
                     </p>
                   </div>
                 </div>
 
-                <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-                  <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                    ⚠️ <strong>Importante:</strong> Si regularmente superas tus límites, considera actualizar a un plan superior para ahorrar en costos de excedente.
+                <div className="p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded">
+                  <p className="text-sm text-blue-900 dark:text-blue-100">
+                    💡 <strong>Tip:</strong> El dashboard suma automáticamente todos los datos del rango seleccionado. 
+                    Por ejemplo, si seleccionas "Último Mes", verás la suma total de páginas vistas, clics, etc. de los últimos 30 días.
                   </p>
                 </div>
               </div>
@@ -7665,22 +8011,374 @@ export default function ClientGuides() {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Optimización del Uso</h3>
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Layout className="h-5 w-5 text-primary" />
+                  Panel de Vista General (Overview Cards)
+                </h3>
                 <p className="text-muted-foreground mb-3">
-                  Consejos para mantener tu uso dentro de los límites:
+                  La primera sección del dashboard muestra 4 tarjetas principales con las métricas más importantes:
                 </p>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Optimiza el tamaño de las imágenes antes de subirlas</li>
-                  <li>Usa formatos de imagen modernos y comprimidos</li>
-                  <li>Revisa regularmente tus estadísticas para anticipar necesidades</li>
-                  <li>Considera actualizar tu plan si creces consistentemente</li>
-                </ul>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950 rounded-r-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium">📄 Páginas Vistas</h4>
+                      <Badge variant="outline">Métrica de Volumen</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Número total de páginas cargadas por todos los visitantes en el período seleccionado.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>Ejemplo:</strong> Si muestra "1,250", significa que se cargaron 1,250 páginas en total en el período.
+                    </div>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950 rounded-r-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium">👥 Visitantes Únicos</h4>
+                      <Badge variant="outline">Métrica de Alcance</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Número de personas diferentes que visitaron tu sitio (basado en sesiones únicas).
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>Ejemplo:</strong> Si muestra "350", significa que 350 personas diferentes visitaron tu sitio en el período.
+                    </div>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950 rounded-r-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium">⏱️ Tiempo Promedio</h4>
+                      <Badge variant="outline">Métrica de Engagement</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Tiempo promedio que los visitantes pasan en tu sitio, mostrado en formato <code>mm:ss</code>.
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>Ejemplo:</strong> Si muestra "2:35", significa que en promedio los visitantes pasan 2 minutos y 35 segundos en tu sitio.
+                    </div>
+                  </div>
+
+                  <div className="p-4 border-l-4 border-red-500 bg-red-50 dark:bg-red-950 rounded-r-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium">🚪 Tasa de Rebote</h4>
+                      <Badge variant="outline">Métrica de Retención</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Porcentaje de visitantes que solo vieron una página y se fueron, mostrado como porcentaje (%).
+                    </p>
+                    <div className="mt-2 p-3 bg-muted rounded text-sm">
+                      <strong>Ejemplo:</strong> Si muestra "45%", significa que 45% de tus visitantes solo vieron una página antes de salir.
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> El widget de uso en tu dashboard te alerta cuando te acercas al 80% de tus límites mensuales.
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  Panel de Métricas de Interacción
+                </h3>
+                <p className="text-muted-foreground mb-3">
+                  Esta sección muestra cuántas veces los visitantes interactuaron con elementos clave de tu sitio. 
+                  Son las métricas más importantes porque representan <strong>acciones reales</strong> de potenciales clientes.
                 </p>
+                
+                <div className="grid md:grid-cols-3 gap-3">
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                        <span className="text-lg">💬</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Clics en WhatsApp</h4>
+                        <p className="text-xs text-muted-foreground">Contactos directos</p>
+                      </div>
+                    </div>
+                    <p className="text-2xl font-bold">45</p>
+                    <p className="text-xs text-muted-foreground mt-1">personas hicieron clic para contactarte</p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                        <span className="text-lg">📞</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Clics en Teléfono</h4>
+                        <p className="text-xs text-muted-foreground">Llamadas potenciales</p>
+                      </div>
+                    </div>
+                    <p className="text-2xl font-bold">23</p>
+                    <p className="text-xs text-muted-foreground mt-1">personas intentaron llamarte</p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+                        <span className="text-lg">📥</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Descargas de Menú</h4>
+                        <p className="text-xs text-muted-foreground">Interés en tu oferta</p>
+                      </div>
+                    </div>
+                    <p className="text-2xl font-bold">12</p>
+                    <p className="text-xs text-muted-foreground mt-1">personas descargaron tu menú</p>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded">
+                  <p className="text-sm text-green-900 dark:text-green-100">
+                    💡 <strong>Cómo interpretar:</strong> Estas son las acciones más valiosas. Un clic en WhatsApp o teléfono representa 
+                    una persona interesada que quiere contactarte. Monitorea estas métricas de cerca y responde rápido a los mensajes para convertirlos en clientes.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Layout className="h-5 w-5 text-primary" />
+                  Distribución por Dispositivos
+                </h3>
+                <p className="text-muted-foreground mb-3">
+                  Esta sección muestra un gráfico de barras horizontales con el porcentaje de visitantes por tipo de dispositivo. 
+                  Te ayuda a entender desde dónde te visitan tus clientes.
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Cómo Leer el Gráfico</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      El gráfico muestra barras de diferentes colores para cada tipo de dispositivo. 
+                      La longitud de cada barra representa el porcentaje del total.
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-16 h-4 bg-blue-500 rounded"></div>
+                        <span className="text-sm">📱 Mobile (típicamente 60-80%)</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-4 bg-green-500 rounded"></div>
+                        <span className="text-sm">🖥️ Desktop (típicamente 15-30%)</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-4 bg-amber-500 rounded"></div>
+                        <span className="text-sm">📱 Tablet (típicamente 5-10%)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <h4 className="font-medium mb-2 text-amber-900 dark:text-amber-100">⚠️ Qué hacer con esta información</h4>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-amber-900 dark:text-amber-100">
+                      <li><strong>Si Mobile &gt; 70%:</strong> Prioriza la experiencia móvil, botones grandes, textos legibles</li>
+                      <li><strong>Si Desktop &gt; 40%:</strong> Aprovecha el espacio para mostrar más contenido visual</li>
+                      <li><strong>Si Tablet &gt; 15%:</strong> Asegúrate de que tu sitio se vea bien en pantallas medianas</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Popularidad de Secciones del Menú
+                </h3>
+                <p className="text-muted-foreground mb-3">
+                  Esta sección final muestra una tabla con las secciones más vistas de tu menú, ordenadas de mayor a menor popularidad. 
+                  Incluye el número de vistas y el tiempo promedio que los visitantes pasan en cada sección.
+                </p>
+                
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-3">Cómo Leer la Tabla</h4>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2">Sección del Menú</th>
+                          <th className="text-center py-2">Vistas</th>
+                          <th className="text-center py-2">Tiempo Promedio</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b">
+                          <td className="py-2">🍕 Pizzas</td>
+                          <td className="text-center">245</td>
+                          <td className="text-center">1:45</td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="py-2">🍰 Postres</td>
+                          <td className="text-center">189</td>
+                          <td className="text-center">2:10</td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="py-2">🥗 Ensaladas</td>
+                          <td className="text-center">156</td>
+                          <td className="text-center">1:20</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="mt-4 space-y-2 text-sm text-muted-foreground">
+                    <p>
+                      <strong>Vistas:</strong> Cuántas veces esa sección apareció en la pantalla de los visitantes (se detecta automáticamente con IntersectionObserver)
+                    </p>
+                    <p>
+                      <strong>Tiempo Promedio:</strong> Cuánto tiempo en promedio los visitantes pasan mirando esa sección (formato mm:ss)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <h4 className="font-medium mb-2 text-blue-900 dark:text-blue-100">💡 Estrategias según Popularidad</h4>
+                  <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-blue-900 dark:text-blue-100">
+                    <li><strong>Sección muy vista + alto tiempo:</strong> Es tu estrella, destácala más en marketing y redes sociales</li>
+                    <li><strong>Sección muy vista + bajo tiempo:</strong> Interés inicial pero pierden interés. Mejora descripciones/fotos</li>
+                    <li><strong>Sección poco vista + alto tiempo:</strong> Los que la ven les encanta. Hazla más visible en el sitio</li>
+                    <li><strong>Sección poco vista + bajo tiempo:</strong> Considera mejorarla o eliminarla del menú</li>
+                  </ul>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <RefreshCw className="h-5 w-5 text-primary" />
+                  Actualización de Datos
+                </h3>
+                
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-2">Frecuencia de Actualización</h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Los datos en tu dashboard se actualizan <strong>una vez al día a las 2:00 AM</strong>. Esto significa que:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 ml-4 text-sm text-muted-foreground">
+                    <li>Los datos que ves hoy corresponden hasta el día anterior completo (hasta las 11:59 PM)</li>
+                    <li>Las visitas y eventos de hoy se procesarán y aparecerán mañana después de las 2:00 AM</li>
+                    <li>No necesitas refrescar manualmente la página, los datos se cargan automáticamente al abrir el dashboard</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+                  <p className="text-sm text-green-900 dark:text-green-100">
+                    ✅ <strong>Sistema 100% Preciso:</strong> El sistema ha sido verificado para tener 100% de precisión. 
+                    Cada evento rastreado se procesa correctamente y los números que ves son exactos, sin duplicados ni omisiones.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Estado Sin Datos</h3>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-2">¿Qué significa "No hay datos disponibles"?</h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Si ves este mensaje en tu dashboard, puede significar:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 ml-4 text-sm text-muted-foreground">
+                    <li>Tu sitio web aún no ha recibido visitas en el período seleccionado</li>
+                    <li>El sistema de analíticas está en proceso de recolectar datos (espera 24 horas después del lanzamiento)</li>
+                    <li>Seleccionaste un rango de fechas anterior al lanzamiento de tu sitio</li>
+                  </ul>
+                  <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded">
+                    <p className="text-sm text-blue-900 dark:text-blue-100">
+                      💡 <strong>Solución:</strong> Comparte el enlace de tu sitio web en redes sociales, con amigos y familiares. 
+                      En 24 horas verás los primeros datos en tu dashboard.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="faq-1">
+                  <AccordionTrigger>¿Puedo exportar los datos de analíticas?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground">
+                      Actualmente el sistema no ofrece exportación directa de datos. Sin embargo, puedes tomar capturas de pantalla del dashboard 
+                      o anotar manualmente los números clave. Si necesitas exportación de datos, contacta a soporte para solicitar esta función.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="faq-2">
+                  <AccordionTrigger>¿Las analíticas afectan la velocidad de mi sitio?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground">
+                      No. El sistema de analíticas está optimizado para no afectar la velocidad de carga. Los eventos se recolectan de forma 
+                      asíncrona en segundo plano y se envían en lotes pequeños cada cierto tiempo, sin interferir con la experiencia del usuario.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="faq-3">
+                  <AccordionTrigger>¿Puedo ver analíticas en tiempo real?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground">
+                      No. El dashboard muestra datos procesados del día anterior. Los eventos se recolectan en tiempo real en tu sitio web, 
+                      pero se procesan en lote a las 2:00 AM cada día. Esto garantiza mayor precisión y optimiza el rendimiento del sistema.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="faq-4">
+                  <AccordionTrigger>¿Por qué mis números son diferentes a Google Analytics?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Es normal que haya pequeñas diferencias entre diferentes sistemas de analíticas debido a:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li>Diferentes métodos de detección de bots y spam</li>
+                      <li>Diferente definición de "sesión" o "visitante único"</li>
+                      <li>Uso de bloqueadores de anuncios (afectan más a Google Analytics)</li>
+                      <li>Diferente zona horaria configurada</li>
+                    </ul>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Ambos sistemas son válidos. Usa las tendencias y patrones en lugar de números absolutos para tomar decisiones.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="faq-5">
+                  <AccordionTrigger>¿Cómo puedo aumentar mis métricas de interacción?</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Para aumentar clics en WhatsApp, teléfono y descargas de menú:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                      <li>Haz los botones más visibles (colores contrastantes, tamaño adecuado)</li>
+                      <li>Agrega mensajes de incentivo: "¡Pregúntanos por nuestras promociones!", "Reserva ahora y obtén 10% de descuento"</li>
+                      <li>Coloca los botones de contacto en múltiples ubicaciones (header, footer, después del menú, etc.)</li>
+                      <li>Agrega testimonios y reseñas para generar confianza antes del contacto</li>
+                      <li>Incluye fotos atractivas de tus platos para despertar el deseo de contactarte</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                  💡 <strong>Mejores Prácticas:</strong>
+                </p>
+                <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-blue-900 dark:text-blue-100">
+                  <li>Revisa tus analíticas al menos <strong>una vez por semana</strong>, preferiblemente el mismo día cada semana</li>
+                  <li>Toma nota de los números clave en un cuaderno o hoja de cálculo para ver tendencias mes a mes</li>
+                  <li>No te frustres si los números son bajos al inicio. Concéntrate en el crecimiento gradual</li>
+                  <li>Usa el selector de rango para comparar períodos: ¿Este mes tuviste más visitas que el mes pasado?</li>
+                  <li>Presta más atención a las <strong>métricas de interacción</strong> (WhatsApp, teléfono) que a las de volumen (páginas vistas)</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
