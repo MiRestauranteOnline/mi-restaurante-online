@@ -1242,7 +1242,7 @@ export default function ClientGuides() {
               <CardContent>
                 <p className="text-muted-foreground mb-2">Navega a:</p>
                 <div className="bg-muted/50 p-3 rounded-lg font-mono text-sm">
-                  Panel Principal → Pestaña <Badge variant="outline">Contacto</Badge> → Sección "Redes Sociales"
+                  Panel Principal → Sección "Redes Sociales"
                 </div>
               </CardContent>
             </Card>
