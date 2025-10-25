@@ -5081,84 +5081,368 @@ export default function ClientGuides() {
 
       case "horarios-reserva":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Horarios de Reserva</CardTitle>
-              <CardDescription>
-                Configura los horarios y franjas disponibles para que tus clientes puedan hacer reservas
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Qué son los Horarios de Reserva?</h3>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-3xl">Horarios de Reserva</CardTitle>
+                <CardDescription className="text-base">
+                  Configura las franjas horarias en las que tu restaurante acepta reservas online
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>¿Qué son los Horarios de Reserva?</AlertTitle>
+                  <AlertDescription>
+                    Los horarios de reserva definen cuándo tu restaurante acepta reservas online. Puedes crear diferentes franjas horarias para cada día de la semana, establecer capacidades específicas y configurar reglas especiales para grupos grandes.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">1. Crear un Nuevo Horario</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                  Los horarios de reserva definen cuándo tu restaurante acepta reservas. Puedes crear diferentes franjas horarias para cada día de la semana, establecer capacidades y configurar reglas especiales para grupos grandes.
+                  Para agregar un nuevo horario de reserva, sigue estos pasos:
                 </p>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cómo Crear un Horario de Reserva</h3>
-                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
-                  <li>Haz clic en el botón <strong>"Agregar Horario"</strong></li>
-                  <li>Selecciona el día de la semana (o varios días)</li>
-                  <li>Establece la hora de inicio y fin del turno</li>
-                  <li>Define la capacidad máxima de comensales para ese horario</li>
-                  <li>Opcionalmente, configura intervalos de tiempo entre reservas</li>
-                  <li>Guarda la configuración</li>
-                </ol>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Configuraciones Avanzadas</h3>
                 
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Haz clic en el botón <strong className="text-foreground">"Agregar Horario"</strong> en la parte superior</li>
+                  <li>Selecciona el <strong className="text-foreground">día de la semana</strong> (Lunes a Domingo)</li>
+                  <li>Establece la <strong className="text-foreground">hora de inicio</strong> del turno (formato 24h, ej: 13:00)</li>
+                  <li>Define la <strong className="text-foreground">hora de fin</strong> del turno (formato 24h, ej: 16:00)</li>
+                  <li>Indica la <strong className="text-foreground">capacidad máxima</strong> de comensales para ese horario</li>
+                  <li>Haz clic en <strong className="text-foreground">"Guardar"</strong> para crear el horario</li>
+                </ol>
+
+                <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                  <Lightbulb className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertTitle className="text-blue-900 dark:text-blue-100">Consejo</AlertTitle>
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    Puedes crear múltiples horarios para el mismo día. Por ejemplo, un turno de almuerzo (13:00-16:00) y uno de cena (20:00-23:00).
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">2. Campos del Formulario</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <CalendarIcon className="h-5 w-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Día de la Semana</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Selecciona el día para el cual aplica este horario. Cada día puede tener múltiples horarios.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Clock className="h-5 w-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Hora de Inicio y Fin</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Define la franja horaria del turno en formato 24 horas. Ejemplo: 13:00 a 16:00 para almuerzo.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Users className="h-5 w-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Capacidad Máxima</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Número máximo de comensales que pueden reservar en este horario. El sistema bloqueará nuevas reservas cuando se alcance este límite.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Power className="h-5 w-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Estado (Activo/Inactivo)</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Un horario inactivo no aparecerá como opción de reserva para los clientes. Útil para desactivar temporalmente un horario sin eliminarlo.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">3. Configuración de Mesas Personalizada (Opcional)</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Además de la capacidad global, puedes definir tipos de mesa específicos para cada horario. Esto te da control detallado sobre qué mesas están disponibles en qué momentos.
+                </p>
+
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Configuración de Mesas Personalizada</h4>
+                  <h4 className="font-semibold">Campos de Configuración de Mesas:</h4>
+                  
+                  <div className="p-3 border rounded-lg bg-muted/50">
+                    <p className="text-sm"><strong>Nombre:</strong> Identificador del tipo de mesa (ej: "Mesa 2 pax", "Mesa VIP")</p>
+                  </div>
+                  
+                  <div className="p-3 border rounded-lg bg-muted/50">
+                    <p className="text-sm"><strong>Asientos:</strong> Número de sillas disponibles en este tipo de mesa</p>
+                  </div>
+                  
+                  <div className="p-3 border rounded-lg bg-muted/50">
+                    <p className="text-sm"><strong>Cantidad:</strong> Cuántas mesas de este tipo tienes disponibles</p>
+                  </div>
+                  
+                  <div className="p-3 border rounded-lg bg-muted/50">
+                    <p className="text-sm"><strong>Min/Max Comensales:</strong> Rango de personas que puede acomodar (ej: una mesa de 4 puede aceptar 2-4 personas)</p>
+                  </div>
+                </div>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Si no configuras mesas personalizadas para un horario, el sistema utilizará las mesas globales configuradas en la pestaña "Configuración de Mesas".
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">4. Grupos Especiales (Más de 8 Personas)</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Puedes activar configuraciones especiales para grupos grandes que requieren atención personalizada.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <h4 className="font-semibold mb-2">¿Cuándo usar Grupos Especiales?</h4>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
+                      <li>Reservas de más de 8 comensales</li>
+                      <li>Eventos corporativos o celebraciones</li>
+                      <li>Situaciones que requieren confirmación previa</li>
+                      <li>Grupos con necesidades especiales (menú personalizado, espacio privado, etc.)</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <h4 className="font-semibold mb-2">Configuración</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Al activar "Grupos Especiales", puedes personalizar:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
+                      <li>El mensaje que verán los clientes al hacer reservas grandes</li>
+                      <li>Requisitos especiales de confirmación</li>
+                      <li>Información adicional que deben proporcionar</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">5. Gestionar Horarios Existentes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Una vez creados los horarios, puedes gestionarlos fácilmente:
+                </p>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Edit className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold">Editar</h4>
+                    </div>
                     <p className="text-sm text-muted-foreground">
-                      Puedes definir tipos de mesa específicos para cada horario (ej: 2 mesas de 4 personas, 3 mesas de 2 personas). Esto te da control detallado sobre la disponibilidad.
+                      Haz clic en el icono de lápiz para modificar cualquier campo del horario.
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Grupos Especiales</h4>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Copy className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold">Duplicar</h4>
+                    </div>
                     <p className="text-sm text-muted-foreground">
-                      Activa esta opción para grupos de más de 8 personas. Puedes personalizar el mensaje que se muestra y establecer requisitos especiales de confirmación.
+                      Crea una copia del horario para aplicarlo rápidamente a otro día de la semana.
                     </p>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Estado Activo/Inactivo</h4>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Power className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold">Activar/Desactivar</h4>
+                    </div>
                     <p className="text-sm text-muted-foreground">
-                      Desactiva temporalmente un horario sin eliminarlo. Útil para eventos especiales o mantenimiento temporal.
+                      Alterna el estado del horario con un solo clic. Los horarios inactivos no aparecen en el sistema de reservas.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                      <h4 className="font-semibold">Eliminar</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Elimina permanentemente un horario. Esta acción requiere confirmación.
                     </p>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
+                <Alert className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
+                  <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <AlertDescription className="text-amber-800 dark:text-amber-200">
+                    <strong>Importante:</strong> Los cambios en horarios no afectan las reservas ya confirmadas, solo las nuevas reservas que se realicen.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Consejos y Mejores Prácticas</h3>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Crea horarios separados para almuerzo y cena si tienen diferentes capacidades</li>
-                  <li>Deja intervalos de 15-30 minutos entre reservas para dar tiempo de limpieza</li>
-                  <li>Configura horarios especiales para fines de semana si tienes mayor demanda</li>
-                  <li>Usa la función de duplicar para crear rápidamente horarios similares</li>
-                  <li>Revisa regularmente tus horarios y ajústalos según la demanda observada</li>
-                </ul>
-              </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">6. Mejores Prácticas y Consejos</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">Separa Turnos Claramente</h4>
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          Crea horarios separados para almuerzo y cena. Esto te permite tener diferentes capacidades y configuraciones para cada turno.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Tip:</strong> Puedes combinar horarios globales con configuración de mesas personalizada. Si no especificas mesas personalizadas, el sistema usará las mesas configuradas en la pestaña "Configuración de Mesas".
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">Ajusta Según la Demanda</h4>
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          Revisa regularmente tus horarios y ajusta las capacidades según la demanda real. Los fines de semana suelen requerir mayor capacidad.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">Usa la Función Duplicar</h4>
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          Si tienes el mismo horario en varios días, duplica el primero en lugar de crear cada uno desde cero. Ahorra tiempo y evita errores.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">Desactiva en lugar de Eliminar</h4>
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          Para cambios temporales (vacaciones, eventos especiales), desactiva los horarios en lugar de eliminarlos. Así puedes reactivarlos fácilmente después.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Preguntas Frecuentes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Puedo tener diferentes capacidades para el mismo día?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      Sí, puedes crear múltiples horarios para el mismo día con diferentes capacidades. Por ejemplo, 40 personas para almuerzo y 60 para cena.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Qué pasa si no configuro mesas personalizadas?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      El sistema utilizará automáticamente las mesas globales configuradas en "Configuración de Mesas". Solo necesitas mesas personalizadas si quieres diferente disponibilidad por horario.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Los cambios afectan las reservas existentes?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      No, los cambios en horarios solo afectan las nuevas reservas. Las reservas ya confirmadas se mantienen sin cambios.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Puedo tener horarios que se solapen?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      Sí, puedes crear horarios solapados si lo necesitas (ej: 13:00-16:00 y 14:00-17:00). El sistema calculará la disponibilidad correctamente considerando todos los horarios activos.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <Lightbulb className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-lg">¿Necesitas Ayuda?</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si tienes dudas sobre cómo configurar tus horarios de reserva o necesitas ayuda personalizada, nuestro equipo de soporte está disponible para asistirte.
+                    </p>
+                    <Button asChild variant="outline" className="mt-2">
+                      <a href="/client/support" target="_blank" rel="noopener noreferrer">
+                        Contactar Soporte
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "configuracion-mesas":
