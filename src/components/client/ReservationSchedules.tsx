@@ -403,12 +403,29 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                 </div>
 
                 {/* Capacity Configuration */}
-                <div className="space-y-4 p-4 border rounded-lg">
+                <div className="space-y-4 p-4 border rounded-lg bg-card">
+                  <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-3">
+                    <div className="flex items-start gap-2">
+                      <HelpCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                      <div className="space-y-1">
+                        <p className="text-xs font-semibold text-blue-900 dark:text-blue-100">
+                          Global vs. Personalizada
+                        </p>
+                        <p className="text-xs text-blue-800 dark:text-blue-200">
+                          <strong>🌐 Global:</strong> Usa las mesas configuradas en "Configuración de Mesas" (se aplica por defecto a todos los horarios)
+                        </p>
+                        <p className="text-xs text-blue-800 dark:text-blue-200">
+                          <strong>🎯 Personalizada:</strong> Define mesas específicas solo para este horario (sobrescribe la configuración global)
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <Label>Configuración de Capacidad</Label>
+                      <Label>Tipo de Configuración de Mesas</Label>
                       <p className="text-sm text-muted-foreground">
-                        {useCustomCapacity ? "Configuración personalizada para este horario" : "Usando capacidad estándar global"}
+                        {useCustomCapacity ? "🎯 Mesas personalizadas para este horario" : "🌐 Usando configuración global de mesas"}
                       </p>
                     </div>
                     <Switch
@@ -423,9 +440,9 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                   </div>
 
                   {useCustomCapacity && (
-                    <div className="space-y-3 pl-4 border-l-2">
+                    <div className="space-y-3 pl-4 border-l-2 border-primary">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium">Tipos de Mesa</p>
+                        <p className="text-sm font-medium">Mesas Personalizadas</p>
                         <Button
                           type="button"
                           variant="outline"
@@ -549,10 +566,10 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                   {!useCustomCapacity && (
                     <div className="bg-muted p-3 rounded-lg">
                       <p className="text-sm text-muted-foreground">
-                        Capacidad estándar: {calculateTotalCapacity(null)} mesas
+                        🌐 Usando configuración global: {calculateTotalCapacity(null)} mesas
                         {globalTableConfigs.length === 0 && (
                           <span className="text-destructive block mt-1">
-                            ⚠️ No hay configuración de mesas global. Por favor, configúrala en la pestaña "Capacidad".
+                            ⚠️ No hay configuración de mesas global. Por favor, configúrala en la pestaña "Configuración de Mesas".
                           </span>
                         )}
                       </p>
@@ -701,13 +718,29 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                       <div className="flex items-center justify-between gap-3">
                         <span className="text-xs text-muted-foreground">Capacidad:</span>
                         {schedule.custom_table_configs ? (
-                          <Badge variant="secondary" className="text-xs">
-                            Personalizada ({calculateTotalCapacity(schedule.custom_table_configs)} mesas)
-                          </Badge>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge variant="secondary" className="text-xs cursor-help">
+                                🎯 Personalizada ({calculateTotalCapacity(schedule.custom_table_configs)} mesas)
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Este horario usa mesas personalizadas</p>
+                              <p className="text-xs text-muted-foreground">sobrescribiendo la configuración global</p>
+                            </TooltipContent>
+                          </Tooltip>
                         ) : (
-                          <Badge variant="outline" className="text-xs">
-                            Estándar ({calculateTotalCapacity(null)} mesas)
-                          </Badge>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge variant="outline" className="text-xs cursor-help">
+                                🌐 Global ({calculateTotalCapacity(null)} mesas)
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Este horario usa la configuración</p>
+                              <p className="text-xs text-muted-foreground">global de mesas por defecto</p>
+                            </TooltipContent>
+                          </Tooltip>
                         )}
                       </div>
 
@@ -789,19 +822,34 @@ const ReservationSchedules = ({ clientId }: ReservationSchedulesProps) => {
                       </TableCell>
                       <TableCell>
                         {schedule.custom_table_configs ? (
-                          <div className="flex flex-col">
-                            <Badge variant="secondary" className="text-xs">Personalizada</Badge>
-                            <span className="text-xs text-muted-foreground mt-1">
-                              {calculateTotalCapacity(schedule.custom_table_configs)} mesas
-                            </span>
-                          </div>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex flex-col cursor-help">
+                                <Badge variant="secondary" className="text-xs w-fit">🎯 Personalizada</Badge>
+                                <span className="text-xs text-muted-foreground mt-1">
+                                  {calculateTotalCapacity(schedule.custom_table_configs)} mesas
+                                </span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Mesas personalizadas para este horario</p>
+                              <p className="text-xs text-muted-foreground">sobrescribiendo la configuración global</p>
+                            </TooltipContent>
+                          </Tooltip>
                         ) : (
-                          <div className="flex flex-col">
-                            <Badge variant="outline" className="text-xs">Estándar</Badge>
-                            <span className="text-xs text-muted-foreground mt-1">
-                              {calculateTotalCapacity(null)} mesas
-                            </span>
-                          </div>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex flex-col cursor-help">
+                                <Badge variant="outline" className="text-xs w-fit">🌐 Global</Badge>
+                                <span className="text-xs text-muted-foreground mt-1">
+                                  {calculateTotalCapacity(null)} mesas
+                                </span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Usando configuración global de mesas</p>
+                            </TooltipContent>
+                          </Tooltip>
                         )}
                       </TableCell>
                       <TableCell className="whitespace-nowrap text-sm">{schedule.min_party_size} - {schedule.max_party_size}</TableCell>

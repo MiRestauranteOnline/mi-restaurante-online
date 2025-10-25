@@ -237,9 +237,23 @@ const TableConfigurationManager = ({ clientId }: TableConfigurationManagerProps)
   return (
     <TooltipProvider>
       <div className="space-y-4 sm:space-y-6">
+        <div className="bg-blue-50 dark:bg-blue-950 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-500 flex items-center justify-center">
+              <HelpCircle className="h-4 w-4 text-white" />
+            </div>
+            <div className="flex-1 space-y-2">
+              <h4 className="font-semibold text-blue-900 dark:text-blue-100">Configuración Global de Mesas</h4>
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                Esta configuración se aplica a <strong>todos los horarios de reserva por defecto</strong>. Si necesitas mesas diferentes para horarios específicos (por ejemplo, solo ciertas mesas disponibles para cena), puedes configurar mesas personalizadas en la sección "Horarios de Reserva".
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div>
-            <h3 className="text-base sm:text-lg font-semibold">Configuración de Mesas</h3>
+            <h3 className="text-base sm:text-lg font-semibold">Configuración Global de Mesas</h3>
             <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
               Define los tipos de mesas disponibles en tu restaurante
               <Tooltip>
