@@ -1232,18 +1232,26 @@ export default function ClientGuides() {
               </p>
             </div>
 
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-2">Navega a:</p>
+                <p className="text-base font-medium">
+                  Panel Principal → <span className="text-primary font-semibold">Sección "Redes Sociales"</span>
+                </p>
+              </CardContent>
+            </Card>
+
             <Card className="border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
-                  Ubicación de la Configuración
+                  Redes Sociales Disponibles
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-2">Navega a:</p>
-                <div className="bg-muted/50 p-3 rounded-lg font-mono text-sm">
-                  Panel Principal → Sección "Redes Sociales"
-                </div>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Puedes configurar enlaces a las siguientes plataformas:
+                </p>
               </CardContent>
             </Card>
 
@@ -1932,10 +1940,16 @@ export default function ClientGuides() {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold mb-2">Navegación y Visibilidad</h1>
-              <p className="text-muted-foreground">
-                Navega a: Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Pestaña <Badge variant="secondary" className="mx-1">Navegación y Visibilidad</Badge>
-              </p>
             </div>
+
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-2">Navega a:</p>
+                <p className="text-base font-medium">
+                  Panel Principal → Pestaña <Badge variant="secondary" className="mx-1">Configuración</Badge> → Pestaña <span className="text-primary font-semibold">Navegación y Visibilidad</span>
+                </p>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -6145,12 +6159,22 @@ export default function ClientGuides() {
       case "disponibilidad-reservas":
         return (
           <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Disponibilidad de Reservas</h1>
+            </div>
+
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-2">Navega a:</p>
+                <p className="text-base font-medium">
+                  Reservas → <span className="text-primary font-semibold">Disponibilidad</span>
+                </p>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
-                <CardTitle className="text-3xl">Disponibilidad de Reservas</CardTitle>
-                <CardDescription className="text-base">
-                  Navega a: Reservas → Disponibilidad
-                </CardDescription>
+                <CardTitle className="text-xl">¿Qué es la Vista de Disponibilidad?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <Alert>
@@ -6706,12 +6730,22 @@ export default function ClientGuides() {
       case "lista-reservas":
         return (
           <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Lista de Reservas</h1>
+            </div>
+
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-2">Navega a:</p>
+                <p className="text-base font-medium">
+                  Reservas → <span className="text-primary font-semibold">Lista de Reservas</span>
+                </p>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
-                <CardTitle className="text-3xl">Lista de Reservas</CardTitle>
-                <CardDescription className="text-base">
-                  Navega a: Reservas → Lista de Reservas
-                </CardDescription>
+                <CardTitle className="text-xl">¿Qué es la Lista de Reservas?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <Alert>
@@ -7168,14 +7202,28 @@ export default function ClientGuides() {
 
       case "calendario-reservas":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Calendario de Reservas</CardTitle>
-              <CardDescription>
-                Vista visual mensual interactiva de todas tus reservas con actualizaciones en tiempo real
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Calendario de Reservas</h1>
+            </div>
+
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-2">Navega a:</p>
+                <p className="text-base font-medium">
+                  <span className="text-primary font-semibold">Reservas</span>
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Vista Visual Mensual Interactiva</CardTitle>
+                <CardDescription>
+                  Todas tus reservas con actualizaciones en tiempo real
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
               {/* Introducción */}
               <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
@@ -7610,6 +7658,7 @@ export default function ClientGuides() {
               </div>
             </CardContent>
           </Card>
+          </div>
         );
       
       case "introduccion-analiticas":
@@ -10795,10 +10844,16 @@ export default function ClientGuides() {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold mb-2">Libro de Reclamaciones</h1>
-              <p className="text-muted-foreground">
-                Navega a: Políticas → Pestaña <Badge variant="secondary" className="mx-1">Libro de Reclamaciones</Badge>
-              </p>
             </div>
+
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-2">Navega a:</p>
+                <p className="text-base font-medium">
+                  Políticas → Pestaña <span className="text-primary font-semibold">Libro de Reclamaciones</span>
+                </p>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -11153,10 +11208,16 @@ export default function ClientGuides() {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold mb-2">Páginas de Políticas</h1>
-              <p className="text-muted-foreground">
-                Navega a: Políticas → Pestañas <Badge variant="secondary" className="mx-1">Política de Privacidad</Badge>, <Badge variant="secondary" className="mx-1">Política de Cookies</Badge>, <Badge variant="secondary" className="mx-1">Términos de Servicio</Badge>
-              </p>
             </div>
+
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-2">Navega a:</p>
+                <p className="text-base font-medium">
+                  Políticas → Pestañas <Badge variant="secondary" className="mx-1">Política de Privacidad</Badge>, <Badge variant="secondary" className="mx-1">Política de Cookies</Badge>, <span className="text-primary font-semibold">Términos de Servicio</span>
+                </p>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
