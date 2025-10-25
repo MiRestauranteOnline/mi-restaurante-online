@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon, Pencil } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon, Pencil, Search, Filter, Download, CheckCircle2, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -5450,24 +5450,38 @@ export default function ClientGuides() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-3xl">Configuración de Mesas</CardTitle>
+                <CardTitle className="text-3xl">Configuración Global de Mesas</CardTitle>
                 <CardDescription className="text-base">
-                  Define los tipos de mesas globales que tiene tu restaurante para gestionar la capacidad de reservas
+                  Navega a: Reservas → Configuración de Mesas
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <Alert>
-                  <Info className="h-4 w-4" />
-                  <AlertTitle>¿Qué es la Configuración de Mesas?</AlertTitle>
-                  <AlertDescription>
-                    Aquí defines los diferentes tipos de mesa que tiene tu restaurante (por ejemplo: mesas de 2, 4, 6 personas). Esta configuración global se usa como base para calcular la disponibilidad de reservas automáticamente en todos tus horarios.
+                <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertTitle className="text-blue-900 dark:text-blue-100">¿Qué es la Configuración Global de Mesas?</AlertTitle>
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    Esta es tu configuración <strong>predeterminada de mesas</strong> que se aplica a todos los horarios de reserva. Aquí defines los tipos de mesa que tiene tu restaurante físicamente (ej: mesas de 2, 4, 6 personas) y esta información se usa para calcular automáticamente la disponibilidad de reservas.
                   </AlertDescription>
                 </Alert>
 
-                <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-                  <Lightbulb className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <AlertDescription className="text-blue-800 dark:text-blue-200">
-                    <strong>Global vs. Personalizada:</strong> Esta configuración es <strong>global</strong> y se aplica a todos los horarios. Si necesitas diferentes mesas disponibles en horarios específicos (ej: solo ciertas mesas para cena), puedes configurar mesas personalizadas en "Horarios de Reserva".
+                <Alert className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                  <Lightbulb className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <AlertTitle className="text-green-900 dark:text-green-100">Indicadores Visuales en el Sistema</AlertTitle>
+                  <AlertDescription className="text-green-800 dark:text-green-200 space-y-2">
+                    <p>En la sección "Horarios de Reserva" verás indicadores que te muestran qué configuración usa cada horario:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-2">
+                      <li><strong>🌐 Global:</strong> El horario usa las mesas configuradas aquí (configuración global)</li>
+                      <li><strong>🎯 Personalizada:</strong> El horario tiene su propia configuración de mesas específica</li>
+                    </ul>
+                    <p className="mt-2">Puedes pasar el cursor sobre estos indicadores para ver más información.</p>
+                  </AlertDescription>
+                </Alert>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>¿Cuándo usar Configuración Personalizada?</AlertTitle>
+                  <AlertDescription>
+                    Si en ciertos horarios (ej: cenas de viernes y sábado) tienes una distribución diferente de mesas disponibles para reservas, puedes sobrescribir esta configuración global en la sección "Horarios de Reserva". Simplemente edita el horario específico y activa la opción de personalizar mesas.
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -6000,112 +6014,464 @@ export default function ClientGuides() {
 
       case "lista-reservas":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Lista de Reservas</CardTitle>
-              <CardDescription>
-                Gestiona todas tus reservas en un solo lugar
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Qué es la Lista de Reservas?</h3>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-3xl">Lista de Reservas</CardTitle>
+                <CardDescription className="text-base">
+                  Navega a: Reservas → Lista de Reservas
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>¿Qué es la Lista de Reservas?</AlertTitle>
+                  <AlertDescription>
+                    Aquí encuentras todas las reservas futuras de tu restaurante en un solo lugar. Puedes buscar, filtrar, actualizar estados, agregar notas internas y exportar datos. La lista se actualiza en tiempo real cuando llegan nuevas reservas.
+                  </AlertDescription>
+                </Alert>
+
+                <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                  <HelpCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <strong>💡 Ayuda contextual:</strong> En la esquina superior derecha de la sección verás un ícono de ayuda (<HelpCircle className="h-3 w-3 inline" />). Haz clic para ver consejos rápidos sobre cómo gestionar tus reservas efectivamente.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            {/* Interfaz Adaptativa */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+                  Interfaz Adaptativa
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                  La lista de reservas muestra todas las reservas futuras de tu restaurante, permitiéndote buscar, filtrar, gestionar y actualizar el estado de cada reserva.
+                  La lista se adapta automáticamente según el dispositivo que uses:
                 </p>
-              </div>
 
-              <Separator />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      💻 Vista de Escritorio
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Tabla completa con todas las columnas: Fecha, Hora, Cliente, Contacto, Personas, Estado y Acciones. Ideal para gestión masiva de reservas.
+                    </p>
+                  </div>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Funciones Principales</h3>
-                
+                  <div className="p-4 border rounded-lg bg-card">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      📱 Vista Móvil
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Tarjetas individuales por reserva con toda la información organizada verticalmente. Enlaces directos para llamar o enviar email con un toque.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Herramientas de Búsqueda y Filtros */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
+                  Búsqueda y Filtros
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Search className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Búsqueda Rápida</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Encuentra reservas instantáneamente buscando por:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-xs text-muted-foreground ml-2">
+                          <li>Nombre del cliente</li>
+                          <li>Número de teléfono</li>
+                          <li>Correo electrónico</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Filter className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Filtro por Estado</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Usa el selector de estado para filtrar:
+                        </p>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">Todos</Badge>
+                            <span className="text-muted-foreground">Ver todas las reservas</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs border-orange-500 text-orange-500">Pendiente</Badge>
+                            <span className="text-muted-foreground">Solo pendientes de confirmar</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="default" className="text-xs">Confirmado</Badge>
+                            <span className="text-muted-foreground">Reservas confirmadas</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="destructive" className="text-xs">Cancelado</Badge>
+                            <span className="text-muted-foreground">Reservas canceladas</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="secondary" className="text-xs">Completado</Badge>
+                            <span className="text-muted-foreground">Visitas completadas</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Download className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Exportar a CSV</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Descarga las reservas filtradas en formato CSV para análisis en Excel o respaldo. El archivo incluye: fecha, hora, cliente, contacto, personas, estado y solicitudes especiales.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                  <Lightbulb className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <strong>Tip:</strong> Combina búsqueda + filtro para encontrar reservas muy específicas. Por ejemplo: filtra por "Pendiente" y busca un nombre para confirmar una reserva rápidamente.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            {/* Gestión de Estados */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+                  Gestión de Estados
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Cada reserva tiene un estado que puedes actualizar fácilmente:
+                </p>
+
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Búsqueda</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Busca reservas por nombre del cliente, email o número de teléfono usando el campo de búsqueda.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-orange-50/50 dark:bg-orange-950/20">
+                    <div className="flex items-start gap-3">
+                      <Badge variant="outline" className="border-orange-500 text-orange-500">Pendiente</Badge>
+                      <div className="flex-1">
+                        <p className="text-sm mb-2">Nueva reserva recibida, esperando tu confirmación.</p>
+                        <div className="space-y-1 text-xs text-muted-foreground">
+                          <p><strong>Acciones rápidas:</strong></p>
+                          <ul className="list-disc list-inside ml-2">
+                            <li>Botón <strong>"Confirmar"</strong> (<CheckCircle2 className="h-3 w-3 inline" />) para aceptar</li>
+                            <li>Botón <strong>"Rechazar"</strong> (<XCircle className="h-3 w-3 inline" />) para declinar con motivo</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Filtros por Estado</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Filtra reservas por estado: Pendientes, Confirmadas, Canceladas o Completadas.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-green-50/50 dark:bg-green-950/20">
+                    <div className="flex items-start gap-3">
+                      <Badge variant="default">Confirmado</Badge>
+                      <div className="flex-1">
+                        <p className="text-sm">Reserva aceptada y garantizada. El cliente puede contar con su mesa.</p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Cambio de Estado</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Actualiza el estado de una reserva directamente desde la lista: confirmar, cancelar, declinar o marcar como completada.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-red-50/50 dark:bg-red-950/20">
+                    <div className="flex items-start gap-3">
+                      <Badge variant="destructive">Cancelado</Badge>
+                      <div className="flex-1">
+                        <p className="text-sm mb-2">Reserva rechazada por el restaurante o cancelada por el cliente.</p>
+                        <Alert className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800 mt-2">
+                          <AlertCircle className="h-3 w-3 text-amber-600 dark:text-amber-400" />
+                          <AlertDescription className="text-xs text-amber-800 dark:text-amber-200">
+                            <strong>Importante:</strong> Al rechazar una reserva, se abrirá un diálogo para que selecciones o especifiques el motivo (ej: "No hay mesas disponibles", "Fuera del horario", etc.). Este motivo se guarda en el campo de solicitudes especiales.
+                          </AlertDescription>
+                        </Alert>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Notas Internas</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Añade notas privadas a cada reserva para recordar detalles especiales (alergias, preferencias, ocasiones especiales).
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Exportar a CSV</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Descarga todas las reservas filtradas en formato CSV para análisis o respaldo.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20">
+                    <div className="flex items-start gap-3">
+                      <Badge variant="secondary">Completado</Badge>
+                      <div className="flex-1">
+                        <p className="text-sm">El cliente llegó y completó su visita. Útil para mantener historial.</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Estados de Reserva</h3>
-                <div className="space-y-2">
-                  <div className="flex items-start gap-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pendiente</span>
-                    <p className="text-sm text-muted-foreground">Nueva reserva que aún no has confirmado</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Confirmada</span>
-                    <p className="text-sm text-muted-foreground">Reserva confirmada y garantizada</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Cancelada</span>
-                    <p className="text-sm text-muted-foreground">Cliente canceló la reserva</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Declinada</span>
-                    <p className="text-sm text-muted-foreground">Restaurante rechazó la reserva</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Completada</span>
-                    <p className="text-sm text-muted-foreground">Cliente llegó y completó su visita</p>
-                  </div>
+                <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-4 rounded-lg border border-primary/20">
+                  <h4 className="font-semibold mb-2 text-sm">¿Cómo Cambiar el Estado?</h4>
+                  <ul className="space-y-2 text-xs text-muted-foreground">
+                    <li className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      <span><strong>Reservas Pendientes:</strong> Usa los botones rápidos "Confirmar" o "Rechazar"</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      <span><strong>Otras Reservas:</strong> Usa el selector desplegable de estado para cambiar entre Pendiente, Confirmado, Cancelado o Completado</span>
+                    </li>
+                  </ul>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Consejos de Gestión</h3>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Revisa las reservas pendientes diariamente y confírmalas lo antes posible</li>
-                  <li>Usa las notas internas para registrar preferencias especiales de clientes habituales</li>
-                  <li>Marca las reservas como completadas al final del día para mantener un historial preciso</li>
-                  <li>Si debes declinar una reserva, proporciona un motivo claro al cliente</li>
-                  <li>Exporta regularmente tus datos para análisis de tendencias y demanda</li>
-                </ul>
-              </div>
-
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Tip:</strong> Las reservas pasadas se limpian automáticamente del sistema para mantener la lista enfocada en reservas futuras.
+            {/* Notas Internas */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">4</span>
+                  Notas Internas Privadas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Las notas internas son <strong>privadas y solo visibles para ti</strong>. Úsalas para registrar información importante sobre cada reserva.
                 </p>
-              </div>
-            </CardContent>
-          </Card>
+
+                <div className="space-y-3">
+                  <div className="p-3 bg-muted/30 rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">¿Cuándo Usar Notas Internas?</h4>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-2">
+                      <li>Alergias alimentarias del cliente</li>
+                      <li>Preferencias especiales (mesa junto a ventana, área tranquila)</li>
+                      <li>Ocasiones especiales (cumpleaños, aniversario)</li>
+                      <li>Clientes VIP o habituales</li>
+                      <li>Instrucciones específicas del equipo</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-3 bg-muted/30 rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">Cómo Agregar Notas</h4>
+                    <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground ml-2">
+                      <li>Haz clic en <strong>"Ver Detalles"</strong> de la reserva</li>
+                      <li>Escribe tu nota en el campo "Notas Internas"</li>
+                      <li>Haz clic en <strong>"Guardar Notas"</strong></li>
+                    </ol>
+                  </div>
+                </div>
+
+                <Alert>
+                  <MessageSquare className="h-4 w-4" />
+                  <AlertTitle>Notas vs. Solicitudes Especiales</AlertTitle>
+                  <AlertDescription className="text-sm">
+                    <strong>Notas Internas:</strong> Solo las ves tú. Para tu gestión interna.<br/>
+                    <strong>Solicitudes Especiales:</strong> Lo que el cliente escribió al hacer la reserva (visible en los detalles).
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            {/* Ver Detalles y Eliminar */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">5</span>
+                  Acciones Adicionales
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Eye className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Ver Detalles</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Abre un diálogo con toda la información de la reserva:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-xs text-muted-foreground ml-2">
+                          <li>Información del cliente (nombre, email, teléfono)</li>
+                          <li>Detalles de la reserva (fecha, hora, número de personas)</li>
+                          <li>Solicitudes especiales del cliente</li>
+                          <li>Tus notas internas (puedes editarlas aquí)</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Trash2 className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Eliminar Reserva</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Elimina permanentemente una reserva del sistema. Se pedirá confirmación antes de eliminar.
+                        </p>
+                        <Alert className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800 mt-2">
+                          <AlertCircle className="h-3 w-3 text-amber-600 dark:text-amber-400" />
+                          <AlertDescription className="text-xs text-amber-800 dark:text-amber-200">
+                            <strong>Recomendación:</strong> En lugar de eliminar, considera cambiar el estado a "Cancelado" para mantener el historial.
+                          </AlertDescription>
+                        </Alert>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Actualización en Tiempo Real */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">6</span>
+                  Actualización en Tiempo Real
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  La lista se actualiza automáticamente sin necesidad de recargar la página cuando:
+                </p>
+
+                <div className="grid gap-2">
+                  <div className="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-950/20 rounded border border-green-200 dark:border-green-800">
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                    <span className="text-sm">Llega una nueva reserva desde tu sitio web</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-950/20 rounded border border-green-200 dark:border-green-800">
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                    <span className="text-sm">Cambias el estado de una reserva</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-950/20 rounded border border-green-200 dark:border-green-800">
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                    <span className="text-sm">Agregas o editas notas internas</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-950/20 rounded border border-green-200 dark:border-green-800">
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                    <span className="text-sm">Se elimina una reserva</span>
+                  </div>
+                </div>
+
+                <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <strong>Limpieza Automática:</strong> Las reservas de fechas pasadas se eliminan automáticamente del sistema para mantener la lista limpia y enfocada en reservas futuras.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            {/* Mejores Prácticas */}
+            <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <Lightbulb className="h-5 w-5" />
+                  Mejores Prácticas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Responde Rápido:</strong> Revisa y confirma las reservas pendientes lo antes posible. Los clientes aprecian confirmaciones rápidas.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Usa Notas Internas:</strong> Registra preferencias de clientes habituales para ofrecer un servicio personalizado en futuras visitas.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Marca Completadas:</strong> Al final del día, marca las reservas completadas para mantener un historial preciso.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Motivos Claros:</strong> Al rechazar reservas, proporciona siempre un motivo claro y específico.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Exporta Regularmente:</strong> Descarga tus datos mensualmente para análisis de tendencias y demanda.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
+                    <span className="text-sm">
+                      <strong>Móvil-Friendly:</strong> La vista móvil incluye enlaces directos para llamar o enviar email. Úsalos para contactar clientes rápidamente.
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* FAQ */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <HelpCircle className="h-5 w-5 text-primary" />
+                  Preguntas Frecuentes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">¿Qué pasa con las reservas de ayer o de hace una semana?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Las reservas pasadas se eliminan automáticamente del sistema. Solo verás reservas futuras en la lista.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">¿Cuál es la diferencia entre "Cancelado" y eliminar?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      "Cancelado" mantiene un registro de la reserva en el sistema (útil para historial). Eliminar borra permanentemente la reserva. Recomendamos usar "Cancelado" en lugar de eliminar.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">¿El cliente puede ver mis notas internas?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      No, las notas internas son completamente privadas y solo visibles en tu panel de administración.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">¿Puedo buscar por fecha de reserva?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      La búsqueda actual filtra por nombre, email y teléfono. Para ver reservas de un día específico, usa el Calendario de Reservas. Si necesitas búsqueda por fecha en la lista, contáctanos para sugerencias de mejora.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">¿Se notifica al cliente cuando cambio el estado?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Actualmente no se envían notificaciones automáticas por email. Recomendamos contactar al cliente directamente (los enlaces en la vista móvil facilitan esto).
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "calendario-reservas":
