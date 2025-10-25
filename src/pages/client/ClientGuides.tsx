@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon } from "lucide-react";
+import { Copy, Check, ExternalLink, FileText, Globe, Mail, Save, Palette, DollarSign, AlertCircle, CheckCircle, Info, Truck, Clock, MapPin, Link2, Image, Type, Sliders, Moon, Sun, Layout, Eye, EyeOff, ImagePlus, FileEdit, HelpCircle, ArrowUpDown, Lightbulb, Edit, Trash2, Home, Power, GripVertical, ChevronDown, ChevronRight, Users, ArrowUp, ArrowDown, PowerOff, Star, MessageSquare, CalendarIcon, Pencil } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GuidesSidebar } from "@/components/client/GuidesSidebar";
@@ -5447,100 +5447,467 @@ export default function ClientGuides() {
 
       case "configuracion-mesas":
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Configuración de Mesas</CardTitle>
-              <CardDescription>
-                Define los tipos de mesa disponibles en tu restaurante
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Qué es la Configuración de Mesas?</h3>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-3xl">Configuración de Mesas</CardTitle>
+                <CardDescription className="text-base">
+                  Define los tipos de mesas globales que tiene tu restaurante para gestionar la capacidad de reservas
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>¿Qué es la Configuración de Mesas?</AlertTitle>
+                  <AlertDescription>
+                    Aquí defines los diferentes tipos de mesa que tiene tu restaurante (por ejemplo: mesas de 2, 4, 6 personas). Esta configuración global se usa como base para calcular la disponibilidad de reservas automáticamente en todos tus horarios.
+                  </AlertDescription>
+                </Alert>
+
+                <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                  <Lightbulb className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <strong>Global vs. Personalizada:</strong> Esta configuración es <strong>global</strong> y se aplica a todos los horarios. Si necesitas diferentes mesas disponibles en horarios específicos (ej: solo ciertas mesas para cena), puedes configurar mesas personalizadas en "Horarios de Reserva".
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">1. Crear una Nueva Configuración de Mesa</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                  Aquí defines los diferentes tipos de mesa que tiene tu restaurante. Esta información se usa como base para calcular la disponibilidad de reservas automáticamente.
+                  Para agregar un tipo de mesa, sigue estos pasos:
                 </p>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cómo Configurar tus Mesas</h3>
-                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
-                  <li>Haz clic en <strong>"Agregar Configuración"</strong></li>
-                  <li>Dale un nombre descriptivo (ej: "Mesa para 2", "Mesa VIP")</li>
-                  <li>Especifica el número de asientos</li>
-                  <li>Indica cuántas mesas de este tipo tienes</li>
-                  <li>Define el tamaño mínimo y máximo de grupo que puede usar esta mesa</li>
-                  <li>Establece la duración promedio de la reserva (en minutos)</li>
-                </ol>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Campos Detallados</h3>
                 
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Nombre de Mesa</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Un nombre identificativo para el tipo de mesa. Ejemplo: "Mesa 2 personas", "Mesa familiar", "Mesa bar".
-                    </p>
-                  </div>
+                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
+                  <li>Haz clic en el botón <strong className="text-foreground">"Agregar Configuración"</strong></li>
+                  <li>Completa los campos del formulario</li>
+                  <li>Haz clic en <strong className="text-foreground">"Crear"</strong> para guardar</li>
+                </ol>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Asientos</h4>
-                    <p className="text-sm text-muted-foreground">
-                      El número exacto de sillas/asientos que tiene cada mesa de este tipo.
-                    </p>
-                  </div>
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Después de crear tus configuraciones, verás un resumen con el <strong>total de mesas</strong> y la <strong>capacidad total</strong> de tu restaurante.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Cantidad</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cuántas mesas de este tipo existen en tu restaurante.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Tamaño de Grupo (Min/Max)</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Define el rango de personas que puede acomodar este tipo de mesa. Por ejemplo, una mesa de 4 asientos podría acomodar grupos de 2-4 personas.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Duración de Reserva</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Tiempo promedio (en minutos) que un grupo permanece en la mesa. Esto ayuda a calcular cuántas reservas pueden hacerse en el mismo horario.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Ejemplo Práctico</h3>
-                <div className="bg-muted p-4 rounded-lg space-y-2">
-                  <p className="font-medium">Restaurante "La Estrella"</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
-                    <li>4 mesas de 2 personas (duración: 90 minutos)</li>
-                    <li>6 mesas de 4 personas (duración: 120 minutos)</li>
-                    <li>2 mesas de 6 personas (duración: 150 minutos)</li>
-                    <li>1 mesa VIP de 8 personas (duración: 180 minutos)</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                  ⚠️ <strong>Importante:</strong> Las mesas inactivas no se mostrarán en el sistema de reservas. Usa el toggle de estado para activar/desactivar tipos de mesa temporalmente.
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">2. Campos del Formulario</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground mb-4">
+                  Cada tipo de mesa requiere la siguiente información:
                 </p>
-              </div>
-            </CardContent>
-          </Card>
+
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Type className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Nombre</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Un identificador descriptivo para este tipo de mesa.
+                        </p>
+                        <div className="bg-muted/50 p-2 rounded text-xs">
+                          <strong>Ejemplos:</strong> "Mesa para 2", "Mesa familiar", "Mesa VIP", "Mesa terraza 4 pax"
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Layout className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Asientos</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Número exacto de sillas/asientos que tiene cada mesa de este tipo.
+                        </p>
+                        <div className="bg-muted/50 p-2 rounded text-xs">
+                          <strong>Ejemplo:</strong> Una mesa de 4 asientos = 4
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Copy className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Cantidad de Mesas</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Cuántas mesas de este tipo existen físicamente en tu restaurante.
+                        </p>
+                        <div className="bg-muted/50 p-2 rounded text-xs">
+                          <strong>Ejemplo:</strong> Si tienes 5 mesas de 2 personas = 5
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Users className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Mínimo y Máximo de Personas</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Rango de comensales que puede acomodar este tipo de mesa. Permite cierta flexibilidad.
+                        </p>
+                        <div className="bg-muted/50 p-2 rounded text-xs space-y-1">
+                          <p><strong>Ejemplo 1:</strong> Mesa de 4 asientos → Min: 3, Max: 5 (permite flexibilidad)</p>
+                          <p><strong>Ejemplo 2:</strong> Mesa de 2 asientos → Min: 1, Max: 2 (reservas individuales o parejas)</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-start gap-3">
+                      <Clock className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">Duración Predeterminada (minutos)</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Tiempo estimado que un grupo permanece en la mesa. Ayuda a calcular cuántas rotaciones de mesas son posibles.
+                        </p>
+                        <div className="bg-muted/50 p-2 rounded text-xs space-y-1">
+                          <p><strong>Mínimo:</strong> 30 minutos (incrementos de 30 min)</p>
+                          <p><strong>Sugerido almuerzo:</strong> 90-120 minutos</p>
+                          <p><strong>Sugerido cena:</strong> 120-180 minutos</p>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          💡 Esta duración se puede sobrescribir en horarios específicos si es necesario.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
+                  <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <AlertTitle className="text-amber-900 dark:text-amber-100">Validaciones Automáticas</AlertTitle>
+                  <AlertDescription className="text-amber-800 dark:text-amber-200 space-y-1">
+                    <p>• El mínimo de personas no puede ser mayor que el máximo</p>
+                    <p>• El máximo de personas no puede exceder el número de asientos</p>
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">3. Gestionar Configuraciones Existentes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Una vez creadas las configuraciones, tienes varias opciones de gestión:
+                </p>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Pencil className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold">Editar</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Modifica cualquier campo de una configuración existente haciendo clic en el icono de lápiz.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Power className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold">Activar/Desactivar</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Usa el switch para activar o desactivar tipos de mesa temporalmente sin eliminarlos.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                      <h4 className="font-semibold">Eliminar</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Elimina permanentemente una configuración. Las reservas existentes no se verán afectadas.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Eye className="h-4 w-4 text-primary" />
+                      <h4 className="font-semibold">Resumen de Capacidad</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Visualiza el total de mesas activas y la capacidad total de tu restaurante.
+                    </p>
+                  </div>
+                </div>
+
+                <Alert className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
+                  <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <AlertDescription className="text-amber-800 dark:text-amber-200">
+                    <strong>Mesas Inactivas:</strong> Las mesas marcadas como inactivas no se considerarán en el cálculo de disponibilidad. Úsalas para quitar temporalmente mesas del sistema (ej: mantenimiento, evento privado).
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">4. Vista de la Interfaz</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  La interfaz se adapta automáticamente al dispositivo que estés usando:
+                </p>
+
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Layout className="h-4 w-4 text-primary" />
+                      Vista de Escritorio
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Muestra una tabla completa con todas las configuraciones y sus detalles en columnas organizadas.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <Layout className="h-4 w-4 text-primary" />
+                      Vista Móvil
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Presenta cada configuración en tarjetas individuales para facilitar la lectura y gestión en pantallas pequeñas.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">5. Ejemplo Práctico</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Configuración típica para un restaurante mediano:
+                </p>
+
+                <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-6 rounded-lg border-2 border-primary/20">
+                  <h4 className="font-bold text-lg mb-4 text-primary">Restaurante "La Estrella"</h4>
+                  
+                  <div className="space-y-3">
+                    <div className="bg-background p-3 rounded-lg border">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="font-semibold">Mesa para 2</span>
+                        <Badge>Activa</Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                        <div>Asientos: <strong>2</strong></div>
+                        <div>Cantidad: <strong>4 mesas</strong></div>
+                        <div>Personas: <strong>1-2</strong></div>
+                        <div>Duración: <strong>90 min</strong></div>
+                      </div>
+                    </div>
+
+                    <div className="bg-background p-3 rounded-lg border">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="font-semibold">Mesa para 4</span>
+                        <Badge>Activa</Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                        <div>Asientos: <strong>4</strong></div>
+                        <div>Cantidad: <strong>6 mesas</strong></div>
+                        <div>Personas: <strong>3-5</strong></div>
+                        <div>Duración: <strong>120 min</strong></div>
+                      </div>
+                    </div>
+
+                    <div className="bg-background p-3 rounded-lg border">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="font-semibold">Mesa para 6</span>
+                        <Badge>Activa</Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                        <div>Asientos: <strong>6</strong></div>
+                        <div>Cantidad: <strong>2 mesas</strong></div>
+                        <div>Personas: <strong>5-7</strong></div>
+                        <div>Duración: <strong>150 min</strong></div>
+                      </div>
+                    </div>
+
+                    <div className="bg-background p-3 rounded-lg border">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="font-semibold">Mesa VIP</span>
+                        <Badge>Activa</Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                        <div>Asientos: <strong>8</strong></div>
+                        <div>Cantidad: <strong>1 mesa</strong></div>
+                        <div>Personas: <strong>6-8</strong></div>
+                        <div>Duración: <strong>180 min</strong></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-primary/20">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="font-semibold">
+                        Total de mesas: <span className="text-primary">13 mesas</span>
+                      </div>
+                      <div className="font-semibold">
+                        Capacidad total: <span className="text-primary">56 personas</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">6. Mejores Prácticas</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">Permite Flexibilidad</h4>
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          Configura rangos de personas ligeramente flexibles. Por ejemplo, una mesa de 4 puede aceptar 3-5 personas, dándote más opciones para acomodar reservas.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">Duraciones Realistas</h4>
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          Establece duraciones basadas en tu experiencia real. Mesas más pequeñas suelen tener rotación más rápida. Grupos grandes necesitan más tiempo.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">Nombres Descriptivos</h4>
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          Usa nombres claros que te ayuden a identificar rápidamente el tipo de mesa. Incluye la ubicación si es relevante (ej: "Mesa terraza 4 pax").
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-1">Revisa Regularmente</h4>
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          Ajusta tu configuración según la demanda real y los cambios en tu restaurante (nueva distribución, mesas adicionales, etc.).
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Preguntas Frecuentes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Cuál es la diferencia entre configuración global y personalizada?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      La configuración <strong>global</strong> (esta sección) define todas tus mesas y se aplica por defecto a todos los horarios. La configuración <strong>personalizada</strong> (en Horarios de Reserva) te permite definir mesas específicas solo para ciertos horarios, sobrescribiendo la configuración global.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Qué pasa si desactivo una mesa?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      Las mesas inactivas no se consideran en el cálculo de disponibilidad de nuevas reservas. Las reservas existentes no se verán afectadas. Es útil para quitar temporalmente mesas sin eliminar su configuración.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Puedo tener mesas del mismo tamaño con diferentes duraciones?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      Sí, puedes crear múltiples configuraciones con el mismo número de asientos pero diferentes duraciones. Por ejemplo, "Mesa 4 rápida" (90 min) y "Mesa 4 standard" (120 min).
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Cómo afecta la duración al sistema de reservas?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      El sistema usa la duración para calcular cuántas veces puede rotarse una mesa en un turno. Por ejemplo, si un horario dura 3 horas y las mesas tienen duración de 90 minutos, el sistema puede aceptar 2 reservas en la misma mesa.
+                    </p>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4 text-primary" />
+                      ¿Es obligatorio configurar mesas?
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      Sí, necesitas al menos una configuración de mesa para que el sistema pueda calcular la disponibilidad. Sin mesas configuradas, no se podrán aceptar reservas.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <Lightbulb className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-lg">¿Necesitas Ayuda?</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Si tienes dudas sobre cómo configurar tus mesas o necesitas asesoramiento para optimizar tu capacidad de reservas, nuestro equipo está aquí para ayudarte.
+                    </p>
+                    <Button asChild variant="outline" className="mt-2">
+                      <a href="/client/support" target="_blank" rel="noopener noreferrer">
+                        Contactar Soporte
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case "disponibilidad-reservas":
