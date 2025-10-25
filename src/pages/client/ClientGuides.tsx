@@ -2136,39 +2136,6 @@ export default function ClientGuides() {
               </CardContent>
             </Card>
 
-            {/* Cómo Usar */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
-                  Cómo Usar los Controles
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ol className="space-y-3">
-                  <li className="flex gap-3">
-                    <span className="font-bold text-primary flex-shrink-0">1.</span>
-                    <span className="text-sm">Navega a la pestaña <Badge variant="outline">Navegación y Visibilidad</Badge></span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="font-bold text-primary flex-shrink-0">2.</span>
-                    <span className="text-sm">Busca la página que quieres configurar (Inicio, Acerca de, Contacto)</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="font-bold text-primary flex-shrink-0">3.</span>
-                    <span className="text-sm">Activa o desactiva los switches según qué secciones quieras mostrar</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="font-bold text-primary flex-shrink-0">4.</span>
-                    <span className="text-sm">Haz clic en <strong>"Guardar"</strong> para aplicar los cambios</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="font-bold text-primary flex-shrink-0">5.</span>
-                    <span className="text-sm">Verifica tu sitio web para confirmar los cambios</span>
-                  </li>
-                </ol>
-              </CardContent>
-            </Card>
 
             {/* Best Practices */}
             <Card className="border-2 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
