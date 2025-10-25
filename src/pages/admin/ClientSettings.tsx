@@ -3442,67 +3442,33 @@ setReviewForm({
       </div>
 
       <Tabs value={activeTab} className="w-full" onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
-        {isClientView ? (
-          <Card className="mb-6 bg-primary/5 border-primary/20">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="h-8 w-1 bg-primary rounded-full" />
-                <Label className="text-base font-semibold text-primary">
-                  Secciones de Configuración
-                </Label>
-              </div>
-              <Select value={activeTab} onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
-                <SelectTrigger className="w-full h-12 text-base font-medium bg-background border-2 hover:border-primary/50 transition-colors" aria-label="Selecciona sección">
-                  <SelectValue placeholder={t('nav.general')} />
-                </SelectTrigger>
-                <SelectContent className="z-50">
-                  {showTab('basic') && <SelectItem value="basic">{t('nav.general')}</SelectItem>}
-                  {showTab('domain') && <SelectItem value="domain">Dominio</SelectItem>}
-                  {showTab('hours') && <SelectItem value="hours">{t('general.openingHours')}</SelectItem>}
-                  {showTab('social') && <SelectItem value="social">{t('general.socialMedia')}</SelectItem>}
-                  {showTab('delivery') && <SelectItem value="delivery">{t('general.deliveryInfo')}</SelectItem>}
-                  {showTab('branding') && <SelectItem value="branding">Marca</SelectItem>}
-                  {showTab('navigation-visibility') && <SelectItem value="navigation-visibility">Navegación y Visibilidad</SelectItem>}
-                  {showTab('content') && <SelectItem value="content">Contenido</SelectItem>}
-                  {showTab('briefing') && <SelectItem value="briefing">{t('nav.briefing')}</SelectItem>}
-                  {showTab('menu') && <SelectItem value="menu">{t('nav.menu')}</SelectItem>}
-                  {showTab('team') && <SelectItem value="team">{t('nav.team')}</SelectItem>}
-                  {showTab('reviews') && <SelectItem value="reviews">{t('nav.reviews')}</SelectItem>}
-                  {showTab('faqs') && <SelectItem value="faqs">Preguntas Frecuentes</SelectItem>}
-                  {showTab('carousel') && <SelectItem value="carousel">{t('nav.carousel')}</SelectItem>}
-                  {showTab('custom-images') && <SelectItem value="custom-images">{t('nav.images')}</SelectItem>}
-                  {showTab('discounts') && <SelectItem value="discounts">Descuentos</SelectItem>}
-                  {showTab('advanced') && <SelectItem value="advanced">Avanzado</SelectItem>}
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="relative">
-            <div className="overflow-x-auto pb-2 -mx-2 px-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
-              <TabsList className="inline-flex w-max min-w-full justify-start">
-                {showTab('basic') && <TabsTrigger value="basic" className="whitespace-nowrap">{t('nav.general')}</TabsTrigger>}
-                {showTab('domain') && <TabsTrigger value="domain" className="whitespace-nowrap">Dominio</TabsTrigger>}
-                {showTab('metadata') && <TabsTrigger value="metadata" className="whitespace-nowrap">SEO Metadata</TabsTrigger>}
-                {showTab('hours') && <TabsTrigger value="hours" className="whitespace-nowrap">{t('general.openingHours')}</TabsTrigger>}
-                {showTab('social') && <TabsTrigger value="social" className="whitespace-nowrap">{t('general.socialMedia')}</TabsTrigger>}
-                {showTab('delivery') && <TabsTrigger value="delivery" className="whitespace-nowrap">{t('general.deliveryInfo')}</TabsTrigger>}
-                {showTab('branding') && <TabsTrigger value="branding" className="whitespace-nowrap">Marca</TabsTrigger>}
-                {showTab('navigation-visibility') && <TabsTrigger value="navigation-visibility" className="whitespace-nowrap">Navegación</TabsTrigger>}
-                {showTab('content') && <TabsTrigger value="content" className="whitespace-nowrap">Contenido</TabsTrigger>}
-                {showTab('briefing') && <TabsTrigger value="briefing" className="whitespace-nowrap">{t('nav.briefing')}</TabsTrigger>}
-                {showTab('menu') && <TabsTrigger value="menu" className="whitespace-nowrap">{t('nav.menu')}</TabsTrigger>}
-                {showTab('team') && <TabsTrigger value="team" className="whitespace-nowrap">{t('nav.team')}</TabsTrigger>}
-                {showTab('reviews') && <TabsTrigger value="reviews" className="whitespace-nowrap">{t('nav.reviews')}</TabsTrigger>}
-                {showTab('faqs') && <TabsTrigger value="faqs" className="whitespace-nowrap">FAQ</TabsTrigger>}
-                {showTab('carousel') && <TabsTrigger value="carousel" className="whitespace-nowrap">{t('nav.carousel')}</TabsTrigger>}
-                {showTab('custom-images') && <TabsTrigger value="custom-images" className="whitespace-nowrap">{t('nav.images')}</TabsTrigger>}
-                {showTab('discounts') && <TabsTrigger value="discounts" className="whitespace-nowrap">Descuentos</TabsTrigger>}
-                {showTab('advanced') && <TabsTrigger value="advanced" className="whitespace-nowrap">Avanzado</TabsTrigger>}
-              </TabsList>
-            </div>
-          </div>
-        )}
+        <div className="mb-4">
+          <Select value={activeTab} onValueChange={(val) => { setActiveTab(val); handleTabChange(val); }}>
+            <SelectTrigger className="w-full" aria-label="Selecciona sección">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="z-50 max-h-[60vh] bg-popover">
+              {showTab('basic') && <SelectItem value="basic">{t('nav.general')}</SelectItem>}
+              {showTab('domain') && <SelectItem value="domain">Dominio</SelectItem>}
+              {showTab('metadata') && <SelectItem value="metadata">SEO Metadata</SelectItem>}
+              {showTab('hours') && <SelectItem value="hours">{t('general.openingHours')}</SelectItem>}
+              {showTab('social') && <SelectItem value="social">{t('general.socialMedia')}</SelectItem>}
+              {showTab('delivery') && <SelectItem value="delivery">{t('general.deliveryInfo')}</SelectItem>}
+              {showTab('branding') && <SelectItem value="branding">Marca</SelectItem>}
+              {showTab('navigation-visibility') && <SelectItem value="navigation-visibility">Navegación y Visibilidad</SelectItem>}
+              {showTab('content') && <SelectItem value="content">Contenido</SelectItem>}
+              {showTab('briefing') && <SelectItem value="briefing">{t('nav.briefing')}</SelectItem>}
+              {showTab('menu') && <SelectItem value="menu">{t('nav.menu')}</SelectItem>}
+              {showTab('team') && <SelectItem value="team">{t('nav.team')}</SelectItem>}
+              {showTab('reviews') && <SelectItem value="reviews">{t('nav.reviews')}</SelectItem>}
+              {showTab('faqs') && <SelectItem value="faqs">Preguntas Frecuentes</SelectItem>}
+              {showTab('carousel') && <SelectItem value="carousel">{t('nav.carousel')}</SelectItem>}
+              {showTab('custom-images') && <SelectItem value="custom-images">{t('nav.images')}</SelectItem>}
+              {showTab('discounts') && <SelectItem value="discounts">Descuentos</SelectItem>}
+              {showTab('advanced') && <SelectItem value="advanced">Avanzado</SelectItem>}
+            </SelectContent>
+          </Select>
+        </div>
 
 
         <TabsContent value="basic">
