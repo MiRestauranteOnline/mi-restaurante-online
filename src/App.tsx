@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { DashboardLanguageProvider } from "@/contexts/DashboardLanguageContext";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Contact from "./pages/Contact";
 import Soporte from "./pages/Soporte";
@@ -77,6 +78,7 @@ const AppContent = () => {
       >
         Skip to navigation
       </a>
+      <ScrollToTop />
       <RecoveryRedirect />
       <Routes>
         <Route path="/" element={<Index />} />

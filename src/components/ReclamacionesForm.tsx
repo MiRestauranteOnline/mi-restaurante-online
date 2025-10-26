@@ -10,7 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Shield } from "lucide-react";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const contractedItemOptions = ["producto", "servicio"] as const;
 const claimTypeOptions = ["reclamo", "queja"] as const;
@@ -60,6 +62,8 @@ type FormData = z.infer<typeof formSchema>;
 export const ReclamacionesForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedCode, setSubmittedCode] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showCaptchaWarning, setShowCaptchaWarning] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -84,6 +88,13 @@ export const ReclamacionesForm = () => {
   const personType = form.watch("personType");
 
   const onSubmit = async (data: FormData) => {
+    // Check if CAPTCHA token is present
+    if (!captchaToken) {
+      setShowCaptchaWarning(true);
+      toast.error("Por favor, completa la verificación de seguridad antes de continuar.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -448,8 +459,33 @@ export const ReclamacionesForm = () => {
           )}
         />
 
+        {/* CAPTCHA Widget */}
+        {showCaptchaWarning && !captchaToken && (
+          <Alert variant="destructive">
+            <Shield className="h-4 w-4" />
+            <AlertDescription>
+              Por favor, completa la verificación de seguridad antes de continuar.
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        <TurnstileWidget
+          onVerify={(token) => {
+            setCaptchaToken(token);
+            setShowCaptchaWarning(false);
+          }}
+          onError={() => {
+            setCaptchaToken(null);
+            toast.error("Error en la verificación de seguridad. Por favor, recarga la página.");
+          }}
+          onExpire={() => {
+            setCaptchaToken(null);
+            setShowCaptchaWarning(true);
+          }}
+        />
+
         <div className="pt-4">
-          <Button type="submit" disabled={isSubmitting} className="w-full md:w-auto">
+          <Button type="submit" disabled={isSubmitting || !captchaToken} className="w-full md:w-auto">
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Enviar Reclamo
           </Button>
