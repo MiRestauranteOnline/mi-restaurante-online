@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface TurnstileWidgetProps {
   onVerify: (token: string) => void;
@@ -8,13 +8,13 @@ interface TurnstileWidgetProps {
 
 /**
  * Cloudflare Turnstile CAPTCHA Widget
- * 
+ *
  * SETUP REQUIRED:
  * 1. Go to Supabase Dashboard → Authentication → CAPTCHA Protection
  * 2. Enable Cloudflare Turnstile
  * 3. Add your Turnstile Site Key and Secret Key
  * 4. Save changes
- * 
+ *
  * This component will automatically render the CAPTCHA challenge.
  */
 export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidgetProps) => {
@@ -26,25 +26,25 @@ export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidget
     const checkTurnstile = setInterval(() => {
       if (window.turnstile && containerRef.current) {
         clearInterval(checkTurnstile);
-        
+
         // Render the Turnstile widget
         try {
           widgetIdRef.current = window.turnstile.render(containerRef.current, {
-            sitekey: 'YOUR_ACTUAL_SITE_KEY_HERE', // Replace with the Site Key from Cloudflare
+            sitekey: "0x4AAAAAAB8sp2mX6aDFMYJP", // Replace with the Site Key from Cloudflare
             callback: (token: string) => {
               onVerify(token);
             },
-            'error-callback': () => {
+            "error-callback": () => {
               onError?.();
             },
-            'expired-callback': () => {
+            "expired-callback": () => {
               onExpire?.();
             },
-            theme: 'light',
-            size: 'normal',
+            theme: "light",
+            size: "normal",
           });
         } catch (error) {
-          console.error('Failed to render Turnstile:', error);
+          console.error("Failed to render Turnstile:", error);
           onError?.();
         }
       }
@@ -57,7 +57,7 @@ export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidget
         try {
           window.turnstile.remove(widgetIdRef.current);
         } catch (error) {
-          console.error('Failed to remove Turnstile widget:', error);
+          console.error("Failed to remove Turnstile widget:", error);
         }
       }
     };
@@ -74,14 +74,17 @@ export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidget
 declare global {
   interface Window {
     turnstile: {
-      render: (container: HTMLElement, options: {
-        sitekey: string;
-        callback: (token: string) => void;
-        'error-callback'?: () => void;
-        'expired-callback'?: () => void;
-        theme?: 'light' | 'dark' | 'auto';
-        size?: 'normal' | 'compact';
-      }) => string;
+      render: (
+        container: HTMLElement,
+        options: {
+          sitekey: string;
+          callback: (token: string) => void;
+          "error-callback"?: () => void;
+          "expired-callback"?: () => void;
+          theme?: "light" | "dark" | "auto";
+          size?: "normal" | "compact";
+        },
+      ) => string;
       remove: (widgetId: string) => void;
       reset: (widgetId: string) => void;
     };
