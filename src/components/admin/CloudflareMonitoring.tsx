@@ -3,8 +3,10 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { RefreshCw, AlertTriangle, CheckCircle, Server, Globe, Hammer, Zap } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { RefreshCw, AlertTriangle, CheckCircle, Server, Globe, Hammer, Zap, Shield } from 'lucide-react';
 import { useCloudflareMetrics } from '@/hooks/useCloudflareMetrics';
+import { TurnstileMonitoring } from './TurnstileMonitoring';
 
 export function CloudflareMonitoring() {
   const { metrics, loading, error, refetch } = useCloudflareMetrics();
@@ -54,9 +56,9 @@ export function CloudflareMonitoring() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold">Monitoreo Cloudflare Pages</h2>
+          <h2 className="text-3xl font-bold">Monitoreo Cloudflare</h2>
           <p className="text-muted-foreground">
-            Seguimiento operacional para determinar cuándo actualizar planes
+            Seguimiento de recursos y protección Turnstile
           </p>
         </div>
         <Button onClick={refetch} variant="outline" size="sm">
@@ -64,6 +66,21 @@ export function CloudflareMonitoring() {
           Actualizar
         </Button>
       </div>
+
+      {/* Tabs for different monitoring sections */}
+      <Tabs defaultValue="pages" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="pages" className="flex items-center gap-2">
+            <Server className="h-4 w-4" />
+            Cloudflare Pages
+          </TabsTrigger>
+          <TabsTrigger value="turnstile" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Turnstile Protection
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="pages" className="space-y-6">{/* Pages monitoring content */}
 
       {/* Current Plan */}
       <Card>
@@ -227,6 +244,12 @@ export function CloudflareMonitoring() {
           </p>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="turnstile">
+          <TurnstileMonitoring />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
