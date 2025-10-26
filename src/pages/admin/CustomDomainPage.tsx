@@ -217,7 +217,7 @@ export default function CustomDomainPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Subdominio</p>
-              <p className="font-medium">{clientData?.subdomain}.mirestauranteonline.com</p>
+              <p className="font-medium">{clientData?.subdomain}.mirestaurante.online</p>
             </div>
             {hasCustomDomain && (
               <>

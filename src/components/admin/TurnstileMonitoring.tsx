@@ -184,7 +184,7 @@ export function TurnstileMonitoring() {
                       </TableCell>
                       <TableCell>
                         <a
-                          href={`https://${client.subdomain}.mirestauranteonline.com`}
+                          href={`https://${client.subdomain}.mirestaurante.online`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-1 text-blue-600 hover:underline"
@@ -266,7 +266,7 @@ export function TurnstileMonitoring() {
                       </TableCell>
                       <TableCell>
                         <a
-                          href={`https://${client.subdomain}.mirestauranteonline.com`}
+                          href={`https://${client.subdomain}.mirestaurante.online`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-1 text-blue-600 hover:underline"

@@ -73,8 +73,8 @@ Deno.serve(async (req) => {
           name: widgetName,
           mode: 'managed', // managed, non-interactive, or invisible
           domains: [
-            `${client.subdomain}.mirestauranteonline.com`,
-            'mirestauranteonline.com', // Allow testing from main domain
+            `${client.subdomain}.mirestaurante.online`,
+            'mirestaurante.online', // Allow testing from main domain
           ],
         }),
       }

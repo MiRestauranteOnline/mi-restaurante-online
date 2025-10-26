@@ -358,7 +358,7 @@ function getPageContext(
     case 'menu':
       return `${baseContext}${featuresContext}. Página del menú completo mostrando todos los platos y categorías. Especialidades culinarias.`;
     case 'contact':
-      return `${baseContext}${featuresContext}. Página de contacto${features.hasReservations ? ' y reservas' : ''}. Ubicación: ${client.address}, Web: ${client.subdomain}.mirestauranteonline.com`;
+      return `${baseContext}${featuresContext}. Página de contacto${features.hasReservations ? ' y reservas' : ''}. Ubicación: ${client.address}, Web: ${client.subdomain}.mirestaurante.online`;
     case 'reviews':
       return `${baseContext}${featuresContext}. Página de testimonios y reseñas mostrando prueba social y satisfacción del cliente.`;
     default:
