@@ -30,7 +30,7 @@ export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidget
         // Render the Turnstile widget
         try {
           widgetIdRef.current = window.turnstile.render(containerRef.current, {
-            sitekey: '1x00000000000000000000AA', // This is a test key - replace with your actual key
+            sitekey: 'YOUR_ACTUAL_SITE_KEY_HERE', // Replace with the Site Key from Cloudflare
             callback: (token: string) => {
               onVerify(token);
             },
