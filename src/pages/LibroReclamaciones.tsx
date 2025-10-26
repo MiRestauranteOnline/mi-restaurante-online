@@ -17,7 +17,7 @@ const LibroReclamaciones = () => {
         <Navigation />
         
         <main id="main-content" className="flex-grow">
-          <section className="py-16 bg-gradient-to-b from-background to-muted/30">
+          <section className="pt-24 pb-16 bg-gradient-to-b from-background to-muted/30">
             <div className="container mx-auto px-4 max-w-4xl">
               {/* Header */}
               <div className="text-center mb-12">
