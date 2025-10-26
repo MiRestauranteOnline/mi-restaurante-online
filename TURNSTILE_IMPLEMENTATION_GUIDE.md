@@ -4,6 +4,38 @@
 
 Esta guía explica cómo implementar la protección Cloudflare Turnstile en formularios de sitios web de clientes. Cada cliente tiene su propio widget Turnstile único creado automáticamente durante el registro.
 
+## 🏗️ IMPORTANTE: Dos Repositorios
+
+Este sistema tiene **DOS repositorios**:
+
+### 1. **Dashboard/Admin** (este repositorio)
+- ✅ Ya implementado: `TurnstileMonitoring`, `ClientTurnstileWidget`, creación automática
+- No requiere cambios adicionales
+
+### 2. **Template del Cliente** (https://github.com/MiRestauranteOnline/restaurant-template-1)
+- ⚠️ **REQUIERE IMPLEMENTACIÓN**: Agregar Turnstile a todos los formularios
+- Este es donde los clientes ven y usan sus sitios web
+- **Todos los formularios aquí necesitan protección Turnstile**
+
+## 📋 Template Repository: Forms Checklist
+
+### 🔴 Alta Prioridad (Implementar YA)
+- [ ] `ReservationBookingRustic.tsx` - Formulario de reservas (template rústico)
+- [ ] `ReservationBooking.tsx` - Formulario de reservas (template default)  
+- [ ] `ReservationBookingMinimalistic.tsx` - Formulario de reservas (template minimalista)
+- [ ] `ReclamacionesForm.tsx` - Libro de reclamaciones oficial
+
+### 🟡 Media Prioridad (Implementar después)
+- [ ] Newsletter subscription forms (Footer/Newsletter sections)
+- [ ] Contact forms (si existen como formularios, no solo botones WhatsApp)
+- [ ] Review submission forms (si existen)
+
+### 📍 Ubicación del Componente
+El componente `ClientTurnstileWidget` ya existe en el template en:
+```
+src/components/ClientTurnstileWidget.tsx
+```
+
 ## 🎯 ¿Qué es Turnstile?
 
 Turnstile es el CAPTCHA de Cloudflare que:
@@ -436,16 +468,39 @@ WHERE turnstile_site_key IS NULL;
 
 ## 🎯 Checklist de Implementación
 
-- [ ] Script de Turnstile agregado a `index.html`
-- [ ] `ClientTurnstileWidget` importado en el componente
+### Dashboard/Admin (este repo) - ✅ Completo
+- [x] Sistema de creación automática de widgets
+- [x] `ClientTurnstileWidget` component created
+- [x] TurnstileMonitoring admin dashboard
+- [x] Edge function para crear widgets
+- [x] Documentación completa
+
+### Template Repository - ⚠️ PENDIENTE
+#### Setup General
+- [ ] Verificar que el script de Turnstile esté en `index.html` o `HeadScripts.tsx`:
+  ```html
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  ```
+- [ ] Confirmar que `ClientTurnstileWidget.tsx` existe en `src/components/`
+
+#### Por Cada Formulario
+- [ ] `ClientTurnstileWidget` importado
 - [ ] Estado `captchaToken` creado
 - [ ] Widget agregado antes del botón submit
 - [ ] Botón submit deshabilitado sin token
-- [ ] Validación del token incluida en `handleSubmit`
-- [ ] Token enviado al backend en el request
-- [ ] Backend valida token con `turnstile_secret_key`
-- [ ] Mensajes de error claros para el usuario
+- [ ] Validación del token en `handleSubmit`
+- [ ] Token enviado al backend
+- [ ] Edge function valida token con `turnstile_secret_key`
+- [ ] Mensajes de error claros
 - [ ] Tested en desktop y móvil
+
+#### Formularios Específicos (Template Repo)
+- [ ] ReservationBookingRustic.tsx
+- [ ] ReservationBooking.tsx
+- [ ] ReservationBookingMinimalistic.tsx
+- [ ] ReclamacionesForm.tsx
+- [ ] Newsletter forms
+- [ ] Otros formularios identificados
 
 ---
 
