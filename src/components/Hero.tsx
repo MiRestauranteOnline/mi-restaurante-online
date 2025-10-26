@@ -48,15 +48,6 @@ export const Hero = () => {
 
   return (
     <section className="relative min-h-screen bg-gradient-subtle flex items-center">
-      {/* Promo Banner */}
-      <div className="absolute top-0 left-0 right-0 gradient-promo text-white py-2 z-[100]">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm font-semibold animate-pulse-accent">
-            <span className="text-white/90">OFERTA LIMITADA:</span> <span className="text-white font-bold">Sin costo inicial</span> • <span className="text-white font-bold">Precio fijo de por vida</span> • <span className="text-white/90 italic">Oferta por tiempo limitado</span>
-          </p>
-        </div>
-      </div>
-
       <div className="container mx-auto px-4 pt-24 md:pt-16 pb-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
