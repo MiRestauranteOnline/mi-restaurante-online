@@ -75,30 +75,47 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
     if (!oldUrl || !clientId) return;
     
     try {
-      // Delete all files for this client (temp and optimized)
-      const { data: files, error: listError } = await supabase.storage
-        .from('client-assets')
-        .list(`clients/${clientId}`, {
-          limit: 1000,
-          search: ''
-        });
+      const isSignup = clientId === 'signup' || !clientId;
+      
+      if (isSignup) {
+        // During signup, only clean temp/signup folder
+        const { data: tempFiles, error: tempListError } = await supabase.storage
+          .from('client-assets')
+          .list('temp/signup', {
+            limit: 1000,
+            search: ''
+          });
 
-      if (!listError && files && files.length > 0) {
-        const filePaths = files.map(f => `clients/${clientId}/${f.name}`);
-        await supabase.storage.from('client-assets').remove(filePaths);
-      }
+        if (!tempListError && tempFiles && tempFiles.length > 0) {
+          const tempPaths = tempFiles.map(f => `temp/signup/${f.name}`);
+          await supabase.storage.from('client-assets').remove(tempPaths);
+        }
+      } else {
+        // Delete all files for this client (temp and optimized)
+        const { data: files, error: listError } = await supabase.storage
+          .from('client-assets')
+          .list(`clients/${clientId}`, {
+            limit: 1000,
+            search: ''
+          });
 
-      // Also check temp folder
-      const { data: tempFiles, error: tempListError } = await supabase.storage
-        .from('client-assets')
-        .list(`temp/${clientId}`, {
-          limit: 1000,
-          search: ''
-        });
+        if (!listError && files && files.length > 0) {
+          const filePaths = files.map(f => `clients/${clientId}/${f.name}`);
+          await supabase.storage.from('client-assets').remove(filePaths);
+        }
 
-      if (!tempListError && tempFiles && tempFiles.length > 0) {
-        const tempPaths = tempFiles.map(f => `temp/${clientId}/${f.name}`);
-        await supabase.storage.from('client-assets').remove(tempPaths);
+        // Also check temp folder
+        const { data: tempFiles, error: tempListError } = await supabase.storage
+          .from('client-assets')
+          .list(`temp/${clientId}`, {
+            limit: 1000,
+            search: ''
+          });
+
+        if (!tempListError && tempFiles && tempFiles.length > 0) {
+          const tempPaths = tempFiles.map(f => `temp/${clientId}/${f.name}`);
+          await supabase.storage.from('client-assets').remove(tempPaths);
+        }
       }
 
       console.log('Deleted old storage files for client:', clientId);
@@ -173,7 +190,11 @@ export function ImageUpload({ label, value, onChange, clientId, context = 'resta
 
     const finalName = includeTimestamp ? `${baseName}-${timestamp}` : baseName;
 
-    return `clients/${clientId}/optimized-images/${finalName}.webp`;
+    // Use temp/ path during signup to avoid RLS policy violations
+    const isSignup = clientId === 'signup' || !clientId;
+    const basePath = isSignup ? 'temp/signup' : `clients/${clientId}/optimized-images`;
+
+    return `${basePath}/${finalName}.webp`;
   };
 
   const handleFileUpload = async (file: File) => {
