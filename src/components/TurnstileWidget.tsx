@@ -20,6 +20,18 @@ interface TurnstileWidgetProps {
 export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidgetProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
+  
+  // Store callbacks in refs to prevent re-rendering
+  const onVerifyRef = useRef(onVerify);
+  const onErrorRef = useRef(onError);
+  const onExpireRef = useRef(onExpire);
+
+  // Update refs when callbacks change
+  useEffect(() => {
+    onVerifyRef.current = onVerify;
+    onErrorRef.current = onError;
+    onExpireRef.current = onExpire;
+  }, [onVerify, onError, onExpire]);
 
   useEffect(() => {
     // Wait for Turnstile to be loaded
@@ -32,20 +44,20 @@ export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidget
           widgetIdRef.current = window.turnstile.render(containerRef.current, {
             sitekey: "0x4AAAAAAB8sp2mX6aDFMYJP", // Replace with the Site Key from Cloudflare
             callback: (token: string) => {
-              onVerify(token);
+              onVerifyRef.current(token);
             },
             "error-callback": () => {
-              onError?.();
+              onErrorRef.current?.();
             },
             "expired-callback": () => {
-              onExpire?.();
+              onExpireRef.current?.();
             },
             theme: "light",
             size: "normal",
           });
         } catch (error) {
           console.error("Failed to render Turnstile:", error);
-          onError?.();
+          onErrorRef.current?.();
         }
       }
     }, 100);
@@ -61,7 +73,7 @@ export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidget
         }
       }
     };
-  }, [onVerify, onError, onExpire]);
+  }, []); // Empty dependency array - only run once on mount
 
   return (
     <div className="flex justify-center my-4">
