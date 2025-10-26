@@ -222,6 +222,23 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('Failed to auto-store briefings after signup:', postSignupBriefingError);
     }
 
+    // Auto-create Turnstile widget for the new client
+    try {
+      console.log('Creating Turnstile widget for client:', client.id);
+      const { error: turnstileError } = await supabaseAdmin.functions.invoke('create-turnstile-widget', {
+        body: { client_id: client.id },
+      });
+
+      if (turnstileError) {
+        console.error('Error creating Turnstile widget after signup:', turnstileError);
+      } else {
+        console.log('Turnstile widget created successfully for client:', client.id);
+      }
+    } catch (turnstileCreateError) {
+      console.error('Failed to create Turnstile widget after signup:', turnstileCreateError);
+      // Don't fail the signup if Turnstile creation fails
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
