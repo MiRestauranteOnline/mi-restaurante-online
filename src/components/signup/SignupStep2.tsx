@@ -348,11 +348,11 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                                    }}
                                  />
                                </FormControl>
-                               {!isValidUrl && field.value && (
-                                 <p className="text-sm text-destructive mt-1">
-                                   Please enter a valid {platform} URL. Example: {example}
-                                 </p>
-                               )}
+                                {!isValidUrl && field.value && (
+                                  <p className="text-sm text-destructive mt-1">
+                                    Por favor ingresa una URL válida de {platform}. Ejemplo: {example}
+                                  </p>
+                                )}
                                <FormMessage />
                              </FormItem>
                            );
@@ -749,13 +749,17 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                   <p className="text-xs text-muted-foreground mb-2">Vista previa de títulos:</p>
                   <h2 
                     style={{ 
-                      fontFamily: titleFont,
+                      fontFamily: `"${titleFont}", serif`,
                       fontWeight: titleFontWeight 
                     }}
                     className="text-2xl"
                   >
                     Así se ven tus títulos
                   </h2>
+                  <link 
+                    rel="stylesheet" 
+                    href={`https://fonts.googleapis.com/css2?family=${titleFont.replace(/ /g, '+')}:wght@${titleFontWeight}&display=swap`}
+                  />
                 </div>
 
                 {/* Body Font */}
@@ -792,12 +796,16 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                   <p className="text-xs text-muted-foreground mb-2">Vista previa de texto del cuerpo:</p>
                   <p 
                     style={{ 
-                      fontFamily: bodyFont 
+                      fontFamily: `"${bodyFont}", sans-serif`
                     }}
                     className="text-base"
                   >
                     Así se ve el texto del cuerpo de tu sitio web. Este es el texto que tus visitantes leerán en descripciones, párrafos y contenido general.
                   </p>
+                  <link 
+                    rel="stylesheet" 
+                    href={`https://fonts.googleapis.com/css2?family=${bodyFont.replace(/ /g, '+')}:wght@400;600&display=swap`}
+                  />
                 </div>
               </div>
 

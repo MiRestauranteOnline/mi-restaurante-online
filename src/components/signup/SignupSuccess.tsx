@@ -93,18 +93,18 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
               <CardContent className="space-y-2 text-left">
                 <div>
                   <p className="text-sm text-muted-foreground text-left">Email:</p>
-                  <p className="font-medium text-left">{signupData.email}</p>
+                  <p className="font-medium text-left">{signupData.email || 'No disponible'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground text-left">Contraseña:</p>
-                  <p className="font-medium text-left">••••••••</p>
+                  <p className="font-medium text-left">{signupData.password || '••••••••'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground text-left">Tu sitio web:</p>
                   <p className="font-medium text-primary text-left">
                     {signupData.hasCustomDomain && signupData.customDomain 
                       ? signupData.customDomain 
-                      : `${signupData.subdomain}.mirestaurante.online`}
+                      : `${signupData.subdomain || 'tu-restaurante'}.mirestaurante.online`}
                   </p>
                 </div>
               </CardContent>
