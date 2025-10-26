@@ -17,9 +17,20 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
   const [accountCreated, setAccountCreated] = useState(false);
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string>(signupData.email || '');
   const { toast } = useToast();
 
   useEffect(() => {
+    // If email is not in signupData, try to get it from the session
+    const fetchUserEmail = async () => {
+      if (!signupData.email) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.email) {
+          setUserEmail(session.user.email);
+        }
+      }
+    };
+    fetchUserEmail();
     createClientAccount();
   }, []);
 
@@ -136,7 +147,7 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
               <CardContent className="space-y-2 text-left">
                 <div>
                   <p className="text-sm text-muted-foreground text-left">Email:</p>
-                  <p className="font-medium text-left">{signupData.email || 'No disponible'}</p>
+                  <p className="font-medium text-left">{userEmail || 'No disponible'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground text-left">Contraseña:</p>

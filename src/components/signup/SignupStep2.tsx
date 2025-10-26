@@ -121,7 +121,7 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
     onComplete(filteredData);
   };
 
-  const socialMediaOptions = ["Facebook", "Instagram", "TikTok", "X (Twitter)"];
+  const socialMediaOptions = ["Facebook", "Instagram", "TikTok", "X (Twitter)", "YouTube", "LinkedIn"];
   
   const websiteStyleOptions = [
     { value: "modern", label: "Moderno" },
@@ -293,10 +293,16 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                            } else if (platform === "TikTok") {
                              placeholder = "https://tiktok.com/@yourusername";
                              example = "https://tiktok.com/@yourusername";
-                           } else if (platform === "X (Twitter)") {
-                             placeholder = "https://x.com/yourusername";
-                             example = "https://x.com/yourusername";
-                           }
+                            } else if (platform === "X (Twitter)") {
+                              placeholder = "https://x.com/yourusername";
+                              example = "https://x.com/yourusername";
+                            } else if (platform === "YouTube") {
+                              placeholder = "https://youtube.com/@yourchannel";
+                              example = "https://youtube.com/@yourchannel";
+                            } else if (platform === "LinkedIn") {
+                              placeholder = "https://linkedin.com/company/yourcompany";
+                              example = "https://linkedin.com/company/yourcompany";
+                            }
 
                            // Validate URL for the selected platform
                            const validatePlatformUrl = (url: string, platformType: string) => {
@@ -311,10 +317,14 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                                  return cleanUrl.includes('instagram.com');
                                case "TikTok":
                                  return cleanUrl.includes('tiktok.com');
-                               case "X (Twitter)":
-                                 return cleanUrl.includes('x.com') || cleanUrl.includes('twitter.com');
-                               default:
-                                 return true;
+                                case "X (Twitter)":
+                                  return cleanUrl.includes('x.com') || cleanUrl.includes('twitter.com');
+                                case "YouTube":
+                                  return cleanUrl.includes('youtube.com');
+                                case "LinkedIn":
+                                  return cleanUrl.includes('linkedin.com');
+                                default:
+                                  return true;
                              }
                            };
 
@@ -339,10 +349,14 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                                          value = `https://instagram.com/${value.replace('@', '').replace(/^\/+/, '')}`;
                                        } else if (platform === "TikTok") {
                                          value = `https://tiktok.com/@${value.replace('@', '').replace(/^\/+/, '')}`;
-                                       } else if (platform === "X (Twitter)") {
-                                         value = `https://x.com/${value.replace('@', '').replace(/^\/+/, '')}`;
-                                       }
-                                     }
+                                        } else if (platform === "X (Twitter)") {
+                                          value = `https://x.com/${value.replace('@', '').replace(/^\/+/, '')}`;
+                                        } else if (platform === "YouTube") {
+                                          value = `https://youtube.com/@${value.replace('@', '').replace(/^\/+/, '')}`;
+                                        } else if (platform === "LinkedIn") {
+                                          value = `https://linkedin.com/company/${value.replace(/^\/+/, '')}`;
+                                        }
+                                      }
                                      
                                      field.onChange(value);
                                    }}
@@ -371,7 +385,7 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                     )}
                   </div>
                 ))}
-                {fields.length < 4 && getAvailablePlatforms(-1).length > 0 && (
+                {fields.length < 6 && getAvailablePlatforms(-1).length > 0 && (
                   <Button
                     type="button"
                     variant="outline"

@@ -343,126 +343,6 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
             </CardContent>
           </Card>
 
-          {/* Carousel Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Images className="h-5 w-5" />
-                Carousel de Imágenes
-              </CardTitle>
-              <CardDescription>
-                Un carousel muestra múltiples imágenes de tu restaurante en la página principal, rotando automáticamente para destacar diferentes aspectos de tu negocio.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="carousel_enabled"
-                render={({ field }) => (
-                  <FormItem className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">Mostrar carousel de imágenes</FormLabel>
-                      <div className="text-sm text-muted-foreground">
-                        Activa esta opción para mostrar un carousel con imágenes de tu restaurante
-                      </div>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              {carouselEnabled && (
-                <div className="space-y-4">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div className="flex gap-2">
-                      <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <div className="text-sm text-blue-700">
-                        <p className="font-medium">¿Qué son las imágenes del carousel?</p>
-                        <p className="mt-1">Las imágenes del carousel aparecen en la página principal de tu sitio web, mostrando fotos atractivas de tu restaurante, platos, ambiente o eventos especiales. Se recomienda usar 3-5 imágenes de alta calidad.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {carouselFields.map((field, index) => (
-                    <Card key={field.id} className="p-4 border-dashed">
-                      <div className="flex justify-between items-start mb-4">
-                        <h4 className="font-medium">Imagen #{index + 1}</h4>
-                        {carouselFields.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => removeCarousel(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-4">
-                        <FormField
-                          control={form.control}
-                          name={`carousel_images.${index}.imageUrl`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Imagen</FormLabel>
-                              <FormControl>
-                                <ImageUpload
-                                  label=""
-                                  value={field.value || ""}
-                                  onChange={field.onChange}
-                                  clientId="signup"
-                                  context="carousel"
-                                  description="carousel showcase image for restaurant"
-                                  onProcessingChange={handleProcessingChange}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`carousel_images.${index}.altText`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Descripción de la imagen (opcional)</FormLabel>
-                              <FormControl>
-                                <input
-                                  type="text"
-                                  placeholder="Ej: Interior del restaurante, plato especial..."
-                                  className="w-full p-2 border rounded-md"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </Card>
-                  ))}
-                  
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => appendCarousel({ imageUrl: "", altText: "" })}
-                    className="w-full"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Agregar Imagen al Carousel
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Custom Images Section - only show for custom_only or custom_plus_ai */}
           {(imagePreference === 'custom_only' || imagePreference === 'custom_plus_ai') && (
             <Card>
@@ -585,6 +465,128 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
                     </Button>
                   )}
                 </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Carousel Section */}
+          {imagePreference !== 'ai_only' && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Images className="h-5 w-5" />
+                  Carousel de Imágenes
+                </CardTitle>
+                <CardDescription>
+                  Un carousel muestra múltiples imágenes de tu restaurante en la página principal, rotando automáticamente para destacar diferentes aspectos de tu negocio.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="carousel_enabled"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Mostrar carousel de imágenes</FormLabel>
+                        <div className="text-sm text-muted-foreground">
+                          Activa esta opción para mostrar un carousel con imágenes de tu restaurante
+                        </div>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {carouselEnabled && (
+                  <div className="space-y-4">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex gap-2">
+                        <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm text-blue-700">
+                          <p className="font-medium">¿Qué son las imágenes del carousel?</p>
+                          <p className="mt-1">Las imágenes del carousel aparecen en la página principal de tu sitio web, mostrando fotos atractivas de tu restaurante, platos, ambiente o eventos especiales. Se recomienda usar 3-5 imágenes de alta calidad.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {carouselFields.map((field, index) => (
+                      <Card key={field.id} className="p-4 border-dashed">
+                        <div className="flex justify-between items-start mb-4">
+                          <h4 className="font-medium">Imagen #{index + 1}</h4>
+                          {carouselFields.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeCarousel(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <FormField
+                            control={form.control}
+                            name={`carousel_images.${index}.imageUrl`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Imagen</FormLabel>
+                                <FormControl>
+                                  <ImageUpload
+                                    label=""
+                                    value={field.value || ""}
+                                    onChange={field.onChange}
+                                    clientId="signup"
+                                    context="carousel"
+                                    description="carousel showcase image for restaurant"
+                                    onProcessingChange={handleProcessingChange}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`carousel_images.${index}.altText`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Descripción de la imagen (opcional)</FormLabel>
+                                <FormControl>
+                                  <input
+                                    type="text"
+                                    placeholder="Ej: Interior del restaurante, plato especial..."
+                                    className="w-full p-2 border rounded-md"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </Card>
+                    ))}
+                    
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => appendCarousel({ imageUrl: "", altText: "" })}
+                      className="w-full"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Agregar Imagen al Carousel
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
