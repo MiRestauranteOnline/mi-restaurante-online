@@ -21,12 +21,30 @@ const cardSchema = z.object({
   expirationMonth: z.string()
     .regex(/^(0[1-9]|1[0-2])$/, 'El mes debe ser 01-12'),
   expirationYear: z.string()
-    .regex(/^\d{2}$/, 'El año debe tener 2 dígitos')
-    .refine((year) => parseInt(year) >= parseInt(new Date().getFullYear().toString().slice(-2)), 'La tarjeta está vencida'),
+    .regex(/^\d{2}$/, 'El año debe tener 2 dígitos'),
   cvv2: z.string()
     .min(3, 'El CVV debe tener 3 o 4 dígitos')
     .max(4, 'El CVV debe tener 3 o 4 dígitos')
     .regex(/^\d+$/, 'El CVV debe contener solo dígitos'),
+}).superRefine((data, ctx) => {
+  // Validación cruzada de fecha de expiración
+  const now = new Date();
+  const currentYY = parseInt(now.getFullYear().toString().slice(-2));
+  const currentMM = now.getMonth() + 1; // 1-12
+  const yy = parseInt(data.expirationYear);
+  const mm = parseInt(data.expirationMonth);
+
+  if (Number.isNaN(yy)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El año es inválido', path: ['expirationYear'] });
+    return;
+  }
+  if (Number.isNaN(mm) || mm < 1 || mm > 12) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El mes es inválido', path: ['expirationMonth'] });
+    return;
+  }
+  if (yy < currentYY || (yy === currentYY && mm < currentMM)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'La tarjeta está vencida', path: ['expirationYear'] });
+  }
 });
 
 const customerSchema = z.object({
@@ -147,6 +165,20 @@ export default function OpenPayPaymentForm({
         return;
       }
 
+      // Verificar que el cliente exista antes de continuar
+      const { data: clientExists, error: clientCheckError } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('id', clientId)
+        .maybeSingle();
+
+      if (clientCheckError) {
+        console.error('Error verificando cliente:', clientCheckError);
+      }
+      if (!clientExists) {
+        throw new Error('No encontramos tu cuenta de cliente. Vuelve al paso 1 para crearla e inténtalo nuevamente.');
+      }
+
       // Fetch current plan prices and lock them for this client
       const { data: planData, error: planError } = await supabase
         .from('subscription_plans')
@@ -249,8 +281,16 @@ export default function OpenPayPaymentForm({
         throw new Error(errorMessage);
       }
 
-      // Save billing info after successful payment
-      await saveBillingInfo();
+      // Save billing info after successful payment (non-bloqueante)
+      try {
+        await saveBillingInfo();
+      } catch (err) {
+        console.warn('No se pudo guardar la info de facturación (continuando):', err);
+        toast({
+          title: 'Pago realizado',
+          description: 'Tu pago fue exitoso, pero no pudimos guardar la información de facturación. Podrás actualizarla luego desde tu panel.',
+        });
+      }
 
       // Increment coupon usage if applied
       if (couponCode) {
@@ -272,19 +312,19 @@ export default function OpenPayPaymentForm({
       if (error instanceof Error) {
         const errorMsg = error.message.toLowerCase();
         
-        // Check for card rejection scenarios
-        if (errorMsg.includes('declined') || errorMsg.includes('rejected') || 
-            errorMsg.includes('insufficient') || errorMsg.includes('invalid card') ||
+        // Check for card rejection scenarios (both EN/ES)
+        if (errorMsg.includes('declined') || errorMsg.includes('rejected') || errorMsg.includes('rechaz') ||
+            errorMsg.includes('insufficient') || errorMsg.includes('saldo insuficiente') || errorMsg.includes('invalid card') ||
             errorMsg.includes('stolen') || errorMsg.includes('lost')) {
           title = 'Tarjeta rechazada';
           description = 'Tu tarjeta fue rechazada por tu banco. Por favor, verifica los datos de tu tarjeta o intenta con otro método de pago.';
-        } else if (errorMsg.includes('expired')) {
+        } else if (errorMsg.includes('expired') || errorMsg.includes('vencid')) {
           title = 'Tarjeta vencida';
           description = 'Tu tarjeta ha vencido. Por favor, utiliza otro método de pago.';
-        } else if (errorMsg.includes('cvv') || errorMsg.includes('security code')) {
+        } else if (errorMsg.includes('cvv') || errorMsg.includes('security code') || errorMsg.includes('código de seguridad')) {
           title = 'Código de seguridad inválido';
           description = 'El código CVV es incorrecto. Por favor, verifica e intenta nuevamente.';
-        } else if (errorMsg.includes('card number')) {
+        } else if (errorMsg.includes('card number') || errorMsg.includes('número de tarjeta')) {
           title = 'Número de tarjeta inválido';
           description = 'El número de tarjeta es inválido. Por favor, verifica e intenta nuevamente.';
         } else {
