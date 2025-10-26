@@ -29,6 +29,7 @@ const requirementsSchema = z.object({
   }),
   deliveryPhoneWhatsapp: z.string(),
   logoUrl: z.string(),
+  faviconUrl: z.string().optional(),
   additionalInfo: z.string().min(10, "Cuéntanos más sobre tu restaurante (mínimo 10 caracteres)"),
   brandInfo: z.string().optional(),
   websiteStyle: z.string().min(1, "Selecciona un estilo para tu sitio web"),
@@ -55,6 +56,7 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
       deliveryPlatforms: initialData.deliveryPlatforms,
       deliveryPhoneWhatsapp: initialData.deliveryPhoneWhatsapp,
       logoUrl: initialData.logoUrl,
+      faviconUrl: initialData.faviconUrl || "",
       additionalInfo: initialData.additionalInfo,
       brandInfo: initialData.brandInfo || "",
       websiteStyle: initialData.websiteStyle,
@@ -483,6 +485,31 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                         clientId="temp"
                         context="logo"
                         description="restaurant logo"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Favicon Upload */}
+              <FormField
+                control={form.control}
+                name="faviconUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Favicon (Opcional)</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      El favicon es el pequeño ícono que aparece en la pestaña del navegador. Se recomienda usar una imagen cuadrada simple de 512x512px o mayor.
+                    </p>
+                    <FormControl>
+                      <ImageUpload
+                        label=""
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        clientId="temp"
+                        context="favicon"
+                        description="website favicon icon"
                       />
                     </FormControl>
                     <FormMessage />

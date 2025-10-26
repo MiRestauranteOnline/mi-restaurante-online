@@ -150,6 +150,10 @@ serve(async (req) => {
       if (signupData.referralSource) {
         clientUpdateData.referral_source = signupData.referralSource;
       }
+      // Update favicon URL if provided
+      if (websiteRequirements.faviconUrl) {
+        clientUpdateData.favicon_url = websiteRequirements.faviconUrl;
+      }
 
       if (Object.keys(clientUpdateData).length > 0) {
         const { error: clientUpdateError } = await supabase

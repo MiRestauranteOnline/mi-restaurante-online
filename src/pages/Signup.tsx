@@ -55,6 +55,7 @@ export interface WebsiteRequirements {
   };
   deliveryPhoneWhatsapp: string;
   logoUrl: string;
+  faviconUrl?: string;
   additionalInfo: string;
   brandInfo?: string;
   websiteStyle: string;
