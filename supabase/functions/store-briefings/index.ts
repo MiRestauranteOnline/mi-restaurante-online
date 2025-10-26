@@ -90,7 +90,7 @@ serve(async (req) => {
 
     // Process and store client data if websiteRequirements and signupData are provided
     if (websiteRequirements && signupData) {
-      console.log('Processing social media and delivery data for client:', actualClientId);
+      console.log('Processing social media, delivery, and branding data for client:', actualClientId);
       
       // Process social media links
       const socialMediaLinks: Record<string, string> = {};
@@ -105,6 +105,8 @@ serve(async (req) => {
             else if (platform === 'instagram') platformKey = 'instagram';
             else if (platform === 'tiktok') platformKey = 'tiktok';
             else if (platform === 'x' || platform === 'twitter') platformKey = 'x';
+            else if (platform === 'youtube') platformKey = 'youtube';
+            else if (platform === 'linkedin') platformKey = 'linkedin';
             
             socialMediaLinks[platformKey] = sm.url;
           }
@@ -134,7 +136,7 @@ serve(async (req) => {
         .eq('id', actualClientId)
         .single();
 
-      // Update client with social media and delivery data only if not already set
+      // Update client with social media, delivery, and branding data
       const clientUpdateData: any = {};
       if (Object.keys(socialMediaLinks).length > 0 && (!existingClient?.social_media_links || Object.keys(existingClient.social_media_links).length === 0)) {
         clientUpdateData.social_media_links = socialMediaLinks;
@@ -154,6 +156,14 @@ serve(async (req) => {
       if (websiteRequirements.faviconUrl) {
         clientUpdateData.favicon_url = websiteRequirements.faviconUrl;
       }
+      
+      // Save user's branding selections to clients table
+      if (websiteRequirements.theme || websiteRequirements.primary_color) {
+        clientUpdateData.theme = websiteRequirements.theme || 'dark';
+        clientUpdateData.brand_colors = {
+          primary: websiteRequirements.primary_color || '#FFD700'
+        };
+      }
 
       if (Object.keys(clientUpdateData).length > 0) {
         const { error: clientUpdateError } = await supabase
@@ -165,11 +175,32 @@ serve(async (req) => {
           console.error('Error updating client data:', clientUpdateError);
           // Don't throw here, briefings were already stored successfully
         } else {
-          console.log('Successfully updated client with social media and delivery data');
+          console.log('Successfully updated client with social media, delivery, and branding data');
+        }
+      }
+      
+      // Save user's branding selections to client_settings table
+      if (websiteRequirements.title_font || websiteRequirements.body_font || websiteRequirements.title_font_weight || websiteRequirements.primary_color) {
+        const { error: settingsError } = await supabase
+          .from('client_settings')
+          .upsert({
+            client_id: actualClientId,
+            primary_color: websiteRequirements.primary_color || '#FFD700',
+            title_font: websiteRequirements.title_font || 'Cormorant Garamond',
+            body_font: websiteRequirements.body_font || 'Inter',
+            title_font_weight: websiteRequirements.title_font_weight || '400'
+          }, {
+            onConflict: 'client_id'
+          });
+        
+        if (settingsError) {
+          console.error('Error saving user branding selections to client_settings:', settingsError);
+        } else {
+          console.log('Successfully saved user branding selections to client_settings');
         }
       }
 
-      // Store logo URL and downloadable menu URL in admin_content if provided
+      // Store logo URL, downloadable menu URL, and template_id in admin_content if provided
       const adminContentData: any = {
         client_id: actualClientId,
         content_briefing: contentBriefing,
@@ -199,9 +230,12 @@ serve(async (req) => {
       }
     }
 
-    // Generate branding based on the style briefing (unless explicitly skipped)
-    if (styleBriefing && !skipBranding) {
-      console.log('Generating branding for client:', actualClientId);
+    // Generate branding based on the style briefing (unless explicitly skipped or user provided selections)
+    const userProvidedBranding = websiteRequirements?.theme || websiteRequirements?.primary_color || 
+                                  websiteRequirements?.title_font || websiteRequirements?.body_font;
+    
+    if (styleBriefing && !skipBranding && !userProvidedBranding) {
+      console.log('Generating branding for client (no user selections provided):', actualClientId);
       try {
         const brandingResponse = await supabase.functions.invoke('generate-branding', {
           body: {
@@ -220,6 +254,8 @@ serve(async (req) => {
         console.error('Error calling generate-branding function:', brandingError);
         // Don't throw here, briefings were already stored successfully
       }
+    } else if (userProvidedBranding) {
+      console.log('Skipping branding generation - user provided branding selections in signup form');
     } else if (skipBranding) {
       console.log('Skipping branding generation as requested for client:', actualClientId);
     }
@@ -530,54 +566,7 @@ serve(async (req) => {
       // Store custom images if provided
       if (imagesData.custom_images_enabled && imagesData.custom_images?.length > 0) {
         console.log('Processing custom images for client:', actualClientId);
-        
-        // First, check for temp images stored in generation_logs
-        const { data: tempImages } = await supabase
-          .from('generation_logs')
-          .select('*')
-          .eq('type', 'image_optimization')
-          .eq('status', 'pending_client_assignment');
-        
-        // Process temp images from generation_logs
-        if (tempImages && tempImages.length > 0) {
-          console.log('Found', tempImages.length, 'temp images to process');
-          
-          for (const tempImage of tempImages) {
-            const details = tempImage.details;
-            if (!details?.image_url) continue;
-            
-            try {
-              // Check if this image URL matches any of the custom images being processed
-              const matchingCustomImage = imagesData.custom_images.find((img: any) => 
-                img.imageUrl === details.image_url
-              );
-              
-              if (matchingCustomImage) {
-                // Insert into client_images table with the actual client ID
-                await supabase
-                  .from('client_images')
-                  .insert({
-                    client_id: actualClientId,
-                    image_url: details.image_url,
-                    alt_text: details.alt_text,
-                    original_filename: details.original_filename,
-                    upload_context: 'signup_custom_upload',
-                    file_size_kb: details.file_size_kb
-                  });
-                
-                // Mark the temp image as processed
-                await supabase
-                  .from('generation_logs')
-                  .update({ status: 'completed' })
-                  .eq('id', tempImage.id);
-                
-                console.log('Successfully processed temp image:', details.image_url);
-              }
-            } catch (error) {
-              console.error('Error processing temp image:', error);
-            }
-          }
-        }
+        console.log('Custom images array:', JSON.stringify(imagesData.custom_images));
         
         // Deduplicate incoming images by URL
         const uniqueByUrlMap = new Map<string, any>();
@@ -588,9 +577,14 @@ serve(async (req) => {
         }
         const uniqueCustomImages = Array.from(uniqueByUrlMap.values());
         
+        console.log(`Found ${uniqueCustomImages.length} unique custom images to process`);
+        
         for (let index = 0; index < uniqueCustomImages.length; index++) {
           const image = uniqueCustomImages[index];
-          if (!image?.imageUrl) continue;
+          if (!image?.imageUrl) {
+            console.log(`Skipping image ${index}: no imageUrl`);
+            continue;
+          }
 
           const altText = image.altText || `Custom image ${index + 1}`;
           const originalFilename = image.originalFilename || `custom-image-${index + 1}`;
@@ -605,36 +599,35 @@ serve(async (req) => {
               .maybeSingle();
 
             if (existingForClient) {
-              console.log('Custom image already exists for client, skipping insert:', image.imageUrl);
+              console.log('Custom image already exists for client, skipping:', image.imageUrl);
               continue;
             }
 
-            // Insert new image record if not already processed above
-            const { data: alreadyExists } = await supabase
+            // Insert new image record
+            const { error: insertError } = await supabase
               .from('client_images')
-              .select('id')
-              .eq('image_url', image.imageUrl)
-              .maybeSingle();
-
-            if (!alreadyExists) {
-              await supabase
-                .from('client_images')
-                .insert({
-                  client_id: actualClientId,
-                  image_url: image.imageUrl,
-                  alt_text: altText,
-                  upload_context: 'signup_custom_upload',
-                  original_filename: originalFilename,
-                  file_size_kb: null
-                });
-              console.log('Inserted new custom image for client:', actualClientId);
+              .insert({
+                client_id: actualClientId,
+                image_url: image.imageUrl,
+                alt_text: altText,
+                upload_context: 'signup_custom_upload',
+                original_filename: originalFilename,
+                file_size_kb: null
+              });
+            
+            if (insertError) {
+              console.error('Error inserting custom image:', insertError);
+            } else {
+              console.log('Successfully inserted custom image:', image.imageUrl);
             }
           } catch (error) {
             console.error('Error processing custom image:', error);
           }
         }
 
-        console.log('Successfully processed', uniqueCustomImages.length, 'custom images (deduplicated)');
+        console.log(`Successfully processed ${uniqueCustomImages.length} custom images (deduplicated)`);
+      } else {
+        console.log('No custom images to process (custom_images_enabled:', imagesData.custom_images_enabled, ', count:', imagesData.custom_images?.length, ')');
       }
     }
 

@@ -418,10 +418,10 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
                                   label=""
                                   value={field.value || ""}
                                   onChange={field.onChange}
-                                  clientId="temp-signup-client"
-                                  context="custom_upload"
+                                  clientId="signup"
+                                  context="signup_custom_upload"
                                   description="custom restaurant image for website personalization"
-                                  storeInDatabase={true}
+                                  storeInDatabase={false}
                                   onProcessingChange={handleProcessingChange}
                                 />
                               </FormControl>

@@ -333,17 +333,17 @@ serve(async (req) => {
         "services_card1_description": "Descripción del servicio 1",
         "services_card1_icon": "Utensils",
         "services_card1_button_text": "Más Info",
-        "services_card1_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre el servicio` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre el servicio'}",
-        "services_card2_title": "Título del servicio 2 (SOLO si está en briefing)",
-        "services_card2_description": "Descripción del servicio 2 (SOLO si está en briefing)",
-        "services_card2_icon": "Truck",
-        "services_card2_button_text": "Más Info",
-        "services_card2_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre delivery` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre delivery'}",
-        "services_card3_title": "Título del servicio 3 (SOLO si está en briefing)",
-        "services_card3_description": "Descripción del servicio 3 (SOLO si está en briefing)",
-        "services_card3_icon": "Users",
-        "services_card3_button_text": "Más Info",
-        "services_card3_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre eventos` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre eventos'}",
+         "services_card1_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre el servicio` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre el servicio'}",
+         "services_card2_title": "Título del servicio 2",
+         "services_card2_description": "Descripción completa del servicio 2",
+         "services_card2_icon": "Truck",
+         "services_card2_button_text": "Más Info",
+         "services_card2_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre el servicio` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre el servicio'}",
+         "services_card3_title": "Título del servicio 3",
+         "services_card3_description": "Descripción completa del servicio 3",
+         "services_card3_icon": "Users",
+         "services_card3_button_text": "Más Info",
+         "services_card3_button_link": "${clientData?.whatsapp ? `https://wa.me/${clientData.whatsapp.replace('+', '')}?text=Hola, me gustaría saber más sobre el servicio` : 'https://wa.me/51987654321?text=Hola, me gustaría saber más sobre el servicio'}",
         "services_feature1_icon": "Clock",
         "services_feature1_text": "Texto feature 1",
         "services_feature2_icon": "Star",
@@ -385,14 +385,14 @@ serve(async (req) => {
       }
     }
 
-    REGLAS CRÍTICAS PARA EVITAR ALUCINACIONES:
-    1. NO INVENTES DATOS ESPECÍFICOS: No uses números de años de experiencia, cantidad de clientes, premios, o fechas de fundación específicas a menos que estén explícitamente en el briefing
-    2. USA TÉRMINOS GENERALES: En lugar de "15 años" usa "Años de experiencia", en lugar de "5K+ clientes" usa "Clientes satisfechos"
-    3. SOLO INCLUYE SERVICIOS MENCIONADOS: No agregues servicios (delivery, eventos, etc.) que no estén mencionados en el briefing
-    4. VERIFICA INFORMACIÓN: Si el briefing menciona redes sociales o sitio web, úsalos como referencia para validar información
-    5. SÉ CONSERVADOR: Es mejor ser general que específico si no tienes datos verificables
-    6. NO INVENTES ESTADÍSTICAS: Nunca crees números, porcentajes, rankings, premios o reconocimientos que no estén en el briefing
-    7. NO AFIRMES HECHOS NO VERIFICABLES: Evita declaraciones como "el mejor", "número 1", "ganador de", "fundado en [año específico]" si no están en el briefing
+     REGLAS CRÍTICAS PARA EVITAR ALUCINACIONES:
+     1. NO INVENTES DATOS ESPECÍFICOS: No uses números de años de experiencia, cantidad de clientes, premios, o fechas de fundación específicas a menos que estén explícitamente en el briefing
+     2. USA TÉRMINOS GENERALES: En lugar de "15 años" usa "Años de experiencia", en lugar de "5K+ clientes" usa "Clientes satisfechos"
+     3. RELLENA TODOS LOS CAMPOS DE SERVICIOS: Siempre proporciona título, descripción, icono, texto del botón y enlace para TODAS las 3 tarjetas de servicios, aunque no estén mencionados en el briefing. Usa servicios genéricos relevantes para restaurantes.
+     4. VERIFICA INFORMACIÓN: Si el briefing menciona redes sociales o sitio web, úsalos como referencia para validar información
+     5. SÉ CONSERVADOR: Es mejor ser general que específico si no tienes datos verificables
+     6. NO INVENTES ESTADÍSTICAS: Nunca crees números, porcentajes, rankings, premios o reconocimientos que no estén en el briefing
+     7. NO AFIRMES HECHOS NO VERIFICABLES: Evita declaraciones como "el mejor", "número 1", "ganador de", "fundado en [año específico]" si no están en el briefing
 
     IMPORTANTE:
     - Todo el contenido debe estar en ESPAÑOL
