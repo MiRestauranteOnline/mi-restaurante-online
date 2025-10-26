@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { SignupStep1 } from "@/components/signup/SignupStep1";
 import { SignupStep2 } from "@/components/signup/SignupStep2";
 import { SignupStep3Combined, type CombinedData } from "@/components/signup/SignupStep3Combined";
@@ -57,8 +58,13 @@ export interface WebsiteRequirements {
   logoUrl: string;
   faviconUrl?: string;
   additionalInfo: string;
-  brandInfo?: string;
   websiteStyle: string;
+  template_id?: string;
+  theme: string;
+  primary_color: string;
+  title_font: string;
+  title_font_weight: string;
+  body_font: string;
 }
 
 const Signup = () => {
@@ -226,8 +232,12 @@ const Signup = () => {
     deliveryPhoneWhatsapp: "",
     logoUrl: "",
     additionalInfo: "",
-    brandInfo: "",
     websiteStyle: "",
+    theme: "dark",
+    primary_color: "#FFD700",
+    title_font: "Cormorant Garamond",
+    title_font_weight: "400",
+    body_font: "Inter",
   });
   const [combinedData, setCombinedData] = useState<CombinedData>({
     categories: [],
@@ -493,7 +503,7 @@ const Signup = () => {
       // Create briefing summaries from accumulated data
       const contentBriefing = `${websiteRequirements.additionalInfo}\n\nTipo de restaurante: ${websiteRequirements.businessType}\nPúblico objetivo: ${websiteRequirements.targetAudience}\nEstilo del sitio web: ${websiteRequirements.websiteStyle}`;
       
-      const styleBriefing = `Estilo del sitio web: ${websiteRequirements.websiteStyle}\nInformación de marca: ${websiteRequirements.brandInfo || 'No especificado'}\nLogo: ${websiteRequirements.logoUrl ? 'Proporcionado' : 'No proporcionado'}`;
+      const styleBriefing = `Estilo del sitio web: ${websiteRequirements.websiteStyle}\nTema: ${websiteRequirements.theme}\nColor primario: ${websiteRequirements.primary_color}\nFuente de títulos: ${websiteRequirements.title_font} (peso: ${websiteRequirements.title_font_weight})\nFuente del cuerpo: ${websiteRequirements.body_font}\nLogo: ${websiteRequirements.logoUrl ? 'Proporcionado' : 'No proporcionado'}`;
       
       const contactDeliveryBriefing = `Nombre del restaurante: ${signupData.restaurantName}\nTeléfono: ${signupData.phone}\nEmail: ${signupData.email}\nDirección: ${signupData.address}\nTiene delivery: ${websiteRequirements.hasDelivery ? 'Sí' : 'No'}\nPlatformas de delivery: ${Object.entries(websiteRequirements.deliveryPlatforms).filter(([_, url]) => url).map(([platform, _]) => platform).join(', ')}\nDelivery por WhatsApp/Teléfono: ${websiteRequirements.deliveryPhoneWhatsapp}\nRedes sociales: ${websiteRequirements.socialMedia.map(sm => `${sm.platform}: ${sm.url}`).join(', ')}`;
 
@@ -613,6 +623,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollToTop />
       <Navigation />
       
       <main className="pt-24 pb-16">

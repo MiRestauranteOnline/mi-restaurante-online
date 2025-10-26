@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Utensils, Plus, X } from "lucide-react";
@@ -31,8 +31,12 @@ const requirementsSchema = z.object({
   logoUrl: z.string(),
   faviconUrl: z.string().optional(),
   additionalInfo: z.string().min(10, "Cuéntanos más sobre tu restaurante (mínimo 10 caracteres)"),
-  brandInfo: z.string().optional(),
   websiteStyle: z.string().min(1, "Selecciona un estilo para tu sitio web"),
+  theme: z.string().min(1, "Selecciona un tema"),
+  primary_color: z.string().min(1, "Selecciona un color primario"),
+  title_font: z.string().min(1, "Selecciona una fuente para títulos"),
+  title_font_weight: z.string().min(1, "Selecciona un peso de fuente"),
+  body_font: z.string().min(1, "Selecciona una fuente para el cuerpo"),
 });
 
 type RequirementsFormData = z.infer<typeof requirementsSchema>;
@@ -43,6 +47,40 @@ interface SignupStep2Props {
   signupData: SignupData;
   initialData: WebsiteRequirements;
 }
+
+// Template ID mapping
+const templateMapping: Record<string, string> = {
+  "modern": "df1d7326-452b-44ab-9821-cbc71941bf1d",
+  "rustic": "4156da13-d507-4099-a99d-4cee57c2cc22",
+  "minimalist": "fe77ed70-022d-4648-a559-da2baf077aec",
+};
+
+// Font options
+const titleFonts = [
+  "Cormorant Garamond", "Playfair Display", "Merriweather", "Lora", "Crimson Text",
+  "Bitter", "PT Serif", "Libre Baskerville", "Source Serif Pro", "Abril Fatface",
+  "Montserrat", "Oswald", "Roboto", "Open Sans", "Poppins", "Nunito", "Raleway",
+  "Inter", "Lato", "Dancing Script", "Great Vibes", "Lobster", "Pacifico", "Satisfy"
+];
+
+const bodyFonts = [
+  "Inter", "Roboto", "Open Sans", "Lato", "Poppins", "Nunito", "Source Sans Pro",
+  "Raleway", "PT Sans", "Fira Sans", "Montserrat", "Work Sans", "Noto Sans", "Rubik",
+  "DM Sans", "Merriweather", "Lora", "Crimson Text", "PT Serif", "Libre Baskerville",
+  "Source Serif Pro", "Cormorant Garamond", "Playfair Display"
+];
+
+const fontWeights = [
+  { value: "100", label: "100 - Thin" },
+  { value: "200", label: "200 - Extra Light" },
+  { value: "300", label: "300 - Light" },
+  { value: "400", label: "400 - Normal" },
+  { value: "500", label: "500 - Medium" },
+  { value: "600", label: "600 - Semi Bold" },
+  { value: "700", label: "700 - Bold" },
+  { value: "800", label: "800 - Extra Bold" },
+  { value: "900", label: "900 - Black" },
+];
 
 export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: SignupStep2Props) => {
   const form = useForm<RequirementsFormData>({
@@ -58,8 +96,12 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
       logoUrl: initialData.logoUrl,
       faviconUrl: initialData.faviconUrl || "",
       additionalInfo: initialData.additionalInfo,
-      brandInfo: initialData.brandInfo || "",
       websiteStyle: initialData.websiteStyle,
+      theme: initialData.theme || "dark",
+      primary_color: initialData.primary_color || "#FFD700",
+      title_font: initialData.title_font || "Cormorant Garamond",
+      title_font_weight: initialData.title_font_weight || "400",
+      body_font: initialData.body_font || "Inter",
     }
   });
 
@@ -72,14 +114,9 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
     // Filter out empty social media entries
     const filteredData = {
       ...data,
-      socialMedia: data.socialMedia.filter(sm => sm.platform && sm.url)
+      socialMedia: data.socialMedia.filter(sm => sm.platform && sm.url),
+      template_id: templateMapping[data.websiteStyle] || undefined,
     };
-    
-    // Store requirements and complete signup
-    console.log('Completing account creation with:', {
-      signupData,
-      websiteRequirements: filteredData
-    });
     
     onComplete(filteredData);
   };
@@ -87,11 +124,9 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
   const socialMediaOptions = ["Facebook", "Instagram", "TikTok", "X (Twitter)"];
   
   const websiteStyleOptions = [
-    { value: "elegant", label: "Elegante" },
     { value: "modern", label: "Moderno" },
     { value: "rustic", label: "Rústico" },
     { value: "minimalist", label: "Minimalista" },
-    { value: "traditional", label: "Tradicional" },
   ];
 
   const getAvailablePlatforms = (currentIndex: number) => {
@@ -100,6 +135,11 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
       .filter(Boolean);
     return socialMediaOptions.filter(platform => !usedPlatforms.includes(platform));
   };
+
+  // Get current font values for preview
+  const titleFont = form.watch("title_font");
+  const titleFontWeight = form.watch("title_font_weight");
+  const bodyFont = form.watch("body_font");
 
   return (
     <div className="space-y-6">
@@ -166,6 +206,9 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Público Objetivo</FormLabel>
+                    <FormDescription>
+                      Describe el tipo de clientes que visitan tu restaurante (familias, jóvenes, turistas, etc.)
+                    </FormDescription>
                     <FormControl>
                       <Textarea 
                         placeholder="Ej: Familias con niños, jóvenes profesionales, turistas, parejas románticas..."
@@ -200,7 +243,12 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
 
               {/* Social Media Section */}
               <div className="space-y-4">
-                <FormLabel>Redes Sociales</FormLabel>
+                <div>
+                  <FormLabel>Redes Sociales</FormLabel>
+                  <FormDescription>
+                    Conecta tus redes sociales para que tus clientes puedan seguirte
+                  </FormDescription>
+                </div>
                 {fields.map((field, index) => (
                   <div key={field.id} className="flex gap-2 items-end">
                     <FormField
@@ -381,7 +429,6 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                               {...field}
                               onChange={(e) => {
                                 const value = e.target.value.trim();
-                                // Don't auto-modify delivery URLs since they can vary
                                 field.onChange(value);
                               }}
                             />
@@ -415,10 +462,10 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                       name="deliveryPlatforms.didifood"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Didi Food</FormLabel>
+                          <FormLabel>DiDi Food</FormLabel>
                           <FormControl>
                             <Input 
-                              placeholder="URL completa de tu tienda en Didi Food" 
+                              placeholder="URL completa de tu tienda en DiDi Food" 
                               {...field}
                               onChange={(e) => {
                                 const value = e.target.value.trim();
@@ -434,41 +481,42 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                 </div>
               )}
 
-              {/* Phone/WhatsApp Delivery */}
-              <FormField
-                control={form.control}
-                name="deliveryPhoneWhatsapp"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>¿Ofreces delivery por teléfono y/o WhatsApp?</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        className="grid grid-cols-2 gap-4"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="whatsapp" id="delivery-whatsapp" />
-                          <FormLabel htmlFor="delivery-whatsapp">Sí, WhatsApp</FormLabel>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="phone" id="delivery-phone" />
-                          <FormLabel htmlFor="delivery-phone">Sí, Teléfono</FormLabel>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="both" id="delivery-both" />
-                          <FormLabel htmlFor="delivery-both">Sí, Ambos</FormLabel>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="none" id="delivery-none" />
-                          <FormLabel htmlFor="delivery-none">No</FormLabel>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {form.watch("hasDelivery") && (
+                <FormField
+                  control={form.control}
+                  name="deliveryPhoneWhatsapp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>¿Aceptas pedidos de delivery por teléfono o WhatsApp?</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          className="flex flex-wrap gap-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="whatsapp" id="delivery-whatsapp" />
+                            <FormLabel htmlFor="delivery-whatsapp">Sí, WhatsApp</FormLabel>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="phone" id="delivery-phone" />
+                            <FormLabel htmlFor="delivery-phone">Sí, Teléfono</FormLabel>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="both" id="delivery-both" />
+                            <FormLabel htmlFor="delivery-both">Sí, Ambos</FormLabel>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="none" id="delivery-none" />
+                            <FormLabel htmlFor="delivery-none">No</FormLabel>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               {/* Logo Upload */}
               <FormField
@@ -477,6 +525,9 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Logo del Restaurante</FormLabel>
+                    <FormDescription>
+                      Sube el logo de tu restaurante en formato PNG, JPG o SVG. Se recomienda usar un logo en alta resolución con fondo transparente.
+                    </FormDescription>
                     <FormControl>
                       <ImageUpload
                         label=""
@@ -499,9 +550,9 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Favicon (Opcional)</FormLabel>
-                    <p className="text-sm text-muted-foreground">
+                    <FormDescription>
                       El favicon es el pequeño ícono que aparece en la pestaña del navegador. Se recomienda usar una imagen cuadrada simple de 512x512px o mayor.
-                    </p>
+                    </FormDescription>
                     <FormControl>
                       <ImageUpload
                         label=""
@@ -524,6 +575,9 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Estilo del Sitio Web</FormLabel>
+                    <FormDescription>
+                      Elige el estilo visual que mejor representa tu restaurante
+                    </FormDescription>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -543,6 +597,32 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                 )}
               />
 
+              {/* Theme */}
+              <FormField
+                control={form.control}
+                name="theme"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tema</FormLabel>
+                    <FormDescription>
+                      Elige si prefieres un diseño con colores claros u oscuros
+                    </FormDescription>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona un tema" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="bright">Claro</SelectItem>
+                        <SelectItem value="dark">Oscuro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {/* Additional Info */}
               <FormField
                 control={form.control}
@@ -550,9 +630,9 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cuéntanos un poco más sobre tu restaurante</FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      (Mientras más información nos des, mejor podremos crear el contenido para tu sitio)
-                    </p>
+                    <FormDescription>
+                      Mientras más información nos des, mejor podremos crear el contenido para tu sitio
+                    </FormDescription>
                     <FormControl>
                       <Textarea 
                         placeholder="Describe tu restaurante, tipo de comida, ambiente, historia, etc..."
@@ -566,26 +646,160 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
               />
 
               {/* Brand Colors and Fonts */}
-              <FormField
-                control={form.control}
-                name="brandInfo"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>¿Ya tienes colores de marca y fuentes definidos?</FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      (Si tienes códigos de colores exactos y fuentes que usa tu marca, añádelos aquí, de lo contrario solo lista los colores que te gustan)
-                    </p>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Ej: Colores: #FF5733, #FFF. Fuentes: Montserrat, Open Sans. O simplemente: me gustan los colores azul y blanco..."
-                        className="min-h-[100px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-6 p-6 border rounded-lg bg-muted/50">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Identidad Visual</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Personaliza los colores y tipografías de tu sitio web
+                  </p>
+                </div>
+
+                {/* Primary Color */}
+                <FormField
+                  control={form.control}
+                  name="primary_color"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Color Primario</FormLabel>
+                      <FormDescription>
+                        Color principal que se usará en botones, enlaces y elementos destacados
+                      </FormDescription>
+                      <FormControl>
+                        <div className="flex gap-2 items-center">
+                          <Input 
+                            type="color"
+                            className="w-20 h-10 cursor-pointer"
+                            {...field}
+                          />
+                          <Input 
+                            type="text"
+                            placeholder="#FFD700"
+                            value={field.value}
+                            onChange={field.onChange}
+                            className="flex-1"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Title Font */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="title_font"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fuente de Títulos</FormLabel>
+                        <FormDescription>
+                          Tipografía para todos los títulos de tu sitio
+                        </FormDescription>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecciona una fuente" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="max-h-60">
+                            {titleFonts.map((font) => (
+                              <SelectItem key={font} value={font}>
+                                {font}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="title_font_weight"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Peso de Fuente de Títulos</FormLabel>
+                        <FormDescription>
+                          Grosor de la fuente para los títulos
+                        </FormDescription>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecciona un peso" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {fontWeights.map((weight) => (
+                              <SelectItem key={weight.value} value={weight.value}>
+                                {weight.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Title Preview */}
+                <div className="p-4 border rounded-lg bg-background">
+                  <p className="text-xs text-muted-foreground mb-2">Vista previa de títulos:</p>
+                  <h2 
+                    style={{ 
+                      fontFamily: titleFont,
+                      fontWeight: titleFontWeight 
+                    }}
+                    className="text-2xl"
+                  >
+                    Así se ven tus títulos
+                  </h2>
+                </div>
+
+                {/* Body Font */}
+                <FormField
+                  control={form.control}
+                  name="body_font"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fuente del Cuerpo</FormLabel>
+                      <FormDescription>
+                        Tipografía para el texto del cuerpo de tu sitio
+                      </FormDescription>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una fuente" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-60">
+                          {bodyFonts.map((font) => (
+                            <SelectItem key={font} value={font}>
+                              {font}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Body Preview */}
+                <div className="p-4 border rounded-lg bg-background">
+                  <p className="text-xs text-muted-foreground mb-2">Vista previa de texto del cuerpo:</p>
+                  <p 
+                    style={{ 
+                      fontFamily: bodyFont 
+                    }}
+                    className="text-base"
+                  >
+                    Así se ve el texto del cuerpo de tu sitio web. Este es el texto que tus visitantes leerán en descripciones, párrafos y contenido general.
+                  </p>
+                </div>
+              </div>
 
               <Button type="submit" className="w-full" size="lg">
                 Crear Mi Sitio Web
