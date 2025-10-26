@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Plus, X, Images, Camera, Info } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
 import { useState } from "react";
@@ -15,6 +16,7 @@ export interface CarouselImage {
 }
 
 export interface ImagesData {
+  image_preference: 'stock' | 'ai' | 'own';
   carousel_enabled: boolean;
   carousel_images: CarouselImage[];
   custom_images_enabled: boolean;
@@ -27,6 +29,7 @@ const carouselImageSchema = z.object({
 });
 
 const imagesSchema = z.object({
+  image_preference: z.enum(['stock', 'ai', 'own']),
   carousel_enabled: z.boolean(),
   carousel_images: z.array(carouselImageSchema).optional(),
   custom_images_enabled: z.boolean(),
@@ -46,6 +49,7 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
   const form = useForm<ImagesFormData>({
     resolver: zodResolver(imagesSchema),
     defaultValues: {
+      image_preference: initialData?.image_preference ?? 'stock',
       carousel_enabled: initialData?.carousel_enabled ?? false,
       carousel_images: initialData?.carousel_images?.length ? initialData.carousel_images : [{ imageUrl: "", altText: "" }],
       custom_images_enabled: initialData?.custom_images_enabled ?? false,
@@ -79,6 +83,7 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
       .map(img => ({ imageUrl: img.imageUrl!, altText: img.altText }));
     
     onComplete({
+      image_preference: data.image_preference,
       carousel_enabled: data.carousel_enabled,
       carousel_images: data.carousel_enabled ? validCarouselImages : [],
       custom_images_enabled: data.custom_images_enabled,
@@ -88,6 +93,7 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
 
   const handleSkip = () => {
     onComplete({
+      image_preference: 'stock',
       carousel_enabled: false,
       carousel_images: [],
       custom_images_enabled: false,
@@ -109,6 +115,54 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Image Preference Section */}
+          <Card className="border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Images className="h-5 w-5" />
+                Preferencia de Imágenes
+              </CardTitle>
+              <CardDescription>
+                Elige qué tipo de imágenes quieres usar en tu sitio web
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="image_preference"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>¿Qué tipo de imágenes prefieres?</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona una opción" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="stock">
+                          Imágenes de stock profesionales
+                        </SelectItem>
+                        <SelectItem value="ai">
+                          Imágenes generadas por IA personalizadas
+                        </SelectItem>
+                        <SelectItem value="own">
+                          Usar mis propias imágenes
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="text-sm text-muted-foreground mt-2">
+                      {field.value === 'stock' && "Usaremos imágenes profesionales de stock relacionadas con tu restaurante"}
+                      {field.value === 'ai' && "Generaremos imágenes únicas con IA basadas en tu restaurante"}
+                      {field.value === 'own' && "Sube tus propias imágenes en las secciones de abajo"}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
           {/* Carousel Section */}
           <Card>
             <CardHeader>

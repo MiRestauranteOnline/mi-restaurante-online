@@ -239,6 +239,7 @@ const Signup = () => {
     opening_hours: {},
   });
   const [imagesData, setImagesData] = useState<ImagesData>({
+    image_preference: 'stock',
     carousel_enabled: false,
     carousel_images: [],
     custom_images_enabled: false,
