@@ -177,14 +177,32 @@ export default function OpenPayPaymentForm({
       }
 
       // Validate card data
-      const validatedCard = cardSchema.parse(cardData);
+      let validatedCard;
+      try {
+        validatedCard = cardSchema.parse(cardData);
+      } catch (error: any) {
+        if (error.errors && Array.isArray(error.errors)) {
+          const firstError = error.errors[0];
+          throw new Error(firstError.message);
+        }
+        throw error;
+      }
       
       // Validate customer data
-      const validatedCustomer = customerSchema.parse({
-        name: customer.name,
-        email: customer.email,
-        phone: customer.phone,
-      });
+      let validatedCustomer;
+      try {
+        validatedCustomer = customerSchema.parse({
+          name: customer.name,
+          email: customer.email,
+          phone: customer.phone,
+        });
+      } catch (error: any) {
+        if (error.errors && Array.isArray(error.errors)) {
+          const firstError = error.errors[0];
+          throw new Error(firstError.message);
+        }
+        throw error;
+      }
 
       // Apply coupon if provided
       let discountAmount = 0;

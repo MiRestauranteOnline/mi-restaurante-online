@@ -26,15 +26,21 @@ serve(async (req) => {
 
     console.log('Creating OpenPay subscription for client:', clientId, 'plan:', planType);
 
-    // Get client data
+    // Get client data using service role to bypass RLS
     const { data: client, error: clientError } = await supabase
       .from('clients')
       .select('*')
       .eq('id', clientId)
       .single();
 
-    if (clientError || !client) {
-      throw new Error('Client not found');
+    if (clientError) {
+      console.error('Error fetching client:', clientError);
+      throw new Error(`No se pudo encontrar el cliente. Por favor, contacta a soporte. (${clientError.message})`);
+    }
+
+    if (!client) {
+      console.error('Client not found for ID:', clientId);
+      throw new Error('No se pudo encontrar el cliente. Por favor, contacta a soporte.');
     }
 
     // Create OpenPay customer
