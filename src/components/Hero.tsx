@@ -138,6 +138,14 @@ export const Hero = () => {
                 <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
                 Cancela Cuando Quieras
               </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
+                Protección Anti-Spam Cloudflare
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary" aria-hidden="true" />
+                Seguridad de Datos Empresarial
+              </div>
             </div>
           </div>
 
