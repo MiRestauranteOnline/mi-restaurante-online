@@ -170,7 +170,59 @@ serve(async (req) => {
       seoConstraints += '\n- NO mencionar delivery ni entrega a domicilio en las descripciones';
     }
 
-    // Step 2: Generate client profile and content with ChatGPT using trusted sources
+    // Step 3: Get custom images uploaded by client (if any)
+    const { data: clientImages } = await supabase
+      .from('client_images')
+      .select('image_url')
+      .eq('client_id', clientId)
+      .eq('upload_context', 'signup_custom_upload')
+      .order('created_at', { ascending: true });
+
+    // Get image preference settings
+    const { data: imageSettings } = await supabase
+      .from('admin_content')
+      .select('image_preference, ai_image_style, ai_color_palette, ai_image_mood, detected_image_style')
+      .eq('client_id', clientId)
+      .maybeSingle();
+
+    const imagePreference = imageSettings?.image_preference || 'ai_only';
+    const customImageUrls = clientImages?.map(img => img.image_url) || [];
+    
+    console.log('Image preference:', imagePreference);
+    console.log('Custom images found:', customImageUrls.length);
+
+    // Define all image slots needed for the website (7 slots)
+    const imageSlots = [
+      'homepage_hero_background',
+      'homepage_about_section_image',
+      'about_page_hero_background',
+      'about_page_about_section_image',
+      'menu_page_hero_background',
+      'contact_page_hero_background',
+      'reviews_page_hero_background',
+    ];
+
+    // Map custom images to slots (in order)
+    const customImageMapping: Record<string, string> = {};
+    customImageUrls.forEach((url, index) => {
+      if (index < imageSlots.length) {
+        customImageMapping[imageSlots[index]] = url;
+      }
+    });
+
+    console.log('Custom image mapping:', customImageMapping);
+
+    // Determine which slots need AI generation
+    const slotsNeedingAI = imageSlots.filter(slot => !customImageMapping[slot]);
+    
+    console.log('Slots needing AI generation:', slotsNeedingAI.length);
+
+    // If custom_only mode, all slots must be filled with custom images
+    if (imagePreference === 'custom_only' && customImageUrls.length < imageSlots.length) {
+      throw new Error(`Custom_only mode requires ${imageSlots.length} images, but only ${customImageUrls.length} were provided`);
+    }
+
+    // Step 4: Generate client profile and content with ChatGPT using trusted sources
     const contentPrompt = `
     Eres un experto en marketing para restaurantes y SEO local. Basándote en este briefing del cliente, necesitas crear contenido completo para su sitio web en español.
 
@@ -456,7 +508,7 @@ serve(async (req) => {
       throw new Error(`Failed to upsert content: ${upsertError.message}`);
     }
 
-    // Step 3: Generate images in parallel to avoid timeouts
+    // Step 6: Handle images - custom first, then AI for remaining slots
     const imageFieldMap: Record<string, string> = {
       homepage_hero_background: 'homepage_hero_background_url',
       homepage_about_section_image: 'homepage_about_section_image_url',
@@ -469,91 +521,145 @@ serve(async (req) => {
 
     const imageUpdates: Record<string, string> = {};
 
-    // Generate all images in parallel to prevent timeouts
-    const imageGenerationPromises = Object.entries(generatedContent.imagePrompts || {}).map(async ([key, prompt]) => {
-      const targetField = imageFieldMap[key as keyof typeof imageFieldMap];
-      if (!targetField) return null;
+    // First, assign custom images to their slots
+    Object.entries(customImageMapping).forEach(([slot, url]) => {
+      const targetField = imageFieldMap[slot];
+      if (targetField) {
+        imageUpdates[targetField] = url;
+        console.log(`Assigned custom image to ${targetField}`);
+      }
+    });
 
-      try {
-        console.log(`Generating image for ${key}...`);
-        const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${leonardoApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: `${prompt}, ultra-realistic professional restaurant photography, single composition, single scene, no collage, no grid, no split-panel, no montage, no multi-image, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, ${restaurantName} style, no text overlay, photojournalistic quality, commercial food photography`,
-            modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3", // Leonardo Phoenix 1.0 - latest foundational model
-            styleUUID: "7c3f932b-a572-47cb-9b9b-f20211e63b5b", // Pro color photography style
-            width: 1024,
-            height: 576,
-            num_images: 1,
-            contrast: 4, // High contrast for sharp, professional look
-            enhancePrompt: true, // AI prompt enhancement for better results
-            alchemy: true, // Quality mode enabled (removes ultra as they conflict)
-            num_inference_steps: 25, // Higher steps for better quality (default is 15)
-            guidance_scale: 8 // Higher guidance for better prompt adherence
-          }),
-        });
+    // Determine AI style to use
+    let aiStyleModifier = '';
+    if (imagePreference === 'custom_plus_ai' && imageSettings?.detected_image_style) {
+      // Use detected style
+      const detected = imageSettings.detected_image_style;
+      aiStyleModifier = `matching style: ${detected.style}, ${detected.colorPalette} color palette, ${detected.mood} atmosphere`;
+      console.log('Using detected style:', aiStyleModifier);
+    } else if (imageSettings?.ai_image_style) {
+      // Use manually selected style
+      const style = imageSettings.ai_image_style.replace(/_/g, ' ');
+      const palette = imageSettings.ai_color_palette?.replace(/_/g, ' ') || '';
+      const mood = imageSettings.ai_image_mood?.replace(/_/g, ' ') || '';
+      aiStyleModifier = `${style} style, ${palette} colors, ${mood} mood`;
+      console.log('Using manual style:', aiStyleModifier);
+    }
 
-        if (!leonardoResponse.ok) {
-          console.error(`Leonardo start failed for ${key}:`, await leonardoResponse.text());
-          return null;
-        }
+    // Generate AI images only for remaining slots
+    if (slotsNeedingAI.length > 0 && imagePreference !== 'custom_only') {
+      console.log(`Generating ${slotsNeedingAI.length} AI images...`);
+      
+      const imageGenerationPromises = slotsNeedingAI.map(async (slotKey) => {
+        const targetField = imageFieldMap[slotKey];
+        if (!targetField) return null;
 
-        const leonardoData = await leonardoResponse.json();
-        if (!leonardoData.sdGenerationJob) {
-          console.error(`No generation job for ${key}`);
-          return null;
-        }
+        const basePrompt = generatedContent.imagePrompts?.[slotKey] || `Professional restaurant image for ${slotKey}`;
+        const enhancedPrompt = aiStyleModifier 
+          ? `${basePrompt}, ${aiStyleModifier}, ultra-realistic professional restaurant photography`
+          : `${basePrompt}, ultra-realistic professional restaurant photography`;
 
-        const generationId = leonardoData.sdGenerationJob.generationId;
-
-        // Poll for completion (reduced to 6 attempts x 5s = 30s max)
-        let imageUrl: string | null = null;
-        for (let attempts = 0; attempts < 6; attempts++) {
-          await new Promise((r) => setTimeout(r, 5000)); // Wait 5 seconds
-          
-          const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
-            headers: { 'Authorization': `Bearer ${leonardoApiKey}` },
+        try {
+          console.log(`Generating AI image for ${slotKey}...`);
+          const leonardoResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${leonardoApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              prompt: `${enhancedPrompt}, single composition, single scene, no collage, no grid, no split-panel, no montage, no multi-image, shot with DSLR camera, natural lighting, high resolution, food styling, appetizing presentation, clean composition, restaurant setting, ${restaurantName} style, no text overlay, photojournalistic quality, commercial food photography`,
+              modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3",
+              styleUUID: "7c3f932b-a572-47cb-9b9b-f20211e63b5b",
+              width: 1024,
+              height: 576,
+              num_images: 1,
+              contrast: 4,
+              enhancePrompt: true,
+              alchemy: true,
+              num_inference_steps: 25,
+              guidance_scale: 8
+            }),
           });
-          
-          if (!statusResponse.ok) continue;
-          
-          const statusData = await statusResponse.json();
-          if (statusData.generations_by_pk?.status === 'COMPLETE' && statusData.generations_by_pk.generated_images?.length > 0) {
-            imageUrl = statusData.generations_by_pk.generated_images[0].url;
-            break;
-          }
-          if (statusData.generations_by_pk?.status === 'FAILED') {
-            console.error(`Image generation failed for ${key}`);
-            break;
-          }
-        }
 
-        if (imageUrl) {
-          console.log(`Generated image URL for ${key}: ${imageUrl}`);
-          
-          // Optimize the Leonardo image using our optimization function
-          try {
-            const optimizeResponse = await supabase.functions.invoke('optimize-leonardo-image', {
-              body: {
-                imageUrl,
-                originalPrompt: generatedContent.imagePrompts[key],
-                context: `restaurant website ${key.replace(/_/g, ' ')}`
-              }
+          if (!leonardoResponse.ok) {
+            console.error(`Leonardo start failed for ${slotKey}:`, await leonardoResponse.text());
+            return null;
+          }
+
+          const leonardoData = await leonardoResponse.json();
+          if (!leonardoData.sdGenerationJob) {
+            console.error(`No generation job for ${slotKey}`);
+            return null;
+          }
+
+          const generationId = leonardoData.sdGenerationJob.generationId;
+
+          let imageUrl: string | null = null;
+          for (let attempts = 0; attempts < 6; attempts++) {
+            await new Promise((r) => setTimeout(r, 5000));
+            
+            const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
+              headers: { 'Authorization': `Bearer ${leonardoApiKey}` },
             });
+            
+            if (!statusResponse.ok) continue;
+            
+            const statusData = await statusResponse.json();
+            if (statusData.generations_by_pk?.status === 'COMPLETE' && statusData.generations_by_pk.generated_images?.length > 0) {
+              imageUrl = statusData.generations_by_pk.generated_images[0].url;
+              break;
+            }
+            if (statusData.generations_by_pk?.status === 'FAILED') {
+              console.error(`Image generation failed for ${slotKey}`);
+              break;
+            }
+          }
 
-            if (optimizeResponse.data?.success) {
-              return { [targetField]: optimizeResponse.data.optimizedUrl };
-            } else {
-              console.error(`Image optimization failed for ${key}:`, optimizeResponse.error);
-              // Fallback: upload the Leonardo image directly to Supabase (never store CDN URL)
+          if (imageUrl) {
+            console.log(`Generated AI image URL for ${slotKey}: ${imageUrl}`);
+            
+            try {
+              const optimizeResponse = await supabase.functions.invoke('optimize-leonardo-image', {
+                body: {
+                  imageUrl,
+                  originalPrompt: enhancedPrompt,
+                  context: `restaurant website ${slotKey.replace(/_/g, ' ')}`
+                }
+              });
+
+              if (optimizeResponse.data?.success) {
+                return { [targetField]: optimizeResponse.data.optimizedUrl };
+              } else {
+                console.error(`Image optimization failed for ${slotKey}:`, optimizeResponse.error);
+                try {
+                  const imgResp = await fetch(imageUrl);
+                  const buffer = await imgResp.arrayBuffer();
+                  const fallbackName = `${restaurantName}-${slotKey}`
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\-]+/g, '-')
+                    .replace(/-+/g, '-');
+                  const optimizedPath = `optimized-images/${fallbackName}-${Date.now()}.webp`;
+                  const { error: upErr } = await supabase.storage
+                    .from('client-assets')
+                    .upload(optimizedPath, buffer, { contentType: 'image/webp', upsert: true });
+                  if (upErr) throw upErr;
+                  const { data: { publicUrl: supaUrl } } = supabase.storage
+                    .from('client-assets')
+                    .getPublicUrl(optimizedPath);
+                  console.log(`Uploaded fallback image for ${slotKey}: ${supaUrl}`);
+                  return { [targetField]: supaUrl };
+                } catch (uploadErr) {
+                  console.error(`Fallback upload failed for ${slotKey}`, uploadErr);
+                  return null;
+                }
+              }
+            } catch (optimizationError) {
+              console.error(`Error optimizing image for ${slotKey}:`, optimizationError);
               try {
                 const imgResp = await fetch(imageUrl);
                 const buffer = await imgResp.arrayBuffer();
-                const fallbackName = `${restaurantName}-${key}`
+                const fallbackName = `${restaurantName}-${slotKey}`
                   .toLowerCase()
                   .replace(/[^a-z0-9\-]+/g, '-')
                   .replace(/-+/g, '-');
@@ -565,59 +671,35 @@ serve(async (req) => {
                 const { data: { publicUrl: supaUrl } } = supabase.storage
                   .from('client-assets')
                   .getPublicUrl(optimizedPath);
-                console.log(`Uploaded fallback image for ${key}: ${supaUrl}`);
+                console.log(`Uploaded fallback image for ${slotKey}: ${supaUrl}`);
                 return { [targetField]: supaUrl };
               } catch (uploadErr) {
-                console.error(`Fallback upload failed for ${key}`, uploadErr);
+                console.error(`Fallback upload failed for ${slotKey}`, uploadErr);
                 return null;
               }
             }
-          } catch (optimizationError) {
-            console.error(`Error optimizing image for ${key}:`, optimizationError);
-            // Fallback: upload the Leonardo image directly to Supabase (never store CDN URL)
-            try {
-              const imgResp = await fetch(imageUrl);
-              const buffer = await imgResp.arrayBuffer();
-              const fallbackName = `${restaurantName}-${key}`
-                .toLowerCase()
-                .replace(/[^a-z0-9\-]+/g, '-')
-                .replace(/-+/g, '-');
-              const optimizedPath = `optimized-images/${fallbackName}-${Date.now()}.webp`;
-              const { error: upErr } = await supabase.storage
-                .from('client-assets')
-                .upload(optimizedPath, buffer, { contentType: 'image/webp', upsert: true });
-              if (upErr) throw upErr;
-              const { data: { publicUrl: supaUrl } } = supabase.storage
-                .from('client-assets')
-                .getPublicUrl(optimizedPath);
-              console.log(`Uploaded fallback image for ${key}: ${supaUrl}`);
-              return { [targetField]: supaUrl };
-            } catch (uploadErr) {
-              console.error(`Fallback upload failed for ${key}`, uploadErr);
-              return null;
-            }
+          } else {
+            console.warn(`Timed out generating AI image for ${slotKey}`);
+            return null;
           }
-        } else {
-          console.warn(`Timed out generating image for ${key}`);
+        } catch (error) {
+          console.error(`Error generating AI image for ${slotKey}:`, error);
           return null;
         }
-      } catch (error) {
-        console.error(`Error generating image for ${key}:`, error);
-        return null;
-      }
-    });
+      });
 
-    // Wait for all image generations to complete
-    const imageResults = await Promise.all(imageGenerationPromises);
-    
-    // Merge all successful image updates
-    imageResults.forEach(result => {
-      if (result) {
-        Object.assign(imageUpdates, result);
-      }
-    });
+      const imageResults = await Promise.all(imageGenerationPromises);
+      
+      imageResults.forEach(result => {
+        if (result) {
+          Object.assign(imageUpdates, result);
+        }
+      });
+    }
 
-    // Step 4: Update database with all content including generated images
+    console.log(`Total images assigned: ${Object.keys(imageUpdates).length} (${Object.keys(customImageMapping).length} custom + ${Object.keys(imageUpdates).length - Object.keys(customImageMapping).length} AI)`);
+
+    // Step 7: Update database with all content including images
     const finalUpdate = {
       ...generatedContent.content,
       ...imageUpdates,

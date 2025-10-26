@@ -450,16 +450,26 @@ serve(async (req) => {
       console.log('Processing images data for client:', actualClientId);
       
       // Update carousel settings in admin_content
+      const adminContentUpdate: any = {
+        client_id: actualClientId,
+        carousel_enabled: imagesData.carousel_enabled,
+        carousel_display_order: 2,
+        content_briefing: contentBriefing,
+        style_briefing: styleBriefing || '',
+        contact_delivery_briefing: contactDeliveryBriefing || '',
+        image_preference: imagesData.image_preference,
+        ai_image_style: imagesData.ai_image_style,
+        ai_color_palette: imagesData.ai_color_palette,
+        ai_image_mood: imagesData.ai_image_mood,
+      };
+
+      if (imagesData.detected_image_style) {
+        adminContentUpdate.detected_image_style = imagesData.detected_image_style;
+      }
+
       const { error: carouselError } = await supabase
         .from('admin_content')
-        .upsert({
-          client_id: actualClientId,
-          carousel_enabled: imagesData.carousel_enabled,
-          carousel_display_order: 2, // Default position
-          content_briefing: contentBriefing,
-          style_briefing: styleBriefing || '',
-          contact_delivery_briefing: contactDeliveryBriefing || ''
-        }, {
+        .upsert(adminContentUpdate, {
           onConflict: 'client_id'
         });
 

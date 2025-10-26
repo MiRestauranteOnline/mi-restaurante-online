@@ -89,3 +89,6 @@ verify_jwt = false
 
 [functions.create-turnstile-widget]
 verify_jwt = false
+
+[functions.analyze-image-style]
+verify_jwt = false

@@ -34,6 +34,9 @@ export type Database = {
           about_team_section_title_first_line: string | null
           about_team_section_title_second_line: string | null
           about_us_label: string | null
+          ai_color_palette: string | null
+          ai_image_mood: string | null
+          ai_image_style: string | null
           carousel_display_order: number | null
           carousel_enabled: boolean | null
           client_id: string
@@ -51,6 +54,7 @@ export type Database = {
           content_briefing: string | null
           created_at: string
           culinary_masterpieces_label: string | null
+          detected_image_style: Json | null
           downloadable_menu_url: string | null
           footer_description: string | null
           footer_logo_url: string | null
@@ -99,6 +103,7 @@ export type Database = {
           homepage_services_section_title_second_line: string | null
           homepage_services_section_visible: boolean | null
           id: string
+          image_preference: string | null
           menu_page_hero_background_url: string | null
           menu_page_hero_description: string | null
           menu_page_hero_title: string | null
@@ -177,6 +182,9 @@ export type Database = {
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
+          ai_color_palette?: string | null
+          ai_image_mood?: string | null
+          ai_image_style?: string | null
           carousel_display_order?: number | null
           carousel_enabled?: boolean | null
           client_id: string
@@ -194,6 +202,7 @@ export type Database = {
           content_briefing?: string | null
           created_at?: string
           culinary_masterpieces_label?: string | null
+          detected_image_style?: Json | null
           downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
@@ -242,6 +251,7 @@ export type Database = {
           homepage_services_section_title_second_line?: string | null
           homepage_services_section_visible?: boolean | null
           id?: string
+          image_preference?: string | null
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
@@ -320,6 +330,9 @@ export type Database = {
           about_team_section_title_first_line?: string | null
           about_team_section_title_second_line?: string | null
           about_us_label?: string | null
+          ai_color_palette?: string | null
+          ai_image_mood?: string | null
+          ai_image_style?: string | null
           carousel_display_order?: number | null
           carousel_enabled?: boolean | null
           client_id?: string
@@ -337,6 +350,7 @@ export type Database = {
           content_briefing?: string | null
           created_at?: string
           culinary_masterpieces_label?: string | null
+          detected_image_style?: Json | null
           downloadable_menu_url?: string | null
           footer_description?: string | null
           footer_logo_url?: string | null
@@ -385,6 +399,7 @@ export type Database = {
           homepage_services_section_title_second_line?: string | null
           homepage_services_section_visible?: boolean | null
           id?: string
+          image_preference?: string | null
           menu_page_hero_background_url?: string | null
           menu_page_hero_description?: string | null
           menu_page_hero_title?: string | null
@@ -987,6 +1002,9 @@ export type Database = {
           theme: string | null
           timezone: string | null
           trial_end_date: string | null
+          turnstile_secret_key: string | null
+          turnstile_site_key: string | null
+          turnstile_widget_id: string | null
           updated_at: string
           use_coordinates: boolean | null
           vercel_dashboard_url: string | null
@@ -1053,6 +1071,9 @@ export type Database = {
           theme?: string | null
           timezone?: string | null
           trial_end_date?: string | null
+          turnstile_secret_key?: string | null
+          turnstile_site_key?: string | null
+          turnstile_widget_id?: string | null
           updated_at?: string
           use_coordinates?: boolean | null
           vercel_dashboard_url?: string | null
@@ -1119,6 +1140,9 @@ export type Database = {
           theme?: string | null
           timezone?: string | null
           trial_end_date?: string | null
+          turnstile_secret_key?: string | null
+          turnstile_site_key?: string | null
+          turnstile_widget_id?: string | null
           updated_at?: string
           use_coordinates?: boolean | null
           vercel_dashboard_url?: string | null
