@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle, ExternalLink, Mail, Clock, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +15,8 @@ interface SignupSuccessProps {
 export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccessProps) => {
   const [isCreatingAccount, setIsCreatingAccount] = useState(true);
   const [accountCreated, setAccountCreated] = useState(false);
+  const [isGeneratingContent, setIsGeneratingContent] = useState(false);
+  const [clientId, setClientId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -22,32 +25,72 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
 
   const createClientAccount = async () => {
     try {
-      // Call the create-client-user edge function
-      // Temporarily skip the edge function call for testing
-      console.log('Would create account with:', {
-        email: signupData.email,
-        restaurantName: signupData.restaurantName,
-        subdomain: signupData.subdomain,
-        phone: signupData.phone,
-        customDomain: signupData.customDomain,
-        websiteRequirements: websiteRequirements,
-      });
+      console.log('Creating account...');
       
-      // Simulate success for testing
+      // The account should already be created by the payment flow
+      // We just need to fetch the client ID and trigger content generation
+      const { data: clientData, error: clientError } = await supabase
+        .from('clients')
+        .select('id, restaurant_name, subdomain')
+        .eq('subdomain', signupData.subdomain.toLowerCase())
+        .single();
+      
+      if (clientError || !clientData) {
+        throw new Error('No se pudo encontrar la cuenta del cliente');
+      }
+
+      console.log('Client found:', clientData.id);
+      setClientId(clientData.id);
       setAccountCreated(true);
+
+      // Trigger content generation in background
+      triggerContentGeneration(clientData.id, clientData.restaurant_name);
+
       toast({
         title: "¡Cuenta creada exitosamente!",
-        description: "Tu sitio web será creado en las próximas 24-48 horas.",
+        description: "Tu sitio web está siendo generado. Recibirás un email cuando esté listo.",
       });
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Error",
-        description: "Hubo un problema creando tu cuenta. Contacta soporte.",
+        description: "Hubo un problema. Contacta soporte para verificar tu cuenta.",
         variant: "destructive",
       });
     } finally {
       setIsCreatingAccount(false);
+    }
+  };
+
+  const triggerContentGeneration = async (clientId: string, restaurantName: string) => {
+    try {
+      setIsGeneratingContent(true);
+      console.log('Triggering content generation for client:', clientId);
+
+      // Build content briefing from form data
+      const contentBriefing = `${websiteRequirements?.additionalInfo || ''}\n\nTipo de restaurante: ${websiteRequirements?.businessType || ''}\nPúblico objetivo: ${websiteRequirements?.targetAudience || ''}\nEstilo del sitio web: ${websiteRequirements?.websiteStyle || ''}`;
+
+      // Call the generate-client-content edge function
+      const { data, error } = await supabase.functions.invoke('generate-client-content', {
+        body: {
+          briefing: contentBriefing,
+          clientId: clientId,
+          restaurantName: restaurantName,
+          address: signupData.address || 'Lima, Perú'
+        }
+      });
+
+      if (error) {
+        console.error('Error generating content:', error);
+        // Don't show error to user, admin will be notified
+      } else {
+        console.log('Content generation started successfully');
+      }
+    } catch (error) {
+      console.error('Error triggering content generation:', error);
+      // Silent fail - admin will be notified
+    } finally {
+      setIsGeneratingContent(false);
     }
   };
 
@@ -121,14 +164,22 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 text-left">
+                {isGeneratingContent && (
+                  <Alert className="bg-primary/10 border-primary/20">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <AlertDescription>
+                      Generando contenido de tu sitio web...
+                    </AlertDescription>
+                  </Alert>
+                )}
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-medium mt-0.5">
                     1
                   </div>
                   <div className="text-left">
-                    <p className="font-medium text-left">Confirmación por email</p>
+                    <p className="font-medium text-left">Generación de contenido</p>
                     <p className="text-sm text-muted-foreground text-left">
-                      En los próximos minutos
+                      En progreso ahora mismo
                     </p>
                   </div>
                 </div>
@@ -137,9 +188,9 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
                     2
                   </div>
                   <div className="text-left">
-                    <p className="font-medium text-left">Creación del sitio web</p>
+                    <p className="font-medium text-left">Sitio web listo</p>
                     <p className="text-sm text-muted-foreground text-left">
-                      24-48 horas
+                      24-48 horas (recibirás un email)
                     </p>
                   </div>
                 </div>
@@ -150,7 +201,7 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
                   <div className="text-left">
                     <p className="font-medium text-left">Acceso al panel</p>
                     <p className="text-sm text-muted-foreground text-left">
-                      Te enviaremos el enlace
+                      Te enviaremos las credenciales por email
                     </p>
                   </div>
                 </div>

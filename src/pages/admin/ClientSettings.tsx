@@ -6714,7 +6714,9 @@ setReviewForm({
           <CardHeader>
             <CardTitle>{t('briefing.title')}</CardTitle>
             <CardDescription>
-              {t('briefing.description')}
+            <CardDescription>
+              Estos briefings se utilizan para regenerar contenido cuando sea necesario. Solo administradores pueden ver y usar esta función.
+            </CardDescription>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -6781,10 +6783,10 @@ setReviewForm({
                 {isGenerating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generando...
+                    Regenerando...
                   </>
                 ) : (
-                  'Generar Todo el Contenido'
+                  'Regenerar Todo el Contenido'
                 )}
               </Button>
             </div>
@@ -6792,12 +6794,17 @@ setReviewForm({
             <div className="text-sm text-muted-foreground">
               <p><strong>¿Qué hace esta herramienta?</strong></p>
               <ul className="mt-2 space-y-1 list-disc list-inside">
-                <li><strong>Content Briefing:</strong> Genera contenido, títulos, descripciones y textos optimizados para SEO</li>
-                <li><strong>Style Briefing:</strong> Determina colores, fuentes, logos y elementos de branding</li>
-                <li><strong>Contact/Delivery/Social:</strong> Completa información práctica como teléfonos, direcciones, redes sociales</li>
-                <li>Genera imágenes profesionales que coinciden con tu marca</li>
-                <li>Todo el contenido se crea en español y se optimiza para Lima, Perú</li>
+                <li><strong>Content Briefing:</strong> Regenera contenido, títulos, descripciones y textos optimizados para SEO</li>
+                <li><strong>Style Briefing:</strong> Actualiza colores, fuentes, logos y elementos de branding</li>
+                <li><strong>Contact/Delivery/Social:</strong> Actualiza información práctica como teléfonos, direcciones, redes sociales</li>
+                <li>Regenera imágenes profesionales que coinciden con tu marca</li>
+                <li>Todo el contenido se actualiza en español y se optimiza para Lima, Perú</li>
               </ul>
+              <Alert className="mt-4 bg-amber-50 border-amber-200">
+                <AlertDescription className="text-sm text-amber-800">
+                  <strong>Nota:</strong> Esta función solo está disponible para administradores. El contenido se genera automáticamente durante el registro.
+                </AlertDescription>
+              </Alert>
             </div>
           </CardContent>
         </Card>
