@@ -108,23 +108,23 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const handleUpgrade = async () => {
     setActionLoading(true);
     try {
-      const { error } = await supabase
-        .from('clients')
-        .update({ plan_type: 'advanced' })
-        .eq('id', clientId);
+      const { data, error } = await supabase.functions.invoke('upgrade-openpay-plan', {
+        body: { clientId }
+      });
 
       if (error) throw error;
+      if (!data.success) throw new Error(data.error);
 
       toast({
         title: "Plan actualizado",
-        description: "Plan actualizado a Avanzado exitosamente",
+        description: `Upgrade exitoso. Cargo prorrateado: S/ ${data.proratedAmount.toFixed(2)} por ${data.daysRemaining} días restantes.`,
       });
 
       fetchSubscriptionData();
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "No se pudo actualizar el plan",
+        title: "Error al actualizar",
+        description: error.message || "No se pudo procesar el upgrade",
         variant: "destructive"
       });
     } finally {
@@ -135,23 +135,29 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const handleDowngrade = async () => {
     setActionLoading(true);
     try {
-      const { error } = await supabase
-        .from('clients')
-        .update({ plan_type: 'basic' })
-        .eq('id', clientId);
+      const { data, error } = await supabase.functions.invoke('change-openpay-plan', {
+        body: { 
+          clientId,
+          newPlanType: 'basic',
+          immediate: false // Schedule for end of billing period
+        }
+      });
 
       if (error) throw error;
+      if (!data.success) throw new Error(data.error);
 
+      const scheduledDate = new Date(data.scheduledDate).toLocaleDateString('es-ES');
+      
       toast({
-        title: "Plan actualizado",
-        description: "Plan actualizado a Básico exitosamente",
+        title: "Downgrade programado",
+        description: `Tu plan cambiará a Básico el ${scheduledDate} (fin del periodo actual)`,
       });
 
       fetchSubscriptionData();
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "No se pudo actualizar el plan",
+        description: error.message || "No se pudo programar el downgrade",
         variant: "destructive"
       });
     } finally {
@@ -159,24 +165,22 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     }
   };
 
-  const handleCancel = async () => {
+  const handleCancel = async (reason?: string) => {
     setActionLoading(true);
     try {
-      // Direct database update for cancellation
-      const { error } = await supabase
-        .from('clients')
-        .update({
-          subscription_status: 'cancelled',
-          cancellation_date: new Date().toISOString(),
-          cancellation_reason: 'user_request'
-        })
-        .eq('id', clientId);
+      const { data, error } = await supabase.functions.invoke('cancel-openpay-subscription', {
+        body: { 
+          clientId,
+          reason: reason || 'user_request'
+        }
+      });
 
       if (error) throw error;
+      if (!data.success) throw new Error(data.error);
 
       toast({
         title: "Suscripción cancelada",
-        description: "Tu suscripción ha sido cancelada",
+        description: "Tu suscripción ha sido cancelada en OpenPay. Tu sitio web quedará inactivo.",
       });
 
       fetchSubscriptionData();
@@ -369,12 +373,37 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               </li>
             </ul>
             {subscription.plan_type === 'advanced' && canChangePlan(subscription.subscription_status) && (
-              <Button className="w-full mt-4" variant="outline" onClick={handleDowngrade} disabled={actionLoading}>
-                Cambiar a Básico
-                {!subscription.subscription_auto_recurring && (
-                  <span className="text-xs block mt-1">(Cambio efectivo próximo ciclo)</span>
-                )}
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="w-full mt-4" variant="outline" disabled={actionLoading}>
+                    Cambiar a Básico
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Cambiar a Plan Básico?</AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-3">
+                      <p>El cambio se aplicará al final de tu periodo de facturación actual.</p>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                        <p className="font-semibold text-yellow-900 mb-2">Perderás acceso a:</p>
+                        <ul className="text-sm text-yellow-800 space-y-1">
+                          <li>• Google Analytics tracking</li>
+                          <li>• Panel de Analytics avanzado</li>
+                          <li>• Soporte por WhatsApp directo</li>
+                          <li>• Soporte prioritario</li>
+                          <li>• 1 hora mensual de asistencia profesional para cambios</li>
+                        </ul>
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDowngrade} disabled={actionLoading}>
+                      Confirmar Cambio
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </CardContent>
         </Card>
@@ -399,13 +428,45 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               <li>• Soporte prioritario</li>
             </ul>
             {subscription.plan_type === 'basic' && canChangePlan(subscription.subscription_status) && (
-              <Button className="w-full mt-4" onClick={handleUpgrade} disabled={actionLoading}>
-                <ArrowUp className="h-4 w-4 mr-2" />
-                Actualizar a Avanzado
-                {!subscription.subscription_auto_recurring && (
-                  <span className="text-xs block mt-1">(Cambio efectivo próximo ciclo)</span>
-                )}
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="w-full mt-4" disabled={actionLoading}>
+                    <ArrowUp className="h-4 w-4 mr-2" />
+                    Actualizar a Avanzado
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Actualizar a Plan Avanzado?</AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-3">
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <p className="text-sm text-blue-900 mb-2">
+                          Se te cobrará el monto prorrateado por los días restantes de tu periodo actual.
+                        </p>
+                        <p className="text-sm text-blue-900">
+                          <strong>Precio mensual:</strong> S/ {getPlanPrice('advanced')}
+                        </p>
+                      </div>
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <p className="font-semibold text-green-900 mb-2">Obtendrás acceso inmediato a:</p>
+                        <ul className="text-sm text-green-800 space-y-1">
+                          <li>• Google Analytics tracking</li>
+                          <li>• Panel de Analytics avanzado</li>
+                          <li>• Soporte por WhatsApp directo</li>
+                          <li>• Soporte prioritario</li>
+                          <li>• 1 hora mensual de asistencia profesional</li>
+                        </ul>
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleUpgrade} disabled={actionLoading}>
+                      Confirmar Upgrade
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </CardContent>
         </Card>
@@ -464,19 +525,9 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             <Alert className="border-destructive/50">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription className="font-medium">
-                <strong>ADVERTENCIA IMPORTANTE:</strong> Si cancelas tu suscripción, tu sitio web será <strong>DESACTIVADO PERMANENTEMENTE</strong> al final de tu período de facturación actual{isValidDate(subscription.next_billing_date) ? ` (${formatDateEs(subscription.next_billing_date)})` : ''}.
+                La cancelación se procesa inmediatamente en OpenPay y tu sitio será desactivado.
               </AlertDescription>
             </Alert>
-            
-            <div className="bg-card p-4 rounded-lg border">
-              <h4 className="font-semibold mb-2 text-destructive">Consecuencias de la cancelación:</h4>
-              <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Tu sitio web será completamente inaccesible para tus clientes</li>
-                <li>• Perderás toda la funcionalidad y características de tu plan</li>
-                <li>• El hosting y dominio .mirestaurante.com serán desactivados</li>
-                <li>• Si tienes un dominio personalizado, podrás usarlo libremente en otro servicio</li>
-              </ul>
-            </div>
             
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -487,27 +538,30 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-destructive flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5" />
-                    ⚠️ ¿Estás completamente seguro?
-                  </AlertDialogTitle>
+                  <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
                   <AlertDialogDescription className="space-y-3">
-                    <p className="font-semibold text-foreground">Esta acción cancelará tu suscripción permanentemente.</p>
-                    <div className="bg-destructive/10 p-3 rounded-md">
-                      <p className="font-medium text-destructive mb-2">Tu sitio web será DESACTIVADO el:</p>
-                      <p className="text-lg font-bold">{isValidDate(subscription.next_billing_date) ? formatDateEs(subscription.next_billing_date) : 'Fin del período actual'}</p>
+                    <p>Esta acción no se puede deshacer y tendrá efecto inmediato.</p>
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <p className="font-semibold text-red-900 mb-2">Perderás:</p>
+                      <ul className="text-sm text-red-800 space-y-1">
+                        <li>• Acceso completo a tu sitio web</li>
+                        <li>• Todas las funcionalidades y características</li>
+                        <li>• Tu dominio personalizado</li>
+                        <li>• Configuraciones y datos guardados</li>
+                      </ul>
                     </div>
-                    <ul className="space-y-1 text-sm">
-                      <li>• Tus clientes NO podrán acceder a tu página web</li>
-                      <li>• Perderás todas las funcionalidades online</li>
-                      <li>• El dominio .mirestaurante.com será liberado</li>
-                      <li>• Si tienes dominio propio, podrás usarlo en otro servicio</li>
-                    </ul>
+                    <p className="text-sm text-muted-foreground">
+                      Tu sitio web será desactivado inmediatamente tras confirmar.
+                    </p>
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>No, mantener mi suscripción</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleCancel} className="bg-destructive hover:bg-destructive/90">
+                  <AlertDialogCancel>No, mantener suscripción</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={() => handleCancel('user_request')} 
+                    className="bg-destructive hover:bg-destructive/90" 
+                    disabled={actionLoading}
+                  >
                     Sí, cancelar definitivamente
                   </AlertDialogAction>
                 </AlertDialogFooter>
