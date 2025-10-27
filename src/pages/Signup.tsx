@@ -357,17 +357,32 @@ const Signup = () => {
         const finalData = { ...updatedData, paymentId: newClientId };
         setSignupData(finalData);
         
-        setIsProcessingPayment(false);
-        
-        // Redirect to login page with success message
-        // User needs to log in manually (includes CAPTCHA verification)
-        toast({
-          title: "¡Cuenta creada exitosamente!",
-          description: "Por favor inicia sesión con tu email y contraseña para continuar con el registro.",
-          duration: 6000,
+        // CRITICAL: Auto-login the user after account creation
+        console.log('🔐 Signing in user automatically...');
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: finalData.email,
+          password: finalData.password,
         });
         
-        navigate('/auth', { state: { email: finalData.email, fromSignup: true } });
+        if (signInError) {
+          console.error('❌ Auto-login failed:', signInError);
+          setIsProcessingPayment(false);
+          toast({
+            title: "Error al iniciar sesión",
+            description: "Cuenta creada, pero hubo un problema al iniciar sesión automáticamente. Por favor inicia sesión manualmente.",
+            variant: "destructive",
+          });
+          navigate('/auth', { state: { email: finalData.email } });
+          return;
+        }
+        
+        console.log('✅ User signed in successfully, moving to step 2');
+        setIsProcessingPayment(false);
+        setCurrentStep(2);
+        toast({
+          title: "¡Bienvenido!",
+          description: "Ahora completa el pago para activar tu suscripción.",
+        });
       } else {
         console.error('❌ Unexpected server response format:', data);
         throw new Error('Respuesta inesperada del servidor');

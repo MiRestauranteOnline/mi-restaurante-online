@@ -25,7 +25,12 @@ const signupSchema = z.object({
     .min(3, "El subdominio debe tener al menos 3 caracteres")
     .regex(/^[a-z0-9-]+$/, "Solo se permiten letras minúsculas, números y guiones"),
   email: z.string().email("Email inválido"),
-  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+  password: z.string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .regex(/[A-Z]/, "Debe contener al menos una letra mayúscula")
+    .regex(/[a-z]/, "Debe contener al menos una letra minúscula")
+    .regex(/[0-9]/, "Debe contener al menos un número")
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, "Debe contener al menos un carácter especial (!@#$%^&*...)"),
   phoneCountryCode: z.string().min(1, "Selecciona un código de país"),
   phone: z.string().min(6, "Número de teléfono inválido"),
   address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"),
@@ -511,6 +516,9 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                     {...field}
                   />
                 </FormControl>
+                <p className="text-xs text-muted-foreground">
+                  Debe contener: mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial
+                </p>
                 <FormMessage />
               </FormItem>
             )}

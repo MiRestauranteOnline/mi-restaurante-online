@@ -8,10 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { TurnstileWidget } from '@/components/TurnstileWidget';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield } from 'lucide-react';
-
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
@@ -35,8 +33,7 @@ export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [showCaptchaWarning, setShowCaptchaWarning] = useState(false);
+  const [isForgotPasswordMode, setIsForgotPasswordMode] = useState(false);
   const navigate = useNavigate();
   
   // Get state from navigation (if redirected from signup)
@@ -143,31 +140,47 @@ export default function Auth() {
     }
   };
 
+  const handleForgotPassword = async (email: string) => {
+    if (!email) {
+      toast.error('Por favor ingresa tu email');
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.success('¡Revisa tu email! Te enviamos un enlace para restablecer tu contraseña.');
+      setIsForgotPasswordMode(false);
+    } catch (error) {
+      toast.error('Error al enviar email de recuperación');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleLogin = async (data: AuthFormData) => {
     setIsLoading(true);
     
-    // Check if CAPTCHA is configured and token is present
-    if (!captchaToken) {
-      setShowCaptchaWarning(true);
-      setIsLoading(false);
-      return;
-    }
+    // No CAPTCHA check needed - CAPTCHA only on signup for bot prevention
+    // Supabase has built-in rate limiting for login attempts
     
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
-        options: {
-          captchaToken: captchaToken,
-        },
       });
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           toast.error('Email o contraseña incorrectos');
-        } else if (error.message.includes('captcha')) {
-          toast.error('Verificación de seguridad fallida. Por favor, intenta de nuevo.');
-          setCaptchaToken(null); // Reset CAPTCHA
         } else {
           toast.error(error.message);
         }
@@ -177,7 +190,6 @@ export default function Auth() {
       toast.success('¡Bienvenido!');
     } catch (error) {
       toast.error('Error al iniciar sesión');
-      setCaptchaToken(null); // Reset CAPTCHA on error
     } finally {
       setIsLoading(false);
     }
@@ -190,11 +202,11 @@ export default function Auth() {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-primary">Mi Restaurante Online</CardTitle>
           <CardDescription>
-            {isRecoveryMode ? 'Establece tu nueva contraseña' : 'Panel de administración'}
+            {isRecoveryMode ? 'Establece tu nueva contraseña' : isForgotPasswordMode ? 'Recuperar contraseña' : 'Panel de administración'}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {fromSignup && (
+          {fromSignup && !isForgotPasswordMode && (
             <Alert className="mb-4 bg-primary/10 border-primary">
               <Shield className="h-4 w-4" />
               <AlertDescription>
@@ -203,7 +215,58 @@ export default function Auth() {
             </Alert>
           )}
           
-          {isRecoveryMode ? (
+          {isForgotPasswordMode ? (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
+              </p>
+              
+              <FormField
+                control={loginForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="tu@email.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setIsForgotPasswordMode(false)}
+                  disabled={isLoading}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="button"
+                  className="flex-1"
+                  onClick={() => handleForgotPassword(loginForm.getValues('email'))}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : (
+                    'Enviar enlace'
+                  )}
+                </Button>
+              </div>
+            </div>
+          ) : isRecoveryMode ? (
             <Form {...resetForm}>
               <form onSubmit={resetForm.handleSubmit(handlePasswordReset)} className="space-y-4">
                 <FormField
@@ -315,32 +378,18 @@ export default function Auth() {
                   )}
                 />
 
-                {/* CAPTCHA Widget */}
-                {showCaptchaWarning && !captchaToken && (
-                  <Alert variant="destructive">
-                    <Shield className="h-4 w-4" />
-                    <AlertDescription>
-                      Por favor, completa la verificación de seguridad antes de continuar.
-                    </AlertDescription>
-                  </Alert>
-                )}
-                
-                <TurnstileWidget
-                  onVerify={(token) => {
-                    setCaptchaToken(token);
-                    setShowCaptchaWarning(false);
-                  }}
-                  onError={() => {
-                    setCaptchaToken(null);
-                    toast.error('Error en la verificación de seguridad. Por favor, recarga la página.');
-                  }}
-                  onExpire={() => {
-                    setCaptchaToken(null);
-                    setShowCaptchaWarning(true);
-                  }}
-                />
+                <div className="flex justify-end">
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="px-0 text-sm text-primary hover:underline"
+                    onClick={() => setIsForgotPasswordMode(true)}
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </Button>
+                </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading || !captchaToken}>
+                <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
