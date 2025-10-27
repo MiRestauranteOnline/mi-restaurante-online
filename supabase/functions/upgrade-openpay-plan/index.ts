@@ -58,9 +58,48 @@ serve(async (req) => {
 
     console.log(`Prorated amount: ${proratedAmount} for ${daysRemaining} days remaining`);
 
+    // Short-circuit in test mode: if using mock/test OpenPay IDs, skip external API calls
+    const isTestMode = (client.openpay_customer_id?.startsWith('test_') || client.openpay_subscription_id?.startsWith('test_'));
+    if (isTestMode) {
+      console.log('Test mode detected (mock OpenPay IDs). Skipping OpenPay API calls and updating DB directly.');
+      const subscriptionId = client.openpay_subscription_id || `test_sub_${crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
+
+      // Compute new end date: one month after next billing date
+      const newEndDate = new Date(nextBillingDate);
+      newEndDate.setMonth(newEndDate.getMonth() + 1);
+
+      await supabase
+        .from('clients')
+        .update({
+          plan_type: 'advanced',
+          openpay_subscription_id: subscriptionId,
+          next_billing_date: nextBillingDate.toISOString(),
+          subscription_end_date: newEndDate.toISOString(),
+          pending_plan_change: null,
+          pending_plan_change_date: null,
+          payment_status: 'paid',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', clientId);
+
+      console.log('Plan upgraded successfully (test mode).');
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          proratedAmount,
+          daysRemaining,
+          newPlanType: 'advanced',
+          testMode: true,
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
     const auth = btoa(`${privateKey}:`);
     const openpayUrl = `${openpayApiBase}/${merchantId}`;
-
     // 1. Cancel existing basic subscription
     const cancelResponse = await fetch(
       `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions/${client.openpay_subscription_id}`,
