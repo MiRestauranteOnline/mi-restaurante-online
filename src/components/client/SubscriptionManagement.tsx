@@ -365,7 +365,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             </div>
           )}
 
-          {subscription.pending_plan_change === 'basic' && isValidDate(subscription.pending_plan_change_date) && (
+          {subscription.pending_plan_change === 'basic' && isValidDate(subscription.pending_plan_change_date) && !subscription.cancellation_date && (
             <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-4 w-4 text-blue-600" />
