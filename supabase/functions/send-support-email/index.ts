@@ -221,6 +221,21 @@ const handler = async (req: Request): Promise<Response> => {
       // Don't fail the request if email fails, ticket is already created
     } else {
       console.log("Support email sent successfully to:", supportEmail);
+      
+      // Log email to resend_email_logs (non-blocking)
+      try {
+        await supabase.from("resend_email_logs").insert({
+          email_type: "support_request",
+          recipient_email: supportEmail,
+          recipient_type: "admin",
+          client_id: clientId,
+          ticket_number: ticket.ticket_number,
+          status: "sent",
+          resend_id: emailResponse.data?.id,
+        });
+      } catch (logError) {
+        console.error("Failed to log email:", logError);
+      }
     }
 
     // Send confirmation email to customer

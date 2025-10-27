@@ -1,7 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -36,6 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
     console.log("Send reclamacion email function called");
 
     const { claimCode, formData }: ReclamacionRequest = await req.json();
@@ -150,6 +154,19 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Customer email sent successfully:", customerEmailResponse);
 
+    // Log customer email (non-blocking)
+    try {
+      await supabase.from("resend_email_logs").insert({
+        email_type: "reclamacion_customer",
+        recipient_email: formData.email,
+        recipient_type: "customer",
+        status: "sent",
+        resend_id: customerEmailResponse.data?.id,
+      });
+    } catch (logError) {
+      console.error("Failed to log customer email:", logError);
+    }
+
     // Send email to admin
     const adminEmailResponse = await resend.emails.send({
       from: "Mi Restaurante Online <reclamaciones@mirestaurante.online>",
@@ -161,6 +178,21 @@ const handler = async (req: Request): Promise<Response> => {
     if (adminEmailResponse.error) {
       console.error("Error sending admin email:", adminEmailResponse.error);
       throw adminEmailResponse.error;
+    }
+
+    console.log("Admin email sent successfully:", adminEmailResponse);
+    
+    // Log admin email (non-blocking)
+    try {
+      await supabase.from("resend_email_logs").insert({
+        email_type: "reclamacion_admin",
+        recipient_email: "reclamaciones@mirestaurante.online",
+        recipient_type: "admin",
+        status: "sent",
+        resend_id: adminEmailResponse.data?.id,
+      });
+    } catch (logError) {
+      console.error("Failed to log admin email:", logError);
     }
 
     console.log("Admin email sent successfully:", adminEmailResponse);

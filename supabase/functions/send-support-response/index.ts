@@ -63,6 +63,25 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Support response email sent successfully:", emailResponse);
 
+    // Log email to resend_email_logs (non-blocking)
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.75.0");
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      
+      await supabase.from("resend_email_logs").insert({
+        email_type: "support_response",
+        recipient_email: customerEmail,
+        recipient_type: "customer",
+        ticket_number: ticketNumber,
+        status: "sent",
+        resend_id: emailResponse.data?.id,
+      });
+    } catch (logError) {
+      console.error("Failed to log email:", logError);
+    }
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: {

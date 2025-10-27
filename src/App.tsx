@@ -49,7 +49,7 @@ const Guias = ClientGuides;
 import { RecoveryRedirect } from "@/components/RecoveryRedirect";
 import ClientAnalytics from "./pages/client/ClientAnalytics";
 import ClientReservations from "./pages/client/ClientReservations";
-import CloudflareMonitoring from "./pages/admin/CloudflareMonitoring";
+import Monitoring from "./pages/admin/Monitoring";
 import BillingInvoicing from "./pages/admin/BillingInvoicing";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -114,7 +114,7 @@ const AppContent = () => {
           <Route path="client-management" element={<ClientManagement />} />
           <Route path="custom-domains" element={<CustomDomainPage />} />
           <Route path="custom-dns" element={<CustomDNS />} />
-          <Route path="cloudflare-monitoring" element={<CloudflareMonitoring />} />
+          <Route path="monitoring" element={<Monitoring />} />
           <Route path="billing" element={<BillingInvoicing />} />
           <Route path="tickets" element={<TicketManagement />} />
           <Route path="client-images" element={<ClientImages />} />

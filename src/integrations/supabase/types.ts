@@ -1833,6 +1833,53 @@ export type Database = {
           },
         ]
       }
+      resend_email_logs: {
+        Row: {
+          client_id: string | null
+          created_at: string
+          email_type: string
+          error_message: string | null
+          id: string
+          recipient_email: string
+          recipient_type: string
+          resend_id: string | null
+          status: string
+          ticket_number: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          created_at?: string
+          email_type: string
+          error_message?: string | null
+          id?: string
+          recipient_email: string
+          recipient_type: string
+          resend_id?: string | null
+          status?: string
+          ticket_number?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          created_at?: string
+          email_type?: string
+          error_message?: string | null
+          id?: string
+          recipient_email?: string
+          recipient_type?: string
+          resend_id?: string | null
+          status?: string
+          ticket_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resend_email_logs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reservation_schedules: {
         Row: {
           capacity: number

@@ -139,7 +139,7 @@ export default function AdminDashboardLayout() {
     { href: '/admin/client-management', label: t('clientManagement'), icon: Users },
     { href: '/admin/custom-domains', label: 'Custom Domains', icon: Globe },
     { href: '/admin/custom-dns', label: 'DNS Records', icon: Network },
-    { href: '/admin/cloudflare-monitoring', label: 'Cloudflare Monitoring', icon: Monitor, adminOnly: true },
+    { href: '/admin/monitoring', label: 'Monitoring', icon: Monitor, adminOnly: true },
     { href: '/admin/billing', label: 'Billing & Invoices', icon: Receipt },
     { href: '/admin/tickets', label: 'Tickets de Soporte', icon: MessageSquare },
     { href: '/admin/marketing-analytics', label: 'Marketing Analytics', icon: TrendingUp },

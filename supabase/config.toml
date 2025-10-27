@@ -1,5 +1,8 @@
 project_id = "ptzcetvcccnojdbzzlyt"
 
+[functions.get-resend-metrics]
+verify_jwt = false
+
 [functions.signup-client]
 verify_jwt = false
 
