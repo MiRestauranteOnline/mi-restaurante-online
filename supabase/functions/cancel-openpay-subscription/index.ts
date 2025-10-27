@@ -53,10 +53,16 @@ serve(async (req) => {
       }
     );
 
-    if (!cancelResponse.ok && cancelResponse.status !== 404) {
+    if (!cancelResponse.ok && cancelResponse.status !== 404 && cancelResponse.status !== 412) {
       const error = await cancelResponse.json();
       console.error('OpenPay subscription cancellation failed:', error);
-      throw new Error('Failed to cancel subscription in OpenPay');
+      throw new Error(`Failed to cancel subscription in OpenPay: ${error.description || 'Unknown error'}`);
+    }
+    
+    if (cancelResponse.status === 412) {
+      console.log('OpenPay timing issue (error 3013), proceeding with DB cancellation');
+    } else if (cancelResponse.status === 404) {
+      console.log('Subscription already cancelled in OpenPay, updating DB');
     }
 
     // Update client in database
