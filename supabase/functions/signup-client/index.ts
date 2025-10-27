@@ -114,7 +114,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('User created successfully:', newUser.user.id);
 
-    // Create client record
+    // Create client record with proper initial dates
+    const now = new Date();
+    const subscriptionEndDate = new Date(now);
+    subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1);
+
     const { data: client, error: clientError } = await supabaseAdmin
       .from('clients')
       .insert({
@@ -129,6 +133,10 @@ const handler = async (req: Request): Promise<Response> => {
         address: address || null,
         locked_basic_price: locked_basic_price || null,
         locked_advanced_price: locked_advanced_price || null,
+        subscription_status: 'pending',
+        subscription_start_date: now.toISOString(),
+        subscription_end_date: subscriptionEndDate.toISOString(),
+        next_billing_date: subscriptionEndDate.toISOString(),
         other_customizations: {
           paymentId: paymentId || 'temp-payment-id',
           referralSource: referralSource || null,

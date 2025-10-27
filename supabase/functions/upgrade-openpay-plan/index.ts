@@ -50,13 +50,18 @@ serve(async (req) => {
     const priceDifference = advancedPrice - basicPrice;
 
     // Calculate days remaining in current billing cycle
-    const nextBillingDate = new Date(client.next_billing_date);
+    const nextBillingDate = new Date(client.next_billing_date || new Date());
     const today = new Date();
     const daysRemaining = Math.max(0, Math.ceil((nextBillingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
     const totalDaysInCycle = 30; // Monthly billing
-    const proratedAmount = Math.round((priceDifference * daysRemaining / totalDaysInCycle) * 100) / 100;
+    
+    // If upgrading with 0-1 days left, charge full advanced price for next month
+    // Otherwise, charge prorated difference for remaining days
+    const proratedAmount = daysRemaining <= 1 
+      ? advancedPrice 
+      : Math.round((priceDifference * daysRemaining / totalDaysInCycle) * 100) / 100;
 
-    console.log(`Prorated amount: ${proratedAmount} for ${daysRemaining} days remaining`);
+    console.log(`Prorated amount: ${proratedAmount} for ${daysRemaining} days remaining (${daysRemaining <= 1 ? 'full month charge' : 'prorated'})`);
 
     // Short-circuit in test mode: if using mock/test OpenPay IDs, skip external API calls
     const isTestMode = (client.openpay_customer_id?.startsWith('test_') || client.openpay_subscription_id?.startsWith('test_'));
@@ -64,21 +69,25 @@ serve(async (req) => {
       console.log('Test mode detected (mock OpenPay IDs). Skipping OpenPay API calls and updating DB directly.');
       const subscriptionId = client.openpay_subscription_id || `test_sub_${crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
 
-      // Compute new end date: one month after next billing date
-      const newEndDate = new Date(nextBillingDate);
-      newEndDate.setMonth(newEndDate.getMonth() + 1);
+      // Compute new dates
+      const now = new Date();
+      const newNextBillingDate = new Date(now);
+      newNextBillingDate.setMonth(newNextBillingDate.getMonth() + 1);
+      const newEndDate = new Date(newNextBillingDate);
 
       await supabase
         .from('clients')
         .update({
           plan_type: 'advanced',
+          subscription_status: 'active',
+          subscription_start_date: client.subscription_start_date || now.toISOString(),
           openpay_subscription_id: subscriptionId,
-          next_billing_date: nextBillingDate.toISOString(),
+          next_billing_date: newNextBillingDate.toISOString(),
           subscription_end_date: newEndDate.toISOString(),
           pending_plan_change: null,
           pending_plan_change_date: null,
           payment_status: 'paid',
-          updated_at: new Date().toISOString(),
+          updated_at: now.toISOString(),
         })
         .eq('id', clientId);
 
@@ -191,20 +200,24 @@ serve(async (req) => {
     const subscription = await subscriptionResponse.json();
 
     // 5. Update client in database
-    const newEndDate = new Date(nextBillingDate);
-    newEndDate.setMonth(newEndDate.getMonth() + 1);
+    const now = new Date();
+    const newNextBillingDate = new Date(now);
+    newNextBillingDate.setMonth(newNextBillingDate.getMonth() + 1);
+    const newEndDate = new Date(newNextBillingDate);
 
     await supabase
       .from('clients')
       .update({
         plan_type: 'advanced',
+        subscription_status: 'active',
+        subscription_start_date: client.subscription_start_date || now.toISOString(),
         openpay_subscription_id: subscription.id,
-        next_billing_date: nextBillingDate.toISOString(),
+        next_billing_date: newNextBillingDate.toISOString(),
         subscription_end_date: newEndDate.toISOString(),
         pending_plan_change: null,
         pending_plan_change_date: null,
         payment_status: 'paid',
-        updated_at: new Date().toISOString(),
+        updated_at: now.toISOString(),
       })
       .eq('id', clientId);
 
