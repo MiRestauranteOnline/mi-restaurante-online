@@ -381,13 +381,23 @@ const Signup = () => {
           console.warn('Auto-login failed but allowing user to continue:', signInError.message);
         }
         
-        console.log('✅ User signed in successfully, moving to step 2');
-        setIsProcessingPayment(false);
-        setCurrentStep(2);
-        toast({
-          title: "¡Bienvenido!",
-          description: "Ahora completa el pago para activar tu suscripción.",
-        });
+        if (!signInError) {
+          console.log('✅ User signed in successfully, moving to step 2');
+          setIsProcessingPayment(false);
+          setCurrentStep(2);
+          toast({
+            title: "¡Bienvenido!",
+            description: "Ahora completa el pago para activar tu suscripción.",
+          });
+        } else {
+          // Proceed without session; user can log in later
+          setIsProcessingPayment(false);
+          setCurrentStep(2);
+          toast({
+            title: "Cuenta creada",
+            description: "Continúa con el pago. Si es necesario, inicia sesión desde tu correo o la página de acceso.",
+          });
+        }
       } else {
         console.error('❌ Unexpected server response format:', data);
         throw new Error('Respuesta inesperada del servidor');
