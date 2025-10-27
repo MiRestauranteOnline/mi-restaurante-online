@@ -70,148 +70,153 @@ export interface WebsiteRequirements {
 const Signup = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
-  // Get step from URL or default to 1
-  const urlStep = parseInt(searchParams.get('step') || '1');
-  const urlPlan = searchParams.get('plan') as 'basic' | 'advanced' | null;
-  const urlClient = searchParams.get('client');
-  const [currentStep, setCurrentStep] = useState(urlStep);
-  const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>(urlPlan || 'basic');
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedPlan, setSelectedPlan] = useState<'basic' | 'advanced'>('basic');
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
+  const [createdClientId, setCreatedClientId] = useState<string>("");
   
-  // Check auth and restore signup data
+  // Fetch client data and determine current step from database
   useEffect(() => {
-    const checkAuthAndRestoreData = async () => {
+    const initializeSignupFlow = async () => {
       try {
-        // 1) Load any saved local progress
-        const savedDataRaw = localStorage.getItem('signupProgress');
-        let parsedData: any = null;
-        if (savedDataRaw) {
-          try {
-            parsedData = JSON.parse(savedDataRaw);
-          } catch (e) {
-            console.error('Error parsing saved signupProgress:', e);
-          }
-        }
-
-        // 2) Ensure user is authenticated; if not, try auto sign-in from saved credentials
-        let { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user && parsedData?.signupData?.email && parsedData?.signupData?.password) {
-          try {
-            const { error: signInErr } = await supabase.auth.signInWithPassword({
-              email: parsedData.signupData.email,
-              password: parsedData.signupData.password,
-            });
-            if (!signInErr) {
-              ({ data: { session } } = await supabase.auth.getSession());
-            }
-          } catch (autoErr) {
-            console.warn('Auto sign-in failed:', autoErr);
-          }
-        }
+        // Check if user is authenticated
+        const { data: { session } } = await supabase.auth.getSession();
         
-        // 3) Restore local progress if available
-        if (parsedData) {
-          if (parsedData.signupData) setSignupData(parsedData.signupData);
-          if (parsedData.websiteRequirements) setWebsiteRequirements(parsedData.websiteRequirements);
-          if (parsedData.combinedData) setCombinedData(parsedData.combinedData);
-          if (parsedData.openingHoursData) setOpeningHoursData(parsedData.openingHoursData);
-          if (parsedData.imagesData) setImagesData(parsedData.imagesData);
-          if (parsedData.faqsData) setFaqsData(parsedData.faqsData);
-          if (parsedData.selectedPlan) setSelectedPlan(parsedData.selectedPlan);
-          if (parsedData.createdClientId) setCreatedClientId(parsedData.createdClientId);
-          if (parsedData.currentStep) setCurrentStep(Math.max(parsedData.currentStep, urlStep));
-
-          // If we already have a created client from saved progress, recompute payment amounts
-          if (parsedData.createdClientId) {
-            const b = parsedData.signupData?.locked_basic_price;
-            const a = parsedData.signupData?.locked_advanced_price;
-            const chosen = (parsedData.selectedPlan as 'basic' | 'advanced') || selectedPlan;
-            if (b && a) {
-              const amt = chosen === 'basic' ? b : a;
-              setOriginalAmount(amt);
-              setPaymentAmount(amt);
-            }
-          }
+        if (!session) {
+          // Not logged in - show step 1
+          console.log('No session found, showing step 1');
+          setCurrentStep(1);
+          setIsAuthChecking(false);
+          return;
         }
 
-        // 4) If we are on step 2+ but don't have a client id, resolve it via clients (RLS will scope to current user)
-        if (session?.user && urlStep >= 2 && !parsedData?.createdClientId) {
-          console.log('Resolving client via clients RLS for user:', session.user.id);
-          try {
-            const { data: client, error: clientErr } = await supabase
-              .from('clients')
-              .select('id, restaurant_name, subdomain, email, phone, plan_type, address')
-              .order('created_at', { ascending: false })
-              .maybeSingle();
+        console.log('Session found, fetching client data for user:', session.user.id);
 
-            if (!clientErr && client) {
-              setCreatedClientId(client.id);
-              setSignupData(prev => ({
-                ...prev,
-                email: client.email || session.user.email || '',
-                restaurantName: client.restaurant_name,
-                subdomain: client.subdomain,
-                phone: client.phone || '',
-                address: client.address || '',
-                paymentId: client.id,
-                plan_type: (client.plan_type as 'basic' | 'advanced') || prev.plan_type,
-              }));
-              setSelectedPlan((client.plan_type as 'basic' | 'advanced') || 'basic');
+        // Fetch client associated with this user
+        const { data: userClient, error: clientError } = await supabase
+          .from('user_clients')
+          .select(`
+            client_id,
+            clients!inner(
+              id,
+              restaurant_name,
+              subdomain,
+              email,
+              phone,
+              address,
+              plan_type,
+              subscription_status,
+              opening_hours,
+              signup_completed
+            )
+          `)
+          .eq('user_id', session.user.id)
+          .single();
 
-              // Fetch current pricing to set payment amounts
-              const { data: planData } = await supabase
-                .from('subscription_plans')
-                .select('plan_key, monthly_price')
-                .eq('is_active', true)
-                .in('plan_key', ['basic', 'advanced']);
-              if (planData) {
-                const basicPrice = planData.find(p => p.plan_key === 'basic')?.monthly_price || 49;
-                const advancedPrice = planData.find(p => p.plan_key === 'advanced')?.monthly_price || 99;
-                const amount = client.plan_type === 'basic' ? basicPrice : advancedPrice;
-                setOriginalAmount(amount);
-                setPaymentAmount(amount);
-              }
-
-              // Persist resolved clientId so future refreshes are instant
-              saveProgress(
-                {
-                  ...signupData,
-                  email: client.email || session.user.email || signupData.email,
-                  restaurantName: client.restaurant_name || signupData.restaurantName,
-                  subdomain: client.subdomain || signupData.subdomain,
-                  phone: client.phone || signupData.phone,
-                  address: client.address || signupData.address,
-                  paymentId: client.id,
-                  plan_type: (client.plan_type as 'basic' | 'advanced') || signupData.plan_type,
-                },
-                websiteRequirements,
-                combinedData,
-                openingHoursData,
-                imagesData,
-                faqsData,
-                (client.plan_type as 'basic' | 'advanced') || selectedPlan,
-                client.id,
-                Math.max(2, currentStep)
-              );
-            } else if (clientErr) {
-              console.warn('No client found for current user or access denied:', clientErr);
-            }
-          } catch (fetchError) {
-            console.error('Error resolving client via clients table:', fetchError);
-          }
+        if (clientError || !userClient) {
+          console.log('No client found for user, showing step 1');
+          setCurrentStep(1);
+          setIsAuthChecking(false);
+          return;
         }
+
+        const client = userClient.clients as any;
+        console.log('Client found:', client);
+
+        setCreatedClientId(client.id);
+        setSelectedPlan(client.plan_type || 'basic');
+        setSignupData(prev => ({
+          ...prev,
+          email: client.email || session.user.email,
+          restaurantName: client.restaurant_name,
+          subdomain: client.subdomain,
+          phone: client.phone || '',
+          address: client.address || '',
+          plan_type: client.plan_type,
+        }));
+
+        // Determine current step based on database state
+        if (client.signup_completed) {
+          // Signup fully completed - redirect to dashboard
+          console.log('Signup completed, redirecting to dashboard');
+          navigate('/client', { replace: true });
+          return;
+        }
+
+        // Step 2: Payment pending
+        if (client.subscription_status === 'pending') {
+          console.log('Payment pending, showing step 2');
+          setCurrentStep(2);
+          setIsAuthChecking(false);
+          return;
+        }
+
+        // Step 3: No opening hours
+        if (!client.opening_hours || Object.keys(client.opening_hours).length === 0) {
+          console.log('No opening hours, showing step 3');
+          setCurrentStep(3);
+          setIsAuthChecking(false);
+          return;
+        }
+
+        // Step 4: Check for images
+        const { data: images } = await supabase
+          .from('carousel_images')
+          .select('id')
+          .eq('client_id', client.id)
+          .eq('is_active', true);
+
+        if (!images || images.length === 0) {
+          console.log('No images, showing step 4');
+          setCurrentStep(4);
+          setIsAuthChecking(false);
+          return;
+        }
+
+        // Step 5: Check for FAQs
+        const { data: faqs } = await supabase
+          .from('faqs')
+          .select('id')
+          .eq('client_id', client.id)
+          .eq('is_active', true);
+
+        if (!faqs || faqs.length === 0) {
+          console.log('No FAQs, showing step 5');
+          setCurrentStep(5);
+          setIsAuthChecking(false);
+          return;
+        }
+
+        // All steps complete - call complete-signup edge function
+        console.log('All steps appear complete, calling complete-signup function');
+        const { error: completeError } = await supabase.functions.invoke('complete-signup');
+        
+        if (completeError) {
+          console.error('Error completing signup:', completeError);
+          toast({
+            title: "Error",
+            description: "No se pudo completar el registro. Contacta soporte.",
+            variant: "destructive",
+          });
+        } else {
+          console.log('Signup marked as completed, redirecting to dashboard');
+          navigate('/client', { replace: true });
+          return;
+        }
+
       } catch (error) {
-        console.error('Error checking auth:', error);
+        console.error('Error initializing signup flow:', error);
+        setCurrentStep(1);
       } finally {
         setIsAuthChecking(false);
       }
     };
 
-    checkAuthAndRestoreData();
-  }, [urlStep]);
+    initializeSignupFlow();
+  }, [navigate, toast]);
   
-  // URL params sync handled after state declarations
-  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [signupData, setSignupData] = useState<SignupData>({
     email: "",
     password: "",
@@ -262,41 +267,20 @@ const Signup = () => {
   const [isProcessingFinalStep, setIsProcessingFinalStep] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [originalAmount, setOriginalAmount] = useState(0);
-  const [createdClientId, setCreatedClientId] = useState<string>(urlClient || "");
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
-  const { toast } = useToast();
 
-  // Update URL when step, plan or client changes (preserve params)
+  // Update URL to show current step (for UX only, not used for state)
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams();
     params.set('step', currentStep.toString());
-    if (selectedPlan) params.set('plan', selectedPlan);
-    if (createdClientId) params.set('client', createdClientId);
-    setSearchParams(params);
-  }, [currentStep, selectedPlan, createdClientId, searchParams, setSearchParams]);
-
-  // Reset processing states on mount to prevent stuck loading states
-  React.useEffect(() => {
-    console.log('🔄 Resetting processing states on mount');
-    setIsProcessingPayment(false);
-    setIsProcessingFinalStep(false);
-  }, []);
+    setSearchParams(params, { replace: true });
+  }, [currentStep, setSearchParams]);
 
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
     const updatedData = { ...formData, plan_type: plan };
     setSignupData(updatedData);
     setSelectedPlan(plan);
-    
-    // Save progress to localStorage
-    saveProgress(updatedData, websiteRequirements, combinedData, openingHoursData, imagesData, faqsData, plan, createdClientId, 1);
-    
     setIsProcessingPayment(true);
-
-    // Safety timeout to reset loading state if step transition fails
-    const safetyTimeout = setTimeout(() => {
-      console.warn('⚠️ Safety timeout triggered - resetting loading state');
-      setIsProcessingPayment(false);
-    }, 10000); // 10 seconds
     
     // Fetch plan pricing from database - both plans for locking
     try {
@@ -367,35 +351,33 @@ const Signup = () => {
       }
       
       if (data?.success && data?.client?.id) {
-        console.log('✅ Account created successfully, moving to step 2:', data);
-        clearTimeout(safetyTimeout);
+        console.log('✅ Account created successfully');
         const newClientId = data.client.id;
         setCreatedClientId(newClientId);
         const finalData = { ...updatedData, paymentId: newClientId };
         setSignupData(finalData);
         
-        // Sign in the user so they stay authenticated
-        try {
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email: finalData.email,
-            password: finalData.password,
+        // CRITICAL: Auto-login the user after account creation
+        console.log('🔐 Signing in user...');
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: finalData.email,
+          password: finalData.password,
+        });
+        
+        if (signInError) {
+          console.error('❌ Auto-login failed:', signInError);
+          setIsProcessingPayment(false);
+          toast({
+            title: "Error",
+            description: "Cuenta creada pero no pudimos iniciar sesión automáticamente. Por favor inicia sesión manualmente.",
+            variant: "destructive",
           });
-          
-          if (signInError) {
-            console.error('Sign in error:', signInError);
-            // Continue anyway, session might still work
-          } else {
-            console.log('✅ User signed in successfully');
-          }
-        } catch (signInErr) {
-          console.error('Failed to sign in user:', signInErr);
+          navigate('/auth');
+          return;
         }
         
-        // Save progress before moving to payment
-        saveProgress(finalData, websiteRequirements, combinedData, openingHoursData, imagesData, faqsData, plan, newClientId, 2);
-        
+        console.log('✅ User signed in successfully, moving to step 2');
         setIsProcessingPayment(false);
-        console.log('🔄 Setting currentStep to 2');
         setCurrentStep(2);
         toast({
           title: "Cuenta creada",
@@ -407,7 +389,6 @@ const Signup = () => {
       }
     } catch (error: any) {
       console.error('Account creation error:', error);
-      clearTimeout(safetyTimeout); // Clear safety timeout on error
       setIsProcessingPayment(false);
       const errorMessage = (error && error.message) || 'Error al procesar el registro. Por favor contacta soporte.';
       toast({ title: 'No pudimos crear tu cuenta', description: errorMessage, variant: 'destructive' });
@@ -424,145 +405,85 @@ const Signup = () => {
   };
 
   const handlePaymentSuccess = () => {
-    // Save progress and move to requirements step after successful payment
-    saveProgress(signupData, websiteRequirements, combinedData, openingHoursData, imagesData, faqsData, selectedPlan, createdClientId, 3);
+    console.log('✅ Payment successful, moving to step 3');
     setCurrentStep(3);
   };
   
-  // Helper function to save progress
-  const saveProgress = (
-    signup: SignupData,
-    requirements: WebsiteRequirements,
-    combined: CombinedData,
-    hours: OpeningHoursData,
-    images: ImagesData,
-    faqs: FAQsData,
-    plan: 'basic' | 'advanced',
-    clientId: string,
-    step: number
-  ) => {
-    localStorage.setItem('signupProgress', JSON.stringify({
-      signupData: signup,
-      websiteRequirements: requirements,
-      combinedData: combined,
-      openingHoursData: hours,
-      imagesData: images,
-      faqsData: faqs,
-      selectedPlan: plan,
-      createdClientId: clientId,
-      currentStep: step,
-      timestamp: Date.now()
-    }));
+  const handlePaymentCancel = () => {
+    console.log('Payment cancelled by user');
+    toast({
+      title: "Pago cancelado",
+      description: "Puedes intentar nuevamente cuando estés listo.",
+    });
   };
 
   const handlePaymentError = (error: string) => {
+    console.error('Payment error:', error);
     toast({
       title: "Error en el pago",
-      description: error,
+      description: error || "Hubo un problema procesando tu pago. Por favor intenta nuevamente.",
       variant: "destructive",
     });
   };
 
-  const handlePaymentCancel = () => {
-    setCurrentStep(1);
-  };
-
   const handleStep2Complete = async (requirements: WebsiteRequirements) => {
     setWebsiteRequirements(requirements);
-    saveProgress(signupData, requirements, combinedData, openingHoursData, imagesData, faqsData, selectedPlan, createdClientId, 4);
-    setCurrentStep(4); // Move to menu step
+    setCurrentStep(4); // Skip to menu step (step 4 in old flow is step 3 in new flow)
     window.scrollTo(0, 0);
   };
 
   const handleStep3Complete = async (combined: CombinedData) => {
     setCombinedData(combined);
-    saveProgress(signupData, websiteRequirements, combined, openingHoursData, imagesData, faqsData, selectedPlan, createdClientId, 5);
     setCurrentStep(5); // Move to opening hours step
     window.scrollTo(0, 0);
   };
 
   const handleStep4Complete = async (openingHours: OpeningHoursData) => {
     setOpeningHoursData(openingHours);
-    saveProgress(signupData, websiteRequirements, combinedData, openingHours, imagesData, faqsData, selectedPlan, createdClientId, 6);
-    setCurrentStep(6); // Move to images step
+    setCurrentStep(6); // Move to images step  
     window.scrollTo(0, 0);
   };
 
   const handleStep5Complete = async (images: ImagesData) => {
     setImagesData(images);
-    saveProgress(signupData, websiteRequirements, combinedData, openingHoursData, images, faqsData, selectedPlan, createdClientId, 7);
     setCurrentStep(7); // Move to FAQs step
     window.scrollTo(0, 0);
   };
 
   const handleStep6Complete = async (faqs: FAQsData) => {
-    setFaqsData(faqs);
     setIsProcessingFinalStep(true);
+    setFaqsData(faqs);
     
     try {
-      // Create briefing summaries from accumulated data
-      const contentBriefing = `${websiteRequirements.additionalInfo}\n\nTipo de restaurante: ${websiteRequirements.businessType}\nPúblico objetivo: ${websiteRequirements.targetAudience}\nEstilo del sitio web: ${websiteRequirements.websiteStyle}`;
+      console.log('✅ All steps completed, calling complete-signup function');
       
-      const styleBriefing = `Estilo del sitio web: ${websiteRequirements.websiteStyle}\nTema: ${websiteRequirements.theme}\nColor primario: ${websiteRequirements.primary_color}\nFuente de títulos: ${websiteRequirements.title_font} (peso: ${websiteRequirements.title_font_weight})\nFuente del cuerpo: ${websiteRequirements.body_font}\nLogo: ${websiteRequirements.logoUrl ? 'Proporcionado' : 'No proporcionado'}`;
+      const { error } = await supabase.functions.invoke('complete-signup');
       
-      const contactDeliveryBriefing = `Nombre del restaurante: ${signupData.restaurantName}\nTeléfono: ${signupData.phone}\nEmail: ${signupData.email}\nDirección: ${signupData.address}\nTiene delivery: ${websiteRequirements.hasDelivery ? 'Sí' : 'No'}\nPlatformas de delivery: ${Object.entries(websiteRequirements.deliveryPlatforms).filter(([_, url]) => url).map(([platform, _]) => platform).join(', ')}\nDelivery por WhatsApp/Teléfono: ${websiteRequirements.deliveryPhoneWhatsapp}\nRedes sociales: ${websiteRequirements.socialMedia.map(sm => `${sm.platform}: ${sm.url}`).join(', ')}`;
-
-      // Store the briefings and initial data in the database
-      const { error } = await supabase.functions.invoke('store-briefings', {
-        body: {
-          clientId: signupData.subdomain, // We'll use subdomain to identify the client
-          contentBriefing,
-          styleBriefing,
-          contactDeliveryBriefing,
-          signupData,
-          websiteRequirements: { ...websiteRequirements, plan_type: signupData.plan_type || 'basic' },
-          menuData: { categories: combinedData.categories, items: combinedData.items },
-          reviewsData: { reviews: combinedData.reviews },
-          teamData: { teamMembers: combinedData.teamMembers },
-          openingHoursData,
-          imagesData,
-          faqsData: faqs
-        }
-      });
-
       if (error) {
-        console.error('Error storing briefings:', error);
-      } else {
-        // Automatically trigger content generation after successful registration
-        console.log('Briefings stored successfully, triggering automatic content generation...');
-        
-        // Trigger content generation in the background (don't wait for it)
-        supabase.functions.invoke('generate-client-content', {
-          body: {
-            briefing: contentBriefing,
-            clientId: signupData.subdomain,
-            restaurantName: signupData.restaurantName,
-            address: signupData.address
-          }
-        }).then(({ error: contentError }) => {
-          if (contentError) {
-            console.error('Error triggering automatic content generation:', contentError);
-          } else {
-            console.log('Automatic content generation triggered successfully');
-          }
-        });
+        console.error('Error completing signup:', error);
+        throw error;
       }
-    } catch (error) {
-      console.error('Error processing briefings:', error);
-    } finally {
+      
+      console.log('✅ Signup completed successfully');
       setIsProcessingFinalStep(false);
+      
+      // Redirect to success page
+      navigate('/signup-success');
+    } catch (error: any) {
+      console.error('Error in final step:', error);
+      setIsProcessingFinalStep(false);
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo completar el registro. Por favor contacta soporte.",
+        variant: "destructive",
+      });
     }
-    
-    // Clear saved progress on completion
-    localStorage.removeItem('signupProgress');
-    
-    setCurrentStep(8); // Move to success step
   };
 
-  // Fallback: ensure payment amount is set on step 2+ even if local data is missing
+  // Fallback: ensure payment amount is set if needed
   useEffect(() => {
     const ensureAmount = async () => {
-      if (urlStep >= 2 && paymentAmount === 0) {
+      if (currentStep >= 2 && paymentAmount === 0) {
         try {
           const { data: planData } = await supabase
             .from('subscription_plans')
@@ -582,7 +503,7 @@ const Signup = () => {
       }
     };
     ensureAmount();
-  }, [urlStep, paymentAmount, selectedPlan]);
+  }, [currentStep, paymentAmount, selectedPlan]);
 
   const handleBackToStep1 = () => {
     setCurrentStep(1);

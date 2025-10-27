@@ -40,6 +40,31 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
           navigate('/client', { replace: true });
           return;
         }
+      } else {
+        // For non-admin routes (client dashboard), check if signup is completed
+        const { data: userClient, error: clientError } = await supabase
+          .from('user_clients')
+          .select(`
+            client_id,
+            clients!inner(signup_completed)
+          `)
+          .eq('user_id', session.user.id)
+          .single();
+
+        if (clientError || !userClient) {
+          console.warn('No client found for user, redirecting to signup');
+          navigate('/registro', { replace: true });
+          return;
+        }
+
+        const client = userClient.clients as any;
+        
+        // If signup not completed, redirect to signup flow
+        if (!client.signup_completed) {
+          console.warn('Signup not completed, redirecting to signup');
+          navigate('/registro', { replace: true });
+          return;
+        }
       }
 
       setAuthorized(true);

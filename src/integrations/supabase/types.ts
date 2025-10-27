@@ -988,6 +988,7 @@ export type Database = {
           reservations_email: string | null
           restaurant_name: string
           ruc: string | null
+          signup_completed: boolean
           social_media_links: Json | null
           ssl_issued_date: string | null
           ssl_status: string | null
@@ -1057,6 +1058,7 @@ export type Database = {
           reservations_email?: string | null
           restaurant_name: string
           ruc?: string | null
+          signup_completed?: boolean
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
@@ -1126,6 +1128,7 @@ export type Database = {
           reservations_email?: string | null
           restaurant_name?: string
           ruc?: string | null
+          signup_completed?: boolean
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
