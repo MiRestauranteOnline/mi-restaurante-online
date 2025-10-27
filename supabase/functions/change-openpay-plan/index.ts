@@ -152,7 +152,7 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         immediate: immediate && isUpgrade,
-        scheduledDate: !immediate || !isUpgrade ? client.next_billing_date : null,
+        scheduledDate: (!immediate || !isUpgrade) ? (client.next_billing_date || client.subscription_end_date) : null,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
