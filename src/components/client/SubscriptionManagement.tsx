@@ -400,7 +400,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             </div>
           )}
 
-          {subscription.cancellation_date && (
+          {subscription.cancellation_date && subscription.subscription_status !== 'active' && (
             <div className="p-4 border border-yellow-200 rounded-lg bg-yellow-50">
               <div className="flex items-center gap-2 mb-2">
                 <XCircle className="h-4 w-4 text-yellow-600" />
