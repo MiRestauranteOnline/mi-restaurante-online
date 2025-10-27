@@ -113,6 +113,27 @@ serve(async (req) => {
         throw new Error('No payment method found. Please add a card first.');
       }
 
+      // Prepare subscription body
+      // If client has already paid (subscription_end_date exists and is in the future),
+      // use trial_end_date to prevent charging until next billing cycle
+      const subscriptionBody: any = {
+        plan_id: planId,
+        card_id: cards[0].id,
+      };
+
+      if (client.subscription_end_date) {
+        const endDate = new Date(client.subscription_end_date);
+        const now = new Date();
+        
+        // If subscription_end_date is in the future, client has already paid for this period
+        if (endDate > now) {
+          // Format trial_end_date as YYYY-MM-DD for OpenPay
+          const trialEndDate = endDate.toISOString().split('T')[0];
+          subscriptionBody.trial_end_date = trialEndDate;
+          console.log(`Setting trial_end_date to ${trialEndDate} (no charge until then)`);
+        }
+      }
+
       // Create new subscription
       const subscriptionResponse = await fetch(
         `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions`,
@@ -122,10 +143,7 @@ serve(async (req) => {
             'Authorization': `Basic ${auth}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            plan_id: planId,
-            card_id: cards[0].id,
-          }),
+          body: JSON.stringify(subscriptionBody),
         }
       );
 
@@ -137,9 +155,25 @@ serve(async (req) => {
 
       const subscription = await subscriptionResponse.json();
 
-      // Calculate new billing dates
-      const subscriptionEndDate = new Date();
-      subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1);
+      // Keep existing billing dates if subscription_end_date is still valid
+      const now = new Date();
+      const existingEndDate = client.subscription_end_date ? new Date(client.subscription_end_date) : null;
+      
+      let subscriptionEndDate: Date;
+      let nextBillingDate: Date;
+      
+      if (existingEndDate && existingEndDate > now) {
+        // Keep existing dates since client already paid for this period
+        subscriptionEndDate = existingEndDate;
+        nextBillingDate = existingEndDate;
+        console.log('Keeping existing billing dates (already paid for this period)');
+      } else {
+        // Calculate new billing dates (only if subscription actually expired)
+        subscriptionEndDate = new Date();
+        subscriptionEndDate.setMonth(subscriptionEndDate.getMonth() + 1);
+        nextBillingDate = subscriptionEndDate;
+        console.log('Creating new billing dates');
+      }
 
       // Update client status
       await supabase
@@ -151,7 +185,7 @@ serve(async (req) => {
           subscription_auto_recurring: true,
           openpay_subscription_id: subscription.id,
           subscription_end_date: subscriptionEndDate.toISOString(),
-          next_billing_date: subscriptionEndDate.toISOString(),
+          next_billing_date: nextBillingDate.toISOString(),
           updated_at: new Date().toISOString(),
         })
         .eq('id', clientId);

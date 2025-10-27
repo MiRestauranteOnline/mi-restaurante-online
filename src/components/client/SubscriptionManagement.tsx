@@ -549,13 +549,20 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                               </ul>
                             </div>
                             <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs text-gray-600">
-                              <p className="flex items-start gap-2">
+                              <p className="flex items-start gap-2 mb-2">
                                 <CreditCard className="h-4 w-4 mt-0.5 flex-shrink-0" />
                                 <span>
-                                  Se cargará <strong>S/ {prorated.amount.toFixed(2)}</strong> a tu tarjeta registrada. 
-                                  A partir del próximo ciclo de facturación, se cobrará el precio completo de S/ {prorated.newPlanPrice}/mes.
+                                  <strong>Cargo inmediato:</strong> S/ {prorated.amount.toFixed(2)} se cargará hoy a tu tarjeta registrada.
                                 </span>
                               </p>
+                              {subscription.next_billing_date && isValidDate(subscription.next_billing_date) && (
+                                <p className="flex items-start gap-2">
+                                  <Calendar className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                  <span>
+                                    <strong>Próximo pago completo:</strong> S/ {prorated.newPlanPrice} el {formatDateEs(subscription.next_billing_date)}
+                                  </span>
+                                </p>
+                              )}
                             </div>
                           </>
                         ) : (
