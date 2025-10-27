@@ -109,6 +109,29 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     }
   };
 
+  const calculateProratedAmount = () => {
+    if (!subscription?.subscription_end_date) return null;
+    
+    const now = new Date();
+    const endDate = new Date(subscription.subscription_end_date);
+    const daysRemaining = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (daysRemaining <= 0) return null;
+    
+    const currentPlanPrice = getPlanPrice(subscription.plan_type);
+    const newPlanPrice = getPlanPrice('advanced');
+    const priceDifference = newPlanPrice - currentPlanPrice;
+    const dailyRate = priceDifference / 30;
+    const proratedAmount = dailyRate * daysRemaining;
+    
+    return {
+      amount: proratedAmount,
+      daysRemaining,
+      newPlanPrice,
+      currentPlanPrice
+    };
+  };
+
   const handleUpgrade = async () => {
     setActionLoading(true);
     try {
@@ -489,24 +512,56 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                   <AlertDialogHeader>
                     <AlertDialogTitle>¿Actualizar a Plan Avanzado?</AlertDialogTitle>
                     <AlertDialogDescription className="space-y-3">
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <p className="text-sm text-blue-900 mb-2">
-                          Se te cobrará el monto prorrateado por los días restantes de tu periodo actual.
-                        </p>
-                        <p className="text-sm text-blue-900">
-                          <strong>Precio mensual:</strong> S/ {getPlanPrice('advanced')}
-                        </p>
-                      </div>
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <p className="font-semibold text-green-900 mb-2">Obtendrás acceso inmediato a:</p>
-                        <ul className="text-sm text-green-800 space-y-1">
-                          <li>• Google Analytics tracking</li>
-                          <li>• Panel de Analytics avanzado</li>
-                          <li>• Soporte por WhatsApp directo</li>
-                          <li>• Soporte prioritario</li>
-                          <li>• 1 hora mensual de asistencia profesional</li>
-                        </ul>
-                      </div>
+                      {(() => {
+                        const prorated = calculateProratedAmount();
+                        return prorated ? (
+                          <>
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                              <p className="font-semibold text-blue-900 mb-2">Cargos de Upgrade</p>
+                              <div className="text-sm text-blue-800 space-y-2">
+                                <div className="flex justify-between">
+                                  <span>Plan actual (Básico):</span>
+                                  <span className="font-medium">S/ {prorated.currentPlanPrice}/mes</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Nuevo plan (Avanzado):</span>
+                                  <span className="font-medium">S/ {prorated.newPlanPrice}/mes</span>
+                                </div>
+                                <div className="border-t border-blue-300 pt-2 mt-2">
+                                  <div className="flex justify-between">
+                                    <span>Días restantes en periodo:</span>
+                                    <span className="font-medium">{prorated.daysRemaining} días</span>
+                                  </div>
+                                  <div className="flex justify-between font-bold text-base mt-2">
+                                    <span>Cargo prorrateado hoy:</span>
+                                    <span className="text-blue-900">S/ {prorated.amount.toFixed(2)}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                              <p className="font-semibold text-green-900 mb-2">Acceso inmediato a:</p>
+                              <ul className="text-sm text-green-800 space-y-1">
+                                <li>• Google Analytics tracking completo</li>
+                                <li>• Panel de Analytics avanzado</li>
+                                <li>• Soporte prioritario por WhatsApp</li>
+                                <li>• 1 hora mensual de asistencia profesional</li>
+                              </ul>
+                            </div>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs text-gray-600">
+                              <p className="flex items-start gap-2">
+                                <CreditCard className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                <span>
+                                  Se cargará <strong>S/ {prorated.amount.toFixed(2)}</strong> a tu tarjeta registrada. 
+                                  A partir del próximo ciclo de facturación, se cobrará el precio completo de S/ {prorated.newPlanPrice}/mes.
+                                </span>
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <p>No se pudo calcular el monto prorrateado. ¿Deseas continuar?</p>
+                        );
+                      })()}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
