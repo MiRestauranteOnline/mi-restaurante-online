@@ -366,14 +366,19 @@ const Signup = () => {
         
         if (signInError) {
           console.error('❌ Auto-login failed:', signInError);
-          setIsProcessingPayment(false);
-          toast({
-            title: "Error al iniciar sesión",
-            description: "Cuenta creada, pero hubo un problema al iniciar sesión automáticamente. Por favor inicia sesión manualmente.",
-            variant: "destructive",
-          });
-          navigate('/auth', { state: { email: finalData.email } });
-          return;
+          // Check if it's an email confirmation issue
+          if (signInError.message?.includes('Email not confirmed')) {
+            toast({
+              title: "Confirma tu correo",
+              description: "Revisa tu bandeja de entrada y confirma tu correo para continuar. Luego vuelve a iniciar sesión.",
+              variant: "destructive",
+            });
+            navigate('/auth', { state: { email: finalData.email } });
+            setIsProcessingPayment(false);
+            return;
+          }
+          // For other errors, just log and continue - they can still proceed with the flow
+          console.warn('Auto-login failed but allowing user to continue:', signInError.message);
         }
         
         console.log('✅ User signed in successfully, moving to step 2');
