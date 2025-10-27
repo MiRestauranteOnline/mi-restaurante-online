@@ -186,6 +186,8 @@ serve(async (req) => {
           openpay_subscription_id: subscription.id,
           subscription_end_date: subscriptionEndDate.toISOString(),
           next_billing_date: nextBillingDate.toISOString(),
+          cancellation_date: null,
+          cancellation_reason: null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', clientId);
