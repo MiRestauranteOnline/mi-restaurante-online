@@ -199,6 +199,36 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     }
   };
 
+  const handleReactivate = async () => {
+    setActionLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('pause-openpay-subscription', {
+        body: { 
+          clientId,
+          action: 'resume'
+        }
+      });
+
+      if (error) throw error;
+      if (!data.success) throw new Error(data.error);
+
+      toast({
+        title: "Suscripción reactivada",
+        description: "Tu suscripción ha sido reactivada exitosamente.",
+      });
+
+      fetchSubscriptionData();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo reactivar la suscripción",
+        variant: "destructive"
+      });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -525,7 +555,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             <p className="text-yellow-700">
               Tu suscripción está inactiva. Reactívala para continuar usando todos los servicios.
             </p>
-            <Button variant="default" disabled={actionLoading}>
+            <Button variant="default" disabled={actionLoading} onClick={handleReactivate}>
               Reactivar Suscripción
             </Button>
           </CardContent>
