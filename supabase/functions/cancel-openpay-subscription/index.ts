@@ -60,6 +60,7 @@ serve(async (req) => {
     }
 
     // Update client in database
+    // Note: is_deactivated stays false until subscription_end_date is reached
     await supabase
       .from('clients')
       .update({
@@ -67,7 +68,6 @@ serve(async (req) => {
         cancellation_date: new Date().toISOString(),
         cancellation_reason: reason || 'user_request',
         subscription_auto_recurring: false,
-        is_deactivated: true,
         updated_at: new Date().toISOString(),
       })
       .eq('id', clientId);

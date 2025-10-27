@@ -95,3 +95,9 @@ verify_jwt = false
 
 [functions.analyze-image-style]
 verify_jwt = false
+
+[functions.deactivate-expired-subscriptions]
+verify_jwt = false
+
+[functions.cancel-openpay-subscription]
+verify_jwt = false
