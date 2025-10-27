@@ -51,7 +51,7 @@ export function ResendMonitoring() {
         <div>
           <h2 className="text-2xl font-bold">Monitoreo de Resend</h2>
           <p className="text-muted-foreground">
-            Seguimiento del uso de correos electrónicos
+            Seguimiento del uso de correos electrónicos • El uso se reinicia el {metrics.usage_resets_on}
           </p>
         </div>
         <Button onClick={refetch} variant="outline" size="sm">

@@ -144,7 +144,17 @@ const handler = async (req: Request): Promise<Response> => {
       from: "Mi Restaurante Online <reclamaciones@mirestaurante.online>",
       to: [formData.email],
       subject: `Confirmación de Reclamo - ${claimCode}`,
-      html: customerEmailContent,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #FF6B35;">
+            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png" alt="Mi Restaurante Online" style="width: 60px; height: 60px;" />
+            <h1 style="color: #333; margin: 10px 0;">Mi Restaurante Online</h1>
+          </div>
+          <div style="padding: 20px;">
+            ${customerEmailContent}
+          </div>
+        </div>
+      `,
     });
 
     if (customerEmailResponse.error) {
@@ -172,7 +182,20 @@ const handler = async (req: Request): Promise<Response> => {
       from: "Mi Restaurante Online <reclamaciones@mirestaurante.online>",
       to: ["reclamaciones@mirestaurante.online"],
       subject: `Nuevo Reclamo - ${claimCode} - ${formData.fullName}`,
-      html: adminEmailContent,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #FF6B35;">
+            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png" alt="Mi Restaurante Online" style="width: 60px; height: 60px;" />
+            <h1 style="color: #333; margin: 10px 0;">Mi Restaurante Online</h1>
+          </div>
+          <div style="padding: 20px;">
+            ${adminEmailContent}
+          </div>
+          <div style="background-color: #f8f9fa; padding: 15px; text-align: center; border-top: 1px solid #ddd; margin-top: 20px;">
+            <p style="color: #666; font-size: 12px; margin: 0;"><em>Sistema de Libro de Reclamaciones</em></p>
+          </div>
+        </div>
+      `,
     });
 
     if (adminEmailResponse.error) {

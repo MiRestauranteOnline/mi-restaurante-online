@@ -16,6 +16,8 @@ interface ResendMetrics {
   };
   failed_emails_count: number;
   upgrade_recommendations: string[];
+  usage_resets_on: string;
+  billing_cycle_day: number;
 }
 
 export function useResendMetrics(autoRefresh = false, refreshInterval = 60000) {

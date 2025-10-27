@@ -213,7 +213,20 @@ const handler = async (req: Request): Promise<Response> => {
       from: "Mi Restaurante Online <soporte@mirestaurante.online>",
       to: [supportEmail],
       subject: emailSubject,
-      html: emailContent,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #FF6B35;">
+            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png" alt="Mi Restaurante Online" style="width: 60px; height: 60px;" />
+            <h1 style="color: #333; margin: 10px 0;">Mi Restaurante Online</h1>
+          </div>
+          <div style="padding: 20px;">
+            ${emailContent}
+          </div>
+          <div style="background-color: #f8f9fa; padding: 15px; text-align: center; border-top: 1px solid #ddd; margin-top: 20px;">
+            <p style="color: #666; font-size: 12px; margin: 0;"><em>Sistema de Gestión de Tickets</em></p>
+          </div>
+        </div>
+      `,
     });
 
     if (emailResponse.error) {
@@ -244,25 +257,36 @@ const handler = async (req: Request): Promise<Response> => {
       to: [email],
       subject: `Confirmación de Ticket de Soporte: ${ticket.ticket_number}`,
       html: `
-        <h2>Hemos recibido tu solicitud de soporte</h2>
-        <p>Hola ${name},</p>
-        <p>Tu ticket de soporte ha sido creado exitosamente:</p>
-        
-        <div style="background-color: #f0f9ff; padding: 15px; border-radius: 5px; margin: 15px 0;">
-          <p><strong>Número de Ticket:</strong> ${ticket.ticket_number}</p>
-          <p><strong>Asunto:</strong> ${subject}</p>
-          <p><strong>Tipo:</strong> ${supportType === "premium" ? "Premium" : "General"}</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #FF6B35;">
+            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png" alt="Mi Restaurante Online" style="width: 60px; height: 60px;" />
+            <h1 style="color: #333; margin: 10px 0;">Mi Restaurante Online</h1>
+          </div>
+          <div style="padding: 20px;">
+            <h2>Hemos recibido tu solicitud de soporte</h2>
+            <p>Hola ${name},</p>
+            <p>Tu ticket de soporte ha sido creado exitosamente:</p>
+            
+            <div style="background-color: #f0f9ff; padding: 15px; border-radius: 5px; margin: 15px 0;">
+              <p><strong>Número de Ticket:</strong> ${ticket.ticket_number}</p>
+              <p><strong>Asunto:</strong> ${subject}</p>
+              <p><strong>Tipo:</strong> ${supportType === "premium" ? "Premium" : "General"}</p>
+            </div>
+            
+            <p>Nuestro equipo revisará tu solicitud y te responderemos a la brevedad.</p>
+            
+            ${supportType === "premium" ? 
+              "<p><em>Como cliente premium, tu ticket será procesado con prioridad alta.</em></p>" : 
+              ""
+            }
+            
+            <p>Gracias por contactarnos.</p>
+            <p><strong>Equipo de Soporte</strong><br>Mi Restaurante Online</p>
+          </div>
+          <div style="background-color: #f8f9fa; padding: 15px; text-align: center; border-top: 1px solid #ddd; margin-top: 20px;">
+            <p style="color: #666; font-size: 12px; margin: 0;"><em>Equipo de Soporte</em></p>
+          </div>
         </div>
-        
-        <p>Nuestro equipo revisará tu solicitud y te responderemos a la brevedad.</p>
-        
-        ${supportType === "premium" ? 
-          "<p><em>Como cliente premium, tu ticket será procesado con prioridad alta.</em></p>" : 
-          ""
-        }
-        
-        <p>Gracias por contactarnos.</p>
-        <p><strong>Equipo de Soporte</strong><br>Mi Restaurante Online</p>
       `,
     });
 

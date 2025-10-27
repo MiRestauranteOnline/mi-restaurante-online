@@ -54,7 +54,17 @@ const handler = async (req: Request): Promise<Response> => {
       from: "Mi Restaurante Online <soporte@mirestaurante.online>",
       to: [customerEmail],
       subject: `Re: ${originalSubject} [${ticketNumber}]`,
-      html: emailContent,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #FF6B35;">
+            <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/OiOFvHbbnNe6vX3A3rn8oURdWx83/uploads/1759266175780-Mi Restaurante Online Favicon.png" alt="Mi Restaurante Online" style="width: 60px; height: 60px;" />
+            <h1 style="color: #333; margin: 10px 0;">Mi Restaurante Online</h1>
+          </div>
+          <div style="padding: 20px;">
+            ${emailContent}
+          </div>
+        </div>
+      `,
     });
 
     if (emailResponse.error) {

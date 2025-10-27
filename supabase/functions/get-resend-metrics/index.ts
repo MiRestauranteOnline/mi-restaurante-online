@@ -21,6 +21,8 @@ interface ResendMetrics {
   };
   failed_emails_count: number;
   upgrade_recommendations: string[];
+  usage_resets_on: string;
+  billing_cycle_day: number;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -33,31 +35,52 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Get today's date range
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
+    // Get current date info
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrow = new Date(todayStart);
     tomorrow.setDate(tomorrow.getDate() + 1);
-
-    // Get this month's date range
-    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59);
+    
+    // Billing cycle starts on the 29th of each month
+    const billingCycleDay = 29;
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const currentDay = now.getDate();
+    
+    // Calculate billing cycle start
+    let billingCycleStart: Date;
+    if (currentDay >= billingCycleDay) {
+      // We're in the current billing cycle (29th of this month to 28th of next month)
+      billingCycleStart = new Date(currentYear, currentMonth, billingCycleDay);
+    } else {
+      // We're still in the previous billing cycle (29th of last month to 28th of this month)
+      billingCycleStart = new Date(currentYear, currentMonth - 1, billingCycleDay);
+    }
+    
+    // Calculate next reset date
+    let nextResetDate: Date;
+    if (currentDay >= billingCycleDay) {
+      // Next reset is 29th of next month
+      nextResetDate = new Date(currentYear, currentMonth + 1, billingCycleDay);
+    } else {
+      // Next reset is 29th of this month
+      nextResetDate = new Date(currentYear, currentMonth, billingCycleDay);
+    }
 
     // Query today's emails
     const { data: todayEmails, error: todayError } = await supabase
       .from("resend_email_logs")
       .select("*")
-      .gte("created_at", today.toISOString())
+      .gte("created_at", todayStart.toISOString())
       .lt("created_at", tomorrow.toISOString());
 
     if (todayError) throw todayError;
 
-    // Query this month's emails
+    // Query emails sent this billing cycle
     const { data: monthEmails, error: monthError } = await supabase
       .from("resend_email_logs")
       .select("*")
-      .gte("created_at", monthStart.toISOString())
-      .lte("created_at", monthEnd.toISOString());
+      .gte("created_at", billingCycleStart.toISOString());
 
     if (monthError) throw monthError;
 
@@ -115,6 +138,12 @@ const handler = async (req: Request): Promise<Response> => {
       },
       failed_emails_count: failedEmailsCount,
       upgrade_recommendations: upgradeRecommendations,
+      usage_resets_on: nextResetDate.toLocaleDateString('es-ES', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      }),
+      billing_cycle_day: billingCycleDay,
     };
 
     return new Response(JSON.stringify(metrics), {
