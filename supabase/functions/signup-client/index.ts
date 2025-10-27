@@ -196,6 +196,25 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Client signup completed successfully');
 
+    // Generate session for auto-login (bypasses CAPTCHA)
+    let session = null;
+    try {
+      const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.admin.generateLink({
+        type: 'magiclink',
+        email: email,
+      });
+
+      if (!sessionError && sessionData) {
+        console.log('Session generated successfully for auto-login');
+        // The session is in sessionData.properties
+        session = sessionData.properties;
+      } else {
+        console.error('Failed to generate session:', sessionError);
+      }
+    } catch (sessionGenError) {
+      console.error('Error generating session for auto-login:', sessionGenError);
+    }
+
     // Auto-generate and store briefings right after signup
     try {
       const contentBriefing = `${websiteRequirements?.additionalInfo || ''}\n\nTipo de restaurante: ${websiteRequirements?.businessType || ''}\nPúblico objetivo: ${websiteRequirements?.targetAudience || ''}\nEstilo del sitio web: ${websiteRequirements?.websiteStyle || ''}`;
@@ -258,7 +277,8 @@ const handler = async (req: Request): Promise<Response> => {
           id: client.id,
           restaurant_name: client.restaurant_name,
           subdomain: client.subdomain
-        }
+        },
+        session: session // Include session for auto-login
       }),
       {
         status: 200,

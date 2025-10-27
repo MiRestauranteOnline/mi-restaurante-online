@@ -357,47 +357,32 @@ const Signup = () => {
         const finalData = { ...updatedData, paymentId: newClientId };
         setSignupData(finalData);
         
-        // CRITICAL: Auto-login the user after account creation
-        console.log('🔐 Signing in user automatically...');
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: finalData.email,
-          password: finalData.password,
-        });
-        
-        if (signInError) {
-          console.error('❌ Auto-login failed:', signInError);
-          // Check if it's an email confirmation issue
-          if (signInError.message?.includes('Email not confirmed')) {
+        // CRITICAL: Set session from server response (bypasses CAPTCHA)
+        if (data.session) {
+          console.log('🔐 Setting session from server...');
+          const { error: sessionError } = await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token,
+          });
+          
+          if (sessionError) {
+            console.error('❌ Failed to set session:', sessionError);
             toast({
-              title: "Confirma tu correo",
-              description: "Revisa tu bandeja de entrada y confirma tu correo para continuar. Luego vuelve a iniciar sesión.",
+              title: "Error de sesión",
+              description: "Cuenta creada pero hubo un problema con la sesión. Por favor inicia sesión.",
               variant: "destructive",
             });
-            navigate('/auth', { state: { email: finalData.email } });
-            setIsProcessingPayment(false);
-            return;
+          } else {
+            console.log('✅ Session set successfully');
           }
-          // For other errors, just log and continue - they can still proceed with the flow
-          console.warn('Auto-login failed but allowing user to continue:', signInError.message);
         }
         
-        if (!signInError) {
-          console.log('✅ User signed in successfully, moving to step 2');
-          setIsProcessingPayment(false);
-          setCurrentStep(2);
-          toast({
-            title: "¡Bienvenido!",
-            description: "Ahora completa el pago para activar tu suscripción.",
-          });
-        } else {
-          // Proceed without session; user can log in later
-          setIsProcessingPayment(false);
-          setCurrentStep(2);
-          toast({
-            title: "Cuenta creada",
-            description: "Continúa con el pago. Si es necesario, inicia sesión desde tu correo o la página de acceso.",
-          });
-        }
+        setIsProcessingPayment(false);
+        setCurrentStep(2);
+        toast({
+          title: "¡Bienvenido!",
+          description: "Ahora completa el pago para activar tu suscripción.",
+        });
       } else {
         console.error('❌ Unexpected server response format:', data);
         throw new Error('Respuesta inesperada del servidor');
