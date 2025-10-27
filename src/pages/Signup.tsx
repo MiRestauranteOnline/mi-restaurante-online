@@ -357,55 +357,17 @@ const Signup = () => {
         const finalData = { ...updatedData, paymentId: newClientId };
         setSignupData(finalData);
         
-        // CRITICAL: Auto-login the user after account creation
-        // Add small delay to ensure user is fully created in Supabase
-        console.log('🔐 Waiting 1 second before signing in user...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        console.log('🔐 Attempting sign in for:', finalData.email);
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email: finalData.email,
-          password: finalData.password,
-        });
-        
-        if (signInError) {
-          console.error('❌ Auto-login failed:', signInError);
-          console.error('Error details:', {
-            message: signInError.message,
-            status: signInError.status,
-            name: signInError.name
-          });
-          
-          // Check if it's an email confirmation issue
-          if (signInError.message?.includes('Email not confirmed')) {
-            setIsProcessingPayment(false);
-            toast({
-              title: "Confirma tu email",
-              description: "Revisa tu correo electrónico y confirma tu cuenta antes de continuar. Después inicia sesión manualmente.",
-              variant: "destructive",
-            });
-            navigate('/auth');
-            return;
-          }
-          
-          // For other errors, show generic message
-          setIsProcessingPayment(false);
-          toast({
-            title: "Error al iniciar sesión",
-            description: `${signInError.message}. Por favor intenta iniciar sesión manualmente.`,
-            variant: "destructive",
-          });
-          navigate('/auth');
-          return;
-        }
-        
-        console.log('✅ User signed in successfully:', signInData);
         setIsProcessingPayment(false);
-        setCurrentStep(2);
+        
+        // Redirect to login page with success message
+        // User needs to log in manually (includes CAPTCHA verification)
         toast({
-          title: "Cuenta creada",
-          description: "Ahora completa el pago para activar tu suscripción.",
+          title: "¡Cuenta creada exitosamente!",
+          description: "Por favor inicia sesión con tu email y contraseña para continuar con el registro.",
+          duration: 6000,
         });
+        
+        navigate('/auth', { state: { email: finalData.email, fromSignup: true } });
       } else {
         console.error('❌ Unexpected server response format:', data);
         throw new Error('Respuesta inesperada del servidor');

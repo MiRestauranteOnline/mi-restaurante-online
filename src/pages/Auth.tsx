@@ -38,11 +38,16 @@ export default function Auth() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [showCaptchaWarning, setShowCaptchaWarning] = useState(false);
   const navigate = useNavigate();
+  
+  // Get state from navigation (if redirected from signup)
+  const locationState = window.history.state?.usr as { email?: string; fromSignup?: boolean } | undefined;
+  const fromSignup = locationState?.fromSignup || false;
+  const prefilledEmail = locationState?.email || '';
 
   const loginForm = useForm<AuthFormData>({
     resolver: zodResolver(authSchema),
     defaultValues: {
-      email: '',
+      email: prefilledEmail,
       password: '',
     },
   });
@@ -76,6 +81,13 @@ export default function Auth() {
     // Helper: redirect based on role
     const redirectByRole = async (session: any) => {
       try {
+        // If coming from signup, redirect back to signup flow
+        if (fromSignup) {
+          console.log('Redirecting back to signup flow after login');
+          navigate('/registro');
+          return;
+        }
+        
         const { data, error } = await supabase.rpc('get_user_role', { _user_id: session.user.id });
         const role = (data as string) || null;
         if (!error && role === 'admin') {
@@ -107,7 +119,7 @@ export default function Auth() {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, isRecoveryMode]);
+  }, [navigate, isRecoveryMode, fromSignup]);
 
   const handlePasswordReset = async (data: ResetFormData) => {
     setIsLoading(true);
@@ -182,6 +194,15 @@ export default function Auth() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {fromSignup && (
+            <Alert className="mb-4 bg-primary/10 border-primary">
+              <Shield className="h-4 w-4" />
+              <AlertDescription>
+                ¡Tu cuenta fue creada exitosamente! Por favor inicia sesión para continuar con tu registro.
+              </AlertDescription>
+            </Alert>
+          )}
+          
           {isRecoveryMode ? (
             <Form {...resetForm}>
               <form onSubmit={resetForm.handleSubmit(handlePasswordReset)} className="space-y-4">
