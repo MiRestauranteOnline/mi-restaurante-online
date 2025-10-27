@@ -35,14 +35,21 @@ serve(async (req) => {
       throw new Error('Client not found');
     }
 
-    if (!client.openpay_customer_id || !client.openpay_subscription_id) {
-      throw new Error('No OpenPay subscription found for this client');
+    if (action === 'pause') {
+      if (!client.openpay_customer_id || !client.openpay_subscription_id) {
+        throw new Error('No OpenPay subscription found for this client');
+      }
+    } else if (action === 'resume') {
+      if (!client.openpay_customer_id) {
+        throw new Error('No OpenPay customer found for this client');
+      }
     }
 
     const auth = btoa(`${privateKey}:`);
-    const openpayUrl = `${openpayApiBase}/${merchantId}`;
+    const base = openpayApiBase.replace(/\/+$/, '');
+    const openpayUrl = `${base}/${merchantId}`;
     
-    console.log('Using OpenPay API base:', openpayApiBase);
+    console.log('Using OpenPay API base:', base);
     console.log('OpenPay URL:', openpayUrl);
 
     if (action === 'pause') {
@@ -89,12 +96,16 @@ serve(async (req) => {
           method: 'GET',
           headers: {
             'Authorization': `Basic ${auth}`,
+            'Accept': 'application/json',
           },
         }
       );
 
       if (!cardsResponse.ok) {
-        throw new Error('Failed to get customer cards');
+        const status = cardsResponse.status;
+        const bodyText = await cardsResponse.text();
+        console.error('Failed to get customer cards:', { status, bodyText });
+        throw new Error(`Failed to get customer cards (status ${status})`);
       }
 
       const cards = await cardsResponse.json();
