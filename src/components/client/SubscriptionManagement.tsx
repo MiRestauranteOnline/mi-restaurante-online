@@ -22,6 +22,8 @@ interface SubscriptionData {
   subscription_auto_recurring?: boolean;
   locked_basic_price?: number;
   locked_advanced_price?: number;
+  pending_plan_change?: string;
+  pending_plan_change_date?: string;
 }
 
 interface PlanPrice {
@@ -81,7 +83,9 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
           cancellation_reason,
           subscription_auto_recurring,
           locked_basic_price,
-          locked_advanced_price
+          locked_advanced_price,
+          pending_plan_change,
+          pending_plan_change_date
         `)
         .eq('id', clientId)
         .single();
@@ -331,6 +335,18 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             </div>
           )}
 
+          {subscription.pending_plan_change === 'basic' && isValidDate(subscription.pending_plan_change_date) && (
+            <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+              <div className="flex items-center gap-2 mb-2">
+                <Calendar className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-800">Cambio de Plan Programado</span>
+              </div>
+              <p className="text-sm text-blue-700">
+                El plan será degradado a Plan Básico el {formatDateEs(subscription.pending_plan_change_date!)}
+              </p>
+            </div>
+          )}
+
           {subscription.cancellation_date && (
             <div className="p-4 border border-yellow-200 rounded-lg bg-yellow-50">
               <div className="flex items-center gap-2 mb-2">
@@ -338,7 +354,11 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                 <span className="text-sm font-medium text-yellow-800">Suscripción Cancelada</span>
               </div>
               <p className="text-sm text-yellow-700">
-                Cancelado el {new Date(subscription.cancellation_date).toLocaleDateString('es-ES')}
+                {isValidDate(subscription.subscription_end_date) ? (
+                  <>El plan será cancelado el {formatDateEs(subscription.subscription_end_date)}</>
+                ) : (
+                  <>Cancelado el {formatDateEs(subscription.cancellation_date)}</>
+                )}
                 {subscription.cancellation_reason && ` - Razón: ${subscription.cancellation_reason}`}
               </p>
             </div>
