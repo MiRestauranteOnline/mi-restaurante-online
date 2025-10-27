@@ -71,10 +71,14 @@ export function CloudflareMonitoring() {
 
       {/* Tabs for different monitoring sections */}
       <Tabs defaultValue="pages" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="pages" className="flex items-center gap-2">
             <Server className="h-4 w-4" />
             Cloudflare Pages
+          </TabsTrigger>
+          <TabsTrigger value="resend" className="flex items-center gap-2">
+            <Globe className="h-4 w-4" />
+            Resend Usage
           </TabsTrigger>
           <TabsTrigger value="turnstile" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
