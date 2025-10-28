@@ -722,6 +722,7 @@ const Signup = () => {
       const { error: storeError } = await supabase.functions.invoke('store-briefings', {
         body: {
           clientId: createdClientId,
+          contentBriefing: { source: 'signup_flow', note: 'auto from final step' },
           signupData,
           websiteRequirements,
           menuData: {
