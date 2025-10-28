@@ -19,6 +19,7 @@ import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoadingButton } from "@/components/ui/loading-button";
 import type { SignupData } from "@/pages/Signup";
+import { MultiLocationInput } from "@/components/MultiLocationInput";
 
 const signupSchema = z.object({
   restaurantName: z.string().min(2, "El nombre del restaurante debe tener al menos 2 caracteres"),
@@ -29,7 +30,7 @@ const signupSchema = z.object({
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
   phoneCountryCode: z.string().min(1, "Selecciona un código de país"),
   phone: z.string().min(6, "Número de teléfono inválido"),
-  address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"),
+  address: z.array(z.string().min(1, "La dirección no puede estar vacía")).min(1, "Debes agregar al menos una ubicación"),
   ruc: z.string().regex(/^\d{11}$/, "El RUC debe tener 11 dígitos"),
   razonSocial: z.string().min(3, "La razón social debe tener al menos 3 caracteres"),
   hasCustomDomain: z.boolean().optional(),
@@ -99,7 +100,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       password: initialData.password,
       phoneCountryCode: "+51", // Default to Peru
       phone: initialData.phone,
-      address: initialData.address || "", // New address field
+      address: Array.isArray(initialData.address) ? initialData.address : initialData.address ? [initialData.address] : [""],
       ruc: initialData.ruc || "",
       razonSocial: initialData.razonSocial || "",
       hasCustomDomain: initialData.hasCustomDomain || false,
@@ -566,9 +567,10 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
               <FormItem>
                 <FormLabel>Dirección del Restaurante</FormLabel>
                 <FormControl>
-                  <Input 
-                    placeholder="Av. Larco 123, Miraflores, Lima"
-                    {...field}
+                  <MultiLocationInput
+                    locations={Array.isArray(field.value) ? field.value : [field.value || ""]}
+                    onChange={field.onChange}
+                    placeholder="Ej: Av. Larco 123, Miraflores, Lima"
                   />
                 </FormControl>
                 <FormMessage />

@@ -14,6 +14,8 @@ import { PhoneInput } from '@/components/ui/phone-input';
 import { toast } from 'sonner';
 import { Save, Loader2 } from 'lucide-react';
 
+import { MultiLocationInput } from '@/components/MultiLocationInput';
+
 interface DashboardContext {
   selectedClientId: string;
   selectedClient: {
@@ -30,7 +32,7 @@ const settingsSchema = z.object({
   email: z.string().email('Email inválido').optional().or(z.literal('')),
   whatsapp: z.string().regex(/^\d*$/, 'El WhatsApp debe contener solo números').max(12, 'El WhatsApp no puede exceder 12 dígitos').optional(),
   whatsapp_country_code: z.string().default('+51'),
-  address: z.string().optional(),
+  address: z.array(z.string()).optional(),
   coordinates_lat: z.string().optional(),
   coordinates_lng: z.string().optional(),
   facebook: z.string().optional(),
@@ -84,7 +86,7 @@ export default function RestaurantSettings() {
       email: '',
       whatsapp: '',
       whatsapp_country_code: '+51',
-      address: '',
+      address: [],
       coordinates_lat: '',
       coordinates_lng: '',
       facebook: '',
@@ -141,7 +143,7 @@ export default function RestaurantSettings() {
             email: client.email || '',
             whatsapp: client.whatsapp || '',
             whatsapp_country_code: client.whatsapp_country_code || '+51',
-            address: client.address || '',
+            address: Array.isArray(client.address) ? client.address : client.address ? [client.address] : [],
             coordinates_lat: coordinates.lat?.toString() || '',
             coordinates_lng: coordinates.lng?.toString() || '',
             facebook: socialMedia.facebook || '',
@@ -417,11 +419,11 @@ export default function RestaurantSettings() {
                   <FormItem>
                     <FormLabel>Dirección</FormLabel>
                     <FormControl>
-                      <Textarea 
+                      <MultiLocationInput
+                        locations={field.value || []}
+                        onChange={field.onChange}
                         placeholder="Av. Principal 123, Distrito, Ciudad"
-                        className="resize-none"
-                        rows={3}
-                        {...field} 
+                        useTextarea={true}
                       />
                     </FormControl>
                     <FormMessage />

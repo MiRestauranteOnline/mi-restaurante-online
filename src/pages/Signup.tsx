@@ -32,7 +32,7 @@ export interface SignupData {
   phone: string;
   phone_country_code?: string;
   whatsapp_country_code?: string;
-  address: string;
+  address: string | string[];
   ruc?: string;
   razonSocial?: string;
   paymentId?: string;
@@ -173,7 +173,7 @@ const Signup = () => {
           restaurantName: client.restaurant_name,
           subdomain: client.subdomain,
           phone: client.phone || '',
-          address: client.address || '',
+          address: Array.isArray(client.address) ? client.address : client.address ? [client.address] : [],
           plan_type: client.plan_type,
         }));
 
@@ -269,7 +269,7 @@ const Signup = () => {
     restaurantName: "",
     subdomain: "",
     phone: "",
-    address: "",
+    address: [],
     hasCustomDomain: false,
     customDomain: "",
     referralSource: "",
