@@ -954,6 +954,7 @@ export type Database = {
           country_code: string | null
           created_at: string
           custom_domain: string | null
+          dashboard_is_deactivated: boolean
           delivery: Json | null
           dns_records_status: Json | null
           domain: string | null
@@ -1024,6 +1025,7 @@ export type Database = {
           country_code?: string | null
           created_at?: string
           custom_domain?: string | null
+          dashboard_is_deactivated?: boolean
           delivery?: Json | null
           dns_records_status?: Json | null
           domain?: string | null
@@ -1094,6 +1096,7 @@ export type Database = {
           country_code?: string | null
           created_at?: string
           custom_domain?: string | null
+          dashboard_is_deactivated?: boolean
           delivery?: Json | null
           dns_records_status?: Json | null
           domain?: string | null

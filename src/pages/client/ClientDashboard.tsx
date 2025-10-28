@@ -19,6 +19,7 @@ import { CustomImagesManager } from "@/components/client/CustomImagesManager";
 import { AnalyticsOverview } from "@/components/client/AnalyticsOverview";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { ClientDashboardOverlay } from "@/components/ClientDashboardOverlay";
 
 interface ClientContext {
   selectedClientId: string;
@@ -463,7 +464,9 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <>
+      <ClientDashboardOverlay />
+      <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t('general.title')}</h1>
         <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
@@ -1189,6 +1192,7 @@ export default function ClientDashboard() {
           </TabsContent>
         )}
       </Tabs>
-    </div>
+      </div>
+    </>
   );
 }

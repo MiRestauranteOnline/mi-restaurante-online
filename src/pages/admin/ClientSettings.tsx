@@ -103,6 +103,7 @@ interface Client {
   country_code?: string;
   locale?: string;
   is_deactivated?: boolean;
+  dashboard_is_deactivated?: boolean;
   subscription_status?: string;
   payment_status?: string;
 }
@@ -1120,7 +1121,8 @@ const [faqForm, setFaqForm] = useState({
     contact_page_contact_section_visible: true,
     contact_page_map_visible: true,
     // Site deactivation (admin only)
-    is_deactivated: false
+    is_deactivated: false,
+    dashboard_is_deactivated: false
   });
 
   useEffect(() => {
@@ -1250,7 +1252,8 @@ const [faqForm, setFaqForm] = useState({
           currency: 'S/',
           ...(data.other_customizations as any || {})
         },
-        is_deactivated: (data as any).is_deactivated || false
+        is_deactivated: (data as any).is_deactivated || false,
+        dashboard_is_deactivated: (data as any).dashboard_is_deactivated || false
       }));
     } catch (error: any) {
       toast({
@@ -1830,6 +1833,37 @@ const [faqForm, setFaqForm] = useState({
     }
   };
 
+  const handleDashboardDeactivationToggle = async (checked: boolean) => {
+    if (!clientId) return;
+    
+    try {
+      const { error } = await supabase
+        .from('clients')
+        .update({
+          dashboard_is_deactivated: checked,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', clientId);
+
+      if (error) throw error;
+
+      setFormData({ ...formData, dashboard_is_deactivated: checked });
+      
+      toast({
+        title: checked ? 'Dashboard Desactivado' : 'Dashboard Activado',
+        description: checked 
+          ? 'El cliente no podrá acceder al dashboard hasta que lo actives'
+          : 'El cliente puede acceder al dashboard nuevamente',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo actualizar el estado del dashboard: ' + error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleToggleAutoSave = async (fieldName: string, value: boolean) => {
     if (!clientId || !effectiveClientId) return;
     
@@ -1949,6 +1983,7 @@ const [faqForm, setFaqForm] = useState({
           locale: formData.locale,
           favicon_url: formData.favicon_url,
           is_deactivated: formData.is_deactivated,
+          dashboard_is_deactivated: formData.dashboard_is_deactivated,
           updated_at: new Date().toISOString()
         })
         .eq('id', clientId)
@@ -6941,6 +6976,25 @@ setReviewForm({
                     id="is_deactivated"
                     checked={formData.is_deactivated}
                     onCheckedChange={handleDeactivationToggle}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+                  <div className="space-y-1">
+                    <Label htmlFor="dashboard_is_deactivated" className="text-base font-semibold">
+                      Dashboard Desactivado
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Controla el acceso del cliente al dashboard durante el período de revisión manual
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Útil para mantener bloqueado el acceso mientras revisas la configuración inicial del sitio
+                    </p>
+                  </div>
+                  <Switch
+                    id="dashboard_is_deactivated"
+                    checked={formData.dashboard_is_deactivated}
+                    onCheckedChange={handleDashboardDeactivationToggle}
                   />
                 </div>
               </div>

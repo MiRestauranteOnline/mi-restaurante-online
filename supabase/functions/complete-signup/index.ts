@@ -129,10 +129,14 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Mark signup completed
+    // Mark signup completed with both deactivation flags
     const { error: updateError } = await supabaseAdmin
       .from('clients')
-      .update({ signup_completed: true })
+      .update({ 
+        signup_completed: true,
+        is_deactivated: true,
+        dashboard_is_deactivated: true
+      })
       .eq('id', clientId);
     if (updateError) {
       console.error('Failed to update signup_completed:', updateError);
