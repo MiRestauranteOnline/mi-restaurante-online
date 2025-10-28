@@ -15,7 +15,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { businessData } from "@/config/businessData";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, Clock, MapPin, Send, CheckCircle, Shield, AlertCircle, Plus, Trash2 } from "lucide-react";
+import { Mail, Phone, Clock, MapPin, Send, CheckCircle, Shield, AlertCircle, Plus, Trash2, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const dnsRecordSchema = z.object({
   type: z.string().min(1, "Tipo de registro requerido"),
@@ -348,6 +349,17 @@ const Soporte = () => {
       
       <main className="pt-32 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {isAuthenticatedUser && (
+            <div className="mb-6">
+              <Link to="/dashboard">
+                <Button variant="outline" className="gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Volver al Dashboard
+                </Button>
+              </Link>
+            </div>
+          )}
+          
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               Centro de Soporte
