@@ -311,9 +311,6 @@ const Signup = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
   const [hasPaymentSession, setHasPaymentSession] = useState<boolean | null>(null);
   const [loginPassword, setLoginPassword] = useState('');
-  const [reauthNeededAtFinal, setReauthNeededAtFinal] = useState(false);
-  const [pendingFaqs, setPendingFaqs] = useState<FAQsData | null>(null);
-
   // Update URL to show current step (for UX only, not used for state)
   useEffect(() => {
     const params = new URLSearchParams();
@@ -696,7 +693,6 @@ const Signup = () => {
   const handleStep6Complete = async (faqs: FAQsData) => {
     setIsProcessingFinalStep(true);
     setFaqsData(faqs);
-    setPendingFaqs(faqs);
     
     // Save all form data to localStorage
     const formData = {
@@ -710,84 +706,37 @@ const Signup = () => {
     localStorage.setItem('signup_form_data', JSON.stringify(formData));
     
     try {
-      console.log('✅ All steps completed, saving FAQs and calling complete-signup function');
-      
-      // Ensure we have a valid session before trying to save FAQs
-      let { data: { session: authSession } } = await supabase.auth.getSession();
-      
-      // Try password sign-in if no session
-      if (!authSession && signupData.email && signupData.password) {
-        console.warn('No session found for FAQ save, attempting password sign-in...');
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: signupData.email,
-          password: signupData.password,
-        });
-        if (!signInError) {
-          const res = await supabase.auth.getSession();
-          authSession = res.data.session;
-        }
-      }
-      
-      if (!authSession) {
-        // Ask user to re-auth to finish instead of blocking the flow
-        setIsProcessingFinalStep(false);
-        setReauthNeededAtFinal(true);
-        toast({
-          title: 'Sesión expirada',
-          description: 'Por favor ingresa tu contraseña para finalizar el registro.',
-        });
-        return; // do not throw
-      }
-      
-      // Save FAQs to database first
-      if (faqs.faqs && faqs.faqs.length > 0) {
-        const faqRecords = faqs.faqs.map(faq => ({
-          client_id: createdClientId,
-          question: faq.question,
-          answer: faq.answer,
-          is_active: true,
-        }));
-        
-        const { error: faqError } = await supabase
-          .from('faqs')
-          .insert(faqRecords);
-        
-        if (faqError) {
-          console.error('Error saving FAQs:', faqError);
-          throw new Error('No se pudieron guardar las preguntas frecuentes');
-        }
-      }
-      
-      console.log('Session already verified, calling complete-signup with auth');
-      
+      console.log('✅ All steps completed, finalizing signup via edge function');
+
+      // Prepare FAQs payload (optional)
+      const cleanFaqs = (faqs.faqs || [])
+        .filter(f => f.question.trim() && f.answer.trim())
+        .map(f => ({ question: f.question.trim(), answer: f.answer.trim() }));
+
       const { error } = await supabase.functions.invoke('complete-signup', {
-        headers: {
-          Authorization: `Bearer ${authSession.access_token}`
-        }
+        body: { faqs: cleanFaqs }
       });
-      
+
       if (error) {
         console.error('Error completing signup:', error);
-        throw error;
+        throw new Error(error.message || 'No se pudo completar el registro');
       }
-      
+
       console.log('✅ Signup completed successfully');
-      
+
       // Clear localStorage progress
       localStorage.removeItem('signup_progress');
-      
+
       setIsProcessingFinalStep(false);
-      setReauthNeededAtFinal(false);
-      setPendingFaqs(null);
       setCurrentStep(8);
       window.scrollTo(0, 0);
     } catch (error: any) {
       console.error('Error in final step:', error);
       setIsProcessingFinalStep(false);
       toast({
-        title: "Error",
-        description: error.message || "No se pudo completar el registro. Por favor contacta soporte.",
-        variant: "destructive",
+        title: 'Error',
+        description: error.message || 'No se pudo completar el registro. Por favor contacta soporte.',
+        variant: 'destructive',
       });
     }
   };
@@ -1106,56 +1055,12 @@ const Signup = () => {
               )}
               
               {currentStep === 7 && (
-                reauthNeededAtFinal ? (
-                  <Card className="border-yellow-200 bg-yellow-50">
-                    <CardContent className="pt-6">
-                      <h3 className="font-semibold mb-2">⚠️ Sesión expirada</h3>
-                      <p className="text-sm mb-4">Ingresa tu contraseña para finalizar el registro.</p>
-                      <div className="space-y-4">
-                        <div>
-                          <Label htmlFor="final-login-email">Email</Label>
-                          <Input id="final-login-email" type="email" value={signupData.email} disabled />
-                        </div>
-                        <div>
-                          <Label htmlFor="final-login-password">Contraseña</Label>
-                          <Input
-                            id="final-login-password"
-                            type="password"
-                            placeholder="Ingresa tu contraseña"
-                            value={loginPassword}
-                            onChange={(e) => setLoginPassword(e.target.value)}
-                            onKeyDown={async (e) => {
-                              if (e.key === 'Enter') {
-                                await handleLoginForPayment();
-                                if (pendingFaqs) await handleStep6Complete(pendingFaqs);
-                              }
-                            }}
-                          />
-                        </div>
-                        <Button 
-                          className="w-full"
-                          onClick={async () => {
-                            await handleLoginForPayment();
-                            if (pendingFaqs) await handleStep6Complete(pendingFaqs);
-                          }}
-                          disabled={isProcessingFinalStep}
-                        >
-                          Iniciar Sesión y Finalizar
-                        </Button>
-                        <Button variant="outline" onClick={handleBackToStep5} disabled={isProcessingFinalStep}>
-                          Volver
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <SignupStep6FAQs
-                    onComplete={handleStep6Complete}
-                    onBack={handleBackToStep5}
-                    initialData={faqsData}
-                    isProcessing={isProcessingFinalStep}
-                  />
-                )
+                <SignupStep6FAQs
+                  onComplete={handleStep6Complete}
+                  onBack={handleBackToStep5}
+                  initialData={faqsData}
+                  isProcessing={isProcessingFinalStep}
+                />
               )}
               
               {currentStep === 8 && (() => {

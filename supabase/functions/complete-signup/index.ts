@@ -125,7 +125,44 @@ Deno.serve(async (req) => {
       validationErrors.push('No carousel images uploaded');
     }
 
-    // Step 5: FAQs added
+    // Step 5: FAQs added (insert if provided in payload)
+    let payload: any = {};
+    try {
+      payload = await req.json();
+    } catch {
+      payload = {};
+    }
+
+    const incomingFaqs = Array.isArray(payload?.faqs) ? payload.faqs : [];
+
+    if (incomingFaqs.length > 0) {
+      // Check existing active FAQs to avoid duplicates
+      const { data: existingFaqs } = await supabaseAdmin
+        .from('faqs')
+        .select('id')
+        .eq('client_id', clientId)
+        .eq('is_active', true);
+
+      if (!existingFaqs || existingFaqs.length === 0) {
+        const records = incomingFaqs
+          .filter((f: any) => f?.question && f?.answer)
+          .map((f: any) => ({
+            client_id: clientId,
+            question: String(f.question).trim(),
+            answer: String(f.answer).trim(),
+            is_active: true,
+          }));
+        if (records.length > 0) {
+          const { error: insertFaqsError } = await supabaseAdmin
+            .from('faqs')
+            .insert(records);
+          if (insertFaqsError) {
+            console.error('Failed to insert FAQs from payload:', insertFaqsError);
+          }
+        }
+      }
+    }
+
     const { data: faqs, error: faqsError } = await supabaseAdmin
       .from('faqs')
       .select('id')
