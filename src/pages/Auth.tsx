@@ -41,6 +41,8 @@ export default function Auth() {
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isForgotPasswordMode, setIsForgotPasswordMode] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [forgotEmail, setForgotEmail] = useState<string>('');
+  const [forgotCaptchaToken, setForgotCaptchaToken] = useState<string | null>(null);
   const navigate = useNavigate();
   
   // Get state from navigation (if redirected from signup)
@@ -67,16 +69,16 @@ export default function Auth() {
   const forgotPasswordForm = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      email: '',
+      email: prefilledEmail,
     },
   });
 
   useEffect(() => {
-    // Reset forgot password form when entering that mode
     if (isForgotPasswordMode) {
-      forgotPasswordForm.reset({ email: prefilledEmail || '' });
+      setForgotEmail(prefilledEmail || '');
+      setForgotCaptchaToken(null);
     }
-  }, [isForgotPasswordMode, prefilledEmail, forgotPasswordForm]);
+  }, [isForgotPasswordMode, prefilledEmail]);
 
   useEffect(() => {
     // Check for recovery tokens in URL hash
@@ -163,10 +165,15 @@ export default function Auth() {
 
   const handleForgotPassword = async (email: string) => {
     console.log('[ForgotPassword] Starting with email:', email);
-    
+
     if (!email) {
       console.log('[ForgotPassword] No email provided');
       toast.error('Por favor ingresa tu email');
+      return;
+    }
+
+    if (!forgotCaptchaToken) {
+      toast.error('Por favor completa el CAPTCHA');
       return;
     }
     
@@ -176,6 +183,7 @@ export default function Auth() {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth`,
+        captchaToken: forgotCaptchaToken,
       });
 
       console.log('[ForgotPassword] Supabase response:', { error });
@@ -251,60 +259,56 @@ export default function Auth() {
           )}
           
           {isForgotPasswordMode ? (
-            <Form {...forgotPasswordForm}>
-              <form
-                onSubmit={forgotPasswordForm.handleSubmit(({ email }) => handleForgotPassword(email))}
-                className="space-y-4"
-              >
-                <p className="text-sm text-muted-foreground">
-                  Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
-                </p>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
+              </p>
 
-                <FormField
-                  control={forgotPasswordForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="tu@email.com"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Email</label>
+                <Input
+                  type="email"
+                  placeholder="tu@email.com"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
                 />
+              </div>
 
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => setIsForgotPasswordMode(false)}
-                    disabled={isLoading}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="flex-1"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Enviando...
-                      </>
-                    ) : (
-                      'Enviar enlace'
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </Form>
+              <div className="flex justify-center">
+                <TurnstileWidget
+                  onVerify={(token) => setForgotCaptchaToken(token)}
+                  onError={() => setForgotCaptchaToken(null)}
+                  onExpire={() => setForgotCaptchaToken(null)}
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setIsForgotPasswordMode(false)}
+                  disabled={isLoading}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="button"
+                  className="flex-1"
+                  onClick={() => handleForgotPassword(forgotEmail)}
+                  disabled={isLoading || !forgotCaptchaToken}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : (
+                    'Enviar enlace'
+                  )}
+                </Button>
+              </div>
+            </div>
           ) : isRecoveryMode ? (
             <Form {...resetForm}>
               <form onSubmit={resetForm.handleSubmit(handlePasswordReset)} className="space-y-4">
