@@ -357,28 +357,32 @@ const Signup = () => {
         const finalData = { ...updatedData, paymentId: newClientId };
         setSignupData(finalData);
         
-        // CRITICAL: Set session from server response (bypasses CAPTCHA)
-        if (data.session) {
-          console.log('🔐 Setting session from server...');
-          const { error: sessionError } = await supabase.auth.setSession({
-            access_token: data.session.access_token,
-            refresh_token: data.session.refresh_token,
+        // CRITICAL: Set session using OTP token from server (bypasses CAPTCHA)
+        if (data.loginToken) {
+          console.log('🔐 Verifying OTP token from server...');
+          const { error: otpError } = await supabase.auth.verifyOtp({
+            email: data.loginToken.email,
+            token: data.loginToken.token,
+            type: data.loginToken.type,
           });
           
-          if (sessionError) {
-            console.error('❌ Failed to set session:', sessionError);
+          if (otpError) {
+            console.error('❌ Failed to verify OTP:', otpError);
             toast({
               title: "Error de sesión",
               description: "Cuenta creada pero hubo un problema con la sesión. Por favor inicia sesión.",
               variant: "destructive",
             });
           } else {
-            console.log('✅ Session set successfully');
+            console.log('✅ Session established successfully via OTP');
+            // Wait a bit to ensure session is fully persisted to localStorage
+            await new Promise(resolve => setTimeout(resolve, 500));
           }
         }
         
         setIsProcessingPayment(false);
         setCurrentStep(2);
+        window.scrollTo(0, 0); // Scroll to top when moving to payment step
         toast({
           title: "¡Bienvenido!",
           description: "Ahora completa el pago para activar tu suscripción.",

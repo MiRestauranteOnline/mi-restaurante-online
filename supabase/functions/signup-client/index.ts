@@ -196,23 +196,27 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Client signup completed successfully');
 
-    // Generate session for auto-login (bypasses CAPTCHA)
-    let session = null;
+    // Generate OTP for auto-login (bypasses CAPTCHA)
+    // This creates a one-time token that can be used to establish a session
+    let loginToken = null;
     try {
-      const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.admin.generateLink({
+      const { data: otpData, error: otpError } = await supabaseAdmin.auth.admin.generateLink({
         type: 'magiclink',
         email: email,
       });
 
-      if (!sessionError && sessionData) {
-        console.log('Session generated successfully for auto-login');
-        // The session is in sessionData.properties
-        session = sessionData.properties;
+      if (!otpError && otpData?.properties?.email_otp) {
+        loginToken = {
+          email: email,
+          token: otpData.properties.email_otp,
+          type: 'magiclink'
+        };
+        console.log('✅ Login token generated successfully for auto-login');
       } else {
-        console.error('Failed to generate session:', sessionError);
+        console.error('Failed to generate login token:', otpError);
       }
-    } catch (sessionGenError) {
-      console.error('Error generating session for auto-login:', sessionGenError);
+    } catch (tokenGenError) {
+      console.error('Error generating login token:', tokenGenError);
     }
 
     // Auto-generate and store briefings right after signup
@@ -278,7 +282,7 @@ const handler = async (req: Request): Promise<Response> => {
           restaurant_name: client.restaurant_name,
           subdomain: client.subdomain
         },
-        session: session // Include session for auto-login
+        loginToken: loginToken // Include OTP token for auto-login
       }),
       {
         status: 200,
