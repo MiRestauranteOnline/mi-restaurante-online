@@ -40,6 +40,7 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isForgotPasswordMode, setIsForgotPasswordMode] = useState(false);
+  const [isVerifyingRecovery, setIsVerifyingRecovery] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [forgotEmail, setForgotEmail] = useState<string>('');
   const [forgotCaptchaToken, setForgotCaptchaToken] = useState<string | null>(null);
@@ -101,11 +102,14 @@ export default function Auth() {
 
     const accessToken = getParam('access_token');
     const refreshToken = getParam('refresh_token');
+    const token = getParam('token');
+    const code = getParam('code');
     const type = getParam('type');
 
     if (type === 'recovery') {
       setIsRecoveryMode(true);
-      // Try to establish a session only when we have both tokens
+      
+      // CASE 1: We have access_token/refresh_token (direct session restore)
       if (accessToken && refreshToken) {
         (async () => {
           try {
@@ -115,17 +119,52 @@ export default function Auth() {
             });
             if (error) {
               console.error('[Auth] setSession error during recovery:', error);
+              toast.error('Error al verificar el enlace de recuperación');
+            } else {
+              console.log('[Auth] Recovery session established successfully');
             }
           } catch (e) {
             console.error('[Auth] Failed to set session during recovery:', e);
+            toast.error('Error al procesar el enlace de recuperación');
           } finally {
-            // Clear tokens from URL regardless of where they were (hash or search)
             window.history.replaceState({}, document.title, window.location.pathname);
           }
         })();
-      } else {
-        console.warn('[Auth] Missing access_token or refresh_token in recovery URL');
-        // Keep user on recovery form but clear the URL clutter
+      } 
+      // CASE 2: We have token or code (need to verify via OTP)
+      else if (token || code) {
+        console.log('[Auth] Recovery with token/code, calling verifyOtp...');
+        setIsVerifyingRecovery(true);
+        
+        (async () => {
+          try {
+            const { data, error } = await supabase.auth.verifyOtp({
+              type: 'recovery',
+              token_hash: token || code || '',
+            });
+            
+            if (error) {
+              console.error('[Auth] verifyOtp error:', error);
+              toast.error('El enlace de recuperación es inválido o ha expirado');
+              setIsRecoveryMode(false);
+            } else {
+              console.log('[Auth] verifyOtp success, session established:', data.session);
+              toast.success('Enlace verificado. Ahora puedes establecer tu nueva contraseña.');
+            }
+          } catch (e) {
+            console.error('[Auth] verifyOtp exception:', e);
+            toast.error('Error al verificar el enlace');
+            setIsRecoveryMode(false);
+          } finally {
+            setIsVerifyingRecovery(false);
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        })();
+      } 
+      // CASE 3: type=recovery but no tokens (shouldn't happen, but handle gracefully)
+      else {
+        console.warn('[Auth] type=recovery but no tokens/code found in URL');
+        toast.error('Enlace de recuperación incompleto');
         window.history.replaceState({}, document.title, window.location.pathname);
       }
       return;
@@ -301,7 +340,12 @@ export default function Auth() {
             </Alert>
           )}
           
-          {isForgotPasswordMode ? (
+          {isVerifyingRecovery ? (
+            <div className="flex flex-col items-center justify-center py-8 space-y-4">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">Verificando enlace de recuperación...</p>
+            </div>
+          ) : isForgotPasswordMode ? (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
                 Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
