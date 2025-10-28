@@ -205,13 +205,13 @@ const handler = async (req: Request): Promise<Response> => {
         email: email,
       });
 
-      if (!otpError && otpData?.properties?.email_otp) {
+      if (!otpError && otpData?.properties?.hashed_token) {
         loginToken = {
           email: email,
-          token: otpData.properties.email_otp,
-          type: 'email' // Use 'email' type for verifyOtp with the 6-digit code
+          token_hash: otpData.properties.hashed_token,
+          type: 'magiclink'
         };
-        console.log('✅ Login token (email OTP) generated successfully for auto-login');
+        console.log('✅ Login token (magiclink token_hash) generated successfully for auto-login');
       } else {
         console.error('Failed to generate login token:', otpError);
       }

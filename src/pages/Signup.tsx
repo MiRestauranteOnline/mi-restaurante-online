@@ -362,8 +362,8 @@ const Signup = () => {
           console.log('🔐 Verifying OTP token from server...');
           const { error: otpError } = await supabase.auth.verifyOtp({
             email: data.loginToken.email,
-            token: data.loginToken.token,
-            type: 'email',
+            token_hash: data.loginToken.token_hash,
+            type: 'magiclink',
           });
           
           if (otpError) {
