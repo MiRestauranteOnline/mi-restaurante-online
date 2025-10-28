@@ -82,34 +82,35 @@ const Signup = () => {
   useEffect(() => {
     const initializeSignupFlow = async () => {
       try {
+        // First, check localStorage for saved progress (most recent state)
+        const stored = localStorage.getItem('signup_progress');
+        if (stored) {
+          try {
+            const p = JSON.parse(stored);
+            if (p?.step >= 2 && p?.clientId) {
+              console.log('Recovered signup progress from localStorage:', p);
+              setCreatedClientId(p.clientId);
+              setSelectedPlan(p.selectedPlan || 'basic');
+              setSignupData(prev => ({
+                ...prev,
+                email: p.email || prev.email,
+                restaurantName: p.restaurantName || prev.restaurantName,
+                phone: p.phone || prev.phone,
+              }));
+              setCurrentStep(p.step);
+              setIsAuthChecking(false);
+              window.scrollTo(0, 0);
+              return;
+            }
+          } catch (e) {
+            console.warn('Failed to parse signup_progress:', e);
+          }
+        }
+        
         // Check if user is authenticated
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          // Fallback: recover progress from localStorage
-          const stored = localStorage.getItem('signup_progress');
-          if (stored) {
-            try {
-              const p = JSON.parse(stored);
-              if (p?.step >= 2 && p?.clientId) {
-                console.log('Recovered signup progress from storage:', p);
-                setCreatedClientId(p.clientId);
-                setSelectedPlan(p.selectedPlan || 'basic');
-                setSignupData(prev => ({
-                  ...prev,
-                  email: p.email || prev.email,
-                  restaurantName: p.restaurantName || prev.restaurantName,
-                  phone: p.phone || prev.phone,
-                }));
-                setCurrentStep(p.step);
-                setIsAuthChecking(false);
-                window.scrollTo(0, 0);
-                return;
-              }
-            } catch (e) {
-              console.warn('Failed to parse signup_progress:', e);
-            }
-          }
           // Not logged in and no stored progress - show step 1
           console.log('No session or stored progress, showing step 1');
           setCurrentStep(1);
@@ -508,25 +509,95 @@ const Signup = () => {
 
   const handleStep2Complete = async (requirements: WebsiteRequirements) => {
     setWebsiteRequirements(requirements);
-    setCurrentStep(4); // Skip to menu step (step 4 in old flow is step 3 in new flow)
+    setCurrentStep(4);
+    
+    // Save progress to localStorage
+    const progress = {
+      step: 4,
+      clientId: createdClientId,
+      selectedPlan,
+      email: signupData.email,
+      restaurantName: signupData.restaurantName,
+      phone: signupData.phone,
+    };
+    localStorage.setItem('signup_progress', JSON.stringify(progress));
+    console.log('✅ Step 3 complete, progress saved:', progress);
+    
     window.scrollTo(0, 0);
   };
 
   const handleStep3Complete = async (combined: CombinedData) => {
     setCombinedData(combined);
-    setCurrentStep(5); // Move to opening hours step
+    setCurrentStep(5);
+    
+    // Save progress to localStorage
+    const progress = {
+      step: 5,
+      clientId: createdClientId,
+      selectedPlan,
+      email: signupData.email,
+      restaurantName: signupData.restaurantName,
+      phone: signupData.phone,
+    };
+    localStorage.setItem('signup_progress', JSON.stringify(progress));
+    console.log('✅ Step 4 complete, progress saved:', progress);
+    
+    window.scrollTo(0, 0);
+  };
+
+  const handleStep3Skip = () => {
+    // Skip but still save progress
+    setCurrentStep(5);
+    
+    const progress = {
+      step: 5,
+      clientId: createdClientId,
+      selectedPlan,
+      email: signupData.email,
+      restaurantName: signupData.restaurantName,
+      phone: signupData.phone,
+    };
+    localStorage.setItem('signup_progress', JSON.stringify(progress));
+    console.log('✅ Step 4 skipped, progress saved:', progress);
+    
     window.scrollTo(0, 0);
   };
 
   const handleStep4Complete = async (openingHours: OpeningHoursData) => {
     setOpeningHoursData(openingHours);
-    setCurrentStep(6); // Move to images step  
+    setCurrentStep(6);
+    
+    // Save progress to localStorage
+    const progress = {
+      step: 6,
+      clientId: createdClientId,
+      selectedPlan,
+      email: signupData.email,
+      restaurantName: signupData.restaurantName,
+      phone: signupData.phone,
+    };
+    localStorage.setItem('signup_progress', JSON.stringify(progress));
+    console.log('✅ Step 5 complete, progress saved:', progress);
+    
     window.scrollTo(0, 0);
   };
 
   const handleStep5Complete = async (images: ImagesData) => {
     setImagesData(images);
-    setCurrentStep(7); // Move to FAQs step
+    setCurrentStep(7);
+    
+    // Save progress to localStorage
+    const progress = {
+      step: 7,
+      clientId: createdClientId,
+      selectedPlan,
+      email: signupData.email,
+      restaurantName: signupData.restaurantName,
+      phone: signupData.phone,
+    };
+    localStorage.setItem('signup_progress', JSON.stringify(progress));
+    console.log('✅ Step 6 complete, progress saved:', progress);
+    
     window.scrollTo(0, 0);
   };
 
@@ -535,7 +606,26 @@ const Signup = () => {
     setFaqsData(faqs);
     
     try {
-      console.log('✅ All steps completed, calling complete-signup function');
+      console.log('✅ All steps completed, saving FAQs and calling complete-signup function');
+      
+      // Save FAQs to database first
+      if (faqs.faqs && faqs.faqs.length > 0) {
+        const faqRecords = faqs.faqs.map(faq => ({
+          client_id: createdClientId,
+          question: faq.question,
+          answer: faq.answer,
+          is_active: true,
+        }));
+        
+        const { error: faqError } = await supabase
+          .from('faqs')
+          .insert(faqRecords);
+        
+        if (faqError) {
+          console.error('Error saving FAQs:', faqError);
+          throw new Error('No se pudieron guardar las preguntas frecuentes');
+        }
+      }
       
       // Ensure we have a valid session before calling the edge function
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -559,10 +649,13 @@ const Signup = () => {
       }
       
       console.log('✅ Signup completed successfully');
-      setIsProcessingFinalStep(false);
       
-      // Redirect to success page
-      navigate('/signup-success');
+      // Clear localStorage progress
+      localStorage.removeItem('signup_progress');
+      
+      setIsProcessingFinalStep(false);
+      setCurrentStep(8);
+      window.scrollTo(0, 0);
     } catch (error: any) {
       console.error('Error in final step:', error);
       setIsProcessingFinalStep(false);
@@ -823,7 +916,7 @@ const Signup = () => {
                 <SignupStep3Combined 
                   onComplete={handleStep3Complete}
                   onBack={() => setCurrentStep(3)}
-                  onSkip={() => setCurrentStep(5)}
+                  onSkip={handleStep3Skip}
                   initialData={combinedData}
                 />
               )}
