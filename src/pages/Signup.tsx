@@ -537,7 +537,21 @@ const Signup = () => {
     try {
       console.log('✅ All steps completed, calling complete-signup function');
       
-      const { error } = await supabase.functions.invoke('complete-signup');
+      // Ensure we have a valid session before calling the edge function
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        console.error('No valid session:', sessionError);
+        throw new Error('Tu sesión ha expirado. Por favor recarga la página y vuelve a intentarlo.');
+      }
+      
+      console.log('Session valid, calling complete-signup with auth');
+      
+      const { error } = await supabase.functions.invoke('complete-signup', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
       
       if (error) {
         console.error('Error completing signup:', error);
