@@ -120,6 +120,15 @@ const Signup = () => {
 
         console.log('Session found, fetching client data for user:', session.user.id);
 
+        // Helper to respect ?step= from URL if it's not ahead of allowed baseStep
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestedStepNum = Number(urlParams.get('step'));
+        const targetStep = (baseStep: number) => (
+          Number.isFinite(requestedStepNum) && requestedStepNum >= 1 && requestedStepNum <= baseStep
+            ? requestedStepNum
+            : baseStep
+        );
+
         // Fetch client associated with this user
         const { data: userClient, error: clientError } = await supabase
           .from('user_clients')
@@ -175,7 +184,7 @@ const Signup = () => {
         // Step 2: Payment pending
         if (client.subscription_status === 'pending') {
           console.log('Payment pending, showing step 2');
-          setCurrentStep(2);
+          setCurrentStep(targetStep(2));
           setIsAuthChecking(false);
           return;
         }
@@ -183,7 +192,7 @@ const Signup = () => {
         // Step 3: No opening hours
         if (!client.opening_hours || Object.keys(client.opening_hours).length === 0) {
           console.log('No opening hours, showing step 3');
-          setCurrentStep(3);
+          setCurrentStep(targetStep(3));
           setIsAuthChecking(false);
           return;
         }
@@ -197,7 +206,7 @@ const Signup = () => {
 
         if (!images || images.length === 0) {
           console.log('No images, showing step 4');
-          setCurrentStep(4);
+          setCurrentStep(targetStep(4));
           setIsAuthChecking(false);
           return;
         }
@@ -211,37 +220,16 @@ const Signup = () => {
 
         if (!faqs || faqs.length === 0) {
           console.log('No FAQs, showing step 5');
-          setCurrentStep(5);
+          setCurrentStep(targetStep(5));
           setIsAuthChecking(false);
           return;
         }
 
-        // All steps complete - call complete-signup edge function
-        console.log('All steps appear complete, calling complete-signup function');
-        // Include auth header if session exists
-        let { data: { session: authSession } } = await supabase.auth.getSession();
-        if (!authSession) {
-          try {
-            const { data: refreshed } = await supabase.auth.refreshSession();
-            authSession = refreshed?.session || null;
-          } catch {}
-        }
-        const { error: completeError } = await supabase.functions.invoke('complete-signup', {
-          headers: authSession ? { Authorization: `Bearer ${authSession.access_token}` } : undefined
-        });
-        
-        if (completeError) {
-          console.error('Error completing signup:', completeError);
-          toast({
-            title: "Error",
-            description: "No se pudo completar el registro. Contacta soporte.",
-            variant: "destructive",
-          });
-        } else {
-          console.log('Signup marked as completed, redirecting to dashboard');
-          navigate('/client', { replace: true });
-          return;
-        }
+        // All steps complete so far; do NOT auto-complete. Show final step (7) and let user finalize.
+        console.log('All steps appear complete; moving to final step (7)');
+        setCurrentStep(targetStep(7));
+        setIsAuthChecking(false);
+        return;
 
       } catch (error) {
         console.error('Error initializing signup flow:', error);
@@ -318,6 +306,9 @@ const Signup = () => {
     setSignupData(updatedData);
     setSelectedPlan(plan);
     setIsProcessingPayment(true);
+    
+    // Temporarily store password to enable re-auth during signup flow (cleared on completion)
+    try { localStorage.setItem('signup_tmp_pw', btoa(formData.password)); } catch {}
     
     // Fetch plan pricing from database - both plans for locking
     try {
