@@ -21,6 +21,8 @@ import { useToast } from "@/hooks/use-toast";
 import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
 import OpenPayPaymentForm from "@/components/OpenPayPaymentForm";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { TutorialVideoButton } from "@/components/signup/TutorialVideoButton";
+import { TutorialStep } from "@/config/tutorialVideos";
 
 export interface SignupData {
   email: string;
@@ -1124,6 +1126,11 @@ const Signup = () => {
           </Card>
         </div>
       </main>
+      
+      {/* Tutorial Video Button - Shows on steps 1-7 */}
+      {currentStep >= 1 && currentStep <= 7 && (
+        <TutorialVideoButton step={`step${currentStep}` as TutorialStep} />
+      )}
       
       <Footer />
     </div>
