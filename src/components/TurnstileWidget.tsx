@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 
 interface TurnstileWidgetProps {
   onVerify: (token: string) => void;
@@ -17,7 +17,9 @@ interface TurnstileWidgetProps {
  *
  * This component will automatically render the CAPTCHA challenge.
  */
-export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidgetProps) => {
+export type TurnstileHandle = { reset: () => void };
+
+export const TurnstileWidget = forwardRef<TurnstileHandle, TurnstileWidgetProps>(({ onVerify, onError, onExpire }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   
@@ -25,6 +27,19 @@ export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidget
   const onVerifyRef = useRef(onVerify);
   const onErrorRef = useRef(onError);
   const onExpireRef = useRef(onExpire);
+
+  // Expose imperative reset to parent (to avoid duplicate-token errors)
+  useImperativeHandle(ref, () => ({
+    reset: () => {
+      if (widgetIdRef.current && window.turnstile) {
+        try {
+          window.turnstile.reset(widgetIdRef.current);
+        } catch (e) {
+          console.error("Turnstile reset failed:", e);
+        }
+      }
+    },
+  }), []);
 
   // Update refs when callbacks change
   useEffect(() => {
@@ -80,7 +95,7 @@ export const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidget
       <div ref={containerRef} id="turnstile-container"></div>
     </div>
   );
-};
+});
 
 // Type definition for Turnstile
 declare global {

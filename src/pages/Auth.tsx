@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
-import { TurnstileWidget } from '@/components/TurnstileWidget';
+import { TurnstileWidget, type TurnstileHandle } from '@/components/TurnstileWidget';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -45,6 +45,9 @@ export default function Auth() {
   const [forgotCaptchaToken, setForgotCaptchaToken] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
+  const [forgotCooldown, setForgotCooldown] = useState<number>(0);
+  const loginCaptchaRef = useRef<TurnstileHandle>(null);
+  const forgotCaptchaRef = useRef<TurnstileHandle>(null);
   const navigate = useNavigate();
   
   // Get state from navigation (if redirected from signup)
@@ -81,6 +84,12 @@ export default function Auth() {
       setForgotCaptchaToken(null);
     }
   }, [isForgotPasswordMode, prefilledEmail]);
+
+  useEffect(() => {
+    if (forgotCooldown <= 0) return;
+    const timer = setInterval(() => setForgotCooldown((s) => s - 1), 1000);
+    return () => clearInterval(timer);
+  }, [forgotCooldown]);
 
   useEffect(() => {
     // Check for recovery tokens in URL hash OR search (some providers/clients keep them in ?query)
@@ -232,6 +241,10 @@ export default function Auth() {
       toast.error('Error al enviar email de recuperación');
     } finally {
       setIsLoading(false);
+      // Reset Turnstile to avoid duplicate/expired token issues and start a short cooldown
+      try { forgotCaptchaRef.current?.reset(); } catch {}
+      setForgotCaptchaToken(null);
+      setForgotCooldown((s) => (s > 0 ? s : 60));
       console.log('[ForgotPassword] Loading finished');
     }
   };
@@ -306,6 +319,7 @@ export default function Auth() {
 
               <div className="flex justify-center">
                 <TurnstileWidget
+                  ref={forgotCaptchaRef}
                   onVerify={(token) => setForgotCaptchaToken(token)}
                   onError={() => setForgotCaptchaToken(null)}
                   onExpire={() => setForgotCaptchaToken(null)}
@@ -326,13 +340,15 @@ export default function Auth() {
                   type="button"
                   className="flex-1"
                   onClick={() => handleForgotPassword(forgotEmail)}
-                  disabled={isLoading || !forgotCaptchaToken}
+                  disabled={isLoading || !forgotCaptchaToken || forgotCooldown > 0}
                 >
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Enviando...
                     </>
+                  ) : forgotCooldown > 0 ? (
+                    `Reintentar en ${forgotCooldown}s`
                   ) : (
                     'Enviar enlace'
                   )}
