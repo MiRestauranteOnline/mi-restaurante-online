@@ -363,7 +363,7 @@ const Signup = () => {
           const { error: otpError } = await supabase.auth.verifyOtp({
             email: data.loginToken.email,
             token: data.loginToken.token,
-            type: data.loginToken.type,
+            type: 'email',
           });
           
           if (otpError) {
@@ -375,8 +375,18 @@ const Signup = () => {
             });
           } else {
             console.log('✅ Session established successfully via OTP');
-            // Wait a bit to ensure session is fully persisted to localStorage
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Ensure session is persisted
+            let tries = 0;
+            let sessionOk = false;
+            while (tries < 5 && !sessionOk) {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (session) {
+                sessionOk = true;
+                break;
+              }
+              await new Promise(r => setTimeout(r, 200));
+              tries++;
+            }
           }
         }
         

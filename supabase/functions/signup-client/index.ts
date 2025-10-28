@@ -209,9 +209,9 @@ const handler = async (req: Request): Promise<Response> => {
         loginToken = {
           email: email,
           token: otpData.properties.email_otp,
-          type: 'magiclink'
+          type: 'email' // Use 'email' type for verifyOtp with the 6-digit code
         };
-        console.log('✅ Login token generated successfully for auto-login');
+        console.log('✅ Login token (email OTP) generated successfully for auto-login');
       } else {
         console.error('Failed to generate login token:', otpError);
       }
