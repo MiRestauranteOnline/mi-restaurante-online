@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -101,6 +102,13 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
       opening_hours: mergedOpeningHours,
     },
   });
+
+  // Reset form when initialData changes (after refresh/navigation)
+  useEffect(() => {
+    form.reset({
+      opening_hours: mergedOpeningHours,
+    });
+  }, [initialData]);
 
   const onSubmit = (data: OpeningHoursFormData) => {
     onComplete(data);

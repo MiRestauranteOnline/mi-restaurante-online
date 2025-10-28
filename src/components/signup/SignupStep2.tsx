@@ -824,7 +824,7 @@ export const SignupStep2 = ({ onComplete, onBack, signupData, initialData }: Sig
               </div>
 
               <Button type="submit" className="w-full" size="lg">
-                Crear Mi Sitio Web
+                Continuar
               </Button>
             </form>
           </Form>
