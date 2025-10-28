@@ -19,6 +19,7 @@ import { CustomImagesManager } from "@/components/client/CustomImagesManager";
 import { AnalyticsOverview } from "@/components/client/AnalyticsOverview";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { MultiLocationInput } from "@/components/MultiLocationInput";
 
 interface ClientContext {
   selectedClientId: string;
@@ -32,7 +33,7 @@ interface Client {
   email?: string;
   phone?: string;
   phone_country_code?: string;
-  address?: string;
+  address?: string | string[];
   whatsapp?: string;
   whatsapp_country_code?: string;
   coordinates?: any;
@@ -242,9 +243,28 @@ export default function ClientDashboard() {
         premiumData = premium;
       }
 
+      const parsedAddress = (() => {
+        if (Array.isArray(client.address)) {
+          return client.address.length > 0 ? client.address : [''];
+        }
+        if (client.address) {
+          if (typeof client.address === 'string' && client.address.trim().startsWith('[')) {
+            try {
+              const parsed = JSON.parse(client.address);
+              return Array.isArray(parsed) && parsed.length > 0 ? parsed : [''];
+            } catch {
+              return [client.address];
+            }
+          }
+          return [client.address];
+        }
+        return [''];
+      })();
+
       setFormData({
         ...client,
         ...settings,
+        address: parsedAddress,
         other_customizations: client?.other_customizations || {},
         delivery_info: settings?.delivery_info || {},
         whatsapp_messages: settings?.whatsapp_messages || {},
@@ -285,7 +305,7 @@ export default function ClientDashboard() {
           email: formData.email,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
-          address: formData.address,
+          address: Array.isArray(formData.address) ? JSON.stringify(formData.address) : (formData.address || null),
           whatsapp: formData.whatsapp,
           whatsapp_country_code: formData.whatsapp_country_code,
           coordinates: formData.coordinates,
@@ -540,12 +560,11 @@ export default function ClientDashboard() {
 
               <div>
                 <Label htmlFor="address">{t('general.address')}</Label>
-                <Textarea
-                  id="address"
-                  value={formData.address || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                  placeholder="Ingresa la dirección completa de tu restaurante"
-                  rows={3}
+                <MultiLocationInput
+                  locations={Array.isArray(formData.address) ? formData.address : [formData.address || '']}
+                  onChange={(locations) => setFormData(prev => ({ ...prev, address: locations }))}
+                  placeholder="Av. Principal 123, Distrito, Ciudad"
+                  useTextarea={true}
                 />
               </div>
               

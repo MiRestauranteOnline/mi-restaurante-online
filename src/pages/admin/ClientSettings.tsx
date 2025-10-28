@@ -1215,7 +1215,14 @@ const [faqForm, setFaqForm] = useState({
         ruc: (data as any).ruc || '',
         phone: data.phone || '',
         phone_country_code: (data as any).phone_country_code || '+51',
-        address: data.address || '',
+        address: (() => {
+          const addr = data.address;
+          if (!addr) return '';
+          if (typeof addr === 'string' && addr.trim().startsWith('[')) {
+            return addr; // Already JSON string
+          }
+          return addr;
+        })(),
         whatsapp: data.whatsapp || '',
         whatsapp_country_code: (data as any).whatsapp_country_code || '+51',
         use_coordinates: (data as any).use_coordinates || false,
