@@ -13,13 +13,11 @@ import { SignupSuccess } from "@/components/signup/SignupSuccess";
 import { CouponInput } from "@/components/signup/CouponInput";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
 import OpenPayPaymentForm from "@/components/OpenPayPaymentForm";
-import { ClientTurnstileWidget } from "@/components/ClientTurnstileWidget";
 
 export interface SignupData {
   email: string;
@@ -307,9 +305,6 @@ const Signup = () => {
     setSelectedPlan(plan);
     setIsProcessingPayment(true);
     
-    // Temporarily store password to enable re-auth during signup flow (cleared on completion)
-    try { localStorage.setItem('signup_tmp_pw', btoa(formData.password)); } catch {}
-    
     // Fetch plan pricing from database - both plans for locking
     try {
       const { data: planData, error } = await supabase
@@ -455,26 +450,6 @@ const Signup = () => {
       setPaymentAmount(coupon.finalAmount);
     } else {
       setPaymentAmount(originalAmount);
-    }
-  };
-
-  const handleCaptchaVerifyForLogin = async (token: string) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) return;
-      if (!signupData.email || !signupData.password) return;
-      const { error } = await supabase.auth.signInWithPassword({
-        email: signupData.email,
-        password: signupData.password,
-        options: { captchaToken: token }
-      });
-      if (error) {
-        console.error('Turnstile sign-in failed:', error);
-      } else {
-        console.log('Signed in successfully via Turnstile');
-      }
-    } catch (e) {
-      console.error('Unexpected Turnstile sign-in error:', e);
     }
   };
 
@@ -631,8 +606,8 @@ const Signup = () => {
       // Ensure we have a valid session before calling the edge function
       let { data: { session: authSession }, error: sessionError } = await supabase.auth.getSession();
 
-      // Try password sign-in first if no session
-      if ((!authSession || sessionError) && signupData.email && signupData.password) {
+      // Try password sign-in if no session
+      if (!authSession && signupData.email && signupData.password) {
         console.warn('No session found, attempting password sign-in...');
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: signupData.email,
@@ -643,23 +618,9 @@ const Signup = () => {
           authSession = res.data.session;
         }
       }
-
-      // Try refresh as last resort
-      if (!authSession) {
-        console.warn('No valid session after sign-in. Attempting refresh...');
-        try {
-          const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
-          if (refreshError) {
-            console.warn('Session refresh error:', refreshError);
-          }
-          authSession = refreshed?.session || null;
-        } catch (e) {
-          console.warn('Session refresh threw:', e);
-        }
-      }
       
       if (!authSession) {
-        throw new Error('Tu sesión ha expirado o requiere verificación. Resuelve la verificación de seguridad y vuelve a intentarlo.');
+        throw new Error('Tu sesión ha expirado. Por favor recarga la página e intenta nuevamente.');
       }
       
       console.log('Session valid, calling complete-signup with auth');
@@ -892,19 +853,6 @@ const Signup = () => {
                     onCouponApplied={handleCouponApplied}
                   />
 
-                  {/* Security verification to establish session (required when CAPTCHA is enabled) */}
-                  {createdClientId && (
-                    <div className="mt-4">
-                      <h3 className="text-sm font-medium mb-2">Verificación de seguridad</h3>
-                      <ClientTurnstileWidget
-                        clientId={createdClientId}
-                        onVerify={handleCaptchaVerifyForLogin}
-                        theme="auto"
-                        size="normal"
-                      />
-                    </div>
-                  )}
-
                   {createdClientId ? (
                     paymentAmount > 0 ? (
                       <DebugErrorBoundary>
@@ -975,26 +923,12 @@ const Signup = () => {
               )}
               
               {currentStep === 7 && (
-                <>
-                  {/* Security verification to establish session if needed */}
-                  {createdClientId && (
-                    <div className="mb-4">
-                      <h3 className="text-sm font-medium mb-2">Verificación de seguridad</h3>
-                      <ClientTurnstileWidget
-                        clientId={createdClientId}
-                        onVerify={handleCaptchaVerifyForLogin}
-                        theme="auto"
-                        size="normal"
-                      />
-                    </div>
-                  )}
-                  <SignupStep6FAQs
-                    onComplete={handleStep6Complete}
-                    onBack={handleBackToStep5}
-                    initialData={faqsData}
-                    isProcessing={isProcessingFinalStep}
-                  />
-                </>
+                <SignupStep6FAQs
+                  onComplete={handleStep6Complete}
+                  onBack={handleBackToStep5}
+                  initialData={faqsData}
+                  isProcessing={isProcessingFinalStep}
+                />
               )}
               
               {currentStep === 8 && (() => {
