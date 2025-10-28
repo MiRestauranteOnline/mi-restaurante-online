@@ -1,12 +1,27 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AlertCircle, Mail, MessageCircle } from "lucide-react";
+import { AlertCircle, Mail, MessageCircle, LogOut } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export const ClientDashboardOverlay = () => {
+  const navigate = useNavigate();
   const [showOverlay, setShowOverlay] = useState(false);
   const [clientEmail, setClientEmail] = useState<string>("");
   const [loading, setLoading] = useState(true);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Sesión cerrada correctamente");
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Error al cerrar sesión");
+    }
+  };
 
   useEffect(() => {
     const checkDashboardStatus = async () => {
@@ -106,6 +121,15 @@ export const ClientDashboardOverlay = () => {
 
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <Button
+        onClick={handleLogout}
+        variant="ghost"
+        size="sm"
+        className="absolute top-4 right-4 gap-2"
+      >
+        <LogOut className="h-4 w-4" />
+        Cerrar sesión
+      </Button>
       <Card className="max-w-2xl w-full border-2 border-primary/20 shadow-2xl">
         <CardContent className="p-8 space-y-6">
           <div className="flex items-center gap-4 text-primary">
