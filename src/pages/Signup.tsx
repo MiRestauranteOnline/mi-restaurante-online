@@ -218,7 +218,17 @@ const Signup = () => {
 
         // All steps complete - call complete-signup edge function
         console.log('All steps appear complete, calling complete-signup function');
-        const { error: completeError } = await supabase.functions.invoke('complete-signup');
+        // Include auth header if session exists
+        let { data: { session: authSession } } = await supabase.auth.getSession();
+        if (!authSession) {
+          try {
+            const { data: refreshed } = await supabase.auth.refreshSession();
+            authSession = refreshed?.session || null;
+          } catch {}
+        }
+        const { error: completeError } = await supabase.functions.invoke('complete-signup', {
+          headers: authSession ? { Authorization: `Bearer ${authSession.access_token}` } : undefined
+        });
         
         if (completeError) {
           console.error('Error completing signup:', completeError);
@@ -628,10 +638,22 @@ const Signup = () => {
       }
       
       // Ensure we have a valid session before calling the edge function
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
+      let { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
       if (sessionError || !session) {
-        console.error('No valid session:', sessionError);
+        console.warn('No valid session initially. Attempting refresh...');
+        try {
+          const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
+          if (refreshError) {
+            console.warn('Session refresh error:', refreshError);
+          }
+          session = refreshed?.session || null;
+        } catch (e) {
+          console.warn('Session refresh threw:', e);
+        }
+      }
+      
+      if (!session) {
         throw new Error('Tu sesión ha expirado. Por favor recarga la página y vuelve a intentarlo.');
       }
       
@@ -714,6 +736,16 @@ const Signup = () => {
 
   const handleBackToStep5 = () => {
     setCurrentStep(6);
+    // Save progress to localStorage when going back
+    const progress = {
+      step: 6,
+      clientId: createdClientId,
+      selectedPlan,
+      email: signupData.email,
+      restaurantName: signupData.restaurantName,
+      phone: signupData.phone,
+    };
+    localStorage.setItem('signup_progress', JSON.stringify(progress));
     window.scrollTo(0, 0);
   };
 

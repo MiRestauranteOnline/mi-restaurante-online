@@ -615,12 +615,12 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
               Volver
             </Button>
             <Button type="submit" disabled={isProcessingImages || isProcessingFinalStep}>
-              {isProcessingFinalStep ? (
+              {isProcessingImages ? (
                 <div className="flex items-center gap-2">
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  Finalizando registro...
+                  Guardando...
                 </div>
-              ) : isProcessingImages ? 'Procesando imágenes...' : 'Finalizar Registro'}
+              ) : 'Guardar y continuar'}
             </Button>
           </div>
         </form>
