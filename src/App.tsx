@@ -20,6 +20,8 @@ import BlogPost from "./pages/BlogPost";
 import BlogGenerationAdmin from "./components/BlogGenerationAdmin";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import RecuperarContrasena from "./pages/RecuperarContrasena";
+import RestablecerContrasena from "./pages/RestablecerContrasena";
 import Signup from "./pages/Signup";
 import SignupSuccessPage from "./pages/SignupSuccess";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
@@ -93,6 +95,8 @@ const AppContent = () => {
         <Route path="/blog/:category/:slug" element={<BlogPost />} />
         <Route path="/admin/blog-generation" element={<BlogGenerationAdmin />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
+        <Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
         <Route path="/registro" element={<Signup />} />
         <Route path="/registro-exitoso" element={<SignupSuccessPage />} />
         <Route path="/signup" element={<Signup />} />
