@@ -270,8 +270,9 @@ export default function Auth() {
                     Cancelar
                   </Button>
                   <Button
-                    type="submit"
+                    type="button"
                     className="flex-1"
+                    onClick={() => handleForgotPassword(loginForm.getValues('email'))}
                     disabled={isLoading}
                   >
                     {isLoading ? (
