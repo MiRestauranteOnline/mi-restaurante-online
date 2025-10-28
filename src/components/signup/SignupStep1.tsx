@@ -30,6 +30,8 @@ const signupSchema = z.object({
   phoneCountryCode: z.string().min(1, "Selecciona un código de país"),
   phone: z.string().min(6, "Número de teléfono inválido"),
   address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"),
+  ruc: z.string().regex(/^\d{11}$/, "El RUC debe tener 11 dígitos").optional().or(z.literal("")),
+  razonSocial: z.string().min(3, "La razón social debe tener al menos 3 caracteres").optional().or(z.literal("")),
   hasCustomDomain: z.boolean().optional(),
   customDomain: z.string().optional(),
   referralSource: z.string().min(1, "Por favor selecciona cómo nos encontraste"),
@@ -98,6 +100,8 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
       phoneCountryCode: "+51", // Default to Peru
       phone: initialData.phone,
       address: initialData.address || "", // New address field
+      ruc: initialData.ruc || "",
+      razonSocial: initialData.razonSocial || "",
       hasCustomDomain: initialData.hasCustomDomain || false,
       customDomain: initialData.customDomain || "",
       referralSource: initialData.referralSource || "",
@@ -513,7 +517,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   />
                 </FormControl>
                 <p className="text-xs text-muted-foreground">
-                  Debe contener: mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial
+                  Recomendado: Usa al menos 8 caracteres con mayúscula, minúscula, número y carácter especial para mayor seguridad
                 </p>
                 <FormMessage />
               </FormItem>
@@ -567,6 +571,51 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="ruc"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>RUC (Opcional)</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="20123456789"
+                    maxLength={11}
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      field.onChange(value);
+                    }}
+                  />
+                </FormControl>
+                <p className="text-xs text-muted-foreground">
+                  Si tienes RUC, ingrésalo para facturación
+                </p>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="razonSocial"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Razón Social (Opcional)</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Mi Restaurante SAC"
+                    {...field}
+                  />
+                </FormControl>
+                <p className="text-xs text-muted-foreground">
+                  Nombre legal de tu empresa
+                </p>
                 <FormMessage />
               </FormItem>
             )}

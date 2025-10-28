@@ -18,6 +18,8 @@ interface SignupRequest {
   customDomain?: string;
   referralSource?: string;
   address?: string;
+  ruc?: string;
+  razonSocial?: string;
   locked_basic_price?: number;
   locked_advanced_price?: number;
 }
@@ -51,6 +53,8 @@ const handler = async (req: Request): Promise<Response> => {
       customDomain,
       referralSource,
       address,
+      ruc,
+      razonSocial,
       locked_basic_price,
       locked_advanced_price
     } = reqBody;
@@ -131,6 +135,8 @@ const handler = async (req: Request): Promise<Response> => {
         email: email,
         domain: customDomain || null,
         address: address || null,
+        ruc: ruc || null,
+        razon_social: razonSocial || null,
         locked_basic_price: locked_basic_price || null,
         locked_advanced_price: locked_advanced_price || null,
         subscription_status: 'pending',

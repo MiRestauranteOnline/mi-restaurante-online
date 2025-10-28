@@ -30,7 +30,9 @@ export interface SignupData {
   phone: string;
   phone_country_code?: string;
   whatsapp_country_code?: string;
-  address: string; // New address field
+  address: string;
+  ruc?: string;
+  razonSocial?: string;
   paymentId?: string;
   hasCustomDomain?: boolean;
   customDomain?: string;
@@ -417,6 +419,8 @@ const Signup = () => {
           phone_country_code: formData.phone_country_code,
           whatsapp_country_code: formData.whatsapp_country_code,
           address: formData.address,
+          ruc: formData.ruc,
+          razonSocial: formData.razonSocial,
           paymentId: 'pending',
           customDomain: formData.customDomain,
           referralSource: formData.referralSource,
