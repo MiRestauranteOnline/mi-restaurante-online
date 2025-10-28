@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { LoadingButton } from "@/components/ui/loading-button";
 import type { SignupData } from "@/pages/Signup";
 
 const signupSchema = z.object({
@@ -824,10 +825,17 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             }}
           />
 
-          <Button 
-            type="submit" 
-            className="w-full" 
+          <LoadingButton
+            type="submit"
             size="lg"
+            isLoading={isProcessingPayment}
+            statusMessages={[
+              "Creando tu cuenta...",
+              "Configurando tu espacio...",
+              "Preparando tu sitio web...",
+              "Iniciando sesión..."
+            ]}
+            statusInterval={2500}
             disabled={
               isProcessingPayment || 
               !!subdomainError || 
@@ -837,24 +845,15 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
               !captchaToken
             }
           >
-            {isProcessingPayment ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Procesando registro...
-              </>
-            ) : (
-              <>
-                <CreditCard className="w-4 h-4 mr-2" />
-                Continuar al Pago
-                {plans.length > 0 && (
-                  <span className="ml-1">
-                    - {plans.find(p => p.plan_key === selectedPlan)?.currency === 'USD' ? '$' : 'S/'}
-                    {plans.find(p => p.plan_key === selectedPlan)?.monthly_price}/mes
-                  </span>
-                )}
-              </>
+            <CreditCard className="w-4 h-4 mr-2" />
+            Continuar al Pago
+            {plans.length > 0 && (
+              <span className="ml-1">
+                - {plans.find(p => p.plan_key === selectedPlan)?.currency === 'USD' ? '$' : 'S/'}
+                {plans.find(p => p.plan_key === selectedPlan)?.monthly_price}/mes
+              </span>
             )}
-          </Button>
+          </LoadingButton>
         </form>
       </Form>
 

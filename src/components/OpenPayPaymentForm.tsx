@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { z } from 'zod';
 import { BillingInfoForm, BillingInfo } from '@/components/BillingInfoForm';
+import { LoadingButton } from '@/components/ui/loading-button';
 
 const cardSchema = z.object({
   cardNumber: z.string()
@@ -452,16 +453,21 @@ export default function OpenPayPaymentForm({
             <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={loading} className="flex-1">
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Procesando...
-                </>
-              ) : (
-                `Pagar y Suscribirse`
-              )}
-            </Button>
+            <div className="flex-1">
+              <LoadingButton
+                type="submit"
+                isLoading={loading}
+                statusMessages={[
+                  "Validando tarjeta...",
+                  "Procesando pago...",
+                  "Creando suscripción...",
+                  "Activando cuenta..."
+                ]}
+                statusInterval={2000}
+              >
+                Pagar y Suscribirse
+              </LoadingButton>
+            </div>
           </div>
         </form>
       </CardContent>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Plus, X, HelpCircle, Info } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { LoadingButton } from "@/components/ui/loading-button";
 
 export interface FAQItem {
   question: string;
@@ -203,17 +204,22 @@ export const SignupStep6FAQs = ({ onComplete, onBack, initialData, isProcessing 
               Volver
             </Button>
             <div className="flex gap-2">
-              <Button type="button" variant="ghost" onClick={handleSkip}>
+              <Button type="button" variant="ghost" onClick={handleSkip} disabled={isProcessing}>
                 Omitir
               </Button>
-              <Button type="submit" disabled={isProcessing}>
-                {isProcessing ? (
-                  <div className="flex items-center gap-2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    Finalizando...
-                  </div>
-                ) : 'Finalizar Registro'}
-              </Button>
+              <LoadingButton
+                type="submit"
+                isLoading={isProcessing}
+                statusMessages={[
+                  "Guardando información...",
+                  "Configurando tu sitio...",
+                  "Preparando el dashboard...",
+                  "Finalizando registro..."
+                ]}
+                statusInterval={2000}
+              >
+                Finalizar Registro
+              </LoadingButton>
             </div>
           </div>
         </form>
