@@ -14,83 +14,75 @@ Deno.serve(async (req) => {
   try {
     console.log('Complete signup function called');
 
-    // Get the authorization header
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('No authorization header');
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    // Parse payload early (clientId, faqs)
+    let payload: any = {};
+    try {
+      payload = await req.json();
+    } catch {
+      payload = {};
     }
 
-    // Initialize Supabase client with service role to bypass RLS for validation
+    const authHeader = req.headers.get('Authorization');
+
+    // Admin client (service role)
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
       {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
+        auth: { autoRefreshToken: false, persistSession: false },
       }
     );
 
-    // Initialize regular client to verify user
+    // Regular client (optional auth via Authorization header if present)
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-        global: {
-          headers: { Authorization: authHeader },
-        },
+        auth: { autoRefreshToken: false, persistSession: false },
+        global: authHeader ? { headers: { Authorization: authHeader } } : undefined,
       }
     );
 
-    // Get the authenticated user
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseClient.auth.getUser();
+    // Resolve clientId: try authenticated user first, else require payload.clientId
+    let resolvedClientId: string | null = null;
 
-    if (userError || !user) {
-      console.error('User authentication failed:', userError);
-      return new Response(
-        JSON.stringify({ error: 'Authentication failed' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    if (authHeader) {
+      const { data: userRes, error: userErr } = await supabaseClient.auth.getUser();
+      if (!userErr && userRes?.user) {
+        console.log('Authenticated user:', userRes.user.id);
+        const { data: link, error: linkErr } = await supabaseAdmin
+          .from('user_clients')
+          .select('client_id')
+          .eq('user_id', userRes.user.id)
+          .maybeSingle();
+        if (!linkErr && link?.client_id) {
+          resolvedClientId = link.client_id;
+        }
+      } else if (userErr) {
+        console.warn('Auth user not available, falling back to clientId from payload');
+      }
     }
 
-    console.log('Authenticated user:', user.id);
-
-    // Get the client associated with this user
-    const { data: userClient, error: clientLinkError } = await supabaseAdmin
-      .from('user_clients')
-      .select('client_id')
-      .eq('user_id', user.id)
-      .single();
-
-    if (clientLinkError || !userClient) {
-      console.error('Client link not found:', clientLinkError);
-      return new Response(
-        JSON.stringify({ error: 'Client not found for user' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    if (!resolvedClientId) {
+      if (payload?.clientId && typeof payload.clientId === 'string') {
+        resolvedClientId = payload.clientId;
+      } else {
+        return new Response(
+          JSON.stringify({ error: 'Missing client identifier' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
-    const clientId = userClient.client_id;
-    console.log('Found client:', clientId);
+    const clientId = resolvedClientId;
+    console.log('Using client:', clientId);
 
     // Fetch the client with all necessary data
     const { data: client, error: clientError } = await supabaseAdmin
       .from('clients')
       .select('*')
       .eq('id', clientId)
-      .single();
+      .maybeSingle();
 
     if (clientError || !client) {
       console.error('Client fetch failed:', clientError);
@@ -103,7 +95,6 @@ Deno.serve(async (req) => {
     // Validate all required steps are completed
     const validationErrors: string[] = [];
 
-    // Step 1: Account created (implicit - user exists)
     // Step 2: Payment completed
     if (client.subscription_status !== 'active') {
       validationErrors.push('Payment not completed - subscription is not active');
@@ -125,18 +116,10 @@ Deno.serve(async (req) => {
       validationErrors.push('No carousel images uploaded');
     }
 
-    // Step 5: FAQs added (insert if provided in payload)
-    let payload: any = {};
-    try {
-      payload = await req.json();
-    } catch {
-      payload = {};
-    }
-
+    // Step 5: FAQs added (optionally insert from payload if not present)
     const incomingFaqs = Array.isArray(payload?.faqs) ? payload.faqs : [];
 
     if (incomingFaqs.length > 0) {
-      // Check existing active FAQs to avoid duplicates
       const { data: existingFaqs } = await supabaseAdmin
         .from('faqs')
         .select('id')
@@ -204,10 +187,7 @@ Deno.serve(async (req) => {
     console.log('Signup completed successfully for client:', clientId);
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        message: 'Signup completed successfully',
-      }),
+      JSON.stringify({ success: true, message: 'Signup completed successfully' }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {

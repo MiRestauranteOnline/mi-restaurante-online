@@ -708,41 +708,13 @@ const Signup = () => {
     try {
       console.log('✅ All steps completed, finalizing signup via edge function');
 
-      // Ensure we have a valid session
-      let { data: { session } } = await supabase.auth.getSession();
-      
-      // If no session, try to sign in with stored credentials
-      if (!session && signupData.email && signupData.password) {
-        console.log('No active session, attempting to sign in...');
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email: signupData.email,
-          password: signupData.password,
-        });
-        
-        if (signInError) {
-          console.error('Sign in error:', signInError);
-          throw new Error('Tu sesión ha expirado. Por favor recarga la página e intenta nuevamente.');
-        }
-        
-        session = signInData.session;
-      }
-
-      if (!session?.access_token) {
-        throw new Error('No se pudo obtener una sesión válida. Por favor recarga la página.');
-      }
-
-      console.log('Session validated, calling complete-signup');
-
       // Prepare FAQs payload (optional)
       const cleanFaqs = (faqs.faqs || [])
         .filter(f => f.question.trim() && f.answer.trim())
         .map(f => ({ question: f.question.trim(), answer: f.answer.trim() }));
 
-      const { data, error } = await supabase.functions.invoke('complete-signup', {
-        body: { faqs: cleanFaqs },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
+      const { error } = await supabase.functions.invoke('complete-signup', {
+        body: { clientId: createdClientId, faqs: cleanFaqs },
       });
 
       if (error) {

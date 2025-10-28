@@ -101,3 +101,6 @@ verify_jwt = false
 
 [functions.cancel-openpay-subscription]
 verify_jwt = false
+
+[functions.complete-signup]
+verify_jwt = false
