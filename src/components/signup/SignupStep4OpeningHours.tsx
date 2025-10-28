@@ -141,7 +141,7 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -232,7 +232,7 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
               Volver
             </Button>
             <div className="flex gap-2">
-              <Button type="submit">
+              <Button type="button" onClick={form.handleSubmit(onSubmit)}>
                 Continuar
               </Button>
             </div>
