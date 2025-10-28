@@ -143,28 +143,39 @@ export default function Auth() {
   };
 
   const handleForgotPassword = async (email: string) => {
+    console.log('[ForgotPassword] Starting with email:', email);
+    
     if (!email) {
+      console.log('[ForgotPassword] No email provided');
       toast.error('Por favor ingresa tu email');
       return;
     }
     
     setIsLoading(true);
+    console.log('[ForgotPassword] Calling Supabase resetPasswordForEmail...');
+    
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth`,
       });
 
+      console.log('[ForgotPassword] Supabase response:', { error });
+
       if (error) {
+        console.error('[ForgotPassword] Error:', error);
         toast.error(error.message);
         return;
       }
 
+      console.log('[ForgotPassword] Success! Email sent.');
       toast.success('¡Revisa tu email! Te enviamos un enlace para restablecer tu contraseña.');
       setIsForgotPasswordMode(false);
     } catch (error) {
+      console.error('[ForgotPassword] Catch block error:', error);
       toast.error('Error al enviar email de recuperación');
     } finally {
       setIsLoading(false);
+      console.log('[ForgotPassword] Loading finished');
     }
   };
 
