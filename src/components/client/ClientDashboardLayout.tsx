@@ -31,6 +31,7 @@ import { cn } from '@/lib/utils';
 import { useDashboardLanguage } from '@/contexts/DashboardLanguageContext';
 import { useAdminImpersonation } from '@/hooks/useAdminImpersonation';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ClientDashboardOverlay } from '@/components/ClientDashboardOverlay';
 
 interface Client {
   id: string;
@@ -222,8 +223,10 @@ export default function ClientDashboardLayout() {
   );
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      {/* Admin Impersonation Banner */}
+    <>
+      <ClientDashboardOverlay />
+      <div className="flex flex-col h-screen bg-background">
+        {/* Admin Impersonation Banner */}
       {isImpersonating && impersonatedClientId === selectedClientId && (
         <Alert className="rounded-none border-x-0 border-t-0 bg-warning/10">
           <ShieldAlert className="h-4 w-4" />
@@ -344,5 +347,6 @@ export default function ClientDashboardLayout() {
         </div>
       </div>
     </div>
+    </>
   );
 }

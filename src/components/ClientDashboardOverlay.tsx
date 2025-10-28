@@ -6,13 +6,22 @@ import { Card, CardContent } from "@/components/ui/card";
 export const ClientDashboardOverlay = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [clientEmail, setClientEmail] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkDashboardStatus = async () => {
       try {
+        console.log('[ClientDashboardOverlay] Checking dashboard status...');
+        
         // Get current user's client
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          console.log('[ClientDashboardOverlay] No user found');
+          setLoading(false);
+          return;
+        }
+
+        console.log('[ClientDashboardOverlay] User found:', user.id);
 
         const { data: userClient, error: userClientError } = await supabase
           .from("user_clients")
@@ -20,7 +29,13 @@ export const ClientDashboardOverlay = () => {
           .eq("user_id", user.id)
           .single();
 
-        if (userClientError || !userClient) return;
+        if (userClientError || !userClient) {
+          console.error('[ClientDashboardOverlay] Error fetching user_client:', userClientError);
+          setLoading(false);
+          return;
+        }
+
+        console.log('[ClientDashboardOverlay] Client ID:', userClient.client_id);
 
         // Check if dashboard is deactivated
         const { data: client, error: clientError } = await supabase
@@ -29,12 +44,23 @@ export const ClientDashboardOverlay = () => {
           .eq("id", userClient.client_id)
           .single();
 
-        if (clientError) return;
+        if (clientError) {
+          console.error('[ClientDashboardOverlay] Error fetching client:', clientError);
+          setLoading(false);
+          return;
+        }
+
+        console.log('[ClientDashboardOverlay] Client data:', { 
+          dashboard_is_deactivated: client.dashboard_is_deactivated,
+          email: client.email 
+        });
 
         setShowOverlay(client.dashboard_is_deactivated || false);
         setClientEmail(client.email || "");
+        setLoading(false);
       } catch (error) {
-        console.error("Error checking dashboard status:", error);
+        console.error('[ClientDashboardOverlay] Error checking dashboard status:', error);
+        setLoading(false);
       }
     };
 
@@ -51,6 +77,7 @@ export const ClientDashboardOverlay = () => {
           table: "clients",
         },
         (payload) => {
+          console.log('[ClientDashboardOverlay] Realtime update received:', payload);
           if (payload.new.dashboard_is_deactivated !== undefined) {
             setShowOverlay(payload.new.dashboard_is_deactivated);
           }
@@ -63,7 +90,19 @@ export const ClientDashboardOverlay = () => {
     };
   }, []);
 
-  if (!showOverlay) return null;
+  console.log('[ClientDashboardOverlay] Render state:', { showOverlay, loading, clientEmail });
+
+  if (loading) {
+    console.log('[ClientDashboardOverlay] Still loading...');
+    return null;
+  }
+
+  if (!showOverlay) {
+    console.log('[ClientDashboardOverlay] Not showing overlay');
+    return null;
+  }
+
+  console.log('[ClientDashboardOverlay] Showing overlay!');
 
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
