@@ -67,9 +67,16 @@ export default function Auth() {
   const forgotPasswordForm = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      email: prefilledEmail,
+      email: '',
     },
   });
+
+  useEffect(() => {
+    // Reset forgot password form when entering that mode
+    if (isForgotPasswordMode) {
+      forgotPasswordForm.reset({ email: prefilledEmail || '' });
+    }
+  }, [isForgotPasswordMode, prefilledEmail, forgotPasswordForm]);
 
   useEffect(() => {
     // Check for recovery tokens in URL hash
