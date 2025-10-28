@@ -638,30 +638,44 @@ const Signup = () => {
       }
       
       // Ensure we have a valid session before calling the edge function
-      let { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      let { data: { session: authSession }, error: sessionError } = await supabase.auth.getSession();
 
-      if (sessionError || !session) {
-        console.warn('No valid session initially. Attempting refresh...');
+      // Try password sign-in first if no session
+      if ((!authSession || sessionError) && signupData.email && signupData.password) {
+        console.warn('No session found, attempting password sign-in...');
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: signupData.email,
+          password: signupData.password,
+        });
+        if (!signInError) {
+          const res = await supabase.auth.getSession();
+          authSession = res.data.session;
+        }
+      }
+
+      // Try refresh as last resort
+      if (!authSession) {
+        console.warn('No valid session after sign-in. Attempting refresh...');
         try {
           const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
           if (refreshError) {
             console.warn('Session refresh error:', refreshError);
           }
-          session = refreshed?.session || null;
+          authSession = refreshed?.session || null;
         } catch (e) {
           console.warn('Session refresh threw:', e);
         }
       }
       
-      if (!session) {
-        throw new Error('Tu sesión ha expirado. Por favor recarga la página y vuelve a intentarlo.');
+      if (!authSession) {
+        throw new Error('Tu sesión ha expirado o requiere verificación. Resuelve la verificación de seguridad y vuelve a intentarlo.');
       }
       
       console.log('Session valid, calling complete-signup with auth');
       
       const { error } = await supabase.functions.invoke('complete-signup', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`
+          Authorization: `Bearer ${authSession.access_token}`
         }
       });
       
@@ -970,12 +984,26 @@ const Signup = () => {
               )}
               
               {currentStep === 7 && (
-                <SignupStep6FAQs
-                  onComplete={handleStep6Complete}
-                  onBack={handleBackToStep5}
-                  initialData={faqsData}
-                  isProcessing={isProcessingFinalStep}
-                />
+                <>
+                  {/* Security verification to establish session if needed */}
+                  {createdClientId && (
+                    <div className="mb-4">
+                      <h3 className="text-sm font-medium mb-2">Verificación de seguridad</h3>
+                      <ClientTurnstileWidget
+                        clientId={createdClientId}
+                        onVerify={handleCaptchaVerifyForLogin}
+                        theme="auto"
+                        size="normal"
+                      />
+                    </div>
+                  )}
+                  <SignupStep6FAQs
+                    onComplete={handleStep6Complete}
+                    onBack={handleBackToStep5}
+                    initialData={faqsData}
+                    isProcessing={isProcessingFinalStep}
+                  />
+                </>
               )}
               
               {currentStep === 8 && (() => {
