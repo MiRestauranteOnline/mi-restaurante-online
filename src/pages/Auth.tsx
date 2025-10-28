@@ -84,19 +84,37 @@ export default function Auth() {
 
   useEffect(() => {
     // Check for recovery tokens in URL hash
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const rawHash = window.location.hash || "";
+    const hashParams = new URLSearchParams(rawHash.replace(/^#/, ""));
     const accessToken = hashParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token');
     const type = hashParams.get('type');
 
-    if (accessToken && type === 'recovery') {
+    if (type === 'recovery') {
       setIsRecoveryMode(true);
-      // Set session with the recovery token
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: hashParams.get('refresh_token') || '',
-      });
-      // Clear the hash from URL
-      window.history.replaceState({}, document.title, window.location.pathname);
+      // Try to establish a session only when we have both tokens
+      if (accessToken && refreshToken) {
+        (async () => {
+          try {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (error) {
+              console.error('[Auth] setSession error during recovery:', error);
+            }
+          } catch (e) {
+            console.error('[Auth] Failed to set session during recovery:', e);
+          } finally {
+            // Clear the hash from URL regardless
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        })();
+      } else {
+        console.warn('[Auth] Missing access_token or refresh_token in recovery URL');
+        // Keep user on recovery form but clear the hash
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
       return;
     }
 
