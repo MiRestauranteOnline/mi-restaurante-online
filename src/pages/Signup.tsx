@@ -716,13 +716,38 @@ const Signup = () => {
     localStorage.setItem('signup_form_data', JSON.stringify(formData));
     
     try {
-      console.log('✅ All steps completed, finalizing signup via edge function');
+      console.log('✅ All steps completed, storing data and finalizing signup');
+
+      // First, store all the collected data via store-briefings
+      const { error: storeError } = await supabase.functions.invoke('store-briefings', {
+        body: {
+          clientId: createdClientId,
+          signupData,
+          websiteRequirements,
+          menuData: {
+            categories: combinedData.categories || [],
+            items: combinedData.items || [],
+          },
+          reviewsData: combinedData.reviews || [],
+          teamData: combinedData.teamMembers || [],
+          openingHoursData,
+          imagesData,
+        },
+      });
+
+      if (storeError) {
+        console.error('Error storing briefing data:', storeError);
+        throw new Error(storeError.message || 'No se pudo guardar la información');
+      }
+
+      console.log('✅ Briefing data stored successfully');
 
       // Prepare FAQs payload (optional)
       const cleanFaqs = (faqs.faqs || [])
         .filter(f => f.question.trim() && f.answer.trim())
         .map(f => ({ question: f.question.trim(), answer: f.answer.trim() }));
 
+      // Then validate and complete signup
       const { error } = await supabase.functions.invoke('complete-signup', {
         body: { clientId: createdClientId, faqs: cleanFaqs },
       });

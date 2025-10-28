@@ -469,14 +469,13 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
             </Card>
           )}
 
-          {/* Carousel Section */}
-          {imagePreference !== 'ai_only' && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Images className="h-5 w-5" />
-                  Carousel de Imágenes
-                </CardTitle>
+          {/* Carousel Section - Always visible */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Images className="h-5 w-5" />
+                Carousel de Imágenes
+              </CardTitle>
                 <CardDescription>
                   Un carousel muestra múltiples imágenes de tu restaurante en la página principal, rotando automáticamente para destacar diferentes aspectos de tu negocio.
                 </CardDescription>
@@ -589,7 +588,6 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
                 )}
               </CardContent>
             </Card>
-          )}
 
           {/* Information Note */}
           <Card className="border-blue-200 bg-blue-50">

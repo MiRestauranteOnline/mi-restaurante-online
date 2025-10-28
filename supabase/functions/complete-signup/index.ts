@@ -65,13 +65,23 @@ Deno.serve(async (req) => {
       validationErrors.push('Opening hours not configured');
     }
 
-    const { data: images, error: imagesError } = await supabaseAdmin
-      .from('carousel_images')
-      .select('id')
+    // Check if carousel is enabled in admin_content
+    const { data: adminContent } = await supabaseAdmin
+      .from('admin_content')
+      .select('carousel_enabled')
       .eq('client_id', clientId)
-      .eq('is_active', true);
-    if (imagesError || !images || images.length === 0) {
-      validationErrors.push('No carousel images uploaded');
+      .maybeSingle();
+
+    // Only require carousel images if carousel_enabled is true
+    if (adminContent?.carousel_enabled) {
+      const { data: images, error: imagesError } = await supabaseAdmin
+        .from('carousel_images')
+        .select('id')
+        .eq('client_id', clientId)
+        .eq('is_active', true);
+      if (imagesError || !images || images.length === 0) {
+        validationErrors.push('Carousel enabled but no carousel images uploaded');
+      }
     }
 
     // Insert FAQs if provided and none exist yet
