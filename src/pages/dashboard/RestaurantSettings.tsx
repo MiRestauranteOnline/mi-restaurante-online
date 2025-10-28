@@ -86,7 +86,7 @@ export default function RestaurantSettings() {
       email: '',
       whatsapp: '',
       whatsapp_country_code: '+51',
-      address: [],
+      address: [''],
       coordinates_lat: '',
       coordinates_lng: '',
       facebook: '',
@@ -143,7 +143,11 @@ export default function RestaurantSettings() {
             email: client.email || '',
             whatsapp: client.whatsapp || '',
             whatsapp_country_code: client.whatsapp_country_code || '+51',
-            address: Array.isArray(client.address) ? client.address : client.address ? [client.address] : [],
+            address: Array.isArray(client.address) 
+              ? (client.address.length > 0 ? client.address : [''])
+              : client.address 
+                ? [client.address] 
+                : [''],
             coordinates_lat: coordinates.lat?.toString() || '',
             coordinates_lng: coordinates.lng?.toString() || '',
             facebook: socialMedia.facebook || '',
