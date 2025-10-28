@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import { MultiLocationInput } from '@/components/MultiLocationInput';
 import { 
   Save, 
   Loader2, 
@@ -103,7 +104,7 @@ const settingsSchema = z.object({
   phone: z.string().optional(),
   email: z.string().email('Email inválido').optional().or(z.literal('')),
   whatsapp: z.string().optional(),
-  address: z.string().optional(),
+  address: z.array(z.string()).optional(),
   coordinates_lat: z.string().optional(),
   coordinates_lng: z.string().optional(),
   facebook: z.string().optional(),
@@ -354,7 +355,7 @@ export default function UnifiedDashboard() {
       phone: '',
       email: '',
       whatsapp: '',
-      address: '',
+      address: [''],
       coordinates_lat: '',
       coordinates_lng: '',
       facebook: '',
@@ -451,7 +452,23 @@ export default function UnifiedDashboard() {
           phone: client.phone || '',
           email: client.email || '',
           whatsapp: client.whatsapp || '',
-          address: client.address || '',
+          address: (() => {
+            if (Array.isArray(client.address)) {
+              return client.address.length > 0 ? client.address : [''];
+            }
+            if (client.address) {
+              if (typeof client.address === 'string' && client.address.toString().trim().startsWith('[')) {
+                try {
+                  const parsed = JSON.parse(client.address);
+                  return Array.isArray(parsed) && parsed.length > 0 ? parsed : [''];
+                } catch {
+                  return [client.address];
+                }
+              }
+              return [client.address];
+            }
+            return [''];
+          })(),
           coordinates_lat: coordinates.lat?.toString() || '',
           coordinates_lng: coordinates.lng?.toString() || '',
           facebook: socialMedia.facebook || '',
@@ -619,7 +636,7 @@ export default function UnifiedDashboard() {
           phone: data.phone,
           email: data.email,
           whatsapp: data.whatsapp,
-          address: data.address,
+          address: Array.isArray(data.address) ? JSON.stringify(data.address) : (data.address || null),
           coordinates,
           social_media_links: socialMediaLinks,
           delivery: deliveryLinks,
@@ -1166,11 +1183,11 @@ export default function UnifiedDashboard() {
                       <FormItem>
                         <FormLabel>Dirección</FormLabel>
                         <FormControl>
-                          <Textarea 
+                          <MultiLocationInput
+                            locations={Array.isArray(field.value) ? field.value : ['']}
+                            onChange={field.onChange}
                             placeholder="Av. Principal 123, Distrito, Ciudad"
-                            className="resize-none"
-                            rows={3}
-                            {...field} 
+                            useTextarea={true}
                           />
                         </FormControl>
                         <FormMessage />

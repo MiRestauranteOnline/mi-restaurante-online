@@ -19,6 +19,7 @@ import { ImageUpload } from "@/components/ImageUpload";
 import { CustomImagesManager } from "@/components/client/CustomImagesManager";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { UserWarningOverlay } from "@/components/UserWarningOverlay";
+import { MultiLocationInput } from "@/components/MultiLocationInput";
 
 import {
   DndContext,
@@ -3586,11 +3587,23 @@ setReviewForm({
               
               <div>
                 <Label htmlFor="address">{t('general.address')}</Label>
-                <Textarea
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
-                  rows={3}
+                <MultiLocationInput
+                  locations={(() => {
+                    const a: any = (formData as any).address;
+                    if (Array.isArray(a)) return a.length ? a : [''];
+                    if (typeof a === 'string' && a.trim().startsWith('[')) {
+                      try {
+                        const parsed = JSON.parse(a);
+                        return Array.isArray(parsed) && parsed.length ? parsed : [''];
+                      } catch {
+                        return a ? [a] : [''];
+                      }
+                    }
+                    return a ? [a] : [''];
+                  })()}
+                  onChange={(locations) => setFormData({ ...formData, address: JSON.stringify(locations) })}
+                  placeholder="Av. Principal 123, Distrito, Ciudad"
+                  useTextarea={true}
                 />
               </div>
 
