@@ -9,12 +9,15 @@ export const RecoveryRedirect = () => {
   useEffect(() => {
     const hash = window.location.hash || '';
     const search = window.location.search || '';
-    const hasRecovery = (s: string) => s.includes('type=recovery') && (s.includes('access_token=') || s.includes('refresh_token=') || s.includes('code='));
+    const hasRecovery = (s: string) => s.includes('type=recovery') && (s.includes('access_token=') || s.includes('refresh_token=') || s.includes('token=') || s.includes('code='));
 
-    if ((hasRecovery(hash) || hasRecovery(search)) && location.pathname !== '/auth') {
-      // Preserve tokens whether they came via #hash or ?search
+    // Allow recovery on both /auth and /restablecer-contrasena
+    const validRecoveryPaths = ['/auth', '/restablecer-contrasena'];
+    
+    if ((hasRecovery(hash) || hasRecovery(search)) && !validRecoveryPaths.includes(location.pathname)) {
+      // Redirect to the password reset page, preserving tokens
       const suffix = hash || search;
-      navigate(`/auth${suffix}` as const, { replace: true });
+      navigate(`/restablecer-contrasena${suffix}` as const, { replace: true });
     }
   }, [location.pathname, navigate]);
 
