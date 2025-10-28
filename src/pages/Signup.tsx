@@ -713,16 +713,8 @@ const Signup = () => {
         .filter(f => f.question.trim() && f.answer.trim())
         .map(f => ({ question: f.question.trim(), answer: f.answer.trim() }));
 
-      // Pass Authorization header if a valid session exists (handles both public/private function configs)
-      const { data: { session } } = await supabase.auth.getSession();
-      const headers: Record<string, string> = {};
-      if (session?.access_token) {
-        headers['Authorization'] = `Bearer ${session.access_token}`;
-      }
-
       const { error } = await supabase.functions.invoke('complete-signup', {
         body: { clientId: createdClientId, faqs: cleanFaqs },
-        headers,
       });
 
       if (error) {
