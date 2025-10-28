@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
 import OpenPayPaymentForm from "@/components/OpenPayPaymentForm";
+import { ClientTurnstileWidget } from "@/components/ClientTurnstileWidget";
 
 export interface SignupData {
   email: string;
@@ -85,8 +86,32 @@ const Signup = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          // Not logged in - show step 1
-          console.log('No session found, showing step 1');
+          // Fallback: recover progress from localStorage
+          const stored = localStorage.getItem('signup_progress');
+          if (stored) {
+            try {
+              const p = JSON.parse(stored);
+              if (p?.step >= 2 && p?.clientId) {
+                console.log('Recovered signup progress from storage:', p);
+                setCreatedClientId(p.clientId);
+                setSelectedPlan(p.selectedPlan || 'basic');
+                setSignupData(prev => ({
+                  ...prev,
+                  email: p.email || prev.email,
+                  restaurantName: p.restaurantName || prev.restaurantName,
+                  phone: p.phone || prev.phone,
+                }));
+                setCurrentStep(p.step);
+                setIsAuthChecking(false);
+                window.scrollTo(0, 0);
+                return;
+              }
+            } catch (e) {
+              console.warn('Failed to parse signup_progress:', e);
+            }
+          }
+          // Not logged in and no stored progress - show step 1
+          console.log('No session or stored progress, showing step 1');
           setCurrentStep(1);
           setIsAuthChecking(false);
           return;
@@ -141,6 +166,7 @@ const Signup = () => {
         if (client.signup_completed) {
           // Signup fully completed - redirect to dashboard
           console.log('Signup completed, redirecting to dashboard');
+          try { localStorage.removeItem('signup_progress'); } catch {}
           navigate('/client', { replace: true });
           return;
         }
@@ -381,6 +407,7 @@ const Signup = () => {
             while (tries < 5 && !sessionOk) {
               const { data: { session } } = await supabase.auth.getSession();
               if (session) {
+                console.log('Session ready after OTP');
                 sessionOk = true;
                 break;
               }
@@ -392,6 +419,17 @@ const Signup = () => {
         
         setIsProcessingPayment(false);
         setCurrentStep(2);
+        // Persist minimal progress to survive refreshes
+        try {
+          localStorage.setItem('signup_progress', JSON.stringify({
+            clientId: newClientId,
+            step: 2,
+            selectedPlan,
+            email: finalData.email,
+            restaurantName: finalData.restaurantName,
+            phone: finalData.phone,
+          }));
+        } catch {}
         window.scrollTo(0, 0); // Scroll to top when moving to payment step
         toast({
           title: "¡Bienvenido!",
@@ -418,18 +456,46 @@ const Signup = () => {
     }
   };
 
+  const handleCaptchaVerifyForLogin = async (token: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) return;
+      if (!signupData.email || !signupData.password) return;
+      const { error } = await supabase.auth.signInWithPassword({
+        email: signupData.email,
+        password: signupData.password,
+        options: { captchaToken: token }
+      });
+      if (error) {
+        console.error('Turnstile sign-in failed:', error);
+      } else {
+        console.log('Signed in successfully via Turnstile');
+      }
+    } catch (e) {
+      console.error('Unexpected Turnstile sign-in error:', e);
+    }
+  };
+
   const handlePaymentSuccess = () => {
     console.log('✅ Payment successful, moving to step 3');
     setCurrentStep(3);
+    try {
+      const stored = JSON.parse(localStorage.getItem('signup_progress') || '{}');
+      localStorage.setItem('signup_progress', JSON.stringify({ ...stored, step: 3 }));
+    } catch {}
   };
   
   const handlePaymentCancel = () => {
     console.log('Payment cancelled by user');
-    toast({
-      title: "Pago cancelado",
-      description: "Puedes intentar nuevamente cuando estés listo.",
-    });
-  };
+      toast({
+        title: "Pago cancelado",
+        description: "Puedes intentar nuevamente cuando estés listo.",
+      });
+      try {
+        const stored = JSON.parse(localStorage.getItem('signup_progress') || '{}');
+        localStorage.setItem('signup_progress', JSON.stringify({ ...stored, step: 2 }));
+      } catch {}
+    };
 
   const handlePaymentError = (error: string) => {
     console.error('Payment error:', error);
@@ -681,6 +747,19 @@ const Signup = () => {
                     amount={originalAmount}
                     onCouponApplied={handleCouponApplied}
                   />
+
+                  {/* Security verification to establish session (required when CAPTCHA is enabled) */}
+                  {createdClientId && (
+                    <div className="mt-4">
+                      <h3 className="text-sm font-medium mb-2">Verificación de seguridad</h3>
+                      <ClientTurnstileWidget
+                        clientId={createdClientId}
+                        onVerify={handleCaptchaVerifyForLogin}
+                        theme="auto"
+                        size="normal"
+                      />
+                    </div>
+                  )}
 
                   {createdClientId ? (
                     paymentAmount > 0 ? (
