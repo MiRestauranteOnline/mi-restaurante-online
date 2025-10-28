@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
+import { TurnstileWidget } from '@/components/TurnstileWidget';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,6 +35,7 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isForgotPasswordMode, setIsForgotPasswordMode] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const navigate = useNavigate();
   
   // Get state from navigation (if redirected from signup)
@@ -168,19 +170,22 @@ export default function Auth() {
 
   const handleLogin = async (data: AuthFormData) => {
     setIsLoading(true);
-    
-    // No CAPTCHA check needed - CAPTCHA only on signup for bot prevention
-    // Supabase has built-in rate limiting for login attempts
-    
     try {
+      if (!captchaToken) {
+        toast.error('Por favor completa el CAPTCHA');
+        return;
+      }
       const { error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
+        options: { captchaToken },
       });
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           toast.error('Email o contraseña incorrectos');
+        } else if (error.message.toLowerCase().includes('captcha')) {
+          toast.error('Verificación CAPTCHA fallida. Intenta de nuevo.');
         } else {
           toast.error(error.message);
         }
@@ -389,7 +394,13 @@ export default function Auth() {
                   </Button>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <TurnstileWidget
+                  onVerify={(token) => setCaptchaToken(token)}
+                  onError={() => setCaptchaToken(null)}
+                  onExpire={() => setCaptchaToken(null)}
+                />
+
+                <Button type="submit" className="w-full" disabled={isLoading || !captchaToken}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

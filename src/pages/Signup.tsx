@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
 import OpenPayPaymentForm from "@/components/OpenPayPaymentForm";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 
 export interface SignupData {
   email: string;
@@ -311,6 +312,7 @@ const Signup = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
   const [hasPaymentSession, setHasPaymentSession] = useState<boolean | null>(null);
   const [loginPassword, setLoginPassword] = useState('');
+  const [loginCaptchaToken, setLoginCaptchaToken] = useState<string | null>(null);
   // Update URL to show current step (for UX only, not used for state)
   useEffect(() => {
     const params = new URLSearchParams();
@@ -338,14 +340,23 @@ const Signup = () => {
       });
       return;
     }
+    if (!loginCaptchaToken) {
+      toast({
+        title: "Verificación requerida",
+        description: "Completa el CAPTCHA para continuar.",
+        variant: "destructive",
+      });
+      return;
+    }
     const { error } = await supabase.auth.signInWithPassword({
       email: signupData.email,
       password: loginPassword,
+      options: { captchaToken: loginCaptchaToken },
     });
     if (error) {
       toast({
         title: "Error",
-        description: "Contraseña incorrecta. Intenta nuevamente.",
+        description: error.message.includes('captcha') ? "Verificación CAPTCHA fallida. Intenta de nuevo." : "Contraseña incorrecta. Intenta nuevamente.",
         variant: "destructive",
       });
     } else {
@@ -442,7 +453,6 @@ const Signup = () => {
         if (data.loginToken) {
           console.log('🔐 Verifying OTP token from server...');
           const { error: otpError } = await supabase.auth.verifyOtp({
-            email: data.loginToken.email,
             token_hash: data.loginToken.token_hash,
             type: 'magiclink',
           });
@@ -976,9 +986,15 @@ const Signup = () => {
                               }}
                             />
                           </div>
+                          <TurnstileWidget
+                            onVerify={(token) => setLoginCaptchaToken(token)}
+                            onError={() => setLoginCaptchaToken(null)}
+                            onExpire={() => setLoginCaptchaToken(null)}
+                          />
                           <Button 
                             className="w-full"
                             onClick={handleLoginForPayment}
+                            disabled={!loginPassword || !loginCaptchaToken}
                           >
                             Iniciar Sesión
                           </Button>
