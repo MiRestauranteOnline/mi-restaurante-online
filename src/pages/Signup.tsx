@@ -14,6 +14,8 @@ import { CouponInput } from "@/components/signup/CouponInput";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DebugErrorBoundary } from "@/components/DebugErrorBoundary";
@@ -291,6 +293,8 @@ const Signup = () => {
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [originalAmount, setOriginalAmount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
+  const [hasPaymentSession, setHasPaymentSession] = useState<boolean | null>(null);
+  const [loginPassword, setLoginPassword] = useState('');
 
   // Update URL to show current step (for UX only, not used for state)
   useEffect(() => {
@@ -298,6 +302,45 @@ const Signup = () => {
     params.set('step', currentStep.toString());
     setSearchParams(params, { replace: true });
   }, [currentStep, setSearchParams]);
+
+  // Check session when entering Step 2
+  useEffect(() => {
+    const checkPaymentSession = async () => {
+      if (currentStep === 2) {
+        const { data: { session } } = await supabase.auth.getSession();
+        setHasPaymentSession(!!session);
+      }
+    };
+    checkPaymentSession();
+  }, [currentStep]);
+
+  const handleLoginForPayment = async () => {
+    if (!loginPassword) {
+      toast({
+        title: "Error",
+        description: "Por favor ingresa tu contraseña",
+        variant: "destructive",
+      });
+      return;
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email: signupData.email,
+      password: loginPassword,
+    });
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Contraseña incorrecta. Intenta nuevamente.",
+        variant: "destructive",
+      });
+    } else {
+      setHasPaymentSession(true);
+      toast({
+        title: "Sesión iniciada",
+        description: "Ahora puedes continuar con el pago.",
+      });
+    }
+  };
 
   const handleStep1Complete = async (formData: SignupData, plan: 'basic' | 'advanced') => {
     const updatedData = { ...formData, plan_type: plan };
@@ -853,7 +896,53 @@ const Signup = () => {
                     onCouponApplied={handleCouponApplied}
                   />
 
-                  {createdClientId ? (
+                  {hasPaymentSession === null ? (
+                    <Card>
+                      <CardContent className="pt-6 text-center">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                        <p className="text-muted-foreground">Verificando sesión...</p>
+                      </CardContent>
+                    </Card>
+                  ) : !hasPaymentSession ? (
+                    <Card className="border-yellow-200 bg-yellow-50">
+                      <CardContent className="pt-6">
+                        <h3 className="font-semibold mb-2">⚠️ Sesión expirada</h3>
+                        <p className="text-sm mb-4">Tu sesión ha expirado. Por favor inicia sesión para continuar con el pago.</p>
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="login-email">Email</Label>
+                            <Input
+                              id="login-email"
+                              type="email"
+                              value={signupData.email}
+                              disabled
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="login-password">Contraseña</Label>
+                            <Input
+                              id="login-password"
+                              type="password"
+                              placeholder="Ingresa tu contraseña"
+                              value={loginPassword}
+                              onChange={(e) => setLoginPassword(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleLoginForPayment();
+                                }
+                              }}
+                            />
+                          </div>
+                          <Button 
+                            className="w-full"
+                            onClick={handleLoginForPayment}
+                          >
+                            Iniciar Sesión
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ) : createdClientId ? (
                     paymentAmount > 0 ? (
                       <DebugErrorBoundary>
                         <OpenPayPaymentForm
@@ -880,7 +969,7 @@ const Signup = () => {
                       <CardContent className="pt-6">
                         <p className="text-destructive">Error: Missing payment information. Please go back to step 1.</p>
                         <Button onClick={() => setCurrentStep(1)} className="mt-4">
-                          Go Back
+                          Volver al Paso 1
                         </Button>
                       </CardContent>
                     </Card>
