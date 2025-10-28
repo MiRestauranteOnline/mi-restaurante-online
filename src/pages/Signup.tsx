@@ -311,6 +311,8 @@ const Signup = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
   const [hasPaymentSession, setHasPaymentSession] = useState<boolean | null>(null);
   const [loginPassword, setLoginPassword] = useState('');
+  const [reauthNeededAtFinal, setReauthNeededAtFinal] = useState(false);
+  const [pendingFaqs, setPendingFaqs] = useState<FAQsData | null>(null);
 
   // Update URL to show current step (for UX only, not used for state)
   useEffect(() => {
@@ -694,6 +696,7 @@ const Signup = () => {
   const handleStep6Complete = async (faqs: FAQsData) => {
     setIsProcessingFinalStep(true);
     setFaqsData(faqs);
+    setPendingFaqs(faqs);
     
     // Save all form data to localStorage
     const formData = {
@@ -726,7 +729,14 @@ const Signup = () => {
       }
       
       if (!authSession) {
-        throw new Error('Tu sesión ha expirado. Por favor recarga la página e intenta nuevamente.');
+        // Ask user to re-auth to finish instead of blocking the flow
+        setIsProcessingFinalStep(false);
+        setReauthNeededAtFinal(true);
+        toast({
+          title: 'Sesión expirada',
+          description: 'Por favor ingresa tu contraseña para finalizar el registro.',
+        });
+        return; // do not throw
       }
       
       // Save FAQs to database first
@@ -767,6 +777,8 @@ const Signup = () => {
       localStorage.removeItem('signup_progress');
       
       setIsProcessingFinalStep(false);
+      setReauthNeededAtFinal(false);
+      setPendingFaqs(null);
       setCurrentStep(8);
       window.scrollTo(0, 0);
     } catch (error: any) {
@@ -1094,12 +1106,56 @@ const Signup = () => {
               )}
               
               {currentStep === 7 && (
-                <SignupStep6FAQs
-                  onComplete={handleStep6Complete}
-                  onBack={handleBackToStep5}
-                  initialData={faqsData}
-                  isProcessing={isProcessingFinalStep}
-                />
+                reauthNeededAtFinal ? (
+                  <Card className="border-yellow-200 bg-yellow-50">
+                    <CardContent className="pt-6">
+                      <h3 className="font-semibold mb-2">⚠️ Sesión expirada</h3>
+                      <p className="text-sm mb-4">Ingresa tu contraseña para finalizar el registro.</p>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="final-login-email">Email</Label>
+                          <Input id="final-login-email" type="email" value={signupData.email} disabled />
+                        </div>
+                        <div>
+                          <Label htmlFor="final-login-password">Contraseña</Label>
+                          <Input
+                            id="final-login-password"
+                            type="password"
+                            placeholder="Ingresa tu contraseña"
+                            value={loginPassword}
+                            onChange={(e) => setLoginPassword(e.target.value)}
+                            onKeyDown={async (e) => {
+                              if (e.key === 'Enter') {
+                                await handleLoginForPayment();
+                                if (pendingFaqs) await handleStep6Complete(pendingFaqs);
+                              }
+                            }}
+                          />
+                        </div>
+                        <Button 
+                          className="w-full"
+                          onClick={async () => {
+                            await handleLoginForPayment();
+                            if (pendingFaqs) await handleStep6Complete(pendingFaqs);
+                          }}
+                          disabled={isProcessingFinalStep}
+                        >
+                          Iniciar Sesión y Finalizar
+                        </Button>
+                        <Button variant="outline" onClick={handleBackToStep5} disabled={isProcessingFinalStep}>
+                          Volver
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <SignupStep6FAQs
+                    onComplete={handleStep6Complete}
+                    onBack={handleBackToStep5}
+                    initialData={faqsData}
+                    isProcessing={isProcessingFinalStep}
+                  />
+                )
               )}
               
               {currentStep === 8 && (() => {
