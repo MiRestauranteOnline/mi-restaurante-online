@@ -17,7 +17,7 @@ export const TutorialVideoButton = ({ step }: TutorialVideoButtonProps) => {
       <Button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg gap-2 px-6 py-6 text-base"
+        className="fixed bottom-6 left-6 z-50 rounded-full shadow-lg gap-2 px-6 py-6 text-base"
         size="lg"
       >
         <HelpCircle className="h-5 w-5" />
