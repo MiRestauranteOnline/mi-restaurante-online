@@ -23,13 +23,11 @@ export const MultiLocationInput = ({
   };
 
   const handleRemoveLocation = (index: number) => {
+    // Never remove the first location (index 0)
+    if (index === 0) return;
+    
     const newLocations = locations.filter((_, i) => i !== index);
-    // Always keep at least one location field
-    if (newLocations.length === 0) {
-      onChange([""]);
-    } else {
-      onChange(newLocations);
-    }
+    onChange(newLocations);
   };
 
   const handleLocationChange = (index: number, value: string) => {
@@ -58,13 +56,14 @@ export const MultiLocationInput = ({
               className="flex-1"
             />
           )}
-          {locations.length > 1 && (
+          {index > 0 && (
             <Button
               type="button"
               variant="outline"
               size="icon"
               onClick={() => handleRemoveLocation(index)}
               className="shrink-0"
+              title="Eliminar ubicación"
             >
               <X className="h-4 w-4" />
             </Button>

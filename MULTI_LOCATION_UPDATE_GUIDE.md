@@ -50,8 +50,10 @@ export interface SignupData {
 ```typescript
 const signupSchema = z.object({
   // ... other fields
-  address: z.array(z.string().min(1, "La dirección no puede estar vacía"))
-    .min(1, "Debes agregar al menos una ubicación"), // ✅ Now validates array
+  address: z.array(z.string()).min(1, "Debes agregar al menos una ubicación")
+    .refine((addresses) => addresses[0] && addresses[0].trim().length >= 5, {
+      message: "La primera dirección debe tener al menos 5 caracteres"
+    }), // ✅ Validates array with first item mandatory
   // ... rest of fields
 });
 ```
@@ -233,7 +235,8 @@ interface MultiLocationInputProps {
 
 ## Notes
 
-- **Minimum locations:** Always at least 1 location field is shown
+- **First location mandatory:** The first location field cannot be removed and must be filled
+- **Secondary locations optional:** Additional locations (2nd, 3rd, etc.) are optional and can be removed
 - **Add button:** Shows below all location fields
-- **Remove button:** Only shows when there's more than 1 location
+- **Remove button:** Only shows for locations after the first one (index > 0)
 - **Backward compatible:** Old single-string addresses automatically converted to arrays

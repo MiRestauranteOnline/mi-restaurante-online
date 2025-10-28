@@ -30,7 +30,10 @@ const signupSchema = z.object({
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
   phoneCountryCode: z.string().min(1, "Selecciona un código de país"),
   phone: z.string().min(6, "Número de teléfono inválido"),
-  address: z.array(z.string().min(1, "La dirección no puede estar vacía")).min(1, "Debes agregar al menos una ubicación"),
+  address: z.array(z.string()).min(1, "Debes agregar al menos una ubicación")
+    .refine((addresses) => addresses[0] && addresses[0].trim().length >= 5, {
+      message: "La primera dirección debe tener al menos 5 caracteres"
+    }),
   ruc: z.string().regex(/^\d{11}$/, "El RUC debe tener 11 dígitos"),
   razonSocial: z.string().min(3, "La razón social debe tener al menos 3 caracteres"),
   hasCustomDomain: z.boolean().optional(),
