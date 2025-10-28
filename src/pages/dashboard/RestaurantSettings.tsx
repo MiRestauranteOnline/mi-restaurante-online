@@ -143,11 +143,24 @@ export default function RestaurantSettings() {
             email: client.email || '',
             whatsapp: client.whatsapp || '',
             whatsapp_country_code: client.whatsapp_country_code || '+51',
-            address: Array.isArray(client.address) 
-              ? (client.address.length > 0 ? client.address : [''])
-              : client.address 
-                ? [client.address] 
-                : [''],
+            address: (() => {
+              if (Array.isArray(client.address)) {
+                return client.address.length > 0 ? client.address : [''];
+              }
+              if (client.address) {
+                // Check if it's a JSON string representation of an array
+                if (typeof client.address === 'string' && client.address.startsWith('[')) {
+                  try {
+                    const parsed = JSON.parse(client.address);
+                    return Array.isArray(parsed) && parsed.length > 0 ? parsed : [''];
+                  } catch {
+                    return [client.address];
+                  }
+                }
+                return [client.address];
+              }
+              return [''];
+            })(),
             coordinates_lat: coordinates.lat?.toString() || '',
             coordinates_lng: coordinates.lng?.toString() || '',
             facebook: socialMedia.facebook || '',
