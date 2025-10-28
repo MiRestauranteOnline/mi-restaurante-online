@@ -105,10 +105,47 @@ export const SignupStep4OpeningHours = ({ onComplete, onBack, initialData }: Sig
 
   // Reset form when initialData changes (after refresh/navigation)
   useEffect(() => {
+    const newMergedHours = {
+      monday: {
+        open: initialData?.opening_hours?.monday?.open ?? defaultOpeningHours.monday.open,
+        close: initialData?.opening_hours?.monday?.close ?? defaultOpeningHours.monday.close,
+        closed: initialData?.opening_hours?.monday?.closed ?? defaultOpeningHours.monday.closed,
+      },
+      tuesday: {
+        open: initialData?.opening_hours?.tuesday?.open ?? defaultOpeningHours.tuesday.open,
+        close: initialData?.opening_hours?.tuesday?.close ?? defaultOpeningHours.tuesday.close,
+        closed: initialData?.opening_hours?.tuesday?.closed ?? defaultOpeningHours.tuesday.closed,
+      },
+      wednesday: {
+        open: initialData?.opening_hours?.wednesday?.open ?? defaultOpeningHours.wednesday.open,
+        close: initialData?.opening_hours?.wednesday?.close ?? defaultOpeningHours.wednesday.close,
+        closed: initialData?.opening_hours?.wednesday?.closed ?? defaultOpeningHours.wednesday.closed,
+      },
+      thursday: {
+        open: initialData?.opening_hours?.thursday?.open ?? defaultOpeningHours.thursday.open,
+        close: initialData?.opening_hours?.thursday?.close ?? defaultOpeningHours.thursday.close,
+        closed: initialData?.opening_hours?.thursday?.closed ?? defaultOpeningHours.thursday.closed,
+      },
+      friday: {
+        open: initialData?.opening_hours?.friday?.open ?? defaultOpeningHours.friday.open,
+        close: initialData?.opening_hours?.friday?.close ?? defaultOpeningHours.friday.close,
+        closed: initialData?.opening_hours?.friday?.closed ?? defaultOpeningHours.friday.closed,
+      },
+      saturday: {
+        open: initialData?.opening_hours?.saturday?.open ?? defaultOpeningHours.saturday.open,
+        close: initialData?.opening_hours?.saturday?.close ?? defaultOpeningHours.saturday.close,
+        closed: initialData?.opening_hours?.saturday?.closed ?? defaultOpeningHours.saturday.closed,
+      },
+      sunday: {
+        open: initialData?.opening_hours?.sunday?.open ?? defaultOpeningHours.sunday.open,
+        close: initialData?.opening_hours?.sunday?.close ?? defaultOpeningHours.sunday.close,
+        closed: initialData?.opening_hours?.sunday?.closed ?? defaultOpeningHours.sunday.closed,
+      },
+    };
     form.reset({
-      opening_hours: mergedOpeningHours,
+      opening_hours: newMergedHours,
     });
-  }, [initialData]);
+  }, [initialData, form]);
 
   const onSubmit = (data: OpeningHoursFormData) => {
     onComplete(data);

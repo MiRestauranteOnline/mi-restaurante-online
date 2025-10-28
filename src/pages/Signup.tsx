@@ -709,6 +709,26 @@ const Signup = () => {
     try {
       console.log('✅ All steps completed, saving FAQs and calling complete-signup function');
       
+      // Ensure we have a valid session before trying to save FAQs
+      let { data: { session: authSession } } = await supabase.auth.getSession();
+      
+      // Try password sign-in if no session
+      if (!authSession && signupData.email && signupData.password) {
+        console.warn('No session found for FAQ save, attempting password sign-in...');
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: signupData.email,
+          password: signupData.password,
+        });
+        if (!signInError) {
+          const res = await supabase.auth.getSession();
+          authSession = res.data.session;
+        }
+      }
+      
+      if (!authSession) {
+        throw new Error('Tu sesión ha expirado. Por favor recarga la página e intenta nuevamente.');
+      }
+      
       // Save FAQs to database first
       if (faqs.faqs && faqs.faqs.length > 0) {
         const faqRecords = faqs.faqs.map(faq => ({
@@ -728,27 +748,7 @@ const Signup = () => {
         }
       }
       
-      // Ensure we have a valid session before calling the edge function
-      let { data: { session: authSession }, error: sessionError } = await supabase.auth.getSession();
-
-      // Try password sign-in if no session
-      if (!authSession && signupData.email && signupData.password) {
-        console.warn('No session found, attempting password sign-in...');
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: signupData.email,
-          password: signupData.password,
-        });
-        if (!signInError) {
-          const res = await supabase.auth.getSession();
-          authSession = res.data.session;
-        }
-      }
-      
-      if (!authSession) {
-        throw new Error('Tu sesión ha expirado. Por favor recarga la página e intenta nuevamente.');
-      }
-      
-      console.log('Session valid, calling complete-signup with auth');
+      console.log('Session already verified, calling complete-signup with auth');
       
       const { error } = await supabase.functions.invoke('complete-signup', {
         headers: {
