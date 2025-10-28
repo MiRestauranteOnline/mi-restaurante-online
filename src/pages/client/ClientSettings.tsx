@@ -15,6 +15,7 @@ import { AnalyticsOverview } from '@/components/client/AnalyticsOverview';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { timezones } from '@/data/timezones';
 import { countries } from '@/data/countries';
+import { MultiLocationInput } from '@/components/MultiLocationInput';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -78,15 +79,36 @@ export default function ClientSettings() {
       // Set plan type for conditional rendering
       setPlanType(client.plan_type || 'basic');
 
+      const parsedAddress = (() => {
+        if (Array.isArray(client.address)) {
+          return client.address.length > 0 ? client.address : [''];
+        }
+        if (client.address) {
+          if (typeof client.address === 'string' && client.address.trim().startsWith('[')) {
+            try {
+              const parsed = JSON.parse(client.address);
+              return Array.isArray(parsed) && parsed.length > 0 ? parsed : [''];
+            } catch {
+              return [client.address];
+            }
+          }
+          return [client.address];
+        }
+        return [''];
+      })();
+
       const { data: settings, error: settingsError } = await supabase
         .from('client_settings')
         .select('*')
         .eq('client_id', selectedClientId)
         .single();
 
+      if (settingsError && settingsError.code !== 'PGRST116') throw settingsError;
+
       setFormData({
         ...client,
         ...settings,
+        address: parsedAddress,
         other_customizations: client?.other_customizations || {},
         delivery_info: settings?.delivery_info || {},
         whatsapp_messages: settings?.whatsapp_messages || {}
@@ -116,7 +138,7 @@ export default function ClientSettings() {
           ruc: formData.ruc,
           phone: formData.phone,
           phone_country_code: formData.phone_country_code,
-          address: formData.address,
+          address: Array.isArray(formData.address) ? JSON.stringify(formData.address) : (formData.address || null),
           whatsapp: formData.whatsapp,
           whatsapp_country_code: formData.whatsapp_country_code,
           coordinates: formData.coordinates,
@@ -260,10 +282,11 @@ export default function ClientSettings() {
 
               <div>
                 <Label htmlFor="address">Dirección</Label>
-                <Textarea
-                  id="address"
-                  value={formData.address || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                <MultiLocationInput
+                  locations={Array.isArray(formData.address) ? formData.address : ['']}
+                  onChange={(locations) => setFormData(prev => ({ ...prev, address: locations }))}
+                  placeholder="Av. Principal 123, Distrito, Ciudad"
+                  useTextarea={true}
                 />
               </div>
 
