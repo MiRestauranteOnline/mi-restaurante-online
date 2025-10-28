@@ -221,56 +221,60 @@ export default function Auth() {
           )}
           
           {isForgotPasswordMode ? (
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
-              </p>
-              
-              <FormField
-                control={loginForm.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="tu@email.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <Form {...loginForm}>
+              <form
+                onSubmit={loginForm.handleSubmit(({ email }) => handleForgotPassword(email))}
+                className="space-y-4"
+              >
+                <p className="text-sm text-muted-foreground">
+                  Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
+                </p>
 
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setIsForgotPasswordMode(false)}
-                  disabled={isLoading}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="button"
-                  className="flex-1"
-                  onClick={() => handleForgotPassword(loginForm.getValues('email'))}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Enviando...
-                    </>
-                  ) : (
-                    'Enviar enlace'
+                <FormField
+                  control={loginForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="tu@email.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </Button>
-              </div>
-            </div>
+                />
+
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => setIsForgotPasswordMode(false)}
+                    disabled={isLoading}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="flex-1"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Enviando...
+                      </>
+                    ) : (
+                      'Enviar enlace'
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           ) : isRecoveryMode ? (
             <Form {...resetForm}>
               <form onSubmit={resetForm.handleSubmit(handlePasswordReset)} className="space-y-4">
