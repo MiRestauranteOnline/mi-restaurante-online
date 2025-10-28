@@ -83,12 +83,16 @@ export default function Auth() {
   }, [isForgotPasswordMode, prefilledEmail]);
 
   useEffect(() => {
-    // Check for recovery tokens in URL hash
-    const rawHash = window.location.hash || "";
-    const hashParams = new URLSearchParams(rawHash.replace(/^#/, ""));
-    const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
-    const type = hashParams.get('type');
+    // Check for recovery tokens in URL hash OR search (some providers/clients keep them in ?query)
+    const url = new URL(window.location.href);
+    const hashParams = new URLSearchParams((url.hash || '').replace(/^#/, ''));
+    const searchParams = url.searchParams;
+
+    const getParam = (name: string) => hashParams.get(name) || searchParams.get(name);
+
+    const accessToken = getParam('access_token');
+    const refreshToken = getParam('refresh_token');
+    const type = getParam('type');
 
     if (type === 'recovery') {
       setIsRecoveryMode(true);
@@ -106,13 +110,13 @@ export default function Auth() {
           } catch (e) {
             console.error('[Auth] Failed to set session during recovery:', e);
           } finally {
-            // Clear the hash from URL regardless
+            // Clear tokens from URL regardless of where they were (hash or search)
             window.history.replaceState({}, document.title, window.location.pathname);
           }
         })();
       } else {
         console.warn('[Auth] Missing access_token or refresh_token in recovery URL');
-        // Keep user on recovery form but clear the hash
+        // Keep user on recovery form but clear the URL clutter
         window.history.replaceState({}, document.title, window.location.pathname);
       }
       return;

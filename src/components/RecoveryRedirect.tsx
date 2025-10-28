@@ -7,12 +7,14 @@ export const RecoveryRedirect = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const hash = window.location.hash || "";
-    const hasRecovery = hash.includes("type=recovery") && hash.includes("access_token=");
+    const hash = window.location.hash || '';
+    const search = window.location.search || '';
+    const hasRecovery = (s: string) => s.includes('type=recovery') && (s.includes('access_token=') || s.includes('refresh_token=') || s.includes('code='));
 
-    if (hasRecovery && location.pathname !== "/auth") {
-      // Preserve the hash (contains tokens) when navigating to /auth
-      navigate(`/auth${hash}` as const, { replace: true });
+    if ((hasRecovery(hash) || hasRecovery(search)) && location.pathname !== '/auth') {
+      // Preserve tokens whether they came via #hash or ?search
+      const suffix = hash || search;
+      navigate(`/auth${suffix}` as const, { replace: true });
     }
   }, [location.pathname, navigate]);
 
