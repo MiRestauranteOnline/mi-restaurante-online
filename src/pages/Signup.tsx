@@ -242,18 +242,34 @@ const Signup = () => {
     initializeSignupFlow();
   }, [navigate, toast]);
   
-  const [signupData, setSignupData] = useState<SignupData>({
+  // Load all signup data from localStorage on mount
+  const loadSignupData = () => {
+    try {
+      const stored = localStorage.getItem('signup_form_data');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed;
+      }
+    } catch (e) {
+      console.warn('Failed to load signup form data:', e);
+    }
+    return null;
+  };
+
+  const storedData = loadSignupData();
+
+  const [signupData, setSignupData] = useState<SignupData>(storedData?.signupData || {
     email: "",
     password: "",
     restaurantName: "",
     subdomain: "",
     phone: "",
-    address: "", // New address field
+    address: "",
     hasCustomDomain: false,
     customDomain: "",
     referralSource: "",
   });
-  const [websiteRequirements, setWebsiteRequirements] = useState<WebsiteRequirements>({
+  const [websiteRequirements, setWebsiteRequirements] = useState<WebsiteRequirements>(storedData?.websiteRequirements || {
     businessType: "",
     targetAudience: "",
     socialMedia: [],
@@ -269,23 +285,23 @@ const Signup = () => {
     title_font_weight: "400",
     body_font: "Inter",
   });
-  const [combinedData, setCombinedData] = useState<CombinedData>({
+  const [combinedData, setCombinedData] = useState<CombinedData>(storedData?.combinedData || {
     categories: [],
     items: [],
     reviews: [],
     teamMembers: [],
   });
-  const [openingHoursData, setOpeningHoursData] = useState<OpeningHoursData>({
+  const [openingHoursData, setOpeningHoursData] = useState<OpeningHoursData>(storedData?.openingHoursData || {
     opening_hours: {},
   });
-  const [imagesData, setImagesData] = useState<ImagesData>({
+  const [imagesData, setImagesData] = useState<ImagesData>(storedData?.imagesData || {
     image_preference: 'ai_only',
     carousel_enabled: false,
     carousel_images: [],
     custom_images_enabled: false,
     custom_images: [],
   });
-  const [faqsData, setFaqsData] = useState<FAQsData>({
+  const [faqsData, setFaqsData] = useState<FAQsData>(storedData?.faqsData || {
     faqs: [],
   });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -530,6 +546,17 @@ const Signup = () => {
     setWebsiteRequirements(requirements);
     setCurrentStep(4);
     
+    // Save all form data to localStorage
+    const formData = {
+      signupData,
+      websiteRequirements: requirements,
+      combinedData,
+      openingHoursData,
+      imagesData,
+      faqsData,
+    };
+    localStorage.setItem('signup_form_data', JSON.stringify(formData));
+    
     // Save progress to localStorage
     const progress = {
       step: 4,
@@ -548,6 +575,17 @@ const Signup = () => {
   const handleStep3Complete = async (combined: CombinedData) => {
     setCombinedData(combined);
     setCurrentStep(5);
+    
+    // Save all form data to localStorage
+    const formData = {
+      signupData,
+      websiteRequirements,
+      combinedData: combined,
+      openingHoursData,
+      imagesData,
+      faqsData,
+    };
+    localStorage.setItem('signup_form_data', JSON.stringify(formData));
     
     // Save progress to localStorage
     const progress = {
@@ -568,6 +606,17 @@ const Signup = () => {
     // Skip but still save progress
     setCurrentStep(5);
     
+    // Save all form data to localStorage
+    const formData = {
+      signupData,
+      websiteRequirements,
+      combinedData,
+      openingHoursData,
+      imagesData,
+      faqsData,
+    };
+    localStorage.setItem('signup_form_data', JSON.stringify(formData));
+    
     const progress = {
       step: 5,
       clientId: createdClientId,
@@ -585,6 +634,17 @@ const Signup = () => {
   const handleStep4Complete = async (openingHours: OpeningHoursData) => {
     setOpeningHoursData(openingHours);
     setCurrentStep(6);
+    
+    // Save all form data to localStorage
+    const formData = {
+      signupData,
+      websiteRequirements,
+      combinedData,
+      openingHoursData: openingHours,
+      imagesData,
+      faqsData,
+    };
+    localStorage.setItem('signup_form_data', JSON.stringify(formData));
     
     // Save progress to localStorage
     const progress = {
@@ -605,6 +665,17 @@ const Signup = () => {
     setImagesData(images);
     setCurrentStep(7);
     
+    // Save all form data to localStorage
+    const formData = {
+      signupData,
+      websiteRequirements,
+      combinedData,
+      openingHoursData,
+      imagesData: images,
+      faqsData,
+    };
+    localStorage.setItem('signup_form_data', JSON.stringify(formData));
+    
     // Save progress to localStorage
     const progress = {
       step: 7,
@@ -623,6 +694,17 @@ const Signup = () => {
   const handleStep6Complete = async (faqs: FAQsData) => {
     setIsProcessingFinalStep(true);
     setFaqsData(faqs);
+    
+    // Save all form data to localStorage
+    const formData = {
+      signupData,
+      websiteRequirements,
+      combinedData,
+      openingHoursData,
+      imagesData,
+      faqsData: faqs,
+    };
+    localStorage.setItem('signup_form_data', JSON.stringify(formData));
     
     try {
       console.log('✅ All steps completed, saving FAQs and calling complete-signup function');
