@@ -30,8 +30,8 @@ const signupSchema = z.object({
   phoneCountryCode: z.string().min(1, "Selecciona un código de país"),
   phone: z.string().min(6, "Número de teléfono inválido"),
   address: z.string().min(5, "La dirección debe tener al menos 5 caracteres"),
-  ruc: z.string().regex(/^\d{11}$/, "El RUC debe tener 11 dígitos").optional().or(z.literal("")),
-  razonSocial: z.string().min(3, "La razón social debe tener al menos 3 caracteres").optional().or(z.literal("")),
+  ruc: z.string().regex(/^\d{11}$/, "El RUC debe tener 11 dígitos"),
+  razonSocial: z.string().min(3, "La razón social debe tener al menos 3 caracteres"),
   hasCustomDomain: z.boolean().optional(),
   customDomain: z.string().optional(),
   referralSource: z.string().min(1, "Por favor selecciona cómo nos encontraste"),
@@ -581,7 +581,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             name="ruc"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>RUC (Opcional)</FormLabel>
+                <FormLabel>RUC</FormLabel>
                 <FormControl>
                   <Input 
                     placeholder="20123456789"
@@ -594,7 +594,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   />
                 </FormControl>
                 <p className="text-xs text-muted-foreground">
-                  Si tienes RUC, ingrésalo para facturación
+                  Requerido para el footer del sitio web, políticas legales y libro de reclamaciones
                 </p>
                 <FormMessage />
               </FormItem>
@@ -606,7 +606,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
             name="razonSocial"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Razón Social (Opcional)</FormLabel>
+                <FormLabel>Razón Social</FormLabel>
                 <FormControl>
                   <Input 
                     placeholder="Mi Restaurante SAC"
@@ -614,7 +614,7 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                   />
                 </FormControl>
                 <p className="text-xs text-muted-foreground">
-                  Nombre legal de tu empresa
+                  Nombre legal usado en el footer, políticas y libro de reclamaciones
                 </p>
                 <FormMessage />
               </FormItem>
