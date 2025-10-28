@@ -27,8 +27,13 @@ const resetSchema = z.object({
   path: ["confirmPassword"],
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Ingrese un email válido'),
+});
+
 type AuthFormData = z.infer<typeof authSchema>;
 type ResetFormData = z.infer<typeof resetSchema>;
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +61,13 @@ export default function Auth() {
     defaultValues: {
       password: '',
       confirmPassword: '',
+    },
+  });
+
+  const forgotPasswordForm = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: prefilledEmail,
     },
   });
 
@@ -232,9 +244,9 @@ export default function Auth() {
           )}
           
           {isForgotPasswordMode ? (
-            <Form {...loginForm}>
+            <Form {...forgotPasswordForm}>
               <form
-                onSubmit={loginForm.handleSubmit(({ email }) => handleForgotPassword(email))}
+                onSubmit={forgotPasswordForm.handleSubmit(({ email }) => handleForgotPassword(email))}
                 className="space-y-4"
               >
                 <p className="text-sm text-muted-foreground">
@@ -242,7 +254,7 @@ export default function Auth() {
                 </p>
 
                 <FormField
-                  control={loginForm.control}
+                  control={forgotPasswordForm.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
@@ -270,9 +282,8 @@ export default function Auth() {
                     Cancelar
                   </Button>
                   <Button
-                    type="button"
+                    type="submit"
                     className="flex-1"
-                    onClick={() => handleForgotPassword(loginForm.getValues('email'))}
                     disabled={isLoading}
                   >
                     {isLoading ? (
