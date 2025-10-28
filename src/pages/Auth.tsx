@@ -43,6 +43,8 @@ export default function Auth() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [forgotEmail, setForgotEmail] = useState<string>('');
   const [forgotCaptchaToken, setForgotCaptchaToken] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
   const navigate = useNavigate();
   
   // Get state from navigation (if redirected from signup)
@@ -141,20 +143,26 @@ export default function Auth() {
     return () => subscription.unsubscribe();
   }, [navigate, isRecoveryMode, fromSignup]);
 
-  const handlePasswordReset = async (data: ResetFormData) => {
+  const handlePasswordReset = async () => {
+    // Validate with zod to keep UX consistent
+    const parsed = resetSchema.safeParse({ password: newPassword, confirmPassword: confirmNewPassword });
+    if (!parsed.success) {
+      const first = parsed.error.issues[0];
+      toast.error(first?.message || 'Datos inválidos');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: data.password,
-      });
-
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) {
         toast.error(error.message);
         return;
       }
-
       toast.success('¡Contraseña actualizada correctamente!');
       setIsRecoveryMode(false);
+      setNewPassword('');
+      setConfirmNewPassword('');
       navigate('/dashboard');
     } catch (error) {
       toast.error('Error al actualizar contraseña');
@@ -310,67 +318,49 @@ export default function Auth() {
               </div>
             </div>
           ) : isRecoveryMode ? (
-            <Form {...resetForm}>
-              <form onSubmit={resetForm.handleSubmit(handlePasswordReset)} className="space-y-4">
-                <FormField
-                  control={resetForm.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nueva Contraseña</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Mínimo 6 caracteres"
-                            {...field}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 px-0"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <form onSubmit={(e) => { e.preventDefault(); handlePasswordReset(); }} className="space-y-4">
+              <div className="space-y-2">
+                <FormLabel>Nueva Contraseña</FormLabel>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Mínimo 6 caracteres"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 px-0"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </div>
 
-                <FormField
-                  control={resetForm.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirmar Nueva Contraseña</FormLabel>
-                      <FormControl>
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Confirma tu nueva contraseña"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+              <div className="space-y-2">
+                <FormLabel>Confirmar Nueva Contraseña</FormLabel>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirma tu nueva contraseña"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
                 />
+              </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Actualizando...
-                    </>
-                  ) : (
-                    'Actualizar Contraseña'
-                  )}
-                </Button>
-              </form>
-            </Form>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Actualizando...
+                  </>
+                ) : (
+                  'Actualizar Contraseña'
+                )}
+              </Button>
+            </form>
           ) : (
             <Form {...loginForm}>
               <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
