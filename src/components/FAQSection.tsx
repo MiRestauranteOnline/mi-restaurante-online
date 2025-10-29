@@ -16,7 +16,7 @@ export const FAQSection = () => {
     },
     {
       question: "¿Usan plantillas o diseños completamente personalizados?",
-      answer: "Utilizamos plantillas profesionales creadas internamente con React y tecnología moderna. A diferencia de sistemas anticuados como WordPress, nuestras soluciones son más rápidas, seguras y fáciles de actualizar. Esto nos permite entregar sitios de alta calidad en 72 horas. No ofrecemos diseños completamente personalizados en los planes base, pero todas las plantillas son modernas y optimizadas para restaurantes."
+      answer: "Utilizamos plantillas profesionales creadas internamente con React y tecnología moderna. A diferencia de sistemas anticuados como WordPress, nuestras soluciones son más rápidas, seguras y fáciles de actualizar. Esto nos permite entregar sitios de alta calidad en 72 horas. No ofrecemos diseños completamente personalizados ni desarrollos custom - todas nuestras soluciones están basadas en plantillas optimizadas para restaurantes."
     },
     {
       question: "¿Necesito comprar un dominio o puedo empezar gratis?",
@@ -47,8 +47,8 @@ export const FAQSection = () => {
       answer: "Puedes cancelar en cualquier momento sin penalizaciones. El sitio se desactiva al final de tu ciclo de facturación actual. Guardamos tu sitio web por 6 meses en nuestro sistema para que puedas reactivarlo fácilmente si cambias de opinión. Como es un servicio administrado, no ofrecemos migración del sitio a otros servidores."
     },
     {
-      question: "¿Puedo agregar funciones personalizadas no listadas?",
-      answer: "Nuestros planes incluyen todas las funcionalidades esenciales que necesita un restaurante: menú digital + PDF descargable, sistema de reservas, galería de imágenes, WhatsApp integrado, links de delivery, SEO, analíticas, y más. No ofrecemos sitios web completamente personalizados ni desarrollos custom, ya que nos especializamos en soluciones optimizadas basadas en plantillas profesionales."
+      question: "¿Ofrecen diseños personalizados o desarrollos custom?",
+      answer: "No ofrecemos diseños personalizados ni desarrollos custom. Nuestros planes están basados en plantillas profesionales optimizadas que incluyen todas las funcionalidades esenciales que necesita un restaurante: menú digital + PDF descargable, sistema de reservas, galería de imágenes, WhatsApp integrado, links de delivery, SEO, analíticas, y más. Si necesitas un proyecto completamente personalizado, puedes contactarnos a info@mirestaurante.online para evaluar tu caso específico."
     }
   ];
 

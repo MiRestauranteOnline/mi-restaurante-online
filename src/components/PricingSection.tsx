@@ -179,6 +179,9 @@ export const PricingSection = () => {
           <p className="text-sm text-muted-foreground">
             Los dominios se pueden comprar en <strong>Namecheap</strong> • Evitamos GoDaddy por costos altos y panel confuso
           </p>
+          <p className="text-sm text-muted-foreground">
+            <strong>Nota:</strong> Nuestros planes están basados en plantillas optimizadas. No ofrecemos diseños personalizados ni desarrollos custom.
+          </p>
         </div>
       </div>
     </section>
