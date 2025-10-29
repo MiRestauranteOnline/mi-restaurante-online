@@ -3442,7 +3442,7 @@ export default function ClientGuides() {
                       <h4 className="font-semibold">Opciones de Visualización</h4>
                     </div>
                     <div className="p-4 space-y-3">
-                      <div className="flex items-start gap-3">
+                      <div className="flex flex-col sm:flex-row items-start gap-3">
                         <Power className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                         <div>
                           <h5 className="font-medium text-sm mb-1">Elemento Activo</h5>
@@ -3451,7 +3451,7 @@ export default function ClientGuides() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-3">
+                      <div className="flex flex-col sm:flex-row items-start gap-3">
                         <Home className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                         <div>
                           <h5 className="font-medium text-sm mb-1">Mostrar en Página de Inicio</h5>
@@ -3460,7 +3460,7 @@ export default function ClientGuides() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-3">
+                      <div className="flex flex-col sm:flex-row items-start gap-3">
                         <Eye className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                         <div>
                           <h5 className="font-medium text-sm mb-1">Mostrar Imagen en Menú</h5>
@@ -3469,7 +3469,7 @@ export default function ClientGuides() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-3">
+                      <div className="flex flex-col sm:flex-row items-start gap-3">
                         <Eye className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                         <div>
                           <h5 className="font-medium text-sm mb-1">Mostrar Imagen en Inicio</h5>
@@ -5353,8 +5353,8 @@ export default function ClientGuides() {
               <CardContent className="space-y-4">
                 <div className="space-y-4">
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
-                      <CalendarIcon className="h-5 w-5 text-primary mt-0.5" />
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <CalendarIcon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold mb-1">Día de la Semana</h4>
                         <p className="text-sm text-muted-foreground">
@@ -5365,8 +5365,8 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
-                      <Clock className="h-5 w-5 text-primary mt-0.5" />
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <Clock className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold mb-1">Hora de Inicio y Fin</h4>
                         <p className="text-sm text-muted-foreground">
@@ -5377,8 +5377,8 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
-                      <Users className="h-5 w-5 text-primary mt-0.5" />
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <Users className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold mb-1">Capacidad Máxima</h4>
                         <p className="text-sm text-muted-foreground">
@@ -5389,8 +5389,8 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
-                      <Power className="h-5 w-5 text-primary mt-0.5" />
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <Power className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold mb-1">Estado (Activo/Inactivo)</h4>
                         <p className="text-sm text-muted-foreground">
@@ -9224,7 +9224,7 @@ export default function ClientGuides() {
                 <div className="space-y-4">
                   {/* Ticket System */}
                   <div className="p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg">
                         <MessageSquare className="h-5 w-5 text-primary" />
                       </div>
@@ -9262,7 +9262,7 @@ export default function ClientGuides() {
 
                   {/* WhatsApp - Advanced Plan Only */}
                   <div className="p-4 border rounded-lg">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <div className="p-2 bg-green-100 rounded-lg">
                         <MessageCircle className="h-5 w-5 text-green-600" />
                       </div>
@@ -9283,7 +9283,7 @@ export default function ClientGuides() {
 
                   {/* Public Support Form */}
                   <div className="p-4 border rounded-lg">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <div className="p-2 bg-blue-100 rounded-lg">
                         <Mail className="h-5 w-5 text-blue-600" />
                       </div>
@@ -9306,7 +9306,7 @@ export default function ClientGuides() {
 
                   {/* Documentation */}
                   <div className="p-4 border rounded-lg">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <div className="p-2 bg-amber-100 rounded-lg">
                         <FileText className="h-5 w-5 text-amber-600" />
                       </div>
@@ -9880,7 +9880,7 @@ export default function ClientGuides() {
                   </p>
                   
                   <div className="grid gap-3">
-                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <div className="flex flex-col sm:flex-row items-start gap-3 p-3 border rounded-lg">
                       <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
                         <FileText className="h-4 w-4 text-blue-600" />
                       </div>
@@ -9892,7 +9892,7 @@ export default function ClientGuides() {
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <div className="flex flex-col sm:flex-row items-start gap-3 p-3 border rounded-lg">
                       <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
                         <CheckCircle className="h-4 w-4 text-green-600" />
                       </div>
@@ -9904,7 +9904,7 @@ export default function ClientGuides() {
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <div className="flex flex-col sm:flex-row items-start gap-3 p-3 border rounded-lg">
                       <div className="p-2 bg-amber-100 rounded-lg flex-shrink-0">
                         <AlertCircle className="h-4 w-4 text-amber-600" />
                       </div>
@@ -9916,7 +9916,7 @@ export default function ClientGuides() {
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <div className="flex flex-col sm:flex-row items-start gap-3 p-3 border rounded-lg">
                       <div className="p-2 bg-purple-100 rounded-lg flex-shrink-0">
                         <MessageSquare className="h-4 w-4 text-purple-600" />
                       </div>
@@ -9928,7 +9928,7 @@ export default function ClientGuides() {
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <div className="flex flex-col sm:flex-row items-start gap-3 p-3 border rounded-lg">
                       <div className="p-2 bg-gray-100 rounded-lg flex-shrink-0">
                         <Clock className="h-4 w-4 text-gray-600" />
                       </div>
