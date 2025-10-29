@@ -81,13 +81,29 @@ export const SignupSuccess = ({ signupData, websiteRequirements }: SignupSuccess
       // Build content briefing from form data
       const contentBriefing = `${websiteRequirements?.additionalInfo || ''}\n\nTipo de restaurante: ${websiteRequirements?.businessType || ''}\nPúblico objetivo: ${websiteRequirements?.targetAudience || ''}\nEstilo del sitio web: ${websiteRequirements?.websiteStyle || ''}`;
 
+      // Build delivery phone/whatsapp preference description
+      let deliveryContactMethod = '';
+      if (websiteRequirements?.deliveryPhoneWhatsapp) {
+        const method = websiteRequirements.deliveryPhoneWhatsapp;
+        if (method === 'whatsapp') {
+          deliveryContactMethod = 'Aceptan pedidos solo por WhatsApp';
+        } else if (method === 'phone') {
+          deliveryContactMethod = 'Aceptan pedidos solo por teléfono';
+        } else if (method === 'both') {
+          deliveryContactMethod = 'Aceptan pedidos por WhatsApp y teléfono';
+        } else if (method === 'none') {
+          deliveryContactMethod = 'NO aceptan pedidos por teléfono ni WhatsApp';
+        }
+      }
+
       // Call the generate-client-content edge function
       const { data, error } = await supabase.functions.invoke('generate-client-content', {
         body: {
           briefing: contentBriefing,
           clientId: clientId,
           restaurantName: restaurantName,
-          address: signupData.address || 'Lima, Perú'
+          address: signupData.address || 'Lima, Perú',
+          deliveryContactMethod: deliveryContactMethod
         }
       });
 

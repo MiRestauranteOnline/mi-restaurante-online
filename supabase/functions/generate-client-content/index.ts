@@ -134,8 +134,8 @@ serve(async (req) => {
       });
     }
     
-    const { briefing, clientId, restaurantName, address } = await req.json();
-    console.log('Request body parsed:', { briefing: briefing?.substring(0, 100), clientId, restaurantName, address });
+    const { briefing, clientId, restaurantName, address, deliveryContactMethod } = await req.json();
+    console.log('Request body parsed:', { briefing: briefing?.substring(0, 100), clientId, restaurantName, address, deliveryContactMethod });
     
     if (!briefing || !clientId || !restaurantName) {
       throw new Error('Briefing, client ID, and restaurant name are required');
@@ -161,13 +161,28 @@ serve(async (req) => {
     const hasReservations = adminContent?.homepage_reservations_section_visible !== false;
     const hasDelivery = clientData?.delivery?.rappi || clientData?.delivery?.pedidosya || clientData?.delivery?.uber_eats;
 
-    // Build content-aware constraints for SEO metadata
+    // Build content-aware constraints for SEO metadata and content generation
     let seoConstraints = '';
+    let deliveryContactInstructions = '';
+    
     if (!hasReservations) {
       seoConstraints += '\n- NO mencionar reservas ni "reservar mesa" en las descripciones';
     }
     if (!hasDelivery) {
       seoConstraints += '\n- NO mencionar delivery ni entrega a domicilio en las descripciones';
+    }
+
+    // Add delivery contact method instructions
+    if (deliveryContactMethod) {
+      if (deliveryContactMethod.includes('NO aceptan')) {
+        deliveryContactInstructions = '\n\nIMPORTANTE - MÉTODOS DE CONTACTO:\n- NO mencionar pedidos por teléfono ni WhatsApp en el contenido\n- NO incluir CTAs de "llamar" o "WhatsApp" para pedidos\n- Enfocarse en otros métodos de contacto (delivery apps, reservas online si aplica)';
+      } else if (deliveryContactMethod.includes('solo por WhatsApp')) {
+        deliveryContactInstructions = '\n\nIMPORTANTE - MÉTODOS DE CONTACTO:\n- Mencionar que los pedidos se hacen SOLO por WhatsApp\n- En los CTAs, priorizar WhatsApp sobre llamadas telefónicas\n- Textos como: "Haz tu pedido por WhatsApp", "Contáctanos vía WhatsApp"';
+      } else if (deliveryContactMethod.includes('solo por teléfono')) {
+        deliveryContactInstructions = '\n\nIMPORTANTE - MÉTODOS DE CONTACTO:\n- Mencionar que los pedidos se hacen SOLO por teléfono\n- En los CTAs, priorizar llamadas telefónicas sobre WhatsApp\n- Textos como: "Llámanos para tu pedido", "Haz tu pedido por teléfono"';
+      } else if (deliveryContactMethod.includes('WhatsApp y teléfono')) {
+        deliveryContactInstructions = '\n\nIMPORTANTE - MÉTODOS DE CONTACTO:\n- Mencionar que aceptan pedidos por WhatsApp Y teléfono\n- En los CTAs, incluir ambas opciones de forma equilibrada\n- Textos como: "Llámanos o escríbenos por WhatsApp", "Contáctanos por teléfono o WhatsApp"';
+      }
     }
 
     // Step 3: Get custom images uploaded by client (if any)
@@ -237,6 +252,8 @@ serve(async (req) => {
     - Email: ${clientData?.email || 'No especificado'}
     - Teléfono: ${clientData?.phone || 'No especificado'}
     - WhatsApp: ${clientData?.whatsapp || 'No especificado'}
+    ${deliveryContactMethod ? `- Método de contacto para pedidos: ${deliveryContactMethod}` : ''}
+    ${deliveryContactInstructions}
 
     TAREAS:
     1. Analiza el tipo de restaurante y su nicho
