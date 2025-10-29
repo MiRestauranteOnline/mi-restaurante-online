@@ -10,6 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PlanFeatures {
   name: string;
@@ -190,121 +192,270 @@ export const ProblemSolutionSection = () => {
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : (
-            <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="w-[50%] text-left font-bold text-foreground">
-                      Características
-                    </TableHead>
-                    <TableHead className="text-center font-bold text-foreground">
-                      <div className="flex flex-col items-center gap-1">
-                        <span className="text-lg">{basicPlan?.name || 'Plan Básico'}</span>
-                        <Badge className="text-xs bg-accent text-accent-foreground">Más Popular</Badge>
-                      </div>
-                    </TableHead>
-                    <TableHead className="text-center font-bold text-primary">
-                      <div className="flex flex-col items-center gap-1">
-                        <span className="text-lg">{advancedPlan?.name || 'Plan Avanzado'}</span>
-                        <Badge variant="outline" className="text-xs border-primary text-primary">Para Profesionales</Badge>
-                      </div>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {displayedFeatures.map((item, index) => {
-                    if (item.type === 'category') {
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block bg-card border rounded-xl shadow-lg overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/50">
+                      <TableHead className="w-[50%] text-left font-bold text-foreground">
+                        Características
+                      </TableHead>
+                      <TableHead className="text-center font-bold text-foreground">
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-lg">{basicPlan?.name || 'Plan Básico'}</span>
+                          <Badge className="text-xs bg-accent text-accent-foreground">Más Popular</Badge>
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-center font-bold text-primary">
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-lg">{advancedPlan?.name || 'Plan Avanzado'}</span>
+                          <Badge variant="outline" className="text-xs border-primary text-primary">Para Profesionales</Badge>
+                        </div>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {displayedFeatures.map((item, index) => {
+                      if (item.type === 'category') {
+                        return (
+                          <TableRow key={index} className="bg-muted/50">
+                            <TableCell colSpan={3} className="font-bold text-foreground py-3">
+                              {item.name}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                      
+                      const feature = item.name;
+                      const basicValue = getFeatureValue(feature, 'basic');
+                      const advancedValue = getFeatureValue(feature, 'advanced');
+                      const inBasic = hasFeature(feature, 'basic');
+                      const inAdvanced = hasFeature(feature, 'advanced');
+                      
                       return (
-                        <TableRow key={index} className="bg-muted/50">
-                          <TableCell colSpan={3} className="font-bold text-foreground py-3">
-                            {item.name}
+                        <TableRow key={index} className="hover:bg-muted/30 transition-colors">
+                          <TableCell className="font-medium text-foreground pl-8">
+                            {feature}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {inBasic ? (
+                              <div className="flex justify-center items-center">
+                                {typeof basicValue === 'string' ? (
+                                  <span className="text-sm font-medium text-accent">{basicValue}</span>
+                                ) : (
+                                  <CheckCircle className="w-5 h-5 text-accent" />
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex justify-center">
+                                <X className="w-5 h-5 text-muted-foreground/30" />
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {inAdvanced ? (
+                              <div className="flex justify-center items-center">
+                                {typeof advancedValue === 'string' ? (
+                                  <span className="text-sm font-medium text-primary">{advancedValue}</span>
+                                ) : (
+                                  <CheckCircle className="w-5 h-5 text-primary" />
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex justify-center">
+                                <X className="w-5 h-5 text-muted-foreground/30" />
+                              </div>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
-                    }
-                    
-                    const feature = item.name;
-                    const basicValue = getFeatureValue(feature, 'basic');
-                    const advancedValue = getFeatureValue(feature, 'advanced');
-                    const inBasic = hasFeature(feature, 'basic');
-                    const inAdvanced = hasFeature(feature, 'advanced');
-                    
-                    return (
-                      <TableRow key={index} className="hover:bg-muted/30 transition-colors">
-                        <TableCell className="font-medium text-foreground pl-8">
-                          {feature}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {inBasic ? (
-                            <div className="flex justify-center items-center">
-                              {typeof basicValue === 'string' ? (
-                                <span className="text-sm font-medium text-accent">{basicValue}</span>
-                              ) : (
-                                <CheckCircle className="w-5 h-5 text-accent" />
-                              )}
-                            </div>
-                          ) : (
+                    })}
+                    {isExpanded && (
+                      <>
+                        <TableRow className="bg-muted/50">
+                          <TableCell colSpan={3} className="font-bold text-foreground py-3">
+                            Soporte Adicional
+                          </TableCell>
+                        </TableRow>
+                        <TableRow className="hover:bg-muted/30 transition-colors">
+                          <TableCell className="font-medium text-foreground pl-8">
+                            Soporte prioritario por WhatsApp
+                          </TableCell>
+                          <TableCell className="text-center">
                             <div className="flex justify-center">
                               <X className="w-5 h-5 text-muted-foreground/30" />
                             </div>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {inAdvanced ? (
-                            <div className="flex justify-center items-center">
-                              {typeof advancedValue === 'string' ? (
-                                <span className="text-sm font-medium text-primary">{advancedValue}</span>
-                              ) : (
-                                <CheckCircle className="w-5 h-5 text-primary" />
-                              )}
-                            </div>
-                          ) : (
+                          </TableCell>
+                          <TableCell className="text-center">
                             <div className="flex justify-center">
-                              <X className="w-5 h-5 text-muted-foreground/30" />
+                              <CheckCircle className="w-5 h-5 text-primary" />
                             </div>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {isExpanded && (
-                    <>
-                      <TableRow className="bg-muted/50">
-                        <TableCell colSpan={3} className="font-bold text-foreground py-3">
-                          Soporte Adicional
-                        </TableCell>
-                      </TableRow>
-                      <TableRow className="hover:bg-muted/30 transition-colors">
-                        <TableCell className="font-medium text-foreground pl-8">
-                          Soporte prioritario por WhatsApp
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="flex justify-center">
-                            <X className="w-5 h-5 text-muted-foreground/30" />
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="flex justify-center">
-                            <CheckCircle className="w-5 h-5 text-primary" />
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    </>
-                  )}
-                  <TableRow 
-                    className="bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => setIsExpanded(!isExpanded)}
-                  >
-                    <TableCell colSpan={3} className="text-center py-4">
-                      <div className="flex items-center justify-center gap-2 font-medium text-primary">
-                        <span>{isExpanded ? 'Ver menos' : 'Ver más características'}</span>
-                        <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    )}
+                    <TableRow 
+                      className="bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors"
+                      onClick={() => setIsExpanded(!isExpanded)}
+                    >
+                      <TableCell colSpan={3} className="text-center py-4">
+                        <div className="flex items-center justify-center gap-2 font-medium text-primary">
+                          <span>{isExpanded ? 'Ver menos' : 'Ver más características'}</span>
+                          <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                <Tabs defaultValue="basic" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 mb-6">
+                    <TabsTrigger value="basic" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="font-bold">{basicPlan?.name || 'Plan Básico'}</span>
+                        <Badge className="text-xs bg-accent text-accent-foreground">Más Popular</Badge>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
+                    </TabsTrigger>
+                    <TabsTrigger value="advanced" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="font-bold">{advancedPlan?.name || 'Plan Avanzado'}</span>
+                        <Badge variant="outline" className="text-xs border-primary text-primary">Para Profesionales</Badge>
+                      </div>
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="basic">
+                    <Card className="shadow-lg">
+                      <CardContent className="p-4 space-y-4">
+                        {featureCategories.slice(0, isExpanded ? undefined : 3).map((category, catIndex) => (
+                          <div key={catIndex} className="space-y-3">
+                            <h3 className="font-bold text-foreground text-sm bg-muted/50 px-3 py-2 rounded-md">
+                              {category.category}
+                            </h3>
+                            <div className="space-y-2">
+                              {category.features.map((feature, featIndex) => {
+                                const inBasic = hasFeature(feature, 'basic');
+                                const basicValue = getFeatureValue(feature, 'basic');
+                                
+                                return (
+                                  <div key={featIndex} className="flex items-start gap-2 pl-2">
+                                    {inBasic ? (
+                                      typeof basicValue === 'string' ? (
+                                        <>
+                                          <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                                          <span className="text-sm text-foreground flex-1">
+                                            {feature} <span className="font-medium text-accent">({basicValue})</span>
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                                          <span className="text-sm text-foreground flex-1">{feature}</span>
+                                        </>
+                                      )
+                                    ) : (
+                                      <>
+                                        <X className="w-4 h-4 text-muted-foreground/30 flex-shrink-0 mt-0.5" />
+                                        <span className="text-sm text-muted-foreground/50 flex-1">{feature}</span>
+                                      </>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                        {isExpanded && (
+                          <div className="space-y-3">
+                            <h3 className="font-bold text-foreground text-sm bg-muted/50 px-3 py-2 rounded-md">
+                              Soporte Adicional
+                            </h3>
+                            <div className="flex items-start gap-2 pl-2">
+                              <X className="w-4 h-4 text-muted-foreground/30 flex-shrink-0 mt-0.5" />
+                              <span className="text-sm text-muted-foreground/50 flex-1">Soporte prioritario por WhatsApp</span>
+                            </div>
+                          </div>
+                        )}
+                        <button
+                          onClick={() => setIsExpanded(!isExpanded)}
+                          className="w-full py-3 flex items-center justify-center gap-2 font-medium text-primary bg-muted/30 hover:bg-muted/50 rounded-md transition-colors"
+                        >
+                          <span>{isExpanded ? 'Ver menos' : 'Ver más características'}</span>
+                          <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </button>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  <TabsContent value="advanced">
+                    <Card className="shadow-lg border-primary/20">
+                      <CardContent className="p-4 space-y-4">
+                        {featureCategories.slice(0, isExpanded ? undefined : 3).map((category, catIndex) => (
+                          <div key={catIndex} className="space-y-3">
+                            <h3 className="font-bold text-foreground text-sm bg-muted/50 px-3 py-2 rounded-md">
+                              {category.category}
+                            </h3>
+                            <div className="space-y-2">
+                              {category.features.map((feature, featIndex) => {
+                                const inAdvanced = hasFeature(feature, 'advanced');
+                                const advancedValue = getFeatureValue(feature, 'advanced');
+                                
+                                return (
+                                  <div key={featIndex} className="flex items-start gap-2 pl-2">
+                                    {inAdvanced ? (
+                                      typeof advancedValue === 'string' ? (
+                                        <>
+                                          <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                          <span className="text-sm text-foreground flex-1">
+                                            {feature} <span className="font-medium text-primary">({advancedValue})</span>
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                                          <span className="text-sm text-foreground flex-1">{feature}</span>
+                                        </>
+                                      )
+                                    ) : (
+                                      <>
+                                        <X className="w-4 h-4 text-muted-foreground/30 flex-shrink-0 mt-0.5" />
+                                        <span className="text-sm text-muted-foreground/50 flex-1">{feature}</span>
+                                      </>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                        {isExpanded && (
+                          <div className="space-y-3">
+                            <h3 className="font-bold text-foreground text-sm bg-muted/50 px-3 py-2 rounded-md">
+                              Soporte Adicional
+                            </h3>
+                            <div className="flex items-start gap-2 pl-2">
+                              <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                              <span className="text-sm text-foreground flex-1">Soporte prioritario por WhatsApp</span>
+                            </div>
+                          </div>
+                        )}
+                        <button
+                          onClick={() => setIsExpanded(!isExpanded)}
+                          className="w-full py-3 flex items-center justify-center gap-2 font-medium text-primary bg-muted/30 hover:bg-muted/50 rounded-md transition-colors"
+                        >
+                          <span>{isExpanded ? 'Ver menos' : 'Ver más características'}</span>
+                          <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </button>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </>
           )}
         </div>
       </div>
