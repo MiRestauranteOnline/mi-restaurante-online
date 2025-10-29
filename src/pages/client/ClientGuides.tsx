@@ -10178,15 +10178,67 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Gestionar tu Suscripción</CardTitle>
               <CardDescription>
-                Aprende a administrar tu plan y suscripción
+                Aprende a administrar tu plan y suscripción con OpenPay
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 break-words overflow-x-hidden">
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">¿Dónde gestiono mi suscripción?</h3>
-                <p className="text-muted-foreground">
-                  Ve a <strong>Suscripción</strong> desde el menú principal de tu dashboard.
+                <div className="bg-muted/50 p-4 rounded-lg border-l-4 border-primary">
+                  <p className="font-medium">
+                    Dashboard → <span className="px-2 py-1 bg-primary/10 text-primary rounded font-mono text-sm">Suscripción</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Accede desde el menú lateral de tu dashboard
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Planes Disponibles</h3>
+                <p className="text-muted-foreground mb-3">
+                  Mi Restaurante Online ofrece 2 planes diseñados para diferentes necesidades:
                 </p>
+                
+                <div className="space-y-4">
+                  {/* Basic Plan */}
+                  <div className="p-4 border-2 border-primary/30 rounded-lg bg-primary/5">
+                    <div className="flex flex-col sm:flex-row items-start gap-3 mb-3">
+                      <Badge className="bg-blue-600">Plan Básico</Badge>
+                      <div className="flex-1">
+                        <p className="text-2xl font-bold">S/ 297<span className="text-base font-normal text-muted-foreground">/mes</span></p>
+                      </div>
+                    </div>
+                    <ul className="space-y-2 text-sm text-muted-foreground ml-4">
+                      <li>✓ Sitio profesional en 72 horas</li>
+                      <li>✓ Hosting + SSL incluido</li>
+                      <li>✓ SEO básico optimizado</li>
+                      <li>✓ Integración Google Maps y Google My Business</li>
+                      <li>✓ Cambios auto-gestionables (sistema de tickets)</li>
+                      <li>✓ Soporte por WhatsApp</li>
+                      <li className="font-semibold">✓ Visitas y ancho de banda ilimitados</li>
+                    </ul>
+                  </div>
+
+                  {/* Advanced Plan */}
+                  <div className="p-4 border-2 border-purple-300 rounded-lg bg-purple-50/50 dark:bg-purple-950/20">
+                    <div className="flex flex-col sm:flex-row items-start gap-3 mb-3">
+                      <Badge className="bg-purple-600">Plan Avanzado</Badge>
+                      <div className="flex-1">
+                        <p className="text-2xl font-bold">S/ 497<span className="text-base font-normal text-muted-foreground">/mes</span></p>
+                      </div>
+                    </div>
+                    <ul className="space-y-2 text-sm text-muted-foreground ml-4">
+                      <li>✓ Todo lo del Plan Básico</li>
+                      <li>✓ 1 hora/mes de cambios extendidos</li>
+                      <li>✓ Cambios de textos e imágenes</li>
+                      <li>✓ Nuevas secciones personalizadas</li>
+                      <li>✓ Soporte prioritario</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
 
               <Separator />
@@ -10194,44 +10246,66 @@ export default function ClientGuides() {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Información de tu Plan Actual</h3>
                 <p className="text-muted-foreground mb-3">
-                  En la página de suscripción verás:
+                  En la página de suscripción verás una tarjeta con:
                 </p>
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Nombre del Plan</h4>
-                    <p className="text-sm text-muted-foreground">
-                      El plan que tienes actualmente contratado (Básico, Profesional, Premium, etc.)
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <DollarSign className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Plan Actual</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Tu plan activo (Básico o Avanzado) con su precio mensual y estado
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Estado de la Suscripción</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si tu suscripción está activa, pausada o cancelada
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Estado de Suscripción</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Badge de color indicando si está Activo, Cancelado, Expirado o con Pago Fallido
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Fecha de Renovación</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cuándo se realizará el próximo cobro automático
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <CalendarIcon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Próxima Facturación</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Fecha del próximo cobro automático
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Monto a Pagar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      El costo mensual o anual de tu plan actual
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Recursos Incluidos</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Límites de visitas mensuales, ancho de banda y otras características de tu plan
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <CalendarIcon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Fin del Período Actual</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Última fecha de tu período de facturación actual
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Comparación de Planes</h3>
+                <p className="text-muted-foreground mb-3">
+                  Verás dos tarjetas lado a lado mostrando ambos planes con sus características. Tu plan actual aparece resaltado con un borde de color.
+                </p>
               </div>
 
               <Separator />
@@ -10239,36 +10313,52 @@ export default function ClientGuides() {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Acciones Disponibles</h3>
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Cambiar de Plan</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Puedes actualizar o cambiar tu plan en cualquier momento:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                      <li><strong>Upgrade:</strong> Si actualizas a un plan superior, el cambio es inmediato y se prorratea el costo</li>
-                      <li><strong>Downgrade:</strong> Si cambias a un plan inferior, el cambio se aplica en la próxima fecha de facturación</li>
-                    </ul>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <ArrowUp className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Actualizar a Avanzado</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si tienes Plan Básico, puedes actualizar inmediatamente. El sistema calcula automáticamente el cargo prorrateado por los días restantes del período actual.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Pausar Suscripción</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si necesitas pausar tu servicio temporalmente, puedes hacerlo. Tu sitio quedará desactivado pero conservarás toda tu información. No se realizarán cobros mientras esté pausada.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <ArrowDown className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Cambiar a Básico</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si tienes Plan Avanzado, puedes programar un cambio a Básico que se aplicará al final de tu período de facturación actual. No pagas más del plan avanzado, pero lo disfrutas hasta el final del período pagado.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Cancelar Suscripción</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Puedes cancelar en cualquier momento. Seguirás teniendo acceso hasta el final del período pagado. Tus datos se conservarán por 90 días por si decides reactivar.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Cancelar Suscripción</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Puedes cancelar en cualquier momento. La cancelación es <strong>inmediata</strong> en OpenPay y tu sitio será desactivado al momento.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Actualizar Método de Pago</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Mantén tu información de pago actualizada para evitar interrupciones en el servicio.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <RefreshCw className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Reactivar Suscripción</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si tu suscripción está cancelada o expirada, puedes reactivarla en cualquier momento desde la misma página.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -10276,29 +10366,102 @@ export default function ClientGuides() {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Facturación y Recibos</h3>
-                <p className="text-muted-foreground mb-3">
-                  Desde la página de suscripción también puedes:
-                </p>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Descargar facturas anteriores</li>
-                  <li>Ver historial de pagos</li>
-                  <li>Actualizar información de facturación (nombre, dirección, RFC, etc.)</li>
-                  <li>Ver cargos por excedentes si los hubiera</li>
-                </ul>
+                <h3 className="text-lg font-semibold">Estados de Suscripción</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-green-50/50 dark:bg-green-950/20">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <Badge className="bg-green-500">Activo</Badge>
+                      <div className="flex-1">
+                        <p className="text-sm text-muted-foreground">Tu suscripción está activa y todos los servicios funcionan correctamente.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-red-50/50 dark:bg-red-950/20">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <Badge className="bg-red-500">Pago Fallido</Badge>
+                      <div className="flex-1">
+                        <p className="text-sm text-muted-foreground">El pago fue rechazado. Debes actualizar tu método de pago para continuar con el servicio.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-yellow-50/50 dark:bg-yellow-950/20">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <Badge className="bg-yellow-500">Cancelado</Badge>
+                      <div className="flex-1">
+                        <p className="text-sm text-muted-foreground">La suscripción fue cancelada. Puedes reactivarla cuando lo desees.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-gray-50/50 dark:bg-gray-950/20">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <Badge className="bg-gray-500">Expirado</Badge>
+                      <div className="flex-1">
+                        <p className="text-sm text-muted-foreground">Tu período de suscripción venció. Reactiva para continuar usando el servicio.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                  ⚠️ <strong>Importante:</strong> Si tu pago falla, tendrás 3 días para actualizar tu método de pago antes de que el servicio se suspenda temporalmente.
-                </p>
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Alertas y Notificaciones</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Problema de Pago</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si hay intentos fallidos de pago, verás una alerta roja indicando el número de intentos. Debes actualizar tu método de pago para continuar.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <CalendarIcon className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Cambio de Plan Programado</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si programaste un cambio a Plan Básico, verás una alerta azul indicando la fecha en que se aplicará el cambio.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <XCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Suscripción Cancelada</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si cancelaste tu suscripción, verás la fecha de cancelación y el motivo registrado.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> Los planes anuales tienen un descuento significativo comparado con el pago mensual. Considera cambiar a facturación anual para ahorrar.
-                </p>
-              </div>
+              <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-950">
+                <AlertCircle className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-amber-800 dark:text-amber-200">
+                  <strong>Importante:</strong> La cancelación se procesa inmediatamente en OpenPay y tu sitio será desactivado al momento. No hay período de gracia.
+                </AlertDescription>
+              </Alert>
+
+              <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                <Info className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800 dark:text-blue-200">
+                  <strong>Tip:</strong> Revisa regularmente tu página de suscripción para estar al tanto del estado de tu plan y fechas de facturación.
+                </AlertDescription>
+              </Alert>
             </CardContent>
           </Card>
         );
@@ -10309,83 +10472,70 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Métodos de Pago</CardTitle>
               <CardDescription>
-                Administra tus métodos de pago y configuración de facturación
+                Administra tus métodos de pago con OpenPay
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 break-words overflow-x-hidden">
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Métodos de Pago Aceptados</h3>
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">💳 Tarjetas de Crédito/Débito</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Aceptamos las principales tarjetas:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                      <li>Visa</li>
-                      <li>Mastercard</li>
-                      <li>American Express</li>
-                      <li>Otras tarjetas locales</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🏦 Transferencia Bancaria</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Disponible para planes anuales. Contacta a soporte para obtener los datos bancarios.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Agregar o Actualizar Método de Pago</h3>
-                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
-                  <li>
-                    Ve a <strong>Suscripción</strong> en el menú principal
-                  </li>
-                  <li>
-                    Busca la sección "Método de Pago" o "Información de Pago"
-                  </li>
-                  <li>
-                    Haz clic en "Actualizar Método de Pago" o "Agregar Tarjeta"
-                  </li>
-                  <li>
-                    Ingresa los datos de tu tarjeta:
-                    <ul className="list-disc list-inside ml-6 mt-2 space-y-1">
-                      <li>Número de tarjeta</li>
-                      <li>Nombre del titular</li>
-                      <li>Fecha de vencimiento (MM/AA)</li>
-                      <li>Código de seguridad (CVV)</li>
-                    </ul>
-                  </li>
-                  <li>
-                    Haz clic en "Guardar" para confirmar
-                  </li>
-                </ol>
-
-                <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-4">
-                  <p className="text-sm font-medium text-green-900 dark:text-green-100">
-                    🔒 <strong>Seguridad:</strong> Todos los datos de pago están encriptados y protegidos. Utilizamos procesadores de pago certificados PCI-DSS. Nunca almacenamos información completa de tarjetas en nuestros servidores.
-                  </p>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Configuración de Facturación Automática</h3>
-                <p className="text-muted-foreground">
-                  Una vez que agregues un método de pago válido:
+                <p className="text-muted-foreground mb-3">
+                  Mi Restaurante Online procesa pagos a través de OpenPay, aceptando:
                 </p>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Los pagos se procesarán automáticamente cada mes/año según tu plan</li>
-                  <li>Recibirás un email de confirmación después de cada cargo</li>
-                  <li>Tu factura estará disponible en tu dashboard</li>
-                  <li>Si el pago falla, recibirás una notificación para actualizar tu método de pago</li>
-                </ul>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <DollarSign className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-2">💳 Tarjetas de Crédito/Débito</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Aceptamos las principales tarjetas:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                          <li>Visa</li>
+                          <li>Mastercard</li>
+                          <li>American Express</li>
+                          <li>Otras tarjetas locales</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Configuración Durante el Signup</h3>
+                <p className="text-muted-foreground mb-3">
+                  Tu método de pago se configura durante el proceso de registro inicial:
+                </p>
+                <ol className="list-decimal list-outside space-y-2 ml-6 pr-2 text-muted-foreground break-words">
+                  <li className="pl-1">Durante el último paso del registro, se te pedirá ingresar los datos de tu tarjeta</li>
+                  <li className="pl-1">OpenPay procesa de forma segura tu información de pago</li>
+                  <li className="pl-1">Tu tarjeta se guarda de forma segura para cobros futuros automáticos</li>
+                  <li className="pl-1">El primer cobro se realiza al completar el registro</li>
+                </ol>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Actualizar Método de Pago</h3>
+                <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                  <Info className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <strong>Nota:</strong> Actualmente, para actualizar tu método de pago debes contactar a soporte. Estamos trabajando en habilitar esta función directamente en el dashboard.
+                  </AlertDescription>
+                </Alert>
+                
+                <p className="text-muted-foreground mt-3">
+                  Para actualizar tu tarjeta:
+                </p>
+                <ol className="list-decimal list-outside space-y-2 ml-6 pr-2 text-muted-foreground break-words">
+                  <li className="pl-1">Ve a la sección <strong>Soporte</strong> en tu dashboard</li>
+                  <li className="pl-1">Crea un ticket con el asunto "Actualizar Método de Pago"</li>
+                  <li className="pl-1">Nuestro equipo te guiará en el proceso de actualización</li>
+                </ol>
               </div>
 
               <Separator />
@@ -10393,61 +10543,59 @@ export default function ClientGuides() {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Problemas Comunes y Soluciones</h3>
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">❌ Pago Rechazado</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Si tu pago es rechazado, puede deberse a:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
-                      <li>Fondos insuficientes</li>
-                      <li>Tarjeta vencida</li>
-                      <li>Datos incorrectos</li>
-                      <li>Límite de compras en línea alcanzado</li>
-                      <li>Bloqueo por seguridad del banco</li>
-                    </ul>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      <strong>Solución:</strong> Verifica con tu banco y actualiza tu método de pago.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🔄 Cambiar Método de Pago</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Puedes cambiar tu método de pago en cualquier momento. El nuevo método se usará para el próximo cobro programado.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">📧 No Recibí mi Factura</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Las facturas se envían automáticamente por email. Revisa tu carpeta de spam. También puedes descargarlas desde la sección Suscripción → Historial de Facturas.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-2">❌ Pago Rechazado</h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Si tu pago es rechazado, puede deberse a:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-muted-foreground">
+                          <li>Fondos insuficientes</li>
+                          <li>Tarjeta vencida</li>
+                          <li>Datos incorrectos</li>
+                          <li>Límite de compras en línea alcanzado</li>
+                          <li>Bloqueo por seguridad del banco</li>
+                        </ul>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          <strong>Solución:</strong> Verifica con tu banco y contacta a soporte para actualizar tu método de pago.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                <Alert className="border-red-200 bg-red-50 dark:bg-red-950">
+                  <AlertCircle className="h-4 w-4 text-red-600" />
+                  <AlertDescription className="text-red-800 dark:text-red-200">
+                    <strong>Advertencia:</strong> Si tu pago falla, tu servicio será suspendido. El sistema muestra un contador de intentos fallidos en tu página de suscripción.
+                  </AlertDescription>
+                </Alert>
               </div>
 
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Reembolsos</h3>
-                <p className="text-muted-foreground">
-                  Los reembolsos se procesan según nuestra política:
-                </p>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Dentro de los primeros 7 días: Reembolso completo</li>
-                  <li>Después de 7 días: Prorrateado según uso</li>
-                  <li>Planes anuales: Reembolso de meses no utilizados</li>
-                </ul>
-                <p className="text-muted-foreground mt-3">
-                  Para solicitar un reembolso, crea un ticket en la sección de Soporte.
-                </p>
+                <h3 className="text-lg font-semibold">Seguridad</h3>
+                <div className="p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+                  <div className="flex flex-col sm:flex-row items-start gap-3">
+                    <Shield className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                        🔒 Todos los datos de pago están encriptados y protegidos por OpenPay, un procesador de pagos certificado PCI-DSS. Nunca almacenamos información completa de tarjetas en nuestros servidores.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> Configura recordatorios en tu calendario para revisar que tu tarjeta no esté por vencer, evitando interrupciones en el servicio.
-                </p>
-              </div>
+              <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                <Info className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800 dark:text-blue-200">
+                  <strong>Tip:</strong> Configura recordatorios en tu calendario para revisar que tu tarjeta no esté por vencer, evitando interrupciones en el servicio.
+                </AlertDescription>
+              </Alert>
             </CardContent>
           </Card>
         );
@@ -10458,32 +10606,35 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Cambios de Plan</CardTitle>
               <CardDescription>
-                Cómo actualizar, cambiar o reducir tu plan de suscripción
+                Cómo cambiar entre Plan Básico y Plan Avanzado
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 break-words overflow-x-hidden">
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Tipos de Cambio de Plan</h3>
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">⬆️ Upgrade (Mejora de Plan)</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cambiar a un plan con más recursos y características (por ejemplo, de Básico a Profesional).
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <ArrowUp className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-2">⬆️ Upgrade (Actualizar a Avanzado)</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Cambiar de Plan Básico a Plan Avanzado para acceder a funciones premium como cambios personalizados, soporte prioritario y analíticas avanzadas.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">⬇️ Downgrade (Reducción de Plan)</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cambiar a un plan con menos recursos (por ejemplo, de Premium a Profesional).
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">🔄 Cambio de Periodicidad</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cambiar de facturación mensual a anual (o viceversa) manteniendo el mismo nivel de plan.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <ArrowDown className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-2">⬇️ Downgrade (Cambiar a Básico)</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Cambiar de Plan Avanzado a Plan Básico si necesitas reducir costos. El cambio se programa para el final de tu período actual.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -10491,29 +10642,32 @@ export default function ClientGuides() {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cómo Hacer un Upgrade</h3>
-                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
-                  <li>Ve a <strong>Suscripción</strong> en el menú principal</li>
-                  <li>Revisa los planes disponibles y sus características</li>
-                  <li>Selecciona el plan al que deseas actualizar</li>
-                  <li>Haz clic en "Actualizar Plan" o "Upgrade"</li>
-                  <li>Revisa el resumen de cambios y costos</li>
-                  <li>Confirma la actualización</li>
+                <h3 className="text-lg font-semibold">Cómo Hacer un Upgrade (Básico → Avanzado)</h3>
+                <ol className="list-decimal list-outside space-y-3 ml-6 pr-2 text-muted-foreground break-words">
+                  <li className="pl-1">Ve a <strong>Suscripción</strong> en el menú lateral de tu dashboard</li>
+                  <li className="pl-1">Verás dos tarjetas mostrando ambos planes. El tuyo actual tendrá un borde de color y badge "Plan Actual"</li>
+                  <li className="pl-1">En la tarjeta del Plan Avanzado, haz clic en <strong>"Actualizar a Avanzado"</strong></li>
+                  <li className="pl-1">Se abrirá un diálogo mostrando el desglose de cargos prorrateados</li>
+                  <li className="pl-1">Revisa el monto que se cargará (solo pagas la diferencia por los días restantes)</li>
+                  <li className="pl-1">Haz clic en <strong>"Confirmar Upgrade"</strong></li>
+                  <li className="pl-1">El cambio es <strong>inmediato</strong> - accedes a las funciones avanzadas al instante</li>
                 </ol>
 
                 <div className="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg mt-4">
-                  <h4 className="font-medium mb-2 text-blue-900 dark:text-blue-100">📊 Cómo Funciona el Cargo al Mejorar</h4>
+                  <h4 className="font-medium mb-2 text-blue-900 dark:text-blue-100">📊 Cómo Funciona el Cargo Prorrateado</h4>
                   <p className="text-sm text-blue-900 dark:text-blue-100 mb-2">
-                    Cuando haces un upgrade, se aplica un <strong>prorrateo justo</strong>:
+                    Cuando haces un upgrade, el sistema aplica un <strong>prorrateo justo</strong>:
                   </p>
                   <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-blue-900 dark:text-blue-100">
-                    <li>Se calcula el tiempo restante de tu período actual</li>
-                    <li>Se acredita el monto no usado de tu plan actual</li>
-                    <li>Se cobra solo la diferencia para el nuevo plan</li>
-                    <li>El cambio es inmediato: accedes a las nuevas características de inmediato</li>
+                    <li>Calcula los días restantes de tu período actual</li>
+                    <li>Acredita el monto no usado de tu Plan Básico</li>
+                    <li>Cobra solo la diferencia para el Plan Avanzado</li>
+                    <li>El cargo se realiza de inmediato a tu tarjeta registrada</li>
+                    <li>Acceso inmediato a todas las funciones del Plan Avanzado</li>
                   </ul>
                   <p className="text-sm text-blue-900 dark:text-blue-100 mt-2">
-                    <strong>Ejemplo:</strong> Si estás en el día 15 de tu ciclo mensual de un plan de $500 y cambias a uno de $1000, solo pagarás aproximadamente $250 (la mitad del mes del plan nuevo menos el crédito del plan anterior).
+                    <strong>Ejemplo:</strong> Si estás en el día 15 de tu ciclo mensual (quedan 15 días), el sistema calcula:
+                    <br />Diferencia de precio (S/497 - S/297 = S/200) × (15 días / 30 días) = <strong>S/100 aproximadamente</strong>
                   </p>
                 </div>
               </div>
@@ -10521,14 +10675,15 @@ export default function ClientGuides() {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cómo Hacer un Downgrade</h3>
-                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
-                  <li>Ve a <strong>Suscripción</strong> en el menú principal</li>
-                  <li>Selecciona el plan al que deseas cambiar (uno de menor costo)</li>
-                  <li>Haz clic en "Cambiar Plan" o "Downgrade"</li>
-                  <li>Revisa las características que perderás</li>
-                  <li>Confirma que entiendes los cambios</li>
-                  <li>Procede con la confirmación</li>
+                <h3 className="text-lg font-semibold">Cómo Hacer un Downgrade (Avanzado → Básico)</h3>
+                <ol className="list-decimal list-outside space-y-3 ml-6 pr-2 text-muted-foreground break-words">
+                  <li className="pl-1">Ve a <strong>Suscripción</strong> en el menú lateral</li>
+                  <li className="pl-1">En la tarjeta del Plan Básico, haz clic en <strong>"Cambiar a Básico"</strong></li>
+                  <li className="pl-1">Se abrirá un diálogo advirtiendo qué funciones perderás</li>
+                  <li className="pl-1">Revisa la lista de funciones que dejarás de tener</li>
+                  <li className="pl-1">Haz clic en <strong>"Confirmar Cambio"</strong></li>
+                  <li className="pl-1">El cambio se <strong>programa para tu próxima fecha de facturación</strong></li>
+                  <li className="pl-1">Seguirás disfrutando del Plan Avanzado hasta el final del período pagado</li>
                 </ol>
 
                 <div className="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg mt-4">
@@ -10538,13 +10693,13 @@ export default function ClientGuides() {
                   </p>
                   <ul className="list-disc list-inside space-y-1 ml-4 text-sm text-amber-900 dark:text-amber-100">
                     <li>El cambio NO es inmediato</li>
-                    <li>Conservas tu plan actual hasta el final del período pagado</li>
-                    <li>El nuevo plan (reducido) se activa en tu próxima fecha de renovación</li>
+                    <li>Conservas tu Plan Avanzado hasta el final del período pagado</li>
+                    <li>El Plan Básico se activa en tu próxima fecha de renovación</li>
                     <li>No hay reembolso de la diferencia del período actual</li>
-                    <li>Puedes cancelar el downgrade antes de que se aplique si cambias de opinión</li>
+                    <li>Verás una alerta azul en tu dashboard indicando el cambio programado</li>
                   </ul>
                   <p className="text-sm text-amber-900 dark:text-amber-100 mt-2">
-                    <strong>Ejemplo:</strong> Si hoy es 15 de marzo y tu ciclo se renueva el 1 de abril, seguirás con tu plan actual hasta el 31 de marzo. El plan reducido comenzará el 1 de abril.
+                    <strong>Ejemplo:</strong> Si hoy es 15 de marzo y tu ciclo se renueva el 1 de abril, seguirás con Plan Avanzado hasta el 31 de marzo. El Plan Básico comenzará el 1 de abril a S/297/mes.
                   </p>
                 </div>
               </div>
@@ -10552,76 +10707,28 @@ export default function ClientGuides() {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cambiar de Mensual a Anual</h3>
-                <p className="text-muted-foreground mb-3">
-                  Los planes anuales suelen tener un descuento significativo (típicamente 15-20% comparado con pago mensual).
-                </p>
-                <div className="p-4 border rounded-lg">
-                  <h4 className="font-medium mb-2">Proceso:</h4>
-                  <ol className="list-decimal list-inside space-y-2 ml-4 text-sm text-muted-foreground">
-                    <li>Ve a Suscripción y selecciona tu plan actual</li>
-                    <li>Cambia el toggle de "Mensual" a "Anual"</li>
-                    <li>Verás el ahorro anual comparado con el pago mensual</li>
-                    <li>Se cobrará el monto anual de inmediato</li>
-                    <li>Tu próxima renovación será en 12 meses</li>
-                  </ol>
-                </div>
-
-                <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mt-3">
-                  <p className="text-sm font-medium text-green-900 dark:text-green-100">
-                    💰 <strong>Ahorro:</strong> Con facturación anual, típicamente ahorras el equivalente a 2 meses de servicio al año.
-                  </p>
-                </div>
+                <h3 className="text-lg font-semibold">Funciones que Pierdes al Cambiar a Básico</h3>
+                <Alert className="border-yellow-200 bg-yellow-50 dark:bg-yellow-950">
+                  <AlertCircle className="h-4 w-4 text-yellow-600" />
+                  <AlertDescription className="text-yellow-800 dark:text-yellow-200">
+                    Al cambiar a Plan Básico perderás acceso a:
+                    <ul className="ml-4 mt-2 space-y-1 text-sm">
+                      <li>• Google Analytics tracking avanzado</li>
+                      <li>• Panel de Analytics avanzado</li>
+                      <li>• Soporte por WhatsApp directo</li>
+                      <li>• Soporte prioritario</li>
+                      <li>• 1 hora mensual de asistencia profesional para cambios personalizados</li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
               </div>
 
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Consideraciones Importantes</h3>
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Límites de Recursos</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Al cambiar a un plan con menos recursos (downgrade), asegúrate de que tu uso actual esté dentro de los nuevos límites. Si excedes los límites del nuevo plan, se aplicarán cargos por excedentes.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Funcionalidades Premium</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Algunas funcionalidades (como analíticas avanzadas, reservas, email personalizado) solo están disponibles en ciertos planes. Al reducir tu plan, podrías perder acceso a estas características.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Cancelar Cambio Pendiente</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si programaste un downgrade pero cambias de opinión, puedes cancelarlo desde la página de Suscripción antes de que se aplique en tu próxima fecha de renovación.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿No Estás Seguro Qué Plan Elegir?</h3>
-                <p className="text-muted-foreground mb-3">
-                  Si tienes dudas sobre qué plan es el adecuado para tu negocio:
-                </p>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Revisa tus estadísticas de uso actuales en la sección Analíticas</li>
-                  <li>Considera tu crecimiento proyectado para los próximos meses</li>
-                  <li>Evalúa qué funcionalidades realmente necesitas</li>
-                  <li>Contacta a nuestro equipo de soporte para asesoramiento personalizado</li>
-                </ul>
-              </div>
-
-              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  💡 <strong>Consejo:</strong> Puedes cambiar de plan en cualquier momento. No hay penalizaciones ni períodos de permanencia obligatorios.
-                </p>
-              </div>
+              <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                <Info className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800 dark:text-blue-200">
+                  <strong>Consejo:</strong> Puedes cambiar de plan en cualquier momento. No hay penalizaciones ni períodos de permanencia obligatorios. La flexibilidad está garantizada.
+                </AlertDescription>
+              </Alert>
             </CardContent>
           </Card>
         );
@@ -10632,142 +10739,59 @@ export default function ClientGuides() {
             <CardHeader>
               <CardTitle>Información de Facturación</CardTitle>
               <CardDescription>
-                Gestiona tus datos fiscales y descarga facturas
+                Cómo funciona la facturación con OpenPay
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 break-words overflow-x-hidden">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">¿Dónde encuentro mis Facturas?</h3>
+                <h3 className="text-lg font-semibold">Sistema de Facturación</h3>
                 <p className="text-muted-foreground">
-                  Ve a <strong>Suscripción</strong> → sección <strong>"Historial de Facturación"</strong> o <strong>"Facturas"</strong>
+                  La facturación de Mi Restaurante Online se procesa a través de <strong>OpenPay</strong>, un procesador de pagos seguro y confiable.
                 </p>
               </div>
 
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Actualizar Información Fiscal</h3>
+                <h3 className="text-lg font-semibold">Información de Facturación Configurada Durante Signup</h3>
                 <p className="text-muted-foreground mb-3">
-                  Para que tus facturas incluyan tus datos fiscales correctos:
-                </p>
-                <ol className="list-decimal list-inside space-y-3 ml-4 text-muted-foreground">
-                  <li>Ve a <strong>Suscripción</strong> → <strong>"Información de Facturación"</strong></li>
-                  <li>Haz clic en "Editar Información Fiscal"</li>
-                  <li>Completa o actualiza los siguientes campos:</li>
-                </ol>
-
-                <div className="space-y-3 mt-4">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Nombre o Razón Social *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Tu nombre completo (persona física) o nombre de la empresa (persona moral)
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">RFC *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Tu Registro Federal de Contribuyentes (13 caracteres para persona física, 12 para moral)
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Dirección Fiscal *</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Calle, número, colonia, código postal, ciudad y estado
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Régimen Fiscal</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Por ejemplo: Persona Física con Actividad Empresarial, Régimen Simplificado de Confianza, etc.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Email de Facturación</h4>
-                    <p className="text-sm text-muted-foreground">
-                      El email donde deseas recibir tus facturas (puede ser diferente al email de tu cuenta)
-                    </p>
-                  </div>
-                </div>
-
-                <ol start={4} className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground mt-4">
-                  <li>Haz clic en "Guardar Cambios"</li>
-                  <li>La información se aplicará a futuras facturas</li>
-                </ol>
-
-                <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
-                  <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                    ⚠️ <strong>Importante:</strong> Los cambios en tu información fiscal solo se aplican a facturas futuras. Las facturas ya emitidas no pueden modificarse. Si necesitas corregir una factura reciente, contacta a soporte dentro de las primeras 72 horas.
-                  </p>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Descargar Facturas</h3>
-                <p className="text-muted-foreground mb-3">
-                  Para descargar tus facturas:
-                </p>
-                <ol className="list-decimal list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Ve a <strong>Suscripción</strong> → <strong>"Historial de Facturas"</strong></li>
-                  <li>Verás una lista de todas tus facturas ordenadas por fecha</li>
-                  <li>Cada factura muestra: fecha, concepto, monto y estado (pagada/pendiente)</li>
-                  <li>Haz clic en el botón "Descargar PDF" junto a la factura que deseas</li>
-                  <li>El archivo PDF se descargará a tu dispositivo</li>
-                </ol>
-
-                <div className="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg mt-4">
-                  <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                    💡 <strong>Tip:</strong> También recibes tus facturas automáticamente por email después de cada cobro.
-                  </p>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Conceptos en tus Facturas</h3>
-                <p className="text-muted-foreground mb-3">
-                  Tus facturas pueden incluir los siguientes conceptos:
+                  Tu información fiscal se recopila durante el proceso de registro:
                 </p>
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Suscripción Mensual/Anual</h4>
-                    <p className="text-sm text-muted-foreground">
-                      El costo de tu plan para el período correspondiente
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <FileText className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Razón Social</h4>
+                        <p className="text-sm text-muted-foreground">
+                          El nombre legal de tu empresa o restaurante
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Excedente de Visitas</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cargo adicional si superaste el límite de visitas mensuales de tu plan
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <FileText className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">RUC</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Tu Registro Único de Contribuyentes (11 dígitos en Perú)
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Excedente de Ancho de Banda</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cargo adicional si superaste el límite de GB de transferencia de tu plan
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Servicios Adicionales</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Cargos por servicios extras como soporte premium, desarrollo personalizado, etc.
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Ajustes y Créditos</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Créditos por downgrades, reembolsos parciales o ajustes autorizados
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Dirección Fiscal</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Tu dirección completa para efectos fiscales
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -10775,68 +10799,144 @@ export default function ClientGuides() {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Facturación de Excedentes</h3>
+                <h3 className="text-lg font-semibold">Actualizar Datos de Facturación</h3>
+                <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                  <Info className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <strong>Próximamente:</strong> Estamos trabajando en habilitar la edición de datos fiscales directamente desde el dashboard. Por ahora, contacta a soporte para actualizar tu información.
+                  </AlertDescription>
+                </Alert>
+                
+                <p className="text-muted-foreground mt-3">
+                  Para actualizar tu información fiscal:
+                </p>
+                <ol className="list-decimal list-outside space-y-2 ml-6 pr-2 text-muted-foreground break-words">
+                  <li className="pl-1">Ve a la sección <strong>Soporte</strong> en tu dashboard</li>
+                  <li className="pl-1">Crea un ticket con el asunto "Actualizar Información Fiscal"</li>
+                  <li className="pl-1">Indica qué datos necesitas corregir (Razón Social, RUC, Dirección)</li>
+                  <li className="pl-1">Nuestro equipo procesará el cambio y te confirmará</li>
+                </ol>
+
+                <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-950">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription className="text-amber-800 dark:text-amber-200">
+                    <strong>Importante:</strong> Los cambios en tu información fiscal solo se aplican a facturas futuras. Las facturas ya emitidas no pueden modificarse. Si necesitas corregir una factura reciente, contacta a soporte dentro de las primeras 72 horas.
+                  </AlertDescription>
+                </Alert>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Acceder a tus Facturas en OpenPay</h3>
                 <p className="text-muted-foreground mb-3">
-                  Si superas los límites de tu plan:
+                  OpenPay gestiona tus facturas y recibos de pago:
                 </p>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                  <li>Los excedentes se calculan al final de cada mes</li>
-                  <li>Se agregan automáticamente a tu siguiente factura</li>
-                  <li>Puedes ver tu uso actual en tiempo real en la sección <strong>Analíticas</strong></li>
-                  <li>Recibirás alertas al alcanzar el 80% y 100% de tus límites</li>
-                </ul>
+                <ol className="list-decimal list-outside space-y-2 ml-6 pr-2 text-muted-foreground break-words">
+                  <li className="pl-1">Recibes un email automático de OpenPay después de cada cobro</li>
+                  <li className="pl-1">El email contiene tu recibo de pago en formato PDF</li>
+                  <li className="pl-1">También puedes acceder a tu historial de pagos desde tu cuenta de OpenPay</li>
+                  <li className="pl-1">Guarda estos emails para tu contabilidad</li>
+                </ol>
 
-                <div className="p-4 bg-muted rounded-lg mt-3">
-                  <p className="text-sm font-medium mb-2">Ejemplo de Factura con Excedentes:</p>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Plan Profesional - Marzo 2025: $1,000</li>
-                    <li>• Excedente: 5,000 visitas adicionales: $250</li>
-                    <li>• Excedente: 15 GB adicionales: $75</li>
-                    <li className="font-medium pt-2 border-t">Total: $1,325</li>
-                  </ul>
-                </div>
+                <Alert className="border-green-200 bg-green-50 dark:bg-green-950">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-800 dark:text-green-200">
+                    <strong>Tip:</strong> Crea una etiqueta o carpeta en tu email para organizar automáticamente los recibos de OpenPay y tenerlos siempre a mano.
+                  </AlertDescription>
+                </Alert>
               </div>
 
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Problemas con Facturas</h3>
+                <h3 className="text-lg font-semibold">Conceptos de Facturación</h3>
+                <p className="text-muted-foreground mb-3">
+                  Tus facturas pueden incluir:
+                </p>
                 <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Datos Fiscales Incorrectos</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si una factura tiene datos incorrectos, tienes 72 horas desde la emisión para solicitar la corrección. Después de ese tiempo, solo podremos corregir facturas del período fiscal actual.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <DollarSign className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Suscripción Mensual</h4>
+                        <p className="text-sm text-muted-foreground">
+                          El costo fijo de tu plan (S/297 para Básico, S/497 para Avanzado)
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">No Recibí mi Factura</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Revisa tu carpeta de spam. Si no la encuentras, puedes descargarla desde tu dashboard o contactar a soporte.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <ArrowUp className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Upgrade Prorrateado</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si actualizaste a Plan Avanzado a mitad de período, verás un cargo calculado proporcionalmente por los días restantes
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                  <Info className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-800 dark:text-blue-200">
+                    <strong>Nota:</strong> Ambos planes incluyen visitas y ancho de banda <strong>ilimitados</strong>, por lo que nunca verás cargos por excedentes de tráfico.
+                  </AlertDescription>
+                </Alert>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Problemas con Pagos</h3>
+                <div className="space-y-3">
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Pago Rechazado</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si tu pago es rechazado, contacta inmediatamente a soporte para actualizar tu método de pago. Tu servicio será suspendido mientras el pago esté pendiente.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Factura Duplicada</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Si ves un cargo duplicado en tu estado de cuenta, contacta inmediatamente a soporte con los detalles de ambas transacciones.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <Mail className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">No Recibí mi Recibo</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Revisa tu carpeta de spam. Los emails de OpenPay pueden llegar a spam la primera vez. Si no lo encuentras, contacta a soporte.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Necesito Factura de Meses Anteriores</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Todas las facturas históricas están disponibles en tu dashboard. Puedes descargar facturas de cualquier período anterior.
-                    </p>
+                  <div className="p-4 border rounded-lg bg-card">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
+                      <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium mb-1">Cargo Duplicado</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Si ves un cargo duplicado en tu estado de cuenta, contacta inmediatamente a soporte con los detalles de ambas transacciones para verificar y resolver.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                <p className="text-sm font-medium text-green-900 dark:text-green-100">
-                  ✅ <strong>Cumplimiento Fiscal:</strong> Todas nuestras facturas cumplen con los requisitos del SAT y son válidas para deducción de impuestos. Conserva tus facturas para tu contabilidad.
-                </p>
-              </div>
+              <Alert className="border-green-200 bg-green-50 dark:bg-green-950">
+                <Shield className="h-4 w-4 text-green-600" />
+                <AlertDescription className="text-green-800 dark:text-green-200">
+                  <strong>Seguridad:</strong> OpenPay es un procesador de pagos certificado PCI-DSS. Tu información financiera está protegida con los más altos estándares de seguridad.
+                </AlertDescription>
+              </Alert>
             </CardContent>
           </Card>
         );
