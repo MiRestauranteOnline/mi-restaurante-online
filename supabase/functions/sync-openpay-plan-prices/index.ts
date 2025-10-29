@@ -39,18 +39,21 @@ serve(async (req) => {
       throw new Error('Basic or Advanced plan not found in subscription_plans');
     }
 
-    // Get Openpay credentials
+    // Get Openpay credentials (environment-based)
+    const environment = Deno.env.get('OPENPAY_ENVIRONMENT') || 'sandbox';
+    const suffix = environment === 'production' ? '_PROD' : '_SANDBOX';
+    
     const openpayApiBase = Deno.env.get('OPENPAY_API_BASE');
-    const openpayMerchantId = Deno.env.get('OPENPAY_MERCHANT_ID_SANDBOX');
-    const openpayPrivateKey = Deno.env.get('OPENPAY_PRIVATE_KEY_SANDBOX');
-    const basicPlanId = Deno.env.get('OPENPAY_PLAN_BASIC_ID_SANDBOX');
-    const advancedPlanId = Deno.env.get('OPENPAY_PLAN_ADVANCED_ID_SANDBOX');
+    const openpayMerchantId = Deno.env.get(`OPENPAY_MERCHANT_ID${suffix}`);
+    const openpayPrivateKey = Deno.env.get(`OPENPAY_PRIVATE_KEY${suffix}`);
+    const basicPlanId = Deno.env.get(`OPENPAY_PLAN_BASIC_ID${suffix}`);
+    const advancedPlanId = Deno.env.get(`OPENPAY_PLAN_ADVANCED_ID${suffix}`);
 
     if (!openpayApiBase || !openpayMerchantId || !openpayPrivateKey || !basicPlanId || !advancedPlanId) {
       throw new Error('Missing Openpay configuration');
     }
 
-    console.log('🔑 Openpay config loaded');
+    console.log(`🔑 Openpay config loaded (${environment} environment)`);
 
     // Update basic plan in Openpay
     const basicUpdateResponse = await fetch(

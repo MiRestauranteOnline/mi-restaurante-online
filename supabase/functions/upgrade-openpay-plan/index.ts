@@ -16,10 +16,16 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const merchantId = Deno.env.get('OPENPAY_MERCHANT_ID_SANDBOX')!;
-    const privateKey = Deno.env.get('OPENPAY_PRIVATE_KEY_SANDBOX')!;
-    const planAdvancedId = Deno.env.get('OPENPAY_PLAN_ADVANCED_ID_SANDBOX')!;
+    // Environment-based configuration
+    const environment = Deno.env.get('OPENPAY_ENVIRONMENT') || 'sandbox';
+    const suffix = environment === 'production' ? '_PROD' : '_SANDBOX';
+    
+    const merchantId = Deno.env.get(`OPENPAY_MERCHANT_ID${suffix}`)!;
+    const privateKey = Deno.env.get(`OPENPAY_PRIVATE_KEY${suffix}`)!;
+    const planAdvancedId = Deno.env.get(`OPENPAY_PLAN_ADVANCED_ID${suffix}`)!;
     const openpayApiBase = Deno.env.get('OPENPAY_API_BASE')!;
+    
+    console.log(`Using OpenPay ${environment} environment`);
 
     const body = await req.json();
     const clientId = body.clientId;

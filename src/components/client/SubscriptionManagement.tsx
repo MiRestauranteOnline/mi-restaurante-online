@@ -151,36 +151,11 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const handleUpgrade = async () => {
     setActionLoading(true);
     try {
-      // Ensure OpenPay antifraud scripts are loaded and get device_session_id
-      const ensureOpenPayLoaded = () => new Promise<void>((resolve, reject) => {
-        const w = window as any;
-        if (w.OpenPay) return resolve();
-        const script1 = document.createElement('script');
-        script1.src = 'https://js.openpay.mx/openpay.v1.min.js';
-        const script2 = document.createElement('script');
-        script2.src = 'https://js.openpay.mx/openpay-data.v1.min.js';
-        script1.onload = () => {
-          script2.onload = () => resolve();
-          script2.onerror = reject;
-          document.body.appendChild(script2);
-        };
-        script1.onerror = reject;
-        document.body.appendChild(script1);
-      });
-
-      await ensureOpenPayLoaded();
+      // Load OpenPay scripts and initialize with environment-based config
+      const { loadOpenPayScripts } = await import('@/config/openpay');
+      await loadOpenPayScripts();
+      
       const OpenPay = (window as any).OpenPay;
-      
-      // Initialize OpenPay with merchant credentials (public key is safe for client-side)
-      const merchantId = 'mbucmmsvzm5wyjjebjc6'; // Sandbox merchant ID
-      const publicKey = 'pk_5c30f7cbf0cd4d0c99a1c01129a0d4d3'; // Sandbox public key
-      
-      if (OpenPay) {
-        OpenPay.setId(merchantId);
-        OpenPay.setApiKey(publicKey);
-        OpenPay.setSandboxMode(true);
-      }
-      
       const deviceSessionId = OpenPay?.deviceData?.setup ? OpenPay.deviceData.setup() : undefined;
 
       const { data, error } = await supabase.functions.invoke('upgrade-openpay-plan', {
