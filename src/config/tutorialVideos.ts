@@ -3,7 +3,7 @@
 
 export const tutorialVideos = {
   // Step 1: Basic Information
-  step1: "https://www.youtube.com/embed/dQw4w9WgXcQ", // CHANGE YOUTUBE LINK FOR STEP 1 HERE
+  step1: "https://www.youtube.com/embed/afAJiAWU54M", // CHANGE YOUTUBE LINK FOR STEP 1 HERE
   
   // Step 2: Payment Information
   step2: "https://www.youtube.com/embed/dQw4w9WgXcQ", // CHANGE YOUTUBE LINK FOR STEP 2 HERE
