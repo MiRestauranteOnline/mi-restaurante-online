@@ -148,70 +148,82 @@ serve(async (req) => {
       console.log('Subscription is too new to cancel, proceeding with upgrade (OpenPay will handle transition)');
     }
 
-    // 2. Get customer's card
-    const cardsResponse = await fetch(
-      `${openpayUrl}/customers/${client.openpay_customer_id}/cards`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Basic ${auth}`,
-        },
-      }
-    );
+    // 2. Get customer's card (with retries for timing issues)
+    let cardsResponse: Response | null = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      cardsResponse = await fetch(
+        `${openpayUrl}/customers/${client.openpay_customer_id}/cards`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Basic ${auth}`,
+          },
+        }
+      );
 
-    if (!cardsResponse.ok) {
-      let error: any = null;
-      try { error = await cardsResponse.json(); } catch (_) { /* ignore */ }
-      console.error('Failed to get customer cards:', cardsResponse.status, error);
+      if (cardsResponse.ok) break;
 
-      // If OpenPay returns 412 (operation not available yet), short-circuit and complete upgrade in DB
-      if (cardsResponse.status === 412) {
-        console.log('Card retrieval returned 412. Completing upgrade in DB and deferring OpenPay operations.');
-        const now = new Date();
-        const newNextBillingDate = new Date(now);
-        newNextBillingDate.setMonth(newNextBillingDate.getMonth() + 1);
-        const newEndDate = new Date(newNextBillingDate);
+      let errorBody: any = null;
+      try { errorBody = await cardsResponse.json(); } catch (_) { /* ignore */ }
+      console.warn(`Get cards attempt ${attempt} failed: ${cardsResponse.status}`, errorBody);
 
-        await supabase
-          .from('clients')
-          .update({
-            plan_type: 'advanced',
-            subscription_status: 'active',
-            subscription_start_date: client.subscription_start_date || now.toISOString(),
-            // Keep existing subscription id while OpenPay operations are deferred
-            next_billing_date: newNextBillingDate.toISOString(),
-            subscription_end_date: newEndDate.toISOString(),
-            pending_plan_change: null,
-            pending_plan_change_date: null,
-            payment_status: 'paid',
-            updated_at: now.toISOString(),
-          })
-          .eq('id', clientId);
-
-        return new Response(
-          JSON.stringify({
-            success: true,
-            proratedAmount,
-            daysRemaining,
-            newPlanType: 'advanced',
-            openpayDeferred: true,
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+      const retryable = [412, 429, 500, 502, 503, 504].includes(cardsResponse.status);
+      if (retryable && attempt < 3) {
+        await new Promise((res) => setTimeout(res, 1500 * attempt));
+        continue;
       }
 
-      throw new Error(`Failed to get customer cards: ${error?.description || 'Unknown error'}`);
+      throw new Error(`Failed to get customer cards: ${errorBody?.description || 'Unknown error'}`);
     }
 
-    const cards = await cardsResponse.json();
+    const cards = await cardsResponse!.json();
     if (!cards || cards.length === 0) {
       throw new Error('No payment method found');
     }
 
     // 3. Process prorated charge (if amount > 0)
     if (proratedAmount > 0) {
-      const chargeResponse = await fetch(
-        `${openpayUrl}/customers/${client.openpay_customer_id}/charges`,
+      let chargeResponse: Response | null = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        chargeResponse = await fetch(
+          `${openpayUrl}/customers/${client.openpay_customer_id}/charges`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Basic ${auth}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              source_id: cards[0].id,
+              method: 'card',
+              amount: proratedAmount,
+              currency: 'PEN',
+              description: `Upgrade prorrateado a Plan Avanzado (${daysRemaining} días)`,
+            }),
+          }
+        );
+
+        if (chargeResponse.ok) break;
+
+        let errorBody: any = null;
+        try { errorBody = await chargeResponse.json(); } catch (_) { /* ignore */ }
+        console.warn(`Charge attempt ${attempt} failed: ${chargeResponse.status}`, errorBody);
+        const retryable = [412, 429, 500, 502, 503, 504].includes(chargeResponse.status);
+        if (retryable && attempt < 3) {
+          await new Promise((res) => setTimeout(res, 1500 * attempt));
+          continue;
+        }
+        throw new Error(`Failed to process prorated charge: ${errorBody?.description || 'Unknown error'}`);
+      }
+
+      console.log('Prorated charge processed successfully');
+    }
+
+    // 4. Create new advanced subscription (with retries)
+    let subscriptionResponse: Response | null = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      subscriptionResponse = await fetch(
+        `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions`,
         {
           method: 'POST',
           headers: {
@@ -219,47 +231,26 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            source_id: cards[0].id,
-            method: 'card',
-            amount: proratedAmount,
-            currency: 'PEN',
-            description: `Upgrade prorrateado a Plan Avanzado (${daysRemaining} días)`,
+            plan_id: planAdvancedId,
+            card_id: cards[0].id,
           }),
         }
       );
 
-      if (!chargeResponse.ok) {
-        const error = await chargeResponse.json();
-        console.error('OpenPay charge failed:', error);
-        throw new Error('Failed to process prorated charge');
-      }
+      if (subscriptionResponse.ok) break;
 
-      console.log('Prorated charge processed successfully');
+      let errorBody: any = null;
+      try { errorBody = await subscriptionResponse.json(); } catch (_) { /* ignore */ }
+      console.warn(`Create subscription attempt ${attempt} failed: ${subscriptionResponse.status}`, errorBody);
+      const retryable = [412, 429, 500, 502, 503, 504].includes(subscriptionResponse.status);
+      if (retryable && attempt < 3) {
+        await new Promise((res) => setTimeout(res, 1500 * attempt));
+        continue;
+      }
+      throw new Error(`Failed to create new subscription: ${errorBody?.description || 'Unknown error'}`);
     }
 
-    // 4. Create new advanced subscription
-    const subscriptionResponse = await fetch(
-      `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Basic ${auth}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          plan_id: planAdvancedId,
-          card_id: cards[0].id,
-        }),
-      }
-    );
-
-    if (!subscriptionResponse.ok) {
-      const error = await subscriptionResponse.json();
-      console.error('OpenPay subscription creation failed:', error);
-      throw new Error(`Failed to create new subscription: ${error.description || 'Unknown error'}`);
-    }
-
-    const subscription = await subscriptionResponse.json();
+    const subscription = await subscriptionResponse!.json();
 
     // 5. Update client in database
     const now = new Date();
