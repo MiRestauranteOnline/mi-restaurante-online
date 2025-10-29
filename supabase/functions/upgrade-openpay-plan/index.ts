@@ -135,10 +135,17 @@ serve(async (req) => {
       }
     );
 
-    if (!cancelResponse.ok && cancelResponse.status !== 404) {
+    // Handle cancellation response
+    // 404: subscription already cancelled (ok to proceed)
+    // 412: subscription too new, can't cancel yet (ok to proceed, OpenPay will handle transition)
+    if (!cancelResponse.ok && cancelResponse.status !== 404 && cancelResponse.status !== 412) {
       const error = await cancelResponse.json();
       console.error('OpenPay subscription cancellation failed:', error);
       throw new Error('Failed to cancel existing subscription');
+    }
+    
+    if (cancelResponse.status === 412) {
+      console.log('Subscription is too new to cancel, proceeding with upgrade (OpenPay will handle transition)');
     }
 
     // 2. Get customer's card
