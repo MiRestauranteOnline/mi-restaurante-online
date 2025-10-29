@@ -222,7 +222,7 @@ export function GuidesSidebar({ activeGuide }: GuidesSidebarProps) {
           variant="outline"
           size="sm"
           onClick={() => setMobileOpen(true)}
-          className="mb-4"
+          className="mt-4 mb-4"
         >
           <Menu className="h-4 w-4 mr-2" />
           Ver Guías
