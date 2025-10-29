@@ -6813,7 +6813,7 @@ export default function ClientGuides() {
               <CardContent className="space-y-4">
                 <div className="space-y-4">
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Search className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div className="flex-1">
                         <h4 className="font-semibold mb-1">Búsqueda Rápida</h4>
@@ -6830,7 +6830,7 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Filter className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div className="flex-1">
                         <h4 className="font-semibold mb-1">Filtro por Estado</h4>
@@ -6864,7 +6864,7 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Download className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div className="flex-1">
                         <h4 className="font-semibold mb-1">Exportar a CSV</h4>
@@ -6900,7 +6900,7 @@ export default function ClientGuides() {
 
                 <div className="space-y-3">
                   <div className="p-4 border rounded-lg bg-orange-50/50 dark:bg-orange-950/20">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Badge variant="outline" className="border-orange-500 text-orange-500">Pendiente</Badge>
                       <div className="flex-1">
                         <p className="text-sm mb-2">Nueva reserva recibida, esperando tu confirmación.</p>
@@ -6916,7 +6916,7 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-green-50/50 dark:bg-green-950/20">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Badge variant="default">Confirmado</Badge>
                       <div className="flex-1">
                         <p className="text-sm">Reserva aceptada y garantizada. El cliente puede contar con su mesa.</p>
@@ -6925,7 +6925,7 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-red-50/50 dark:bg-red-950/20">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Badge variant="destructive">Cancelado</Badge>
                       <div className="flex-1">
                         <p className="text-sm mb-2">Reserva rechazada por el restaurante o cancelada por el cliente.</p>
@@ -6940,7 +6940,7 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Badge variant="secondary">Completado</Badge>
                       <div className="flex-1">
                         <p className="text-sm">El cliente llegó y completó su visita. Útil para mantener historial.</p>
@@ -7023,7 +7023,7 @@ export default function ClientGuides() {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Eye className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div className="flex-1">
                         <h4 className="font-semibold mb-1">Ver Detalles</h4>
@@ -7041,7 +7041,7 @@ export default function ClientGuides() {
                   </div>
 
                   <div className="p-4 border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-col sm:flex-row items-start gap-3">
                       <Trash2 className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
                       <div className="flex-1">
                         <h4 className="font-semibold mb-1">Eliminar Reserva</h4>
