@@ -9548,7 +9548,7 @@ export default function ClientGuides() {
 
                 <div className="space-y-6">
                   {/* Step 1 */}
-                  <div className="flex items-start gap-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-4">
                     <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
                       1
                     </div>
@@ -9594,7 +9594,7 @@ export default function ClientGuides() {
                   </div>
 
                   {/* Step 2 */}
-                  <div className="flex items-start gap-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-4">
                     <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
                       2
                     </div>
@@ -9646,7 +9646,7 @@ export default function ClientGuides() {
                   </div>
 
                   {/* Step 3 */}
-                  <div className="flex items-start gap-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-4">
                     <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
                       3
                     </div>
@@ -9675,7 +9675,7 @@ export default function ClientGuides() {
                   </div>
 
                   {/* Step 4 */}
-                  <div className="flex items-start gap-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-4">
                     <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
                       4
                     </div>
@@ -9718,7 +9718,7 @@ export default function ClientGuides() {
                   </div>
 
                   {/* Step 5 */}
-                  <div className="flex items-start gap-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-4">
                     <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
                       5
                     </div>
