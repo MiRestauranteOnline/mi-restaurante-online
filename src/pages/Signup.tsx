@@ -87,7 +87,35 @@ const Signup = () => {
   useEffect(() => {
     const initializeSignupFlow = async () => {
       try {
-        // First, check localStorage for saved progress (most recent state)
+        // Support ?reset=1 to force restart
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('reset') === '1') {
+          console.log('Reset requested via URL, clearing signup state');
+          try {
+            localStorage.removeItem('signup_progress');
+            localStorage.removeItem('signup_form_data');
+          } catch (e) {
+            console.warn('Failed to clear signup state:', e);
+          }
+          setCurrentStep(1);
+          setIsAuthChecking(false);
+          // Remove reset param from URL
+          window.history.replaceState({}, '', '/registro');
+          return;
+        }
+        
+        // Check if user is authenticated FIRST
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        // If NOT logged in, ignore localStorage and start fresh at step 1
+        if (!session) {
+          console.log('No session - starting from step 1 (ignoring any stale localStorage)');
+          setCurrentStep(1);
+          setIsAuthChecking(false);
+          return;
+        }
+
+        // User IS logged in - check localStorage for saved progress
         const stored = localStorage.getItem('signup_progress');
         if (stored) {
           try {
@@ -112,22 +140,11 @@ const Signup = () => {
           }
         }
         
-        // Check if user is authenticated
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session) {
-          // Not logged in and no stored progress - show step 1
-          console.log('No session or stored progress, showing step 1');
-          setCurrentStep(1);
-          setIsAuthChecking(false);
-          return;
-        }
-
         console.log('Session found, fetching client data for user:', session.user.id);
 
         // Helper to respect ?step= from URL if it's not ahead of allowed baseStep
-        const urlParams = new URLSearchParams(window.location.search);
-        const requestedStepNum = Number(urlParams.get('step'));
+        const stepParam = urlParams.get('step');
+        const requestedStepNum = stepParam ? Number(stepParam) : null;
         const targetStep = (baseStep: number) => (
           Number.isFinite(requestedStepNum) && requestedStepNum >= 1 && requestedStepNum <= baseStep
             ? requestedStepNum

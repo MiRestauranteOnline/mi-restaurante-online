@@ -63,15 +63,13 @@ export default function AdminDashboardLayout() {
 
       setUser(session.user);
       
-      // Check if user is admin
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .eq('role', 'admin')
-        .single();
+      // Check if user is admin using secure RPC
+      const { data: isAdmin, error: roleError } = await supabase.rpc('has_role', {
+        _user_id: session.user.id,
+        _role: 'admin'
+      });
       
-      const userIsAdmin = !!roleData;
+      const userIsAdmin = !roleError && isAdmin === true;
       setIsAdmin(userIsAdmin);
       
       // If not admin, redirect to client dashboard
@@ -81,13 +79,13 @@ export default function AdminDashboardLayout() {
       }
       
       // Admins can see ALL clients in the system
-      const { data: allClients, error } = await supabase
+      const { data: allClients, error: clientsError } = await supabase
         .from('clients')
         .select('id, restaurant_name, subdomain')
         .order('restaurant_name');
 
-      if (error) {
-        console.error('Error loading clients:', error);
+      if (clientsError) {
+        console.error('Error loading clients:', clientsError);
       } else {
         // Transform to match the expected UserClient format
         const formattedClients = (allClients || []).map(client => ({
@@ -121,6 +119,13 @@ export default function AdminDashboardLayout() {
     if (error) {
       toast.error('Error al cerrar sesión');
     } else {
+      // Clear signup flow state on logout
+      try {
+        localStorage.removeItem('signup_progress');
+        localStorage.removeItem('signup_form_data');
+      } catch (e) {
+        console.warn('Failed to clear signup state:', e);
+      }
       toast.success('Sesión cerrada');
       navigate('/');
     }
