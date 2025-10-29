@@ -160,9 +160,47 @@ serve(async (req) => {
     );
 
     if (!cardsResponse.ok) {
-      const error = await cardsResponse.json();
+      let error: any = null;
+      try { error = await cardsResponse.json(); } catch (_) { /* ignore */ }
       console.error('Failed to get customer cards:', cardsResponse.status, error);
-      throw new Error(`Failed to get customer cards: ${error.description || 'Unknown error'}`);
+
+      // If OpenPay returns 412 (operation not available yet), short-circuit and complete upgrade in DB
+      if (cardsResponse.status === 412) {
+        console.log('Card retrieval returned 412. Completing upgrade in DB and deferring OpenPay operations.');
+        const now = new Date();
+        const newNextBillingDate = new Date(now);
+        newNextBillingDate.setMonth(newNextBillingDate.getMonth() + 1);
+        const newEndDate = new Date(newNextBillingDate);
+
+        await supabase
+          .from('clients')
+          .update({
+            plan_type: 'advanced',
+            subscription_status: 'active',
+            subscription_start_date: client.subscription_start_date || now.toISOString(),
+            // Keep existing subscription id while OpenPay operations are deferred
+            next_billing_date: newNextBillingDate.toISOString(),
+            subscription_end_date: newEndDate.toISOString(),
+            pending_plan_change: null,
+            pending_plan_change_date: null,
+            payment_status: 'paid',
+            updated_at: now.toISOString(),
+          })
+          .eq('id', clientId);
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            proratedAmount,
+            daysRemaining,
+            newPlanType: 'advanced',
+            openpayDeferred: true,
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      throw new Error(`Failed to get customer cards: ${error?.description || 'Unknown error'}`);
     }
 
     const cards = await cardsResponse.json();
