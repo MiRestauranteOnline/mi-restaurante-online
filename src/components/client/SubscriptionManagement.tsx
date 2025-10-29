@@ -121,7 +121,23 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     const currentPlanPrice = getPlanPrice(subscription.plan_type);
     const newPlanPrice = getPlanPrice('advanced');
     const priceDifference = newPlanPrice - currentPlanPrice;
-    const dailyRate = priceDifference / 30;
+    
+    // Calculate actual billing cycle length
+    let totalDaysInCycle = 30; // Default fallback
+    if (subscription.subscription_start_date) {
+      const startDate = new Date(subscription.subscription_start_date);
+      totalDaysInCycle = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    } else {
+      // Estimate: go back one month from end date
+      const estimatedStartDate = new Date(endDate);
+      estimatedStartDate.setMonth(estimatedStartDate.getMonth() - 1);
+      totalDaysInCycle = Math.ceil((endDate.getTime() - estimatedStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    }
+    
+    // Ensure totalDaysInCycle is at least daysRemaining
+    totalDaysInCycle = Math.max(totalDaysInCycle, daysRemaining);
+    
+    const dailyRate = priceDifference / totalDaysInCycle;
     const proratedAmount = dailyRate * daysRemaining;
     
     return {

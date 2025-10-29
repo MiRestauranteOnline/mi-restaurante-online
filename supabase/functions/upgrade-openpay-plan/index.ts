@@ -49,11 +49,26 @@ serve(async (req) => {
     const advancedPrice = client.locked_advanced_price || 497;
     const priceDifference = advancedPrice - basicPrice;
 
-    // Calculate days remaining in current billing cycle
+    // Calculate days remaining and total days in current billing cycle
     const nextBillingDate = new Date(client.next_billing_date || new Date());
     const today = new Date();
     const daysRemaining = Math.max(0, Math.ceil((nextBillingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
-    const totalDaysInCycle = 30; // Monthly billing
+    
+    // Calculate actual billing cycle length
+    // If we have subscription_start_date, use it; otherwise estimate from next_billing_date
+    let totalDaysInCycle = 30; // Default fallback
+    if (client.subscription_start_date) {
+      const startDate = new Date(client.subscription_start_date);
+      totalDaysInCycle = Math.ceil((nextBillingDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    } else {
+      // Estimate: go back one month from next_billing_date
+      const estimatedStartDate = new Date(nextBillingDate);
+      estimatedStartDate.setMonth(estimatedStartDate.getMonth() - 1);
+      totalDaysInCycle = Math.ceil((nextBillingDate.getTime() - estimatedStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    }
+    
+    // Ensure totalDaysInCycle is at least daysRemaining to avoid charging more than the difference
+    totalDaysInCycle = Math.max(totalDaysInCycle, daysRemaining);
     
     // If upgrading with 0-1 days left, charge full advanced price for next month
     // Otherwise, charge prorated difference for remaining days
@@ -61,7 +76,7 @@ serve(async (req) => {
       ? advancedPrice 
       : Math.round((priceDifference * daysRemaining / totalDaysInCycle) * 100) / 100;
 
-    console.log(`Prorated amount: ${proratedAmount} for ${daysRemaining} days remaining (${daysRemaining <= 1 ? 'full month charge' : 'prorated'})`);
+    console.log(`Prorated amount: ${proratedAmount} for ${daysRemaining} days remaining out of ${totalDaysInCycle} total days (${daysRemaining <= 1 ? 'full month charge' : 'prorated'})`);
 
     // Short-circuit in test mode: if using mock/test OpenPay IDs, skip external API calls
     const isTestMode = (client.openpay_customer_id?.startsWith('test_') || client.openpay_subscription_id?.startsWith('test_'));
