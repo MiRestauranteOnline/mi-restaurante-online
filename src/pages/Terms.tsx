@@ -63,6 +63,40 @@ const Terms = () => {
             </CardContent>
           </Card>
 
+          {/* Payment Processing Partner */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Procesamiento de Pagos y Socio Comercial</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                <strong>Procesador de Pagos Autorizado:</strong> Los pagos con tarjeta de crédito y débito son 
+                procesados de manera segura por <strong>OPENPAY PERÚ S.A.</strong> (RUC N° 20607489433), una 
+                empresa de procesamiento de pagos debidamente autorizada y regulada en Perú. OPENPAY actúa como 
+                nuestro proveedor de servicios de pago (PSP) y agregador de pagos.
+              </p>
+              <p>
+                <strong>Términos Adicionales Aplicables:</strong> Al realizar un pago a través de nuestra plataforma, 
+                usted también acepta estar sujeto a los Términos y Condiciones Generales de Uso de los Servicios 
+                de OPENPAY PERÚ, disponibles en{" "}
+                <a href="https://www.openpay.pe/terminos-condiciones" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                  www.openpay.pe/terminos-condiciones
+                </a>
+              </p>
+              <p>
+                <strong>Seguridad de Datos de Tarjetas:</strong> OPENPAY cumple con los estándares PCI-DSS (Payment 
+                Card Industry Data Security Standard) para el manejo seguro de información de tarjetas de crédito 
+                y débito. {businessData.company.name} no almacena, procesa ni tiene acceso a los datos completos 
+                de tu tarjeta (número completo, CVV, o fecha de vencimiento). Esta información es manejada 
+                exclusivamente por OPENPAY de forma encriptada y segura.
+              </p>
+              <p>
+                <strong>Tarjetas Aceptadas:</strong> A través de OPENPAY, aceptamos tarjetas de crédito y débito 
+                Visa, Mastercard, Diners Club y American Express, tanto nacionales como internacionales.
+              </p>
+            </CardContent>
+          </Card>
+
           {/* Pricing and Plans */}
           <Card>
             <CardHeader>
@@ -183,28 +217,61 @@ const Terms = () => {
           {/* Disputes and Chargebacks */}
           <Card>
             <CardHeader>
-              <CardTitle>Disputas y Contracargos</CardTitle>
+              <CardTitle>Disputas, Contracargos y Política de Fraude</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
               <p>
-                <strong>Contacta Primero:</strong> Antes de iniciar una disputa o contracargo con tu banco, 
-                te pedimos que nos contactes primero a soporte@mirestaurante.online. La mayoría de problemas 
-                pueden resolverse rápidamente mediante comunicación directa.
+                <strong>Contacta Primero:</strong> Antes de iniciar una disputa o contracargo (chargeback) con tu 
+                banco, te pedimos encarecidamente que nos contactes primero a soporte@mirestaurante.online. La 
+                mayoría de problemas pueden resolverse rápidamente mediante comunicación directa y de buena fe.
               </p>
               <p>
-                <strong>Evidencia que Mantenemos:</strong> Guardamos registros detallados de todos los servicios 
-                prestados, incluyendo: fecha de entrega del sitio web, logs de actividad en el dashboard, tickets 
-                de soporte atendidos, tiempo de actividad del servidor, capturas de pantalla de entregables, y 
-                emails de comunicación.
+                <strong>Evidencia que Mantenemos:</strong> Guardamos registros detallados y completos de todos los 
+                servicios prestados por un período de 24 meses, incluyendo: fecha de entrega del sitio web, logs 
+                de actividad en el dashboard, tickets de soporte atendidos, tiempo de actividad del servidor, 
+                capturas de pantalla timestamped de entregables, emails de comunicación, confirmaciones de pago, 
+                y registros de acceso al panel de control.
               </p>
               <p>
-                <strong>Consecuencias de Contracargos:</strong> Si se presenta un contracargo sin intentar resolver 
-                primero el problema con nosotros, nos reservamos el derecho de suspender inmediatamente el servicio 
-                y cancelar la cuenta. Los contracargos fraudulentos pueden resultar en acciones legales.
+                <strong>Proceso de Resolución de Disputas:</strong> Si presentas una disputa o contracargo, 
+                cooperaremos completamente con tu banco y el procesador de pagos, proporcionando toda la 
+                documentación necesaria que demuestre la prestación del servicio. El proceso de resolución 
+                puede tomar de 30 a 90 días según las políticas de tu banco.
               </p>
               <p>
-                <strong>Tarifas de Contracargo:</strong> Podemos trasladarte los costos razonables cobrados por 
-                redes/procesadores cuando la disputa se resuelva en nuestra favor.
+                <strong>Suspensión Inmediata por Contracargo:</strong> Si se presenta un contracargo sin intentar 
+                resolver primero el problema con nosotros directamente, nos reservamos el derecho de suspender 
+                inmediatamente el acceso al servicio y tu sitio web hasta que se resuelva la disputa. Esta 
+                suspensión protege a ambas partes durante el proceso de investigación.
+              </p>
+              <p>
+                <strong>Contracargos Fraudulentos:</strong> Los contracargos fraudulentos (solicitar un contracargo 
+                después de haber recibido y usado el servicio satisfactoriamente) constituyen fraude y pueden 
+                resultar en:
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Terminación permanente de la cuenta sin posibilidad de reactivación</li>
+                <li>Inclusión en listas de comercios de alto riesgo compartidas con procesadores de pago</li>
+                <li>Reporte a autoridades competentes y/o centrales de riesgo</li>
+                <li>Inicio de acciones legales civiles y/o penales según corresponda</li>
+                <li>Cobro de honorarios legales y costos asociados</li>
+              </ul>
+              <p>
+                <strong>Tarifas de Contracargo:</strong> Cuando tu banco o procesador de pagos emite un contracargo, 
+                OPENPAY nos cobra una tarifa administrativa (típicamente entre S/50-S/100 por disputa). Si el 
+                contracargo se resuelve en nuestro favor (es decir, se demuestra que el servicio fue prestado 
+                correctamente), nos reservamos el derecho de cobrarte estas tarifas administrativas más cualquier 
+                costo legal razonable incurrido.
+              </p>
+              <p>
+                <strong>Historial de Disputas:</strong> Mantenemos un registro de todas las disputas y contracargos. 
+                Clientes con múltiples disputas pueden ser considerados de alto riesgo y sujetos a términos 
+                especiales o terminación de servicio.
+              </p>
+              <p>
+                <strong>Derecho de Defensa:</strong> Tenemos el derecho absoluto de defendernos contra cualquier 
+                contracargo injustificado proporcionando toda la evidencia documental a tu banco emisor y al 
+                procesador de pagos OPENPAY.
               </p>
             </CardContent>
           </Card>
@@ -282,6 +349,44 @@ const Terms = () => {
               <p>
                 <strong>Cumplimiento de Leyes:</strong> Eres responsable de asegurar que el contenido de tu sitio web 
                 cumpla con todas las leyes aplicables en Perú y cualquier otra jurisdicción relevante.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Prohibited Business Activities */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Actividades Comerciales Prohibidas</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground space-y-4">
+              <p>
+                De conformidad con los requisitos de nuestro procesador de pagos OPENPAY, nuestro servicio 
+                <strong> NO puede ser utilizado</strong> por restaurantes o negocios que ofrezcan, vendan, 
+                distribuyan o estén involucrados en las siguientes actividades:
+              </p>
+              <ul className="list-disc pl-6 space-y-1 text-sm">
+                <li>Contenido para adultos, pornografía o servicios eróticos</li>
+                <li>Bienes o servicios ilegales bajo las leyes de Perú</li>
+                <li>Productos farmacéuticos no autorizados o ilegales</li>
+                <li>Servicios financieros no autorizados (préstamos, captación de ahorros, cambio de cheques)</li>
+                <li>Apuestas, juegos de azar, casinos, loterías o rifas sin autorización</li>
+                <li>Marketing multinivel o esquemas piramidales</li>
+                <li>Productos falsificados, de contrabando o que violen derechos de propiedad intelectual</li>
+                <li>Material que promueva racismo, discriminación o violencia</li>
+                <li>Bienes embargados o de procedencia ilícita</li>
+                <li>Servicios de entregas en efectivo o giros postales</li>
+                <li>Actividades que no impliquen la venta genuina de bienes o servicios</li>
+              </ul>
+              <p>
+                <strong>Verificación y Cumplimiento:</strong> Nos reservamos el derecho de verificar la naturaleza 
+                de tu negocio. Al registrarte, declaras que tu restaurante opera de manera legal y no está involucrado 
+                en ninguna de las actividades prohibidas listadas. El incumplimiento de esta declaración resulta en 
+                la terminación inmediata de la cuenta sin reembolso.
+              </p>
+              <p>
+                <strong>Actividades Restringidas:</strong> Algunas actividades pueden requerir autorización previa 
+                de OPENPAY (por ejemplo, eventos especiales con rifas, venta de alcohol). Contáctanos antes de 
+                promocionar estas actividades en tu sitio web.
               </p>
             </CardContent>
           </Card>
@@ -467,30 +572,68 @@ const Terms = () => {
           {/* Third-Party Providers */}
           <Card>
             <CardHeader>
-              <CardTitle>Proveedores de Servicios de Terceros</CardTitle>
+              <CardTitle>Proveedores de Servicios de Terceros y Seguridad de Pagos</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
               <p>
-                <strong>Procesadores de Pago:</strong> Utilizamos proveedores externos de procesamiento de pagos, 
-                incluyendo Openpay Perú S.A., RUC N° 20607489433, para 
-                manejar de forma segura tus pagos con tarjeta de crédito/débito. La pasarela de pagos es 
-                proporcionada por Openpay Perú S.A., RUC N° 20607489433. Al proporcionar tu información de pago, aceptas también los términos 
-                y condiciones de estos proveedores.
+                <strong>Procesador de Pagos Principal - OPENPAY:</strong> Todos los pagos con tarjeta de crédito 
+                y débito son procesados exclusivamente por <strong>OPENPAY PERÚ S.A.</strong> (RUC N° 20607489433), 
+                ubicada en Av. José Pardo 620, Oficina 502, Miraflores, Lima, Perú. OPENPAY es un procesador de 
+                pagos autorizado y cumple con la certificación PCI-DSS Level 1 (el más alto estándar de seguridad 
+                en la industria de pagos).
               </p>
               <p>
-                <strong>Infraestructura de Hosting:</strong> Utilizamos proveedores de servicios en la nube de 
-                terceros para el alojamiento y almacenamiento de tu sitio web. Estos proveedores cumplen con 
-                estándares internacionales de seguridad.
+                <strong>Protección de Datos de Tarjetas:</strong> Cuando ingresas tu información de tarjeta durante 
+                el proceso de pago, esta información es transmitida directamente a los servidores seguros de OPENPAY 
+                mediante conexión encriptada (SSL/TLS 256-bit). {businessData.company.name} <strong>NUNCA</strong> almacena, 
+                procesa, ni tiene acceso a:
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>El número completo de tu tarjeta (solo vemos los últimos 4 dígitos)</li>
+                <li>El código de seguridad CVV/CVC</li>
+                <li>Los datos de la banda magnética o chip de tu tarjeta</li>
+                <li>Tus credenciales bancarias o contraseñas</li>
+              </ul>
+              <p>
+                <strong>Tokenización:</strong> OPENPAY utiliza tecnología de tokenización para proteger tu información. 
+                Después de tu primer pago, tu tarjeta es convertida en un "token" seguro que permite realizar cobros 
+                recurrentes sin exponer los datos reales de tu tarjeta.
               </p>
               <p>
-                <strong>Servicios de Email:</strong> Utilizamos servicios de terceros para el envío de emails 
-                transaccionales (recibos, notificaciones de servicio).
+                <strong>Cumplimiento Normativo:</strong> OPENPAY cumple con todas las regulaciones aplicables en Perú, 
+                incluyendo las normativas de la Superintendencia de Banca, Seguros y AFP (SBS) y las disposiciones 
+                de Visa, Mastercard, American Express y Diners Club International.
               </p>
               <p>
-                <strong>No Somos Responsables por Terceros:</strong> Si bien seleccionamos cuidadosamente a nuestros 
-                proveedores, no somos responsables por fallas, interrupciones, o problemas de seguridad originados 
-                directamente en los servicios de terceros, aunque haremos nuestros mejores esfuerzos para resolver 
-                cualquier inconveniente.
+                <strong>Responsabilidad de Seguridad:</strong> Mientras OPENPAY maneja el procesamiento seguro de 
+                pagos, tú eres responsable de:
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Mantener seguras tus credenciales de acceso al dashboard</li>
+                <li>No compartir tu usuario y contraseña con terceros</li>
+                <li>Notificarnos inmediatamente si sospechas acceso no autorizado a tu cuenta</li>
+                <li>Mantener actualizada tu información de contacto para recibir alertas de seguridad</li>
+              </ul>
+              <p>
+                <strong>Infraestructura de Hosting:</strong> Utilizamos Cloudflare Pages y otros proveedores de 
+                servicios en la nube de primer nivel para el alojamiento y almacenamiento de tu sitio web. Estos 
+                proveedores cumplen con estándares internacionales de seguridad ISO 27001 y SOC 2.
+              </p>
+              <p>
+                <strong>Servicios de Email:</strong> Utilizamos Resend y otros servicios de terceros autorizados 
+                para el envío de emails transaccionales (recibos, notificaciones de servicio, facturas electrónicas).
+              </p>
+              <p>
+                <strong>Limitación de Responsabilidad por Terceros:</strong> Si bien seleccionamos cuidadosamente 
+                a nuestros proveedores verificando sus certificaciones de seguridad, no somos responsables por 
+                fallas, interrupciones, brechas de seguridad, o problemas técnicos originados directamente en los 
+                servicios de terceros que estén fuera de nuestro control razonable. Sin embargo, haremos nuestros 
+                mejores esfuerzos para resolver cualquier inconveniente y coordinar soluciones con los proveedores.
+              </p>
+              <p>
+                <strong>Cambios de Proveedores:</strong> Nos reservamos el derecho de cambiar o agregar proveedores 
+                de servicios según sea necesario para mejorar nuestro servicio, siempre asegurando que cumplan con 
+                los mismos o superiores estándares de seguridad.
               </p>
             </CardContent>
           </Card>
@@ -498,7 +641,7 @@ const Terms = () => {
           {/* Taxes and Currency */}
           <Card>
             <CardHeader>
-              <CardTitle>Impuestos y Moneda</CardTitle>
+              <CardTitle>Impuestos, Moneda y Tarifas de Transacción</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
               <p>
@@ -510,16 +653,62 @@ const Terms = () => {
                 <strong>Moneda de Cobro:</strong> Los cobros se realizan exclusivamente en Soles Peruanos (PEN). 
                 Si tu tarjeta es de otro país o denominada en otra moneda, tu banco o procesador de pagos aplicará 
                 el tipo de cambio vigente y puede cobrar comisiones por conversión de moneda, las cuales no 
-                controlamos.
+                controlamos ni recibimos.
               </p>
               <p>
-                <strong>Comprobantes de Pago:</strong> Emitimos boletas electrónicas o facturas electrónicas 
-                según corresponda. Las facturas se emiten únicamente si proporcionas tu RUC válido al momento 
-                del registro. Los comprobantes se envían por email después de cada pago.
+                <strong>Impuesto a las Transacciones Financieras (ITF):</strong> De conformidad con la legislación 
+                peruana, las transacciones por montos iguales o superiores a S/1,000 (mil soles) o su equivalente 
+                en dólares están sujetas al Impuesto a las Transacciones Financieras (ITF) del 0.005% del monto 
+                total de la transacción. Este impuesto es aplicado automáticamente por tu banco y/o el procesador 
+                de pagos. {businessData.company.name} no cobra ni retiene este impuesto; es una obligación fiscal 
+                establecida por ley.
+              </p>
+              <p>
+                <strong>Comisiones del Procesador de Pagos:</strong> Las comisiones de procesamiento de pagos 
+                cobradas por OPENPAY a {businessData.company.name} están incluidas en el precio de tu suscripción. 
+                No cobramos tarifas adicionales de procesamiento de tarjetas a nuestros clientes. Sin embargo, 
+                tu banco emisor puede cobrar comisiones propias que están fuera de nuestro control.
+              </p>
+              <p>
+                <strong>Tarifas Bancarias Internacionales:</strong> Si utilizas una tarjeta emitida fuera de Perú, 
+                tu banco puede aplicar:
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Comisión por transacción internacional (típicamente 2-4%)</li>
+                <li>Cargo por conversión de moneda</li>
+                <li>Diferencial de tipo de cambio</li>
+              </ul>
+              <p>
+                Estas tarifas son establecidas por tu banco emisor y aparecerán en tu estado de cuenta bancario. 
+                {businessData.company.name} no recibe ni controla estas comisiones.
+              </p>
+              <p>
+                <strong>Comprobantes de Pago:</strong> Emitimos comprobantes de pago electrónicos (boletas o facturas) 
+                según corresponda y conforme a la normativa de SUNAT. Las facturas electrónicas se emiten únicamente 
+                si proporcionas tu RUC válido y razón social al momento del registro o pago. Los comprobantes se 
+                envían automáticamente a tu email registrado dentro de las 24 horas posteriores a cada pago exitoso.
+              </p>
+              <p>
+                <strong>Solicitud de Facturas:</strong> Para solicitar factura, debes proporcionar:
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>RUC válido (11 dígitos)</li>
+                <li>Razón social completa</li>
+                <li>Dirección fiscal completa</li>
+              </ul>
+              <p>
+                Las facturas no pueden emitirse con fecha retroactiva ni modificarse una vez emitidas, según 
+                normativa de SUNAT. Asegúrate de proporcionar información correcta antes del pago.
               </p>
               <p>
                 <strong>Responsabilidad Fiscal:</strong> Eres responsable de cumplir con todas las obligaciones 
-                fiscales aplicables a tu negocio relacionadas con el uso de nuestro servicio.
+                fiscales aplicables a tu negocio relacionadas con el uso de nuestro servicio, incluyendo la 
+                declaración correcta de gastos deducibles ante SUNAT.
+              </p>
+              <p>
+                <strong>Retención de Impuestos:</strong> Si tu empresa está sujeta a regímenes especiales de 
+                retención de impuestos, debes notificárnoslo. Coordinaremos el procedimiento adecuado según 
+                la normativa aplicable.
               </p>
             </CardContent>
           </Card>
@@ -527,12 +716,12 @@ const Terms = () => {
           {/* Service Modifications */}
           <Card>
             <CardHeader>
-              <CardTitle>Modificaciones al Servicio</CardTitle>
+              <CardTitle>Modificaciones al Servicio y Términos</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
               <p>
-                <strong>Mejoras y Actualizaciones:</strong> Nos reservamos el derecho de mejorar, actualizar, 
-                modificar o agregar nuevas funcionalidades al servicio en cualquier momento. Las mejoras 
+                <strong>Mejoras y Actualizaciones Técnicas:</strong> Nos reservamos el derecho de mejorar, actualizar, 
+                modificar o agregar nuevas funcionalidades técnicas al servicio en cualquier momento. Las mejoras 
                 generalmente se implementan automáticamente y sin costo adicional para beneficiar a todos 
                 los clientes.
               </p>
@@ -542,15 +731,46 @@ const Terms = () => {
                 horas de anticipación sobre mantenimientos programados que afecten la disponibilidad de tu sitio web.
               </p>
               <p>
-                <strong>Cambios en Funcionalidades:</strong> Podemos descontinuar, modificar o reemplazar ciertas 
-                funcionalidades del servicio. Si un cambio afecta significativamente tu uso del servicio, te 
-                notificaremos con anticipación razonable.
+                <strong>Cambios en Funcionalidades No Críticas:</strong> Podemos descontinuar, modificar o reemplazar 
+                ciertas funcionalidades del servicio. Si un cambio afecta significativamente tu uso del servicio, 
+                te notificaremos con anticipación razonable.
               </p>
               <p>
-                <strong>Mantenimiento de Emergencia:</strong> En casos de emergencia de seguridad o problemas 
-                técnicos críticos, podemos realizar mantenimiento sin previo aviso para proteger la integridad 
-                del servicio.
+                <strong>Cambios Relacionados con Pagos y Precios (Aviso de 30 Días):</strong> De conformidad con 
+                los requisitos de nuestro procesador de pagos OPENPAY, cualquier modificación relacionada con:
               </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Precios de suscripción</li>
+                <li>Métodos de pago aceptados</li>
+                <li>Términos de facturación y cobro</li>
+                <li>Políticas de cancelación y reembolso</li>
+                <li>Estructura de comisiones o tarifas</li>
+              </ul>
+              <p>
+                Será notificada a todos los clientes afectados con <strong>al menos 30 (treinta) días calendario 
+                de anticipación</strong> a través de email a tu dirección registrada. El uso continuado del servicio 
+                después de la fecha de entrada en vigencia constituye tu aceptación de los cambios. Si no estás 
+                de acuerdo con los cambios, puedes cancelar tu suscripción antes de que entren en vigencia sin penalidad.
+              </p>
+              <p>
+                <strong>Cambios Inmediatos por Seguridad:</strong> En casos excepcionales relacionados con seguridad, 
+                cumplimiento legal, o prevención de fraude, nos reservamos el derecho de implementar cambios 
+                inmediatamente sin el período de notificación de 30 días, aunque te notificaremos tan pronto 
+                como sea razonablemente posible.
+              </p>
+              <p>
+                <strong>Mantenimiento de Emergencia:</strong> En casos de emergencia técnica, vulnerabilidades de 
+                seguridad críticas o problemas que pongan en riesgo la integridad del servicio, podemos realizar 
+                mantenimiento sin previo aviso para proteger a todos nuestros clientes.
+              </p>
+              <p>
+                <strong>Aceptación de Modificaciones:</strong> Te notificaremos sobre cambios significativos mediante:
+              </p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Email a tu dirección registrada</li>
+                <li>Aviso en tu panel de control</li>
+                <li>Actualización de la fecha "Última actualización" en estos Términos</li>
+              </ul>
             </CardContent>
           </Card>
 
