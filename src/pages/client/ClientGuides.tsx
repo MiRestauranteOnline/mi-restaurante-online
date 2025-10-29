@@ -11756,11 +11756,11 @@ export default function ClientGuides() {
       <div className="min-h-screen flex flex-col">
         <Navigation />
         
-        <main className="flex-1 flex overflow-hidden pt-32">
+        <main className="flex-1 md:flex overflow-hidden pt-20 md:pt-32">
           <GuidesSidebar activeGuide={activeGuide} />
           
           <div className="flex-1 overflow-y-auto">
-            <div className="container mx-auto p-6 space-y-6 max-w-5xl">
+            <div className="container mx-auto px-4 py-6 md:p-6 space-y-6 max-w-5xl">
               {renderGuideContent()}
             </div>
           </div>
@@ -11770,11 +11770,11 @@ export default function ClientGuides() {
       </div>
     </>
   ) : (
-    <div className="flex h-full w-full overflow-hidden">
+    <div className="md:flex h-full w-full overflow-hidden">
       <GuidesSidebar activeGuide={activeGuide} />
       
       <div className="flex-1 overflow-y-auto">
-        <div className="container mx-auto p-6 space-y-6">
+        <div className="container mx-auto px-4 py-6 md:p-6 space-y-6">
           {renderGuideContent()}
         </div>
       </div>
