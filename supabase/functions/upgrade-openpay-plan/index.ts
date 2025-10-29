@@ -124,7 +124,72 @@ serve(async (req) => {
 
     const auth = btoa(`${privateKey}:`);
     const openpayUrl = `${openpayApiBase}/${merchantId}`;
-    // 1. Cancel existing basic subscription
+
+    // 1. Try to resolve a usable card_id BEFORE any mutations
+    let cardId: string | undefined = undefined;
+
+    // 1.a Try reading the current subscription details (often includes the card object)
+    try {
+      const subDetailsResp = await fetch(
+        `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions/${client.openpay_subscription_id}`,
+        {
+          method: 'GET',
+          headers: { 'Authorization': `Basic ${auth}` },
+        }
+      );
+      if (subDetailsResp.ok) {
+        const subDetails = await subDetailsResp.json();
+        cardId = subDetails?.card?.id;
+        if (cardId) {
+          console.log('Using card id from existing subscription:', cardId);
+        }
+      } else {
+        let body: any = null; try { body = await subDetailsResp.json(); } catch (_) {}
+        console.warn('Failed to read current subscription for card id:', subDetailsResp.status, body);
+      }
+    } catch (e) {
+      console.warn('Error fetching current subscription details:', e);
+    }
+
+    // 1.b If still no card id, list customer cards (with retries for timing issues)
+    if (!cardId) {
+      let cardsResponse: Response | null = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        cardsResponse = await fetch(
+          `${openpayUrl}/customers/${client.openpay_customer_id}/cards`,
+          {
+            method: 'GET',
+            headers: { 'Authorization': `Basic ${auth}` },
+          }
+        );
+
+        if (cardsResponse.ok) break;
+
+        let errorBody: any = null;
+        try { errorBody = await cardsResponse.json(); } catch (_) { /* ignore */ }
+        console.warn(`Get cards attempt ${attempt} failed: ${cardsResponse.status}`, errorBody);
+
+        const retryable = [412, 429, 500, 502, 503, 504].includes(cardsResponse.status);
+        if (retryable && attempt < 3) {
+          await new Promise((res) => setTimeout(res, 1500 * attempt));
+          continue;
+        }
+
+        // If we can't list cards, continue without cardId (we will try creating subscription without it)
+        console.warn('Proceeding without card_id; will attempt subscription creation without explicit card.');
+        break;
+      }
+
+      if (cardsResponse && cardsResponse.ok) {
+        const cards = await cardsResponse.json();
+        if (cards && cards.length > 0) {
+          cardId = cards[0].id;
+          console.log('Using first available card id:', cardId);
+        }
+      }
+    }
+
+    // 2. Cancel existing basic subscription
     const cancelResponse = await fetch(
       `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions/${client.openpay_subscription_id}`,
       {
@@ -148,41 +213,8 @@ serve(async (req) => {
       console.log('Subscription is too new to cancel, proceeding with upgrade (OpenPay will handle transition)');
     }
 
-    // 2. Get customer's card (with retries for timing issues)
-    let cardsResponse: Response | null = null;
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      cardsResponse = await fetch(
-        `${openpayUrl}/customers/${client.openpay_customer_id}/cards`,
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Basic ${auth}`,
-          },
-        }
-      );
-
-      if (cardsResponse.ok) break;
-
-      let errorBody: any = null;
-      try { errorBody = await cardsResponse.json(); } catch (_) { /* ignore */ }
-      console.warn(`Get cards attempt ${attempt} failed: ${cardsResponse.status}`, errorBody);
-
-      const retryable = [412, 429, 500, 502, 503, 504].includes(cardsResponse.status);
-      if (retryable && attempt < 3) {
-        await new Promise((res) => setTimeout(res, 1500 * attempt));
-        continue;
-      }
-
-      throw new Error(`Failed to get customer cards: ${errorBody?.description || 'Unknown error'}`);
-    }
-
-    const cards = await cardsResponse!.json();
-    if (!cards || cards.length === 0) {
-      throw new Error('No payment method found');
-    }
-
-    // 3. Process prorated charge (if amount > 0)
-    if (proratedAmount > 0) {
+    // 3. Process prorated charge (only if we have a card available and amount > 0)
+    if (proratedAmount > 0 && cardId) {
       let chargeResponse: Response | null = null;
       for (let attempt = 1; attempt <= 3; attempt++) {
         chargeResponse = await fetch(
@@ -194,7 +226,7 @@ serve(async (req) => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              source_id: cards[0].id,
+              source_id: cardId,
               method: 'card',
               amount: proratedAmount,
               currency: 'PEN',
@@ -222,6 +254,8 @@ serve(async (req) => {
     // 4. Create new advanced subscription (with retries)
     let subscriptionResponse: Response | null = null;
     for (let attempt = 1; attempt <= 3; attempt++) {
+      const subBody: any = { plan_id: planAdvancedId };
+      if (cardId) subBody.card_id = cardId;
       subscriptionResponse = await fetch(
         `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions`,
         {
@@ -230,10 +264,7 @@ serve(async (req) => {
             'Authorization': `Basic ${auth}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            plan_id: planAdvancedId,
-            card_id: cards[0].id,
-          }),
+          body: JSON.stringify(subBody),
         }
       );
 
