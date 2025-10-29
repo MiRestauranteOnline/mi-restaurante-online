@@ -123,7 +123,7 @@ serve(async (req) => {
     }
 
     const auth = btoa(`${privateKey}:`);
-    const openpayUrl = `${openpayApiBase}/${merchantId}`;
+    const openpayUrl = `${openpayApiBase.replace(/\/$/, '')}/${merchantId}`;
 
     // 1. Try to resolve a usable card_id BEFORE any mutations
     let cardId: string | undefined = undefined;
@@ -189,31 +189,57 @@ serve(async (req) => {
       }
     }
 
-    // 2. Cancel existing basic subscription
-    const cancelResponse = await fetch(
-      `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions/${client.openpay_subscription_id}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Basic ${auth}`,
-        },
+    // Defer cancellation of existing basic subscription until after creating the new one
+    // (avoids timing issues in OpenPay sandbox that return 412)
+
+
+    // (Prorated charge moved after subscription creation)
+
+
+    // 4. Create new advanced subscription (with retries)
+    let subscriptionResponse: Response | null = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const subBody: any = { plan_id: planAdvancedId };
+      if (cardId) subBody.card_id = cardId;
+      subscriptionResponse = await fetch(
+        `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(subBody),
+        }
+      );
+
+      if (subscriptionResponse.ok) break;
+
+      let errorBody: any = null;
+      try { errorBody = await subscriptionResponse.json(); } catch (_) { /* ignore */ }
+      console.warn(`Create subscription attempt ${attempt} failed: ${subscriptionResponse.status}`, errorBody);
+      const retryable = [412, 429, 500, 502, 503, 504].includes(subscriptionResponse.status);
+      if (retryable && attempt < 3) {
+        await new Promise((res) => setTimeout(res, 1500 * attempt));
+        continue;
       }
-    );
-
-    // Handle cancellation response
-    // 404: subscription already cancelled (ok to proceed)
-    // 412: subscription too new, can't cancel yet (ok to proceed, OpenPay will handle transition)
-    if (!cancelResponse.ok && cancelResponse.status !== 404 && cancelResponse.status !== 412) {
-      const error = await cancelResponse.json();
-      console.error('OpenPay subscription cancellation failed:', error);
-      throw new Error('Failed to cancel existing subscription');
-    }
-    
-    if (cancelResponse.status === 412) {
-      console.log('Subscription is too new to cancel, proceeding with upgrade (OpenPay will handle transition)');
+      throw new Error(`Failed to create new subscription: ${errorBody?.description || 'Unknown error'}`);
     }
 
-    // 3. Process prorated charge (only if we have a card available and amount > 0)
+    const subscription = await subscriptionResponse!.json();
+
+    // Use card from new subscription if we couldn't resolve earlier
+    if (!cardId) {
+      try {
+        const subCardId = subscription?.card?.id;
+        if (subCardId) {
+          cardId = subCardId;
+          console.log('Using card id from new subscription:', cardId);
+        }
+      } catch (_) { /* ignore */ }
+    }
+
+    // Process prorated charge after subscription creation (safer ordering)
     if (proratedAmount > 0 && cardId) {
       let chargeResponse: Response | null = null;
       for (let attempt = 1; attempt <= 3; attempt++) {
@@ -251,37 +277,26 @@ serve(async (req) => {
       console.log('Prorated charge processed successfully');
     }
 
-    // 4. Create new advanced subscription (with retries)
-    let subscriptionResponse: Response | null = null;
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      const subBody: any = { plan_id: planAdvancedId };
-      if (cardId) subBody.card_id = cardId;
-      subscriptionResponse = await fetch(
-        `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions`,
+    // Now cancel old basic subscription (ignore 404/412)
+    try {
+      const cancelResponse = await fetch(
+        `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions/${client.openpay_subscription_id}`,
         {
-          method: 'POST',
-          headers: {
-            'Authorization': `Basic ${auth}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(subBody),
+          method: 'DELETE',
+          headers: { 'Authorization': `Basic ${auth}` },
         }
       );
-
-      if (subscriptionResponse.ok) break;
-
-      let errorBody: any = null;
-      try { errorBody = await subscriptionResponse.json(); } catch (_) { /* ignore */ }
-      console.warn(`Create subscription attempt ${attempt} failed: ${subscriptionResponse.status}`, errorBody);
-      const retryable = [412, 429, 500, 502, 503, 504].includes(subscriptionResponse.status);
-      if (retryable && attempt < 3) {
-        await new Promise((res) => setTimeout(res, 1500 * attempt));
-        continue;
+      if (!cancelResponse.ok && cancelResponse.status !== 404 && cancelResponse.status !== 412) {
+        let body: any = null; try { body = await cancelResponse.json(); } catch (_) {}
+        console.warn('Cancellation of old subscription failed:', cancelResponse.status, body);
+      } else if (cancelResponse.status === 412) {
+        console.log('Old subscription too new to cancel; OpenPay should handle transition.');
+      } else {
+        console.log('Old subscription cancelled (or already cancelled).');
       }
-      throw new Error(`Failed to create new subscription: ${errorBody?.description || 'Unknown error'}`);
+    } catch (e) {
+      console.warn('Error attempting to cancel old subscription:', e);
     }
-
-    const subscription = await subscriptionResponse!.json();
 
     // 5. Update client in database
     const now = new Date();
