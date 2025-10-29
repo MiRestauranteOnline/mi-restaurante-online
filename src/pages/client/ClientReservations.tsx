@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import ReservationSchedules from "@/components/client/ReservationSchedules";
 import ReservationsList from "@/components/client/ReservationsList";
 import ReservationAvailability from "@/components/client/ReservationAvailability";
@@ -20,24 +21,42 @@ const ClientReservations = () => {
   const { toast } = useToast();
   const [reservationsEmail, setReservationsEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [reservationFormVisible, setReservationFormVisible] = useState(false);
+  const [isLoadingVisibility, setIsLoadingVisibility] = useState(false);
 
   useEffect(() => {
     const fetchClientData = async () => {
       if (!clientId) return;
       
-      const { data, error } = await supabase
+      const { data: clientData, error: clientError } = await supabase
         .from("clients")
         .select("reservations_email")
         .eq("id", clientId)
         .single();
 
-      if (error) {
-        console.error("Error fetching client data:", error);
+      if (clientError) {
+        console.error("Error fetching client data:", clientError);
         return;
       }
 
-      if (data?.reservations_email) {
-        setReservationsEmail(data.reservations_email);
+      if (clientData?.reservations_email) {
+        setReservationsEmail(clientData.reservations_email);
+      }
+
+      // Fetch admin_content for visibility toggle
+      const { data: adminData, error: adminError } = await supabase
+        .from("admin_content")
+        .select("homepage_reservations_section_visible")
+        .eq("client_id", clientId)
+        .single();
+
+      if (adminError) {
+        console.error("Error fetching admin content:", adminError);
+        return;
+      }
+
+      if (adminData) {
+        setReservationFormVisible(adminData.homepage_reservations_section_visible ?? false);
       }
     };
 
@@ -66,6 +85,35 @@ const ClientReservations = () => {
       });
     }
     setIsLoading(false);
+  };
+
+  const handleToggleVisibility = async (checked: boolean) => {
+    if (!clientId) return;
+
+    setIsLoadingVisibility(true);
+    const { error } = await supabase
+      .from("admin_content")
+      .update({ homepage_reservations_section_visible: checked })
+      .eq("client_id", clientId);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar la visibilidad",
+        variant: "destructive",
+      });
+      setIsLoadingVisibility(false);
+      return;
+    }
+
+    setReservationFormVisible(checked);
+    toast({
+      title: "Actualizado",
+      description: checked 
+        ? "El formulario de reservas ahora es visible en tu sitio" 
+        : "El formulario de reservas está oculto en tu sitio",
+    });
+    setIsLoadingVisibility(false);
   };
 
   if (!clientId) {
@@ -154,7 +202,22 @@ const ClientReservations = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="reservation-visibility">Mostrar formulario de reservas</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Una vez configurado, activa este toggle para mostrar el formulario de reservas en tu sitio
+                      </p>
+                    </div>
+                    <Switch
+                      id="reservation-visibility"
+                      checked={reservationFormVisible}
+                      onCheckedChange={handleToggleVisibility}
+                      disabled={isLoadingVisibility}
+                    />
+                  </div>
+
                   <div>
                     <Label htmlFor="reservations_email">Email de Reservas</Label>
                     <Input
