@@ -450,7 +450,7 @@ export default function ClientGuides() {
 
               {/* Step 1: Buy a Domain */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     1
                   </div>
@@ -508,7 +508,7 @@ export default function ClientGuides() {
 
               {/* Step 2: Check Domain Availability */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     2
                   </div>
@@ -529,7 +529,7 @@ export default function ClientGuides() {
 
               {/* Step 3: Configure Nameservers */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     3
                   </div>
@@ -614,7 +614,7 @@ export default function ClientGuides() {
 
               {/* Step 4: Verification */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     4
                   </div>
@@ -5091,7 +5091,7 @@ export default function ClientGuides() {
 
               {/* Step 1: Buy Email Service */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     1
                   </div>
@@ -5133,7 +5133,7 @@ export default function ClientGuides() {
 
               {/* Step 2: Create Email Accounts */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     2
                   </div>
@@ -5163,7 +5163,7 @@ export default function ClientGuides() {
 
               {/* Step 3: Get DNS Records */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     3
                   </div>
@@ -5190,7 +5190,7 @@ export default function ClientGuides() {
 
               {/* Step 4: Verify Configuration */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     4
                   </div>
@@ -5217,7 +5217,7 @@ export default function ClientGuides() {
 
               {/* Step 5: Access Your Email */}
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row items-start gap-3">
                   <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
                     5
                   </div>
