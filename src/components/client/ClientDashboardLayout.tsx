@@ -69,7 +69,49 @@ export default function ClientDashboardLayout() {
 
       setUser(session.user);
       
-      // Fetch user's accessible restaurants (no admin check for client portal)
+      // Check if admin is impersonating
+      const storedImpersonation = localStorage.getItem('admin_impersonation');
+      let impersonationState = null;
+      
+      if (storedImpersonation) {
+        try {
+          impersonationState = JSON.parse(storedImpersonation);
+        } catch (e) {
+          console.error('Failed to parse impersonation state:', e);
+        }
+      }
+
+      // If impersonating, fetch ONLY the impersonated client
+      if (impersonationState?.isImpersonating && impersonationState?.impersonatedClientId) {
+        const { data: impersonatedClient, error: impersonationError } = await supabase
+          .from('clients')
+          .select('id, restaurant_name, subdomain, plan_type, email')
+          .eq('id', impersonationState.impersonatedClientId)
+          .single();
+
+        if (impersonationError || !impersonatedClient) {
+          toastHook({ 
+            title: "Error", 
+            description: 'Error loading impersonated client', 
+            variant: "destructive" 
+          });
+          // Clear invalid impersonation state
+          localStorage.removeItem('admin_impersonation');
+          return;
+        }
+
+        // Format as UserClient structure
+        const formattedClient = {
+          client_id: impersonatedClient.id,
+          clients: impersonatedClient
+        };
+
+        setClients([formattedClient]);
+        setSelectedClientId(impersonatedClient.id);
+        return;
+      }
+
+      // Normal flow: Fetch user's accessible restaurants
       const { data: userClients, error } = await (supabase as any)
         .from('user_clients')
         .select(`

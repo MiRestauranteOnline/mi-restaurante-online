@@ -3,11 +3,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Settings, Eye, Users, Check, ChevronsUpDown } from "lucide-react";
+import { Loader2, Settings, Eye, Users, Check, ChevronsUpDown, UserCog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useAdminImpersonation } from "@/hooks/useAdminImpersonation";
 
 interface Client {
   id: string;
@@ -34,6 +35,7 @@ export default function ClientManagement() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { startImpersonation } = useAdminImpersonation();
 
   useEffect(() => {
     fetchClients();
@@ -85,6 +87,35 @@ export default function ClientManagement() {
       }));
     } catch (error) {
       console.error('Error fetching client stats:', error);
+    }
+  };
+
+  const handleSwitchToUser = async () => {
+    if (!selectedClient) return;
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Error",
+          description: "No active session",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      await startImpersonation(session.user.id, selectedClient.id);
+      navigate(`/client/dashboard/${selectedClient.id}`);
+      toast({
+        title: "Switched to user view",
+        description: `Now viewing as ${selectedClient.restaurant_name}`
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
     }
   };
 
@@ -203,20 +234,30 @@ export default function ClientManagement() {
                 <p className="font-medium">{new Date(selectedClient.created_at).toLocaleDateString()}</p>
               </div>
               
-              <div className="flex gap-2 pt-4">
+              <div className="space-y-2 pt-4">
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => navigate(`/admin/client-settings/${selectedClient.id}`)}
+                    className="flex-1"
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Edit Settings
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.online`, '_blank')}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Site
+                  </Button>
+                </div>
                 <Button 
-                  onClick={() => navigate(`/admin/client-settings/${selectedClient.id}`)}
-                  className="flex-1"
+                  onClick={handleSwitchToUser}
+                  variant="secondary"
+                  className="w-full"
                 >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Edit Settings
-                </Button>
-                <Button 
-                  variant="outline"
-                  onClick={() => window.open(`https://${selectedClient.subdomain}.mirestaurante.online`, '_blank')}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  View Site
+                  <UserCog className="h-4 w-4 mr-2" />
+                  Switch to User
                 </Button>
               </div>
             </CardContent>
