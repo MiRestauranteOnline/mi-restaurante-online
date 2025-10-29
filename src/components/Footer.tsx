@@ -1,6 +1,7 @@
-import { MessageCircle, Mail, MapPin, Facebook, Instagram } from "lucide-react";
+import { MessageCircle, Mail, MapPin, Facebook, Instagram, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 import { businessData } from "@/config/businessData";
+import { Button } from "@/components/ui/button";
 
 export const Footer = () => {
   const handleWhatsAppClick = () => {
@@ -76,6 +77,12 @@ export const Footer = () => {
                 className="block text-muted-foreground hover:text-primary text-sm transition-colors"
               >
                 Contacto
+              </Link>
+              <Link to="/auth" className="block mt-4">
+                <Button variant="outline" size="sm" className="w-full">
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Iniciar Sesión
+                </Button>
               </Link>
             </div>
           </div>
