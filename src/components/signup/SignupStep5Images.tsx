@@ -95,6 +95,15 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
   // Calculate required image count (7 slots for content)
   const REQUIRED_IMAGE_COUNT = 7;
   
+  // Auto-set custom_images_enabled based on image preference
+  useEffect(() => {
+    if (imagePreference === 'custom_only' || imagePreference === 'custom_plus_ai') {
+      form.setValue('custom_images_enabled', true);
+    } else {
+      form.setValue('custom_images_enabled', false);
+    }
+  }, [imagePreference]);
+  
   // Auto-analyze style when 2+ custom images are uploaded
   useEffect(() => {
     const analyzeStyle = async () => {
@@ -378,17 +387,7 @@ export const SignupStep5Images = ({ onComplete, onBack, initialData, isProcessin
                     </div>
                   </div>
 
-                  <FormField
-                    control={form.control}
-                    name="custom_images_enabled"
-                    render={({ field }) => (
-                      <FormItem className="hidden">
-                        <FormControl>
-                          <input type="hidden" {...field} value="true" />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                  {/* custom_images_enabled is auto-managed by useEffect based on image_preference */}
 
                   {customFields.map((field, index) => (
                     <Card key={field.id} className="p-4 border-dashed">
