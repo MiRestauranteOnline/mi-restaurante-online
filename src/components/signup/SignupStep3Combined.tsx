@@ -17,28 +17,28 @@ import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export interface MenuCategory {
-  name: string;
+  name?: string;
 }
 
 export interface MenuItem {
-  name: string;
-  description: string;
-  price: string;
-  category: string;
+  name?: string;
+  description?: string;
+  price?: string;
+  category?: string;
   imageUrl?: string;
 }
 
 export interface Review {
-  reviewerName: string;
-  reviewText: string;
+  reviewerName?: string;
+  reviewText?: string;
   starRating: number;
   reviewDate?: Date;
 }
 
 export interface TeamMember {
-  name: string;
-  title: string;
-  bio: string;
+  name?: string;
+  title?: string;
+  bio?: string;
   imageUrl?: string;
 }
 
@@ -50,28 +50,28 @@ export interface CombinedData {
 }
 
 const menuCategorySchema = z.object({
-  name: z.string().min(1, "El nombre de la categoría es requerido"),
+  name: z.string().optional(),
 });
 
 const menuItemSchema = z.object({
-  name: z.string().min(1, "El nombre del plato es requerido"),
-  description: z.string().min(1, "La descripción es requerida"),
-  price: z.string().min(1, "El precio es requerido"),
-  category: z.string().min(1, "Selecciona una categoría"),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  price: z.string().optional(),
+  category: z.string().optional(),
   imageUrl: z.string().optional(),
 });
 
 const reviewSchema = z.object({
-  reviewerName: z.string().min(1, "El nombre del cliente es requerido"),
-  reviewText: z.string().min(10, "La reseña debe tener al menos 10 caracteres"),
+  reviewerName: z.string().optional(),
+  reviewText: z.string().optional(),
   starRating: z.number().min(1).max(5),
   reviewDate: z.date().optional(),
 });
 
 const teamMemberSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
-  title: z.string().min(1, "El cargo es requerido"),
-  bio: z.string().min(10, "La biografía debe tener al menos 10 caracteres"),
+  name: z.string().optional(),
+  title: z.string().optional(),
+  bio: z.string().optional(),
   imageUrl: z.string().optional(),
 });
 
@@ -153,11 +153,23 @@ export const SignupStep3Combined = ({ onComplete, onBack, onSkip, initialData }:
   const shouldShowRecommendation = remainingItems > 0 || remainingReviews > 0 || remainingTeamMembers > 0;
 
   const onSubmit = (data: CombinedFormData) => {
+    // Filter out incomplete entries
+    const filteredCategories = (data.categories || []).filter(cat => cat.name?.trim());
+    const filteredItems = (data.items || []).filter(item => 
+      item.name?.trim() && item.description?.trim() && item.price?.trim() && item.category?.trim()
+    );
+    const filteredReviews = (data.reviews || []).filter(review => 
+      review.reviewerName?.trim() && review.reviewText?.trim()
+    );
+    const filteredTeamMembers = (data.teamMembers || []).filter(member => 
+      member.name?.trim() && member.title?.trim() && member.bio?.trim()
+    );
+
     onComplete({
-      categories: data.categories || [],
-      items: data.items || [],
-      reviews: data.reviews || [],
-      teamMembers: data.teamMembers || []
+      categories: filteredCategories,
+      items: filteredItems,
+      reviews: filteredReviews,
+      teamMembers: filteredTeamMembers
     });
   };
 
