@@ -313,17 +313,17 @@ export const ProblemSolutionSection = () => {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 <Tabs defaultValue="basic" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 mb-6">
-                    <TabsTrigger value="basic" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+                  <TabsList className="grid w-full grid-cols-2 mb-6 h-auto p-1">
+                    <TabsTrigger value="basic" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground h-auto py-2">
                       <div className="flex flex-col items-center gap-1">
                         <span className="font-bold">{basicPlan?.name || 'Plan Básico'}</span>
                         <Badge className="text-xs bg-accent text-accent-foreground">Más Popular</Badge>
                       </div>
                     </TabsTrigger>
-                    <TabsTrigger value="advanced" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <TabsTrigger value="advanced" className="group data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-auto py-2">
                       <div className="flex flex-col items-center gap-1">
                         <span className="font-bold">{advancedPlan?.name || 'Plan Avanzado'}</span>
-                        <Badge variant="outline" className="text-xs border-primary text-primary">Para Profesionales</Badge>
+                        <Badge variant="outline" className="text-xs border-primary text-primary group-data-[state=active]:border-white group-data-[state=active]:text-white">Para Profesionales</Badge>
                       </div>
                     </TabsTrigger>
                   </TabsList>
