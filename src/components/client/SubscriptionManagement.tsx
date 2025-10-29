@@ -170,7 +170,17 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
 
       await ensureOpenPayLoaded();
       const OpenPay = (window as any).OpenPay;
-      if (OpenPay?.setSandboxMode) OpenPay.setSandboxMode(true);
+      
+      // Initialize OpenPay with merchant credentials (public key is safe for client-side)
+      const merchantId = 'mbucmmsvzm5wyjjebjc6'; // Sandbox merchant ID
+      const publicKey = 'pk_5c30f7cbf0cd4d0c99a1c01129a0d4d3'; // Sandbox public key
+      
+      if (OpenPay) {
+        OpenPay.setId(merchantId);
+        OpenPay.setApiKey(publicKey);
+        OpenPay.setSandboxMode(true);
+      }
+      
       const deviceSessionId = OpenPay?.deviceData?.setup ? OpenPay.deviceData.setup() : undefined;
 
       const { data, error } = await supabase.functions.invoke('upgrade-openpay-plan', {
