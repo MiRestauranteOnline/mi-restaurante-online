@@ -151,24 +151,46 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const handleUpgrade = async () => {
     setActionLoading(true);
     try {
+      // Ensure OpenPay antifraud scripts are loaded and get device_session_id
+      const ensureOpenPayLoaded = () => new Promise<void>((resolve, reject) => {
+        const w = window as any;
+        if (w.OpenPay) return resolve();
+        const script1 = document.createElement('script');
+        script1.src = 'https://js.openpay.mx/openpay.v1.min.js';
+        const script2 = document.createElement('script');
+        script2.src = 'https://js.openpay.mx/openpay-data.v1.min.js';
+        script1.onload = () => {
+          script2.onload = () => resolve();
+          script2.onerror = reject;
+          document.body.appendChild(script2);
+        };
+        script1.onerror = reject;
+        document.body.appendChild(script1);
+      });
+
+      await ensureOpenPayLoaded();
+      const OpenPay = (window as any).OpenPay;
+      if (OpenPay?.setSandboxMode) OpenPay.setSandboxMode(true);
+      const deviceSessionId = OpenPay?.deviceData?.setup ? OpenPay.deviceData.setup() : undefined;
+
       const { data, error } = await supabase.functions.invoke('upgrade-openpay-plan', {
-        body: { clientId }
+        body: { clientId, deviceSessionId }
       });
 
       if (error) throw error;
       if (!data.success) throw new Error(data.error);
 
       toast({
-        title: "Plan actualizado",
+        title: 'Plan actualizado',
         description: `Upgrade exitoso. Cargo prorrateado: S/ ${data.proratedAmount.toFixed(2)} por ${data.daysRemaining} días restantes.`,
       });
 
       fetchSubscriptionData();
     } catch (error: any) {
       toast({
-        title: "Error al actualizar",
-        description: error.message || "No se pudo procesar el upgrade",
-        variant: "destructive"
+        title: 'Error al actualizar',
+        description: error.message || 'No se pudo procesar el upgrade',
+        variant: 'destructive'
       });
     } finally {
       setActionLoading(false);

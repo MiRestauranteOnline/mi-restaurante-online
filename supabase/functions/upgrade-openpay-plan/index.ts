@@ -21,7 +21,10 @@ serve(async (req) => {
     const planAdvancedId = Deno.env.get('OPENPAY_PLAN_ADVANCED_ID_SANDBOX')!;
     const openpayApiBase = Deno.env.get('OPENPAY_API_BASE')!;
 
-    const { clientId } = await req.json();
+    const body = await req.json();
+    const clientId = body.clientId;
+    const deviceSessionId: string | undefined = body.deviceSessionId || body.device_session_id;
+
 
     console.log(`Processing upgrade for client:`, clientId);
 
@@ -55,7 +58,6 @@ serve(async (req) => {
     const daysRemaining = Math.max(0, Math.ceil((nextBillingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
     
     // Calculate actual billing cycle length
-    // If we have subscription_start_date, use it; otherwise estimate from next_billing_date
     let totalDaysInCycle = 30; // Default fallback
     if (client.subscription_start_date) {
       const startDate = new Date(client.subscription_start_date);
@@ -70,13 +72,10 @@ serve(async (req) => {
     // Ensure totalDaysInCycle is at least daysRemaining to avoid charging more than the difference
     totalDaysInCycle = Math.max(totalDaysInCycle, daysRemaining);
     
-    // If upgrading with 0-1 days left, charge full advanced price for next month
-    // Otherwise, charge prorated difference for remaining days
-    const proratedAmount = daysRemaining <= 1 
-      ? advancedPrice 
-      : Math.round((priceDifference * daysRemaining / totalDaysInCycle) * 100) / 100;
+    // Always compute prorated difference for remaining days
+    const proratedAmount = Math.max(0, Math.round((priceDifference * daysRemaining / totalDaysInCycle) * 100) / 100);
 
-    console.log(`Prorated amount: ${proratedAmount} for ${daysRemaining} days remaining out of ${totalDaysInCycle} total days (${daysRemaining <= 1 ? 'full month charge' : 'prorated'})`);
+    console.log(`Prorated amount: ${proratedAmount} for ${daysRemaining} days remaining out of ${totalDaysInCycle} total days (using manual proration + trial on new subscription)`);
 
     // Short-circuit in test mode: if using mock/test OpenPay IDs, skip external API calls
     const isTestMode = (client.openpay_customer_id?.startsWith('test_') || client.openpay_subscription_id?.startsWith('test_'));
@@ -199,7 +198,8 @@ serve(async (req) => {
     // 4. Create new advanced subscription (with retries)
     let subscriptionResponse: Response | null = null;
     for (let attempt = 1; attempt <= 3; attempt++) {
-      const subBody: any = { plan_id: planAdvancedId };
+      const trialEndDateStr = nextBillingDate.toISOString().slice(0, 10); // YYYY-MM-DD
+      const subBody: any = { plan_id: planAdvancedId, trial_end_date: trialEndDateStr };
       if (cardId) subBody.card_id = cardId;
       subscriptionResponse = await fetch(
         `${openpayUrl}/customers/${client.openpay_customer_id}/subscriptions`,
@@ -240,7 +240,30 @@ serve(async (req) => {
     }
 
     // Process prorated charge after subscription creation (safer ordering)
-    if (proratedAmount > 0 && cardId) {
+    if (proratedAmount > 0) {
+      if (!deviceSessionId) {
+        console.warn('Missing device_session_id for manual prorated charge');
+        return new Response(
+          JSON.stringify({ success: false, error: 'device_session_id_required' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      if (!cardId) {
+        // Try to pick up card from created subscription if not resolved earlier
+        try {
+          const subCardId = subscription?.card?.id;
+          if (subCardId) {
+            cardId = subCardId;
+            console.log('Using card id from new subscription (post-create):', cardId);
+          }
+        } catch (_) { /* ignore */ }
+      }
+
+      if (!cardId) {
+        throw new Error('No card available to process prorated charge');
+      }
+
       let chargeResponse: Response | null = null;
       for (let attempt = 1; attempt <= 3; attempt++) {
         chargeResponse = await fetch(
@@ -257,6 +280,7 @@ serve(async (req) => {
               amount: proratedAmount,
               currency: 'PEN',
               description: `Upgrade prorrateado a Plan Avanzado (${daysRemaining} días)`,
+              device_session_id: deviceSessionId,
             }),
           }
         );
@@ -300,9 +324,6 @@ serve(async (req) => {
 
     // 5. Update client in database
     const now = new Date();
-    const newNextBillingDate = new Date(now);
-    newNextBillingDate.setMonth(newNextBillingDate.getMonth() + 1);
-    const newEndDate = new Date(newNextBillingDate);
 
     await supabase
       .from('clients')
@@ -311,8 +332,8 @@ serve(async (req) => {
         subscription_status: 'active',
         subscription_start_date: client.subscription_start_date || now.toISOString(),
         openpay_subscription_id: subscription.id,
-        next_billing_date: newNextBillingDate.toISOString(),
-        subscription_end_date: newEndDate.toISOString(),
+        next_billing_date: nextBillingDate.toISOString(),
+        subscription_end_date: client.subscription_end_date || nextBillingDate.toISOString(),
         pending_plan_change: null,
         pending_plan_change_date: null,
         payment_status: 'paid',
