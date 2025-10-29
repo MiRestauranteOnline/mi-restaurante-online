@@ -292,6 +292,27 @@ export default function ClientGuides() {
   const [copiedNS1, setCopiedNS1] = useState(false);
   const [copiedNS2, setCopiedNS2] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
+  const [plans, setPlans] = useState<any[]>([]);
+
+  // Fetch subscription plans
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('subscription_plans')
+          .select('plan_key, name, monthly_price, features, currency')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
+
+        if (error) throw error;
+        setPlans(data || []);
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+      }
+    };
+
+    fetchPlans();
+  }, []);
   
   // Check if we're on the public route
   const isPublicRoute = location.pathname.startsWith('/guias');
@@ -10203,41 +10224,33 @@ export default function ClientGuides() {
                 </p>
                 
                 <div className="space-y-4">
-                  {/* Basic Plan */}
-                  <div className="p-4 border-2 border-primary/30 rounded-lg bg-primary/5">
-                    <div className="flex flex-col sm:flex-row items-start gap-3 mb-3">
-                      <Badge className="bg-blue-600">Plan Básico</Badge>
-                      <div className="flex-1">
-                        <p className="text-2xl font-bold">S/ 297<span className="text-base font-normal text-muted-foreground">/mes</span></p>
+                  {plans.map((plan, index) => (
+                    <div 
+                      key={plan.plan_key} 
+                      className={`p-4 border-2 rounded-lg ${
+                        index === 0 
+                          ? 'border-primary/30 bg-primary/5' 
+                          : 'border-purple-300 bg-purple-50/50 dark:bg-purple-950/20'
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row items-start gap-3 mb-3">
+                        <Badge className={index === 0 ? 'bg-blue-600' : 'bg-purple-600'}>
+                          {plan.name}
+                        </Badge>
+                        <div className="flex-1">
+                          <p className="text-2xl font-bold">
+                            {plan.currency === 'USD' ? '$' : 'S/'} {plan.monthly_price}
+                            <span className="text-base font-normal text-muted-foreground">/mes</span>
+                          </p>
+                        </div>
                       </div>
+                      <ul className="space-y-2 text-sm text-muted-foreground ml-4">
+                        {plan.features.map((feature: string, idx: number) => (
+                          <li key={idx}>✓ {feature}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="space-y-2 text-sm text-muted-foreground ml-4">
-                      <li>✓ Sitio profesional en 72 horas</li>
-                      <li>✓ Hosting + SSL incluido</li>
-                      <li>✓ SEO básico optimizado</li>
-                      <li>✓ Integración Google Maps y Google My Business</li>
-                      <li>✓ Cambios auto-gestionables (sistema de tickets)</li>
-                      <li>✓ Soporte por WhatsApp</li>
-                      <li className="font-semibold">✓ Visitas y ancho de banda ilimitados</li>
-                    </ul>
-                  </div>
-
-                  {/* Advanced Plan */}
-                  <div className="p-4 border-2 border-purple-300 rounded-lg bg-purple-50/50 dark:bg-purple-950/20">
-                    <div className="flex flex-col sm:flex-row items-start gap-3 mb-3">
-                      <Badge className="bg-purple-600">Plan Avanzado</Badge>
-                      <div className="flex-1">
-                        <p className="text-2xl font-bold">S/ 497<span className="text-base font-normal text-muted-foreground">/mes</span></p>
-                      </div>
-                    </div>
-                    <ul className="space-y-2 text-sm text-muted-foreground ml-4">
-                      <li>✓ Todo lo del Plan Básico</li>
-                      <li>✓ 1 hora/mes de cambios extendidos</li>
-                      <li>✓ Cambios de textos e imágenes</li>
-                      <li>✓ Nuevas secciones personalizadas</li>
-                      <li>✓ Soporte prioritario</li>
-                    </ul>
-                  </div>
+                  ))}
                 </div>
               </div>
 

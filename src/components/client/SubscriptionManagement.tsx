@@ -31,6 +31,14 @@ interface PlanPrice {
   currency: string;
 }
 
+interface PlanData {
+  plan_key: string;
+  name: string;
+  monthly_price: number;
+  features: string[];
+  currency: string;
+}
+
 interface SubscriptionManagementProps {
   clientId: string;
 }
@@ -40,6 +48,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const [actionLoading, setActionLoading] = useState(false);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [planPrices, setPlanPrices] = useState<Record<string, number>>({});
+  const [plans, setPlans] = useState<PlanData[]>([]);
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -52,7 +61,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     try {
       const { data, error } = await supabase
         .from('subscription_plans')
-        .select('plan_key, monthly_price')
+        .select('plan_key, monthly_price, name, features, currency')
         .eq('is_active', true);
 
       if (error) throw error;
@@ -62,6 +71,7 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
         prices[plan.plan_key] = plan.monthly_price;
       });
       setPlanPrices(prices);
+      setPlans(data || []);
     } catch (error: any) {
       console.error('Error fetching plan prices:', error);
     }
@@ -444,99 +454,46 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
 
       {/* Plan Features Comparison */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Basic Plan */}
-        <Card className={subscription.plan_type === 'basic' ? 'ring-2 ring-primary' : ''}>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Plan Básico
-              {subscription.plan_type === 'basic' && (
-                <Badge>Plan Actual</Badge>
-              )}
-            </CardTitle>
-            <CardDescription>S/ {getPlanPrice('basic')}/mes</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <ul className="space-y-1 text-sm">
-              <li>• Sitio profesional en 72 horas</li>
-              <li>• Hosting + SSL incluido</li>
-              <li>• SEO básico optimizado</li>
-              <li>• Integración Google Maps y Google My Business</li>
-              <li>• Cambios auto-gestionables (PIN)</li>
-              <li>• Soporte por WhatsApp</li>
-              <li className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3 text-green-600 inline" />
-                <span className="font-semibold">Visitas y ancho de banda ilimitados</span>
-              </li>
-            </ul>
-            {subscription.plan_type === 'advanced' && canChangePlan(subscription.subscription_status) && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button className="w-full mt-4" variant="outline" disabled={actionLoading}>
-                    Cambiar a Básico
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>¿Cambiar a Plan Básico?</AlertDialogTitle>
-                    <AlertDialogDescription className="space-y-3">
-                      <p>El cambio se aplicará al final de tu periodo de facturación actual.</p>
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                        <p className="font-semibold text-yellow-900 mb-2">Perderás acceso a:</p>
-                        <ul className="text-sm text-yellow-800 space-y-1">
-                          <li>• Google Analytics tracking</li>
-                          <li>• Panel de Analytics avanzado</li>
-                          <li>• Soporte por WhatsApp directo</li>
-                          <li>• Soporte prioritario</li>
-                          <li>• 1 hora mensual de asistencia profesional para cambios</li>
-                        </ul>
-                      </div>
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDowngrade} disabled={actionLoading}>
-                      Confirmar Cambio
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Advanced Plan */}
-        <Card className={subscription.plan_type === 'advanced' ? 'ring-2 ring-primary' : ''}>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Plan Avanzado
-              {subscription.plan_type === 'advanced' && (
-                <Badge>Plan Actual</Badge>
-              )}
-            </CardTitle>
-            <CardDescription>S/ {getPlanPrice('advanced')}/mes</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <ul className="space-y-1 text-sm">
-              <li>• Todo lo del Plan Básico</li>
-              <li>• 1 hora/mes de cambios extendidos</li>
-              <li>• Cambios de textos e imágenes</li>
-              <li>• Nuevas secciones personalizadas</li>
-              <li>• Soporte prioritario</li>
-            </ul>
-            {subscription.plan_type === 'basic' && canChangePlan(subscription.subscription_status) && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button className="w-full mt-4" disabled={actionLoading}>
-                    <ArrowUp className="h-4 w-4 mr-2" />
-                    Actualizar a Avanzado
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>¿Actualizar a Plan Avanzado?</AlertDialogTitle>
-                    <AlertDialogDescription className="space-y-3">
-                      {(() => {
-                        const prorated = calculateProratedAmount();
+        {plans.map((plan) => {
+          const isCurrentPlan = subscription.plan_type === plan.plan_key;
+          const canUpgrade = subscription.plan_type === 'basic' && plan.plan_key === 'advanced' && canChangePlan(subscription.subscription_status);
+          const canDowngrade = subscription.plan_type === 'advanced' && plan.plan_key === 'basic' && canChangePlan(subscription.subscription_status);
+          const advancedPlan = plans.find(p => p.plan_key === 'advanced');
+          
+          return (
+            <Card key={plan.plan_key} className={isCurrentPlan ? 'ring-2 ring-primary' : ''}>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  {plan.name}
+                  {isCurrentPlan && (
+                    <Badge>Plan Actual</Badge>
+                  )}
+                </CardTitle>
+                <CardDescription>{plan.currency === 'USD' ? '$' : 'S/'} {plan.monthly_price}/mes</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <ul className="space-y-1 text-sm">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                {canUpgrade && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="w-full mt-4" disabled={actionLoading}>
+                        <ArrowUp className="h-4 w-4 mr-2" />
+                        Actualizar a Avanzado
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>¿Actualizar a Plan Avanzado?</AlertDialogTitle>
+                        <AlertDialogDescription className="space-y-3">
+                          {(() => {
+                            const prorated = calculateProratedAmount();
                         return prorated ? (
                           <>
                             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -603,8 +560,42 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                 </AlertDialogContent>
               </AlertDialog>
             )}
-          </CardContent>
-        </Card>
+            
+            {canDowngrade && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="w-full mt-4" variant="outline" disabled={actionLoading}>
+                    Cambiar a Básico
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Cambiar a Plan Básico?</AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-3">
+                      <p>El cambio se aplicará al final de tu periodo de facturación actual.</p>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                        <p className="font-semibold text-yellow-900 mb-2">Perderás acceso a:</p>
+                        <ul className="text-sm text-yellow-800 space-y-1">
+                          {advancedPlan?.features.filter(f => !plans.find(p => p.plan_key === 'basic')?.features.includes(f)).map((feature, idx) => (
+                            <li key={idx}>• {feature}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDowngrade} disabled={actionLoading}>
+                      Confirmar Cambio
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Payment Failed Actions */}
