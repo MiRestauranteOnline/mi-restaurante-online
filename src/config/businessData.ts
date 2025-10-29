@@ -22,6 +22,21 @@ export const businessData = {
     }
   },
   
+  socialMedia: {
+    facebook: {
+      url: "https://facebook.com/mirestauranteonlineoficial",
+      handle: "@mirestauranteonlineoficial"
+    },
+    instagram: {
+      url: "https://instagram.com/mirestauranteonline",
+      handle: "@mirestauranteonline"
+    },
+    tiktok: {
+      url: "https://tiktok.com/@mirestaurante.online",
+      handle: "@mirestaurante.online"
+    }
+  },
+  
   address: {
     full: "Jiron El Cortijo 567, 15023, Santiago de Surco, Lima, Peru",
     street: "Jiron El Cortijo 567",
