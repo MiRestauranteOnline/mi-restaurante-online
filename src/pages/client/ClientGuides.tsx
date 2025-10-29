@@ -8945,8 +8945,8 @@ export default function ClientGuides() {
                       <li>Ingresa tu dominio (ej: <code className="bg-muted px-2 py-0.5 rounded text-xs">turestaurante.com</code>)</li>
                       <li>Google te mostrará un <strong>registro TXT</strong> que se ve así:</li>
                     </ol>
-                    <div className="p-3 bg-muted rounded mt-3">
-                      <code className="text-xs">google-site-verification=ABC123xyz789_EJEMPLO-codigo</code>
+                    <div className="p-3 bg-muted rounded mt-3 overflow-x-auto">
+                      <code className="text-xs break-all">google-site-verification=ABC123xyz789_EJEMPLO-codigo</code>
                     </div>
                     <p className="text-sm text-muted-foreground mt-2">
                       <strong>Copia este código completo</strong> (incluye todo después del =)
@@ -8966,7 +8966,7 @@ export default function ClientGuides() {
                         <p className="mb-1">Necesito verificar mi dominio en Google Search Console.</p>
                         <p className="mb-1">Mi dominio es: <strong>turestaurante.com</strong></p>
                         <p className="mb-1">El registro TXT que Google me dio es:</p>
-                        <p className="font-mono text-xs bg-background px-2 py-1 rounded mb-1">google-site-verification=ABC123xyz789_EJEMPLO-codigo</p>
+                        <p className="font-mono text-xs bg-background px-2 py-1 rounded mb-1 break-all">google-site-verification=ABC123xyz789_EJEMPLO-codigo</p>
                         <p>Por favor, añadan este registro DNS TXT a mi dominio.</p>
                         <p className="mt-2">Gracias!</p>
                       </div>
@@ -9025,10 +9025,10 @@ export default function ClientGuides() {
                           <li>Elige el método <strong>"Etiqueta HTML"</strong></li>
                           <li>Copia el código que aparece en <code className="bg-muted px-1 py-0.5 rounded text-xs">content="..."</code></li>
                         </ol>
-                        <div className="p-3 bg-muted rounded mt-2">
+                        <div className="p-3 bg-muted rounded mt-2 overflow-x-auto">
                           <p className="text-xs mb-1">Ejemplo de código de Google:</p>
-                          <code className="text-xs">&lt;meta name="google-site-verification" content="<strong className="text-primary">ABC123xyz_EJEMPLO</strong>" /&gt;</code>
-                          <p className="text-xs mt-2"><strong>Solo copia:</strong> <code className="bg-background px-1 py-0.5 rounded">ABC123xyz_EJEMPLO</code></p>
+                          <code className="text-xs break-all">&lt;meta name="google-site-verification" content="<strong className="text-primary">ABC123xyz_EJEMPLO</strong>" /&gt;</code>
+                          <p className="text-xs mt-2"><strong>Solo copia:</strong> <code className="bg-background px-1 py-0.5 rounded break-all">ABC123xyz_EJEMPLO</code></p>
                         </div>
                       </div>
 
