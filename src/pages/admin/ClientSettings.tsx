@@ -708,7 +708,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   const setSelectedClientId = outletCtx?.setSelectedClientId;
   const navigate = useNavigate();
   const { t } = useDashboardLanguage();
-  const { startImpersonation } = useAdminImpersonation();
+  const { startImpersonation, endImpersonation, isImpersonating } = useAdminImpersonation();
   const [currentUser, setCurrentUser] = useState<any>(null);
   
   // Prefer route param when present, else fall back to admin context selection
@@ -1795,16 +1795,27 @@ const [faqForm, setFaqForm] = useState({
     if (!currentUser || !effectiveClientId) return;
     
     try {
-      await startImpersonation(currentUser.id, effectiveClientId);
-      navigate(`/client/dashboard/${effectiveClientId}`);
-      toast({ 
-        title: 'Switched to client view', 
-        description: 'You are now viewing as the client' 
-      });
+      // Check if already impersonating - if so, switch back to admin
+      if (isImpersonating) {
+        endImpersonation();
+        navigate('/admin/client-management');
+        toast({ 
+          title: 'Switched back to admin', 
+          description: 'You are now viewing as admin' 
+        });
+      } else {
+        // Not impersonating - switch to client view
+        await startImpersonation(currentUser.id, effectiveClientId);
+        navigate(`/client/dashboard/${effectiveClientId}`);
+        toast({ 
+          title: 'Switched to client view', 
+          description: 'You are now viewing as the client' 
+        });
+      }
     } catch (error: any) {
       toast({ 
         title: 'Error', 
-        description: error.message || 'Failed to switch to client view',
+        description: error.message || 'Failed to switch view',
         variant: 'destructive'
       });
     }
