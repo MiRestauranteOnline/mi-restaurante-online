@@ -375,12 +375,16 @@ export const SignupStep1 = ({ onComplete, initialData, isProcessingPayment = fal
                 <FormLabel>Subdominio</FormLabel>
                 <FormControl>
                   <div className="flex">
-                    <Input 
+                      <Input 
                       placeholder="mi-restaurante"
                       {...field}
                       onChange={(e) => {
-                        const newValue = e.target.value;
-                        field.onChange(e);
+                        // Convert spaces to dashes automatically
+                        const cleanedValue = e.target.value.replace(/\s+/g, '-');
+                        const newValue = cleanedValue;
+                        
+                        // Update field with cleaned value
+                        field.onChange(cleanedValue);
                         
                         console.log('Subdomain input changed to:', newValue);
                         

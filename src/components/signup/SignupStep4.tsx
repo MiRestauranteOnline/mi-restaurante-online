@@ -32,7 +32,7 @@ const reviewSchema = z.object({
 });
 
 const reviewsSchema = z.object({
-  reviews: z.array(reviewSchema).min(1, "Agrega al menos una reseña"),
+  reviews: z.array(reviewSchema),
 });
 
 type ReviewsFormData = z.infer<typeof reviewsSchema>;
@@ -57,7 +57,11 @@ export const SignupStep4 = ({ onComplete, onBack, initialData }: SignupStep4Prop
   });
 
   const onSubmit = (data: ReviewsFormData) => {
-    onComplete(data);
+    // Filter out empty reviews (reviews with empty name or text)
+    const validReviews = data.reviews.filter(
+      review => review.reviewerName.trim() && review.reviewText.trim()
+    );
+    onComplete({ reviews: validReviews });
   };
 
   const handleSkip = () => {
@@ -259,26 +263,17 @@ export const SignupStep4 = ({ onComplete, onBack, initialData }: SignupStep4Prop
             </CardContent>
           </Card>
 
-          {/* Skip Option */}
+          {/* Recommendation Notice */}
           <Card className="border-yellow-200 bg-yellow-50">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
-                <div className="text-yellow-600 text-sm">⚠️</div>
+                <div className="text-yellow-600 text-sm">💡</div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-yellow-800">¿Omitir reseñas?</p>
+                  <p className="text-sm font-medium text-yellow-800">Recomendación</p>
                   <p className="text-xs text-yellow-700 mt-1">
-                    Si omites este paso, tu sitio se publicará sin reseñas. 
-                    No te preocupes, puedes agregarlas fácilmente después a través de tu panel de control.
+                    Las reseñas ayudan a generar confianza en tus visitantes. 
+                    Te recomendamos agregar al menos 3-5 reseñas, pero puedes continuar con las que tengas o agregarlas después a través de tu panel de control.
                   </p>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleSkip}
-                    className="mt-2 text-yellow-700 border-yellow-300 hover:bg-yellow-100"
-                  >
-                    Omitir por ahora
-                  </Button>
                 </div>
               </div>
             </CardContent>
