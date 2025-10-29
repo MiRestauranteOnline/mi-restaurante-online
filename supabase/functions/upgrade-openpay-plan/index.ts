@@ -160,7 +160,9 @@ serve(async (req) => {
     );
 
     if (!cardsResponse.ok) {
-      throw new Error('Failed to get customer cards');
+      const error = await cardsResponse.json();
+      console.error('Failed to get customer cards:', cardsResponse.status, error);
+      throw new Error(`Failed to get customer cards: ${error.description || 'Unknown error'}`);
     }
 
     const cards = await cardsResponse.json();
