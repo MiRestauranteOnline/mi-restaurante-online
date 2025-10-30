@@ -7020,11 +7020,41 @@ setReviewForm({
                   <Switch
                     id="site_live"
                     checked={!!formData.site_live_at}
-                    onCheckedChange={(checked) => {
+                    onCheckedChange={async (checked) => {
+                      const wasNotLive = !formData.site_live_at;
                       setFormData({
                         ...formData,
                         site_live_at: checked ? new Date().toISOString() : null
                       });
+                      
+                      // If toggling ON and site wasn't live before, send notification after save
+                      if (checked && wasNotLive) {
+                        try {
+                          // Save first
+                          await handleSave();
+                          
+                          // Then send notification
+                          const { error: emailError } = await supabase.functions.invoke('send-site-live-notification', {
+                            body: { clientId: effectiveClientId }
+                          });
+                          
+                          if (emailError) {
+                            console.error('Error sending site-live notification:', emailError);
+                            toast({
+                              title: 'Advertencia',
+                              description: 'El sitio fue marcado como activo pero el email de notificación falló',
+                              variant: 'default'
+                            });
+                          } else {
+                            toast({
+                              title: 'Email enviado',
+                              description: 'Se envió la notificación de sitio activo al cliente',
+                            });
+                          }
+                        } catch (error) {
+                          console.error('Error in site live workflow:', error);
+                        }
+                      }
                     }}
                   />
                 </div>

@@ -65,6 +65,21 @@ serve(async (req) => {
         return { success: false, client_id: client.id, error: updateError };
       }
 
+      // Send subscription ended email
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-subscription-ended', {
+          body: { clientId: client.id }
+        });
+        
+        if (emailError) {
+          console.error(`Failed to send subscription ended email for ${client.subdomain}:`, emailError);
+        } else {
+          console.log(`✅ Subscription ended email sent for ${client.subdomain}`);
+        }
+      } catch (emailError) {
+        console.error(`Error invoking send-subscription-ended for ${client.subdomain}:`, emailError);
+      }
+
       console.log(`✅ Successfully deactivated client ${client.subdomain}`);
       return { success: true, client_id: client.id };
     });

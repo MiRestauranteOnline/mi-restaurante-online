@@ -73,11 +73,12 @@ serve(async (req) => {
     }
 
     // Update client in database
-    // Note: is_deactivated stays false until subscription_end_date is reached
+    // Set cancelled_at timestamp and keep site active until subscription_end_date
     await supabase
       .from('clients')
       .update({
         subscription_status: 'cancelled',
+        cancelled_at: new Date().toISOString(),
         cancellation_date: new Date().toISOString(),
         cancellation_reason: reason || 'user_request',
         subscription_auto_recurring: false,
@@ -86,6 +87,21 @@ serve(async (req) => {
       .eq('id', clientId);
 
     console.log('Subscription cancelled successfully');
+
+    // Send cancellation initiated email
+    try {
+      const { error: emailError } = await supabase.functions.invoke('send-cancellation-initiated', {
+        body: { clientId }
+      });
+      
+      if (emailError) {
+        console.error('Error sending cancellation initiated email:', emailError);
+      } else {
+        console.log('Cancellation initiated email sent successfully');
+      }
+    } catch (emailError) {
+      console.error('Error invoking send-cancellation-initiated:', emailError);
+    }
 
     // Send cancellation confirmation email
     try {

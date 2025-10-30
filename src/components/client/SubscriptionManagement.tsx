@@ -258,10 +258,9 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const handleReactivate = async () => {
     setActionLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('pause-openpay-subscription', {
+      const { data, error } = await supabase.functions.invoke('reactivate-subscription', {
         body: { 
-          clientId,
-          action: 'resume'
+          clientId
         }
       });
 
@@ -269,8 +268,8 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
       if (!data.success) throw new Error(data.error);
 
       toast({
-        title: "Suscripción reactivada",
-        description: "Tu suscripción ha sido reactivada exitosamente.",
+        title: "¡Suscripción reactivada!",
+        description: "Tu sitio está nuevamente en línea. Bienvenido de vuelta.",
       });
 
       fetchSubscriptionData();
