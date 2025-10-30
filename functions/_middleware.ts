@@ -1,3 +1,31 @@
+// Helper to detect if request is from a search engine crawler
+function isCrawler(userAgent: string): boolean {
+  const crawlerPatterns = [
+    'googlebot',
+    'bingbot',
+    'slurp',
+    'duckduckbot',
+    'baiduspider',
+    'yandexbot',
+    'facebookexternalhit',
+    'twitterbot',
+    'rogerbot',
+    'linkedinbot',
+    'embedly',
+    'quora link preview',
+    'showyoubot',
+    'outbrain',
+    'pinterest',
+    'slackbot',
+    'vkShare',
+    'W3C_Validator',
+    'whatsapp'
+  ];
+  
+  const ua = userAgent.toLowerCase();
+  return crawlerPatterns.some(pattern => ua.includes(pattern));
+}
+
 // Middleware to handle SEO prerendering for all HTML requests
 export const onRequest: PagesFunction = async (ctx) => {
   const { request, next } = ctx;
@@ -12,9 +40,6 @@ export const onRequest: PagesFunction = async (ctx) => {
       // If it's HTML, inject critical SEO content
       if (response.headers.get('content-type')?.includes('text/html')) {
         let html = await response.text();
-        
-        // Inject SEO content based on route
-        const seoContent = await getSEOContent(url.pathname, ctx.env);
 
         // Build basic, route-specific meta (ensures unique tags per URL even without JS)
         const path = url.pathname;
@@ -56,15 +81,21 @@ export const onRequest: PagesFunction = async (ctx) => {
           .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${pageDescription}">`)
           .replace(/<meta name="twitter:description" content="[^"]*">/, `<meta name="twitter:description" content="${pageDescription}">`);
         
-        // Replace #root content with SSR snippet (robust to different builds)
-        let rootReplaced = false;
-        html = html.replace(/<div[^>]*id=["']root["'][^>]*>[\s\S]*?<\/div>/i, () => {
-          rootReplaced = true;
-          return `<div id="root">${seoContent}</div>`;
-        });
-        if (!rootReplaced) {
-          // Fallback: inject right after <body>
-          html = html.replace(/<body[^>]*>/i, (m) => `${m}\n<div id=\"root\">${seoContent}<\/div>`);
+        // Only inject SSR content for search engine crawlers (not regular users)
+        const userAgent = request.headers.get('user-agent') || '';
+        if (isCrawler(userAgent)) {
+          const seoContent = await getSEOContent(url.pathname, ctx.env);
+          
+          // Replace #root content with SSR snippet (robust to different builds)
+          let rootReplaced = false;
+          html = html.replace(/<div[^>]*id=["']root["'][^>]*>[\s\S]*?<\/div>/i, () => {
+            rootReplaced = true;
+            return `<div id="root">${seoContent}</div>`;
+          });
+          if (!rootReplaced) {
+            // Fallback: inject right after <body>
+            html = html.replace(/<body[^>]*>/i, (m) => `${m}\n<div id="root">${seoContent}</div>`);
+          }
         }
 
         // Return with corrected headers (avoid stale content-length)
@@ -370,9 +401,6 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
         </article>
         <a href="/">Volver al Inicio</a>
       </main>
-      <footer>
-        <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
-      </footer>
     `;
   }
   
@@ -413,6 +441,15 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
   // About page
   if (pathname === '/acerca-de') {
     return `
+      <nav>
+        <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/guias">Guías</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+        </ul>
+      </nav>
       <main>
         <h1>Acerca de Mi Restaurante Online</h1>
         <p>Somos especialistas en diseño web para restaurantes en Perú. Ayudamos a negocios gastronómicos a tener presencia digital profesional.</p>
@@ -436,6 +473,15 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
   // Contact page
   if (pathname === '/contacto') {
     return `
+      <nav>
+        <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/guias">Guías</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+        </ul>
+      </nav>
       <main>
         <h1>Contacto</h1>
         <p>¿Tienes preguntas sobre nuestros servicios? Estamos aquí para ayudarte.</p>
@@ -455,6 +501,15 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
   // Support page
   if (pathname === '/soporte') {
     return `
+      <nav>
+        <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/guias">Guías</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+        </ul>
+      </nav>
       <main>
         <h1>Soporte Técnico</h1>
         <p>Estamos aquí para ayudarte con cualquier duda o problema técnico.</p>
@@ -500,16 +555,6 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
       <a href="/">Volver al Inicio</a>
       <a href="/registro">Crear Mi Sitio Ahora</a>
     </main>
-    <footer>
-      <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
-      <nav>
-        <ul>
-          <li><a href="/guias">Guías</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/contacto">Contacto</a></li>
-        </ul>
-      </nav>
-    </footer>
   `;
 }
 
