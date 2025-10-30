@@ -42,6 +42,10 @@ serve(async (req) => {
 
     // Determine the correct domain to show
     const displayDomain = client.custom_domain || `${client.subdomain}.mirestaurante.online`;
+    
+    console.log('Client subdomain:', client.subdomain);
+    console.log('Client custom_domain:', client.custom_domain);
+    console.log('Display domain:', displayDomain);
 
     // Prepare email content
     const htmlContent = `
