@@ -34,13 +34,33 @@ export default function ClientSettings() {
   const { toast } = useToast();
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("general");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (selectedClientId) {
       fetchClientData();
       fetchPremiumFeatures();
+      checkAdminStatus();
     }
   }, [selectedClientId]);
+
+  const checkAdminStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const { data, error } = await supabase.rpc('has_role', {
+        _user_id: user.id,
+        _role: 'admin'
+      });
+      
+      if (error) throw error;
+      setIsAdmin(data === true);
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      setIsAdmin(false);
+    }
+  };
 
   const fetchPremiumFeatures = async () => {
     try {
@@ -147,7 +167,8 @@ export default function ClientSettings() {
           other_customizations: formData.other_customizations,
           timezone: formData.timezone,
           country_code: formData.country_code,
-          locale: formData.locale
+          locale: formData.locale,
+          site_live_at: formData.site_live_at
         })
         .eq('id', selectedClientId);
 
@@ -233,6 +254,7 @@ export default function ClientSettings() {
               <SelectItem value="appearance">{t('settings.appearance')}</SelectItem>
               <SelectItem value="contact">{t('settings.contact')}</SelectItem>
               {planType === 'advanced' && <SelectItem value="analytics">Analíticas</SelectItem>}
+              {isAdmin && <SelectItem value="control">Control de Sitio</SelectItem>}
             </SelectContent>
           </Select>
         </div>
@@ -583,6 +605,52 @@ export default function ClientSettings() {
             </CardHeader>
             <CardContent>
               <AnalyticsOverview clientId={selectedClientId} />
+            </CardContent>
+          </Card>
+        </TabsContent>}
+
+        {isAdmin && <TabsContent value="control" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Control de Sitio</CardTitle>
+              <CardDescription>
+                Gestiona el estado de activación del sitio
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="site_live">Sitio en Vivo</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Activa esta opción cuando el sitio esté completamente desplegado y en funcionamiento
+                  </p>
+                </div>
+                <Switch
+                  id="site_live"
+                  checked={!!formData.site_live_at}
+                  onCheckedChange={(checked) => {
+                    setFormData({
+                      ...formData, 
+                      site_live_at: checked ? new Date().toISOString() : null
+                    });
+                  }}
+                />
+              </div>
+              
+              {formData.site_live_at && (
+                <div className="bg-muted p-4 rounded-lg">
+                  <p className="text-sm">
+                    <span className="font-medium">Fecha de activación:</span>{' '}
+                    {new Date(formData.site_live_at).toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>}
