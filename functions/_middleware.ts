@@ -58,13 +58,13 @@ export const onRequest: PagesFunction = async (ctx) => {
         
         // Replace #root content with SSR snippet (robust to different builds)
         let rootReplaced = false;
-        html = html.replace(/<div id="root">[\s\S]*?<\/div>/, () => {
+        html = html.replace(/<div[^>]*id=["']root["'][^>]*>[\s\S]*?<\/div>/i, () => {
           rootReplaced = true;
-          return `<div id=\"root\">${seoContent}</div>`;
+          return `<div id="root">${seoContent}</div>`;
         });
         if (!rootReplaced) {
           // Fallback: inject right after <body>
-          html = html.replace(/<body[^>]*>/, (m) => `${m}\n<div id=\"root\">${seoContent}<\/div>`);
+          html = html.replace(/<body[^>]*>/i, (m) => `${m}\n<div id=\"root\">${seoContent}<\/div>`);
         }
 
         // Return with corrected headers (avoid stale content-length)
@@ -354,7 +354,7 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
         </ul>
       </nav>
       <main>
-        <h1>Guías Prácticas para Restaurantes</h1>
+        <h1>Blog para Restaurantes</h1>
         <p>Descubre estrategias, consejos y tendencias para hacer crecer tu restaurante.</p>
         <article>
           <h2><a href="/blog/marketing-digital/estrategias-marketing-digital-restaurantes-lima">Marketing Digital para Restaurantes</a></h2>
