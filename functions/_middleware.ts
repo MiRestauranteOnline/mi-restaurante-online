@@ -1,5 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-
 // Middleware to handle SEO bot prerendering and caching
 export const onRequest: PagesFunction = async (ctx) => {
   const { request, next } = ctx;
@@ -49,21 +47,25 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
     try {
       const slug = blogPostMatch[2];
       
-      // Initialize Supabase client
-      const supabase = createClient(
-        env.SUPABASE_URL,
-        env.SUPABASE_ANON_KEY
+      // Fetch article directly using Supabase REST API
+      const supabaseUrl = env.SUPABASE_URL || 'https://ptzcetvcccnojdbzzlyt.supabase.co';
+      const supabaseKey = env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0emNldHZjY2Nub2pkYnp6bHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjExNzksImV4cCI6MjA3NDMzNzE3OX0.2HS2wP06xe8PryWW_VdzTu7TDYg303BjwmzyA_5Ang8';
+      
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/generated_articles?slug=eq.${slug}&status=eq.published&select=title,slug,excerpt,content,featured_image_url,meta_description,author_name,author_bio,author_image_url,created_at,category`,
+        {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`
+          }
+        }
       );
       
-      // Fetch the article from database
-      const { data: article, error } = await supabase
-        .from('generated_articles')
-        .select('title, slug, excerpt, content, featured_image_url, meta_description, author_name, author_bio, author_image_url, created_at, category')
-        .eq('slug', slug)
-        .eq('status', 'published')
-        .single();
+      if (response.ok) {
+        const articles = await response.json();
+        const article = articles[0];
       
-      if (!error && article) {
+        if (article) {
         // Extract first few paragraphs for SEO content
         const contentPreview = article.content
           .replace(/<[^>]*>/g, '') // Strip HTML tags
@@ -138,6 +140,7 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
             </nav>
           </footer>
         `;
+        }
       }
     } catch (error) {
       console.error('Error fetching blog post:', error);
