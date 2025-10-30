@@ -7086,7 +7086,7 @@ setReviewForm({
                 </div>
 
                 {formData.site_live_at && (
-                  <div className="bg-muted p-4 rounded-lg">
+                  <div className="bg-muted p-4 rounded-lg space-y-3">
                     <p className="text-sm">
                       <span className="font-medium">Fecha de activación:</span>{' '}
                       {new Date(formData.site_live_at).toLocaleDateString('es-ES', {
@@ -7097,6 +7097,33 @@ setReviewForm({
                         minute: '2-digit'
                       })}
                     </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={async () => {
+                        try {
+                          const { error } = await supabase.functions.invoke('send-site-live-notification', {
+                            body: { clientId: effectiveClientId }
+                          });
+                          
+                          if (error) throw error;
+                          
+                          toast({
+                            title: 'Email Enviado',
+                            description: 'El email de sitio en vivo ha sido reenviado exitosamente',
+                          });
+                        } catch (error) {
+                          console.error('Error sending site live email:', error);
+                          toast({
+                            title: 'Error',
+                            description: 'No se pudo enviar el email. Revisa los logs.',
+                            variant: 'destructive'
+                          });
+                        }
+                      }}
+                    >
+                      Reenviar Email de Sitio en Vivo
+                    </Button>
                   </div>
                 )}
               </div>
