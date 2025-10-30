@@ -1,4 +1,3 @@
-/sitemap.xml https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/serve-sitemap 200
-/sitemap https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/serve-sitemap 200
-/sitemap_index.xml https://ptzcetvcccnojdbzzlyt.supabase.co/functions/v1/serve-sitemap 200
+# Sitemap handled by Pages Function at /functions/sitemap.xml.ts
+# No redirects needed - direct generation at edge
 
