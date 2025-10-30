@@ -111,9 +111,6 @@ verify_jwt = false
 [functions.complete-signup]
 verify_jwt = false
 
-[functions.send-review-request]
-verify_jwt = false
-
 [functions.send-reengagement-email]
 verify_jwt = false
 
@@ -124,9 +121,6 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.reactivate-subscription]
-verify_jwt = false
-
-[functions.test-review-request]
 verify_jwt = false
 
 [functions.test-reengagement-email]

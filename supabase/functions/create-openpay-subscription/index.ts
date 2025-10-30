@@ -105,10 +105,113 @@ serve(async (req) => {
     const card = await cardResponse.json();
     console.log('Card added to customer:', card.id);
 
-    // Determine plan ID
+    // Determine plan ID and pricing
     const planId = planType === 'basic' ? planBasicId : planAdvancedId;
+    const planPrice = planType === 'basic' ? (client.locked_basic_price || 297) : (client.locked_advanced_price || 497);
 
-    // Create subscription
+    // Handle discount if provided
+    let finalAmount = planPrice;
+    let hasDiscount = false;
+    
+    if (discountAmount && discountAmount > 0) {
+      finalAmount = Math.max(0, planPrice - discountAmount);
+      hasDiscount = true;
+      console.log(`Applying discount: S/${discountAmount} (Final: S/${finalAmount})`);
+    }
+
+    // If discount applied, create one-time charge + trial subscription
+    if (hasDiscount && finalAmount >= 0) {
+      // Create one-time charge for discounted first month
+      const chargeResponse = await fetch(`${openpayUrl}/customers/${customer.id}/charges`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          source_id: card.id,
+          method: 'card',
+          amount: finalAmount,
+          currency: 'PEN',
+          description: `Primera mensualidad con descuento - ${planType === 'basic' ? 'Plan Básico' : 'Plan Avanzado'}`,
+        }),
+      });
+
+      if (!chargeResponse.ok) {
+        const error = await chargeResponse.json();
+        console.error('OpenPay charge failed:', error);
+        throw new Error(`Failed to process discounted charge: ${error.description || 'Unknown error'}`);
+      }
+
+      console.log('Discounted charge processed successfully');
+
+      // Create subscription with trial (starts billing at full price next month)
+      const trialEndDate = new Date();
+      trialEndDate.setMonth(trialEndDate.getMonth() + 1);
+      const trialEndDateStr = trialEndDate.toISOString().slice(0, 10); // YYYY-MM-DD
+
+      const subscriptionResponse = await fetch(`${openpayUrl}/customers/${customer.id}/subscriptions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          plan_id: planId,
+          card_id: card.id,
+          trial_end_date: trialEndDateStr,
+        }),
+      });
+
+      if (!subscriptionResponse.ok) {
+        const error = await subscriptionResponse.json();
+        console.error('OpenPay subscription creation failed:', error);
+        throw new Error(`Failed to create subscription: ${error.description || 'Unknown error'}`);
+      }
+
+      const subscription = await subscriptionResponse.json();
+      console.log('Subscription created with trial:', subscription.id);
+
+      // Update client with subscription info
+      const subscriptionEndDate = new Date(trialEndDate);
+
+      const updateData: any = {
+        subscription_status: 'active',
+        subscription_start_date: new Date().toISOString(),
+        subscription_end_date: subscriptionEndDate.toISOString(),
+        next_billing_date: subscriptionEndDate.toISOString(),
+        payment_status: 'paid',
+        openpay_customer_id: customer.id,
+        openpay_subscription_id: subscription.id,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error: updateError } = await supabase
+        .from('clients')
+        .update(updateData)
+        .eq('id', clientId);
+
+      if (updateError) {
+        console.error('Failed to update client:', updateError);
+        throw updateError;
+      }
+
+      console.log('Client updated successfully with discounted subscription');
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          subscriptionId: subscription.id,
+          customerId: customer.id,
+          discountApplied: discountAmount,
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // No discount - create regular subscription
     const subscriptionResponse = await fetch(`${openpayUrl}/customers/${customer.id}/subscriptions`, {
       method: 'POST',
       headers: {

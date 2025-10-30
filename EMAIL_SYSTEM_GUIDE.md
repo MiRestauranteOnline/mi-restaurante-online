@@ -22,10 +22,11 @@ This system implements a comprehensive email notification framework for Mi Resta
 - **Reservation (Restaurant)** - Notifies restaurant of new bookings
 
 ### Phase 3: Retention & Engagement (✅ Complete)
-- **Review Request** - Sent 30 days after site goes live (with 25% discount)
-- **Re-engagement** - Sent 7 days after cancellation (with 30% discount)
+- **Re-engagement** - Sent 7 days after cancellation (with 30% one-time discount)
 - **Cancellation Initiated** - Immediate confirmation when user cancels
 - **Subscription Ended** - Sent when subscription actually expires
+
+**Note:** Review requests are handled manually via WhatsApp/email campaigns rather than automated.
 
 ### Phase 4: Reactivation (✅ Complete)
 - **Subscription Reactivated** - Confirms successful reactivation
@@ -42,9 +43,6 @@ site_live_at TIMESTAMP WITH TIME ZONE
 
 -- When user clicks cancel (before actual deactivation)
 cancelled_at TIMESTAMP WITH TIME ZONE
-
--- Prevents duplicate review requests (set after sending)
-review_request_sent_at TIMESTAMP WITH TIME ZONE
 
 -- Prevents duplicate re-engagement emails (set after sending)
 reengagement_sent_at TIMESTAMP WITH TIME ZONE
@@ -93,20 +91,6 @@ reengagement_sent_at TIMESTAMP WITH TIME ZONE
 
 ### Automated Campaign Emails (Cron Jobs)
 
-#### `send-review-request`
-**Schedule:** Daily at 10:00 AM UTC
-**Criteria:** 
-- `site_live_at` is 30+ days ago
-- `review_request_sent_at` IS NULL
-- `subscription_status` = 'active'
-- Processes up to 50 clients per run
-
-**What it does:**
-1. Generates unique discount code: `REVIEW25-{subdomain}-{timestamp}`
-2. Creates 25% discount coupon (60 days validity)
-3. Sends email with Google review link
-4. Updates `review_request_sent_at` to prevent duplicates
-
 #### `send-reengagement-email`
 **Schedule:** Daily at 11:00 AM UTC
 **Criteria:**
@@ -117,9 +101,10 @@ reengagement_sent_at TIMESTAMP WITH TIME ZONE
 
 **What it does:**
 1. Generates unique discount code: `WINBACK30-{clientId}`
-2. Creates 30% discount coupon (30 days validity)
+2. Creates 30% discount coupon (30 days validity, one-time use)
 3. Sends win-back email with reactivation link
 4. Updates `reengagement_sent_at` to prevent duplicates
+5. Discount applied as one-time charge on first month when resubscribing
 
 #### `deactivate-expired-subscriptions`
 **Schedule:** Daily at 2:00 AM UTC
@@ -141,12 +126,13 @@ reengagement_sent_at TIMESTAMP WITH TIME ZONE
 ```
 User signs up → send account-created email
 User completes form → send registration-complete email
-Payment succeeds → send payment-success email
+Payment succeeds (with optional coupon) → send payment-success email
+  - If coupon provided: one-time discounted charge + trial subscription
+  - Next month bills at full price
 Admin marks site live → send site-live-notification email
-30 days later → send review-request email (with 25% discount)
 ```
 
-### 2. Cancellation Flow
+### 2. Cancellation & Re-engagement Flow
 ```
 User clicks "Cancel" → 
   - Set cancelled_at timestamp
@@ -158,7 +144,8 @@ When subscription_end_date reached →
   - Send subscription-ended email (with reactivation CTA)
 
 7 days after cancelled_at →
-  - Send re-engagement email (with 30% discount)
+  - Send re-engagement email (with 30% discount code)
+  - If user resubscribes: discount applied as one-time charge
 ```
 
 ### 3. Reactivation Flow
@@ -193,7 +180,6 @@ Restaurant cancels → send reservation-guest email (cancelled)
 1. **Sitio en Vivo Toggle**
    - When turned ON: Sets `site_live_at` timestamp + sends site-live notification email
    - Tracks when site officially launched
-   - Triggers 30-day review request countdown
 
 2. **Sitio Desactivado Toggle**
    - Manual override to deactivate/reactivate sites
@@ -223,9 +209,10 @@ All times in UTC:
 
 | Job | Time | Frequency | Function |
 |-----|------|-----------|----------|
-| Review Requests | 10:00 AM | Daily | `send-review-request` |
 | Re-engagement | 11:00 AM | Daily | `send-reengagement-email` |
 | Deactivation | 2:00 AM | Daily | `deactivate-expired-subscriptions` |
+
+**Note:** Review requests are handled manually, not via cron.
 
 ### Monitoring Cron Jobs
 
@@ -245,12 +232,14 @@ LIMIT 100;
 
 ## 🎁 Discount Codes
 
-### Review Request Discount
-- **Code Format:** `REVIEW25-{subdomain}-{timestamp}`
-- **Discount:** 25%
-- **Validity:** 60 days
-- **Max Uses:** 1
-- **Triggered:** 30 days after `site_live_at`
+### Signup Coupon Codes
+- **Applied at:** Registration (Step 2 - Payment)
+- **How it works:** 
+  - User enters coupon code during signup
+  - System validates coupon via `validate_coupon()` function
+  - Creates one-time charge for `(plan_price - discount)`
+  - Creates subscription with 30-day trial
+  - Next month bills at full price automatically
 
 ### Re-engagement Discount
 - **Code Format:** `WINBACK30-{clientId}`
@@ -258,9 +247,12 @@ LIMIT 100;
 - **Validity:** 30 days
 - **Max Uses:** 1
 - **Triggered:** 7 days after `cancelled_at`
+- **How it works:** Same as signup - one-time discounted charge + trial subscription
 
-### Discount Table
-All discount codes are automatically stored in the `coupons` table for tracking and validation.
+### Coupon Storage
+All discount codes are stored in the `coupons` table for validation and usage tracking.
+
+**Note:** Review request discounts are handled manually via WhatsApp/email campaigns.
 
 ---
 
@@ -293,11 +285,11 @@ await supabase.functions.invoke('send-reservation-email', {
 View logs for each function in Supabase Dashboard:
 - [send-site-live-notification](https://supabase.com/dashboard/project/ptzcetvcccnojdbzzlyt/functions/send-site-live-notification/logs)
 - [send-reservation-email](https://supabase.com/dashboard/project/ptzcetvcccnojdbzzlyt/functions/send-reservation-email/logs)
-- [send-review-request](https://supabase.com/dashboard/project/ptzcetvcccnojdbzzlyt/functions/send-review-request/logs)
 - [send-reengagement-email](https://supabase.com/dashboard/project/ptzcetvcccnojdbzzlyt/functions/send-reengagement-email/logs)
 - [send-cancellation-initiated](https://supabase.com/dashboard/project/ptzcetvcccnojdbzzlyt/functions/send-cancellation-initiated/logs)
 - [send-subscription-ended](https://supabase.com/dashboard/project/ptzcetvcccnojdbzzlyt/functions/send-subscription-ended/logs)
 - [reactivate-subscription](https://supabase.com/dashboard/project/ptzcetvcccnojdbzzlyt/functions/reactivate-subscription/logs)
+- [create-openpay-subscription](https://supabase.com/dashboard/project/ptzcetvcccnojdbzzlyt/functions/create-openpay-subscription/logs)
 
 ### Check Email Delivery
 
@@ -311,10 +303,11 @@ Monitor email delivery in [Resend Dashboard](https://resend.com/emails)
 3. Check edge function logs for errors
 4. Verify client has valid email address in database
 
-**Review requests not triggering:**
-1. Ensure `site_live_at` is set (Control de Sitio tab)
-2. Check cron job is running: `SELECT * FROM cron.job WHERE jobname = 'send-review-requests-daily'`
-3. Verify client meets criteria (active subscription, 30+ days)
+**Coupon not applying discount:**
+1. Check coupon exists in `coupons` table and is active
+2. Verify coupon validity dates
+3. Check `create-openpay-subscription` logs for discount processing
+4. Ensure coupon hasn't exceeded max_uses
 
 **Reactivation not working:**
 1. Check client has `openpay_subscription_id`
@@ -325,17 +318,15 @@ Monitor email delivery in [Resend Dashboard](https://resend.com/emails)
 
 ## 🧪 Testing
 
-### Test Review Request Manually
+### Test Signup with Discount
 
-```sql
--- Temporarily set site_live_at to 31 days ago for a test client
-UPDATE clients 
-SET site_live_at = NOW() - INTERVAL '31 days',
-    review_request_sent_at = NULL
-WHERE id = 'your-test-client-id';
-
--- Manually trigger the edge function (or wait for next cron run)
-```
+1. Create a test coupon in admin dashboard
+2. Go through signup flow at `/registro`
+3. Enter coupon code in Step 2 (Payment)
+4. Verify discount shows correctly
+5. Complete payment
+6. Check `create-openpay-subscription` logs
+7. Verify one-time charge and trial subscription created in OpenPay
 
 ### Test Re-engagement Manually
 
@@ -426,7 +417,6 @@ All emails use consistent branding:
 | expired | User reactivates | active | `reactivate-subscription` | Reactivated |
 | cancelled | User reactivates | active | `reactivate-subscription` | Reactivated |
 | - | 7 days after cancelled_at | - | `send-reengagement-email` | - |
-| active | 30 days after site_live_at | active | `send-review-request` | Active |
 
 ---
 
@@ -434,8 +424,9 @@ All emails use consistent branding:
 
 ### Duplicate Prevention
 All campaign emails use tracking timestamps to prevent sending multiple times:
-- `review_request_sent_at` - Only send once per site lifetime
 - `reengagement_sent_at` - Only send once per cancellation
+
+**Note:** Review requests handled manually to maintain personal touch.
 
 ### Graceful Degradation
 If emails fail to send, the system continues operating:
