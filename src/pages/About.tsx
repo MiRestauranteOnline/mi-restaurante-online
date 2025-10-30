@@ -9,13 +9,13 @@ const About = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-20 bg-[hsl(var(--primary)_/_0.05)] min-h-[40vh] flex items-center">
+      <section className="pt-28 md:pt-32 pb-12 md:pb-16 bg-[hsl(var(--primary)_/_0.05)] min-h-[40vh] flex items-center">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-foreground mb-4 md:mb-6 px-2">
               Conoce a Nuestro Equipo
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
               Somos un equipo apasionado dedicado a ayudar a los restaurantes peruanos 
               a crecer en el mundo digital con sitios web profesionales y estrategias efectivas.
             </p>
@@ -24,10 +24,10 @@ const About = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-background">
+      <section className="py-12 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
               
               {/* Kevin van Geffen */}
               <div className="bg-card rounded-2xl p-8 shadow-sm border border-border">
@@ -99,18 +99,18 @@ const About = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20 bg-gradient-to-br from-secondary/5 to-primary/5">
+      <section className="py-12 md:py-20 bg-gradient-to-br from-secondary/5 to-primary/5">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
+          <div className="max-w-4xl mx-auto text-center px-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-6 md:mb-8">
               Nuestra Misión
             </h2>
-            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed mb-6 md:mb-8">
               Democratizar el acceso a sitios web profesionales para restaurantes en Perú, 
               combinando tecnología internacional de vanguardia con un profundo entendimiento 
               del mercado local y precios accesibles.
             </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
               Creemos que cada restaurante, sin importar su tamaño, merece tener una presencia 
               digital profesional que refleje la calidad de su comida y servicio.
             </p>
