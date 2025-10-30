@@ -46,21 +46,38 @@ export const onRequest: PagesFunction = async (ctx) => {
           pageDescription = 'Centro de ayuda y soporte técnico para tu sitio web de restaurante.';
         }
 
-        // Update head tags: <title>, meta description, canonical
+        // Update head tags: <title>, meta, canonical, and social cards
         html = html
           .replace(/<title>[\s\S]*?<\/title>/, `<title>${pageTitle}</title>`)
           .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${pageDescription}">`)
-          .replace(/<link rel="canonical" href="[^"]*"\s*\/?\s*>/, `<link rel="canonical" href="${canonical}" />`);
+          .replace(/<link rel="canonical" href="[^"]*"\s*\/?\s*>/, `<link rel="canonical" href="${canonical}" />`)
+          .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${pageTitle}">`)
+          .replace(/<meta name="twitter:title" content="[^"]*">/, `<meta name="twitter:title" content="${pageTitle}">`)
+          .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${pageDescription}">`)
+          .replace(/<meta name="twitter:description" content="[^"]*">/, `<meta name="twitter:description" content="${pageDescription}">`);
         
-        // Replace empty root div with content-filled version for SEO
-        html = html.replace(
-          /<div id="root">[\s\S]*?<\/div>\s*<script/,
-          `<div id="root">${seoContent}</div>\n    <script`
-        );
+        // Replace #root content with SSR snippet (robust to different builds)
+        let rootReplaced = false;
+        html = html.replace(/<div id="root">[\s\S]*?<\/div>/, () => {
+          rootReplaced = true;
+          return `<div id=\"root\">${seoContent}</div>`;
+        });
+        if (!rootReplaced) {
+          // Fallback: inject right after <body>
+          html = html.replace(/<body[^>]*>/, (m) => `${m}\n<div id=\"root\">${seoContent}<\/div>`);
+        }
+
+        // Return with corrected headers (avoid stale content-length)
+        const newHeaders = new Headers(response.headers);
+        newHeaders.delete('content-length');
+        newHeaders.set('content-type', 'text/html; charset=utf-8');
+        newHeaders.set('x-seo-prerender', '1');
+        newHeaders.set('cache-control', 'no-store');
+
         return new Response(html, {
           status: response.status,
           statusText: response.statusText,
-          headers: response.headers
+          headers: newHeaders,
         });
       }
     } catch (error) {
