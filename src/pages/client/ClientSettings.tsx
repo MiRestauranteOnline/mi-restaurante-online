@@ -47,14 +47,24 @@ export default function ClientSettings() {
   const checkAdminStatus = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log('No user found');
+        return;
+      }
+      
+      console.log('Checking admin status for user:', user.id);
       
       const { data, error } = await supabase.rpc('has_role', {
         _user_id: user.id,
         _role: 'admin'
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error('RPC error:', error);
+        throw error;
+      }
+      
+      console.log('Admin check result:', data);
       setIsAdmin(data === true);
     } catch (error) {
       console.error('Error checking admin status:', error);
