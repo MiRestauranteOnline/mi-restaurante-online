@@ -13,7 +13,8 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       { path: '/', priority: 1.0, changefreq: 'daily' },
       { path: '/acerca-de', priority: 0.8, changefreq: 'monthly' },
       { path: '/contacto', priority: 0.8, changefreq: 'monthly' },
-      { path: '/guia', priority: 0.9, changefreq: 'daily' },
+      { path: '/blog', priority: 0.9, changefreq: 'daily' },
+      { path: '/guias', priority: 0.9, changefreq: 'weekly' },
       { path: '/soporte', priority: 0.7, changefreq: 'monthly' },
       { path: '/privacy', priority: 0.3, changefreq: 'yearly' },
       { path: '/terms', priority: 0.3, changefreq: 'yearly' },
@@ -71,7 +72,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     // Add blog articles
     for (const article of articles) {
       xml += '  <url>\n';
-      xml += `    <loc>${baseUrl}/guia/${article.category}/${article.slug}</loc>\n`;
+      xml += `    <loc>${baseUrl}/blog/${article.category}/${article.slug}</loc>\n`;
       xml += `    <lastmod>${new Date(article.updated_at).toISOString().split('T')[0]}</lastmod>\n`;
       xml += `    <changefreq>monthly</changefreq>\n`;
       xml += `    <priority>0.7</priority>\n`;
@@ -102,7 +103,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       `    <priority>1.0</priority>\n` +
       `  </url>\n` +
       `  <url>\n` +
-      `    <loc>https://mirestaurante.online/guia</loc>\n` +
+      `    <loc>https://mirestaurante.online/blog</loc>\n` +
       `    <lastmod>${today}</lastmod>\n` +
       `    <changefreq>daily</changefreq>\n` +
       `    <priority>0.9</priority>\n` +
