@@ -220,7 +220,7 @@ const handler = async (req: Request): Promise<Response> => {
               h1 { color: #1a1a1a; font-size: 28px; margin-bottom: 30px; }
               .success-box { background-color: #d1fae5; padding: 24px; border-radius: 8px; border: 2px solid #10b981; margin: 24px 0; text-align: center; }
               .details-box { background-color: #f8fafc; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
-              .button { display: inline-block; background-color: #e11d48; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
+              .button { display: inline-block; background-color: #44a79b; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
               .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
               .credentials { background-color: #fef3c7; padding: 20px; border-radius: 8px; margin: 24px 0; border: 2px solid #fbbf24; }
             </style>

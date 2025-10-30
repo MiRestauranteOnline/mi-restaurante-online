@@ -53,7 +53,7 @@ serve(async (req) => {
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
             .alert-box { background: #fee; border-left: 4px solid #f44336; padding: 15px; margin: 20px 0; border-radius: 5px; }
             .info-box { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-            .cta-button { display: inline-block; padding: 15px 40px; background: #4caf50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; margin: 15px 0; }
+            .cta-button { display: inline-block; padding: 15px 40px; background: #44a79b; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; margin: 15px 0; }
             .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 14px; }
             ul { line-height: 1.8; }
           </style>
@@ -95,7 +95,7 @@ serve(async (req) => {
                 <h3>💰 ¿Tienes dudas sobre precios o planes?</h3>
                 <p>Visita nuestra página de precios o contacta con nuestro equipo para encontrar el plan perfecto para ti.</p>
                 <p>
-                  <a href="https://mirestaurante.online/#pricing" style="color: #667eea; text-decoration: none; font-weight: bold;">Ver Planes y Precios →</a>
+                  <a href="https://mirestaurante.online/#pricing" style="color: #44a79b; text-decoration: none; font-weight: bold;">Ver Planes y Precios →</a>
                 </p>
               </div>
 

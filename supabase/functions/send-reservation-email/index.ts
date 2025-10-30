@@ -210,7 +210,7 @@ Deno.serve(async (req) => {
       </div>
 
       <div style="margin: 32px 0; text-align: center;">
-        <a href="https://mirestaurante.online/client/${client.id}/reservations" style="background-color: #e11d48; border-radius: 6px; color: #fff; font-size: 16px; font-weight: bold; text-decoration: none; display: inline-block; padding: 14px 32px;">
+        <a href="https://mirestaurante.online/client/${client.id}/reservations" style="background-color: #44a79b; border-radius: 6px; color: #fff; font-size: 16px; font-weight: bold; text-decoration: none; display: inline-block; padding: 14px 32px;">
           Ver y Gestionar Reserva
         </a>
       </div>

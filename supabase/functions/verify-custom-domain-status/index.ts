@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
     if (isVerified && !wasVerified) {
       // Domain just got verified - send success email
       try {
-        const html = `<!DOCTYPE html><html><body style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;"><h1>¡Tu Dominio Está Listo! 🎉</h1><p>Hola ${client.restaurant_name},</p><p>¡Excelentes noticias! Tu dominio personalizado <strong>${customDomain}</strong> ha sido verificado exitosamente.</p><p>Tu sitio web está disponible en: <a href="https://${customDomain}">${customDomain}</a></p><p><a href="https://mirestaurante.online/client/dashboard" style="background: #e11d48; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Ver mi Panel</a></p></body></html>`;
+        const html = `<!DOCTYPE html><html><body style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;"><h1>¡Tu Dominio Está Listo! 🎉</h1><p>Hola ${client.restaurant_name},</p><p>¡Excelentes noticias! Tu dominio personalizado <strong>${customDomain}</strong> ha sido verificado exitosamente.</p><p>Tu sitio web está disponible en: <a href="https://${customDomain}">${customDomain}</a></p><p><a href="https://mirestaurante.online/client/dashboard" style="background: #44a79b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Ver mi Panel</a></p></body></html>`;
 
         await resend.emails.send({
           from: 'MiRestaurante <info@mirestaurante.online>',
