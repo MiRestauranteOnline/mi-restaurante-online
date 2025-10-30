@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.75.0';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.75.0/+esm';
 
 // Middleware to handle SEO bot prerendering and caching
 export const onRequest: PagesFunction = async (ctx) => {
