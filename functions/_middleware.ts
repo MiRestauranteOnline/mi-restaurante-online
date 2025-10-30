@@ -44,10 +44,27 @@ function getSEOContent(pathname: string): string {
   // Homepage content
   if (pathname === '/') {
     return `
+      <nav>
+        <a href="/" aria-label="Inicio - Mi Restaurante Online">
+          <img src="/logo.svg" alt="Mi Restaurante Online - Logo de sitios web para restaurantes" width="200" height="60" />
+        </a>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/#benefits">Beneficios</a></li>
+          <li><a href="/#how-it-works">Cómo Funciona</a></li>
+          <li><a href="/#pricing">Precios</a></li>
+          <li><a href="/#faq">FAQ</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+          <li><a href="/registro">Crear Mi Sitio</a></li>
+        </ul>
+      </nav>
       <main>
         <header>
           <h1>Crea tu Página Web para Restaurante en 72 Horas</h1>
           <p>Diseño web profesional para restaurantes en Lima y todo Perú. Desde S/297/mes con menú digital incluido.</p>
+          <img src="/hero-restaurant-websites.webp" alt="Ejemplos de sitios web profesionales para restaurantes creados por Mi Restaurante Online mostrando diseños responsive y modernos" width="800" height="600" />
+          <a href="/registro">Registrarse Ahora</a>
+          <a href="https://wa.me/51123456789">WhatsApp</a>
         </header>
         <section>
           <h2>¿Por Qué Necesitas una Página Web para tu Restaurante?</h2>
@@ -64,10 +81,12 @@ function getSEOContent(pathname: string): string {
           <div>
             <h3>Plan Básico - S/297/mes</h3>
             <p>Incluye: Sitio web profesional, menú digital, dominio .online, hosting ilimitado</p>
+            <a href="/registro">Elegir Plan Básico</a>
           </div>
           <div>
             <h3>Plan Avanzado - S/497/mes</h3>
             <p>Incluye todo lo del Plan Básico más: Sistema de reservas, dominio personalizado (.com, .pe, etc.), soporte prioritario</p>
+            <a href="/registro">Elegir Plan Avanzado</a>
           </div>
         </section>
         <section>
@@ -80,67 +99,107 @@ function getSEOContent(pathname: string): string {
         </section>
         <section>
           <h2>Contacto</h2>
-          <p>¿Tienes preguntas? Contáctanos por WhatsApp</p>
-          <p>Email: info@mirestaurante.online</p>
+          <p>¿Tienes preguntas? <a href="https://wa.me/51123456789">Contáctanos por WhatsApp</a></p>
+          <p>Email: <a href="mailto:info@mirestaurante.online">info@mirestaurante.online</a></p>
         </section>
       </main>
+      <footer>
+        <img src="/logo.svg" alt="Mi Restaurante Online - Footer logo" width="150" height="45" />
+        <nav>
+          <h3>Enlaces Útiles</h3>
+          <ul>
+            <li><a href="/guias">Guías & Documentación</a></li>
+            <li><a href="/blog">Blog & Artículos</a></li>
+            <li><a href="/acerca-de">Acerca de Nosotros</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+            <li><a href="/privacy">Política de Privacidad</a></li>
+            <li><a href="/terms">Términos de Servicio</a></li>
+          </ul>
+        </nav>
+      </footer>
     `;
   }
   
   // Blog listing page
   if (pathname === '/blog') {
     return `
+      <nav>
+        <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/guias">Guías</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+        </ul>
+      </nav>
       <main>
         <h1>Guías Prácticas para Restaurantes</h1>
         <p>Descubre estrategias, consejos y tendencias para hacer crecer tu restaurante.</p>
         <article>
-          <h2>Marketing Digital para Restaurantes</h2>
+          <h2><a href="/blog/marketing-digital/estrategias-marketing-digital-restaurantes-lima">Marketing Digital para Restaurantes</a></h2>
           <p>Aprende las mejores estrategias de marketing digital para atraer más clientes a tu restaurante.</p>
         </article>
         <article>
-          <h2>Tecnología para Restaurantes</h2>
+          <h2><a href="/blog/tecnologia-restaurante/implementacion-menu-digital-qr-restaurantes">Tecnología para Restaurantes</a></h2>
           <p>Descubre cómo la tecnología puede mejorar la eficiencia de tu negocio gastronómico.</p>
         </article>
         <article>
-          <h2>Guías Prácticas</h2>
+          <h2><a href="/blog/guias-practicas/como-abrir-restaurante-peru">Guías Prácticas</a></h2>
           <p>Consejos prácticos para gestionar y hacer crecer tu restaurante.</p>
         </article>
+        <a href="/">Volver al Inicio</a>
       </main>
+      <footer>
+        <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
+      </footer>
     `;
   }
   
   // Guides page
   if (pathname === '/guias' || pathname.startsWith('/guias/')) {
     return `
+      <nav>
+        <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/guias">Guías</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+        </ul>
+      </nav>
       <main>
         <h1>Centro de Ayuda - Guías para tu Página Web</h1>
         <p>Aprende a gestionar tu página web de restaurante paso a paso.</p>
         <section>
           <h2>Primeros Pasos</h2>
           <ul>
-            <li>Introducción a tu panel de control</li>
-            <li>Beneficios de tener presencia digital</li>
-            <li>Qué es una página web para restaurante</li>
+            <li><a href="/guias/inicio/primeros-pasos">Introducción a tu panel de control</a></li>
+            <li><a href="/guias/inicio/beneficios-presencia-digital">Beneficios de tener presencia digital</a></li>
+            <li><a href="/guias/inicio/que-es-pagina-web-restaurante">Qué es una página web para restaurante</a></li>
           </ul>
         </section>
         <section>
           <h2>Diseño y Personalización</h2>
           <ul>
-            <li>Elegir la plantilla perfecta</li>
-            <li>Personalizar colores de tu marca</li>
-            <li>Subir tu logo</li>
+            <li><a href="/guias/diseno/elegir-plantilla">Elegir la plantilla perfecta</a></li>
+            <li><a href="/guias/diseno/personalizar-colores">Personalizar colores de tu marca</a></li>
+            <li><a href="/guias/diseno/subir-logo">Subir tu logo</a></li>
           </ul>
         </section>
         <section>
           <h2>Contenido</h2>
           <ul>
-            <li>Actualizar información básica</li>
-            <li>Agregar imágenes profesionales</li>
-            <li>Configurar horarios de atención</li>
-            <li>Gestionar tu menú digital</li>
+            <li><a href="/guias/contenido/actualizar-informacion-basica">Actualizar información básica</a></li>
+            <li><a href="/guias/contenido/agregar-imagenes">Agregar imágenes profesionales</a></li>
+            <li><a href="/guias/contenido/configurar-horarios">Configurar horarios de atención</a></li>
+            <li><a href="/guias/contenido/gestionar-menu">Gestionar tu menú digital</a></li>
           </ul>
         </section>
+        <a href="/">Volver al Inicio</a>
       </main>
+      <footer>
+        <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
+      </footer>
     `;
   }
   
@@ -207,17 +266,23 @@ function getSEOContent(pathname: string): string {
   
   // Default fallback for other pages (including blog posts)
   return `
+    <nav>
+      <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+      <ul>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/guias">Guías</a></li>
+        <li><a href="/contacto">Contacto</a></li>
+      </ul>
+    </nav>
     <main>
       <h1>Mi Restaurante Online</h1>
       <p>Crea tu página web para restaurante en 72 horas. Diseño profesional desde S/297/mes.</p>
-      <nav>
-        <ul>
-          <li><a href="/">Inicio</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/guias">Guías</a></li>
-          <li><a href="/contacto">Contacto</a></li>
-        </ul>
-      </nav>
+      <a href="/">Volver al Inicio</a>
+      <a href="/registro">Crear Mi Sitio</a>
     </main>
+    <footer>
+      <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
+    </footer>
   `;
 }
