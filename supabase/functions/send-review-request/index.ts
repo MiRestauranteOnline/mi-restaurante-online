@@ -29,11 +29,21 @@ serve(async (req: Request) => {
 
     const { data: clients, error: clientsError } = await supabase
       .from("clients")
-      .select("id, user_id, restaurant_name, subdomain, custom_domain, review_request_sent_at")
+      .select(`
+        id, 
+        restaurant_name, 
+        email,
+        subdomain, 
+        custom_domain, 
+        review_request_sent_at,
+        site_live_at
+      `)
+      .eq("subscription_status", "active")
       .eq("is_deactivated", false)
       .is("review_request_sent_at", null)
-      .gte("site_live_at", thirtyDaysAgoStart)
-      .lte("site_live_at", thirtyDaysAgoEnd);
+      .not("site_live_at", "is", null)
+      .lte("site_live_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      .limit(50);
 
     if (clientsError) {
       console.error("Error fetching clients:", clientsError);
@@ -57,18 +67,14 @@ serve(async (req: Request) => {
 
     for (const client of clients) {
       try {
-        // Get user email
-        const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(
-          client.user_id
-        );
-
-        if (authError || !authUser?.user?.email) {
-          console.error(`Failed to get email for client ${client.id}:`, authError);
+        // Use email from clients table directly
+        if (!client.email) {
+          console.error(`Client ${client.id} has no email address`);
           results.failed.push(client.id);
           continue;
         }
 
-        const email = authUser.user.email;
+        const email = client.email;
         const siteUrl = client.custom_domain 
           ? `https://${client.custom_domain}`
           : `https://${client.subdomain}.mirestaurante.online`;

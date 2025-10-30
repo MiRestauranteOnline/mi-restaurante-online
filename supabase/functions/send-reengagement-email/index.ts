@@ -29,11 +29,21 @@ serve(async (req: Request) => {
 
     const { data: clients, error: clientsError } = await supabase
       .from("clients")
-      .select("id, user_id, restaurant_name, subdomain, custom_domain, subscription_plan_id, reengagement_sent_at")
-      .eq("subscription_status", "cancelled")
+      .select(`
+        id, 
+        restaurant_name, 
+        email,
+        subdomain, 
+        custom_domain, 
+        plan_type,
+        reengagement_sent_at,
+        cancelled_at
+      `)
+      .in("subscription_status", ["cancelled", "expired"])
       .is("reengagement_sent_at", null)
-      .gte("cancelled_at", sevenDaysAgoStart)
-      .lte("cancelled_at", sevenDaysAgoEnd);
+      .not("cancelled_at", "is", null)
+      .lte("cancelled_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+      .limit(50);
 
     if (clientsError) {
       console.error("Error fetching clients:", clientsError);
@@ -57,27 +67,15 @@ serve(async (req: Request) => {
 
     for (const client of clients) {
       try {
-        // Get user email
-        const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(
-          client.user_id
-        );
-
-        if (authError || !authUser?.user?.email) {
-          console.error(`Failed to get email for client ${client.id}:`, authError);
+        // Use email from clients table directly
+        if (!client.email) {
+          console.error(`Client ${client.id} has no email address`);
           results.failed.push(client.id);
           continue;
         }
 
-        const email = authUser.user.email;
-
-        // Get plan details
-        const { data: plan } = await supabase
-          .from("subscription_plans")
-          .select("name")
-          .eq("id", client.subscription_plan_id)
-          .single();
-
-        const planName = plan?.name || "Plan";
+        const email = client.email;
+        const planName = client.plan_type === 'basic' ? 'Plan Básico' : 'Plan Avanzado';
 
         // Generate 30% win-back discount coupon (valid for 30 days)
         const couponCode = `WINBACK30-${client.id.substring(0, 8).toUpperCase()}`;
