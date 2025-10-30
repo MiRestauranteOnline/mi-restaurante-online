@@ -949,6 +949,7 @@ export type Database = {
           brand_colors: Json | null
           cancellation_date: string | null
           cancellation_reason: string | null
+          cancelled_at: string | null
           cloudflare_zone_id: string | null
           coordinates: Json | null
           country_code: string | null
@@ -985,9 +986,11 @@ export type Database = {
           phone_country_code: string | null
           plan_type: string | null
           razon_social: string | null
+          reengagement_sent_at: string | null
           referral_source: string | null
           reservations_email: string | null
           restaurant_name: string
+          review_request_sent_at: string | null
           ruc: string | null
           signup_completed: boolean
           social_media_links: Json | null
@@ -1020,6 +1023,7 @@ export type Database = {
           brand_colors?: Json | null
           cancellation_date?: string | null
           cancellation_reason?: string | null
+          cancelled_at?: string | null
           cloudflare_zone_id?: string | null
           coordinates?: Json | null
           country_code?: string | null
@@ -1056,9 +1060,11 @@ export type Database = {
           phone_country_code?: string | null
           plan_type?: string | null
           razon_social?: string | null
+          reengagement_sent_at?: string | null
           referral_source?: string | null
           reservations_email?: string | null
           restaurant_name: string
+          review_request_sent_at?: string | null
           ruc?: string | null
           signup_completed?: boolean
           social_media_links?: Json | null
@@ -1091,6 +1097,7 @@ export type Database = {
           brand_colors?: Json | null
           cancellation_date?: string | null
           cancellation_reason?: string | null
+          cancelled_at?: string | null
           cloudflare_zone_id?: string | null
           coordinates?: Json | null
           country_code?: string | null
@@ -1127,9 +1134,11 @@ export type Database = {
           phone_country_code?: string | null
           plan_type?: string | null
           razon_social?: string | null
+          reengagement_sent_at?: string | null
           referral_source?: string | null
           reservations_email?: string | null
           restaurant_name?: string
+          review_request_sent_at?: string | null
           ruc?: string | null
           signup_completed?: boolean
           social_media_links?: Json | null

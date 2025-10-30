@@ -116,3 +116,12 @@ verify_jwt = false
 
 [functions.send-reengagement-email]
 verify_jwt = false
+
+[functions.send-cancellation-initiated]
+verify_jwt = false
+
+[functions.send-subscription-ended]
+verify_jwt = false
+
+[functions.reactivate-subscription]
+verify_jwt = false
