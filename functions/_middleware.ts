@@ -1,3 +1,5 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
 // Middleware to handle SEO bot prerendering and caching
 export const onRequest: PagesFunction = async (ctx) => {
   const { request, next } = ctx;
@@ -18,7 +20,7 @@ export const onRequest: PagesFunction = async (ctx) => {
         let html = await response.text();
         
         // Inject SEO content based on route
-        const seoContent = getSEOContent(url.pathname);
+        const seoContent = await getSEOContent(url.pathname, ctx.env);
         
         // Replace empty root div with content-filled version
         html = html.replace(
@@ -40,7 +42,108 @@ export const onRequest: PagesFunction = async (ctx) => {
   return next();
 };
 
-function getSEOContent(pathname: string): string {
+async function getSEOContent(pathname: string, env: any): Promise<string> {
+  // Check if this is a blog post URL pattern: /blog/*/*
+  const blogPostMatch = pathname.match(/^\/blog\/([^\/]+)\/([^\/]+)$/);
+  if (blogPostMatch) {
+    try {
+      const slug = blogPostMatch[2];
+      
+      // Initialize Supabase client
+      const supabase = createClient(
+        env.SUPABASE_URL,
+        env.SUPABASE_ANON_KEY
+      );
+      
+      // Fetch the article from database
+      const { data: article, error } = await supabase
+        .from('generated_articles')
+        .select('title, slug, excerpt, content, featured_image_url, meta_description, author_name, author_bio, author_image_url, created_at, category')
+        .eq('slug', slug)
+        .eq('status', 'published')
+        .single();
+      
+      if (!error && article) {
+        // Extract first few paragraphs for SEO content
+        const contentPreview = article.content
+          .replace(/<[^>]*>/g, '') // Strip HTML tags
+          .split('\n\n')
+          .filter((p: string) => p.trim().length > 0)
+          .slice(0, 3)
+          .join('\n\n');
+        
+        return `
+          <nav>
+            <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+            <ul>
+              <li><a href="/">Inicio</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/guias">Guías</a></li>
+              <li><a href="/contacto">Contacto</a></li>
+            </ul>
+          </nav>
+          <main>
+            <article>
+              <header>
+                <nav aria-label="breadcrumb">
+                  <a href="/">Inicio</a> &gt; <a href="/blog">Blog</a> &gt; <span>${article.title}</span>
+                </nav>
+                <h1>${article.title}</h1>
+                <p>${article.excerpt}</p>
+                <div>
+                  ${article.author_name ? `
+                    <div>
+                      ${article.author_image_url ? `<img src="${article.author_image_url}" alt="${article.author_name} - Autor" width="50" height="50" />` : ''}
+                      <span>Por <strong>${article.author_name}</strong></span>
+                    </div>
+                  ` : ''}
+                  <time datetime="${article.created_at}">${new Date(article.created_at).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                </div>
+              </header>
+              ${article.featured_image_url ? `<img src="${article.featured_image_url}" alt="${article.title} - Imagen destacada del artículo" width="1200" height="630" />` : ''}
+              <div>
+                <p>${contentPreview}</p>
+                <p><a href="/blog/${article.category}/${article.slug}">Continuar leyendo el artículo completo...</a></p>
+              </div>
+              ${article.author_name && article.author_bio ? `
+                <section>
+                  <h2>Sobre el Autor</h2>
+                  <div>
+                    ${article.author_image_url ? `<img src="${article.author_image_url}" alt="${article.author_name}" width="80" height="80" />` : ''}
+                    <h3>${article.author_name}</h3>
+                    <p>${article.author_bio}</p>
+                  </div>
+                </section>
+              ` : ''}
+            </article>
+            <section>
+              <h2>Artículos Relacionados</h2>
+              <ul>
+                <li><a href="/blog">Ver todos los artículos del blog</a></li>
+                <li><a href="/guias">Explorar guías prácticas</a></li>
+              </ul>
+            </section>
+            <a href="/blog">← Volver al Blog</a>
+          </main>
+          <footer>
+            <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
+            <nav>
+              <h3>Enlaces Útiles</h3>
+              <ul>
+                <li><a href="/guias">Guías & Documentación</a></li>
+                <li><a href="/blog">Blog & Artículos</a></li>
+                <li><a href="/acerca-de">Acerca de Nosotros</a></li>
+                <li><a href="/contacto">Contacto</a></li>
+              </ul>
+            </nav>
+          </footer>
+        `;
+      }
+    } catch (error) {
+      console.error('Error fetching blog post:', error);
+    }
+  }
+  
   // Homepage content
   if (pathname === '/') {
     return `
