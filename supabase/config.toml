@@ -125,3 +125,10 @@ verify_jwt = false
 
 [functions.reactivate-subscription]
 verify_jwt = false
+
+[functions.test-review-request]
+verify_jwt = false
+
+[functions.test-reengagement-email]
+verify_jwt = false
+
