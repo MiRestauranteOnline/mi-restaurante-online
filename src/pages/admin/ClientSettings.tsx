@@ -766,7 +766,7 @@ export default function ClientSettings({ allowedTabs }: { allowedTabs?: string[]
   // Ensure activeTab is allowed (especially in client view)
   useEffect(() => {
     const order = ['basic','domain','metadata','hours','social','delivery','branding','navigation-visibility','content','briefing','menu','team','reviews','faqs','carousel','custom-images'];
-    const adminOnly = ['discounts','advanced'];
+    const adminOnly = ['discounts','advanced','control'];
     const ordered = userRole === 'admin' ? [...order, ...adminOnly] : [...order, ...adminOnly];
     const firstAllowed = ordered.find((v) => showTab(v));
     if (firstAllowed && !showTab(activeTab)) {
@@ -1123,7 +1123,8 @@ const [faqForm, setFaqForm] = useState({
     contact_page_map_visible: true,
     // Site deactivation (admin only)
     is_deactivated: false,
-    dashboard_is_deactivated: false
+    dashboard_is_deactivated: false,
+    site_live_at: null
   });
 
   useEffect(() => {
@@ -1261,7 +1262,8 @@ const [faqForm, setFaqForm] = useState({
           ...(data.other_customizations as any || {})
         },
         is_deactivated: (data as any).is_deactivated || false,
-        dashboard_is_deactivated: (data as any).dashboard_is_deactivated || false
+        dashboard_is_deactivated: (data as any).dashboard_is_deactivated || false,
+        site_live_at: (data as any).site_live_at || null
       }));
     } catch (error: any) {
       toast({
@@ -2003,6 +2005,7 @@ const [faqForm, setFaqForm] = useState({
           favicon_url: formData.favicon_url,
           is_deactivated: formData.is_deactivated,
           dashboard_is_deactivated: formData.dashboard_is_deactivated,
+          site_live_at: formData.site_live_at,
           updated_at: new Date().toISOString()
         })
         .eq('id', clientId)
@@ -3534,6 +3537,7 @@ setReviewForm({
               {showTab('custom-images') && <SelectItem value="custom-images">{t('nav.images')}</SelectItem>}
               {showTab('discounts') && <SelectItem value="discounts">Descuentos</SelectItem>}
               {showTab('advanced') && <SelectItem value="advanced">Avanzado</SelectItem>}
+              {showTab('control') && <SelectItem value="control">Control de Sitio</SelectItem>}
             </SelectContent>
           </Select>
         </div>
@@ -6971,65 +6975,6 @@ setReviewForm({
               </div>
             </div>
 
-            {/* Site Deactivation Section */}
-            <div className="space-y-4 pt-6 border-t">
-              <h3 className="text-lg font-semibold text-destructive">Control de Sitio</h3>
-              
-              <Alert variant="destructive">
-                <AlertDescription>
-                  Cuando el sitio está desactivado, se mostrará un aviso en todas las páginas del cliente informando que el sitio no está disponible.
-                </AlertDescription>
-              </Alert>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
-                  <div className="space-y-1">
-                    <Label htmlFor="is_deactivated" className="text-base font-semibold">
-                      Sitio Desactivado
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Se activa automáticamente cuando la suscripción es cancelada por falta de pago
-                    </p>
-                    {client?.subscription_status && (
-                      <div className="flex gap-2 mt-2">
-                        <Badge variant={client.subscription_status === 'active' ? 'default' : 'destructive'}>
-                          Estado: {client.subscription_status}
-                        </Badge>
-                        {client.payment_status && (
-                          <Badge variant={client.payment_status === 'paid' ? 'default' : 'secondary'}>
-                            Pago: {client.payment_status}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <Switch
-                    id="is_deactivated"
-                    checked={formData.is_deactivated}
-                    onCheckedChange={handleDeactivationToggle}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
-                  <div className="space-y-1">
-                    <Label htmlFor="dashboard_is_deactivated" className="text-base font-semibold">
-                      Dashboard Desactivado
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Controla el acceso del cliente al dashboard durante el período de revisión manual
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Útil para mantener bloqueado el acceso mientras revisas la configuración inicial del sitio
-                    </p>
-                  </div>
-                  <Switch
-                    id="dashboard_is_deactivated"
-                    checked={formData.dashboard_is_deactivated}
-                    onCheckedChange={handleDashboardDeactivationToggle}
-                  />
-                </div>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </TabsContent>
@@ -7047,6 +6992,116 @@ setReviewForm({
               ) : (
                 <p className="text-sm text-muted-foreground">{t('images.selectClient')}</p>
               )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Control de Sitio Tab - Admin Only */}
+        <TabsContent value="control">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-destructive">Control de Sitio</CardTitle>
+              <CardDescription>
+                Gestiona el estado de activación del sitio y el acceso al dashboard
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Site Live Status */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+                  <div className="space-y-1">
+                    <Label htmlFor="site_live" className="text-base font-semibold">
+                      Sitio en Vivo
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Activa esta opción cuando el sitio esté completamente desplegado y en funcionamiento
+                    </p>
+                  </div>
+                  <Switch
+                    id="site_live"
+                    checked={!!formData.site_live_at}
+                    onCheckedChange={(checked) => {
+                      setFormData({
+                        ...formData,
+                        site_live_at: checked ? new Date().toISOString() : null
+                      });
+                    }}
+                  />
+                </div>
+
+                {formData.site_live_at && (
+                  <div className="bg-muted p-4 rounded-lg">
+                    <p className="text-sm">
+                      <span className="font-medium">Fecha de activación:</span>{' '}
+                      {new Date(formData.site_live_at).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Site Deactivation Section */}
+              <div className="space-y-4 pt-6 border-t">
+                <Alert variant="destructive">
+                  <AlertDescription>
+                    Cuando el sitio está desactivado, se mostrará un aviso en todas las páginas del cliente informando que el sitio no está disponible.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+                    <div className="space-y-1">
+                      <Label htmlFor="is_deactivated" className="text-base font-semibold">
+                        Sitio Desactivado
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Se activa automáticamente cuando la suscripción es cancelada por falta de pago
+                      </p>
+                      {client?.subscription_status && (
+                        <div className="flex gap-2 mt-2">
+                          <Badge variant={client.subscription_status === 'active' ? 'default' : 'destructive'}>
+                            Estado: {client.subscription_status}
+                          </Badge>
+                          {client.payment_status && (
+                            <Badge variant={client.payment_status === 'paid' ? 'default' : 'secondary'}>
+                              Pago: {client.payment_status}
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <Switch
+                      id="is_deactivated"
+                      checked={formData.is_deactivated}
+                      onCheckedChange={handleDeactivationToggle}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+                    <div className="space-y-1">
+                      <Label htmlFor="dashboard_is_deactivated" className="text-base font-semibold">
+                        Dashboard Desactivado
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Controla el acceso del cliente al dashboard durante el período de revisión manual
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Útil para mantener bloqueado el acceso mientras revisas la configuración inicial del sitio
+                      </p>
+                    </div>
+                    <Switch
+                      id="dashboard_is_deactivated"
+                      checked={formData.dashboard_is_deactivated}
+                      onCheckedChange={handleDashboardDeactivationToggle}
+                    />
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
