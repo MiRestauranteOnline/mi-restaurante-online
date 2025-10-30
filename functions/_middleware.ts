@@ -1,26 +1,22 @@
-// Middleware to handle SEO bot prerendering and caching
+// Middleware to handle SEO prerendering for all HTML requests
 export const onRequest: PagesFunction = async (ctx) => {
   const { request, next } = ctx;
   const url = new URL(request.url);
-  const userAgent = request.headers.get('user-agent')?.toLowerCase() || '';
   
-  // Detect search engine bots
-  const isBot = /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkshare|w3c_validator|whatsapp/i.test(userAgent);
-  
-  // Only prerender for bots on HTML requests (not for assets)
-  if (isBot && !url.pathname.includes('.') && request.method === 'GET') {
+  // Inject SEO content for all HTML requests (not for assets like .js, .css, .png, etc.)
+  if (!url.pathname.includes('.') && request.method === 'GET') {
     try {
       // Get the actual rendered page
       const response = await next();
       
-      // If it's HTML, inject critical content for bots
+      // If it's HTML, inject critical SEO content
       if (response.headers.get('content-type')?.includes('text/html')) {
         let html = await response.text();
         
         // Inject SEO content based on route
         const seoContent = await getSEOContent(url.pathname, ctx.env);
         
-        // Replace empty root div with content-filled version
+        // Replace empty root div with content-filled version for SEO
         html = html.replace(
           /<div id="root">[\s\S]*?<\/div>\s*<script/,
           `<div id="root">${seoContent}</div>\n    <script`
@@ -33,7 +29,7 @@ export const onRequest: PagesFunction = async (ctx) => {
         });
       }
     } catch (error) {
-      console.error('Prerender error:', error);
+      console.error('SEO prerender error:', error);
     }
   }
   
