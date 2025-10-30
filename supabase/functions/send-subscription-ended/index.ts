@@ -31,7 +31,7 @@ serve(async (req) => {
     // Fetch client details
     const { data: client, error: clientError } = await supabaseClient
       .from('clients')
-      .select('restaurant_name, email, plan_type, subdomain')
+      .select('restaurant_name, email, plan_type, subdomain, custom_domain')
       .eq('id', clientId)
       .single();
 
@@ -39,6 +39,9 @@ serve(async (req) => {
     if (!client?.email) {
       throw new Error('Client email not found');
     }
+
+    // Determine the correct domain to show
+    const displayDomain = client.custom_domain || `${client.subdomain}.mirestaurante.online`;
 
     // Prepare email content
     const htmlContent = `
@@ -70,7 +73,7 @@ serve(async (req) => {
 
               <div class="alert-box">
                 <strong>⚠️ Estado Actual:</strong><br>
-                Tu sitio <strong>${client.subdomain}.lovable.app</strong> ya no está accesible para tus clientes.
+                Tu sitio <strong>${displayDomain}</strong> ya no está accesible para tus clientes.
               </div>
 
               <div class="info-box">
