@@ -119,7 +119,7 @@ serve(async (req: Request) => {
           
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+            <td style="background: linear-gradient(135deg, #44a79b 0%, #2d7a6e 100%); padding: 40px 30px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">
                 ¡Han pasado 30 días! 🎉
               </h1>
@@ -143,21 +143,21 @@ serve(async (req: Request) => {
 
               <div style="text-align: center; margin: 30px 0;">
                 <a href="https://g.page/r/CSSfTqPXvjL8EAE/review" 
-                   style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
+                   style="display: inline-block; background: linear-gradient(135deg, #44a79b 0%, #2d7a6e 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(68, 167, 155, 0.3);">
                   Dejar una Reseña en Google
                 </a>
               </div>
 
               <!-- Discount Reward -->
-              <div style="background-color: #f8f9ff; border-left: 4px solid #667eea; padding: 20px; margin: 30px 0; border-radius: 4px;">
-                <h3 style="margin: 0 0 15px 0; color: #667eea; font-size: 18px;">
+              <div style="background-color: #e6f7f5; border-left: 4px solid #44a79b; padding: 20px; margin: 30px 0; border-radius: 4px;">
+                <h3 style="margin: 0 0 15px 0; color: #2d7a6e; font-size: 18px;">
                   🎁 ¡Gracias Especial!
                 </h3>
                 <p style="margin: 0 0 10px 0; color: #333333; font-size: 15px; line-height: 1.6;">
                   Como agradecimiento por compartir tu experiencia, hemos creado un cupón exclusivo con <strong>25% de descuento</strong> para tu próxima renovación:
                 </p>
                 <div style="background-color: #ffffff; padding: 15px; border-radius: 4px; text-align: center; margin-top: 15px;">
-                  <code style="font-size: 20px; font-weight: 600; color: #667eea; letter-spacing: 2px; font-family: 'Courier New', monospace;">
+                  <code style="font-size: 20px; font-weight: 600; color: #44a79b; letter-spacing: 2px; font-family: 'Courier New', monospace;">
                     ${couponCode}
                   </code>
                   <p style="margin: 10px 0 0 0; color: #666666; font-size: 13px;">
@@ -178,7 +178,7 @@ serve(async (req: Request) => {
               <!-- Site Link -->
               <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eeeeee;">
                 <p style="margin: 0; color: #666666; font-size: 14px;">
-                  Tu sitio web: <a href="${siteUrl}" style="color: #667eea; text-decoration: none;">${siteUrl}</a>
+                  Tu sitio web: <a href="${siteUrl}" style="color: #44a79b; text-decoration: none;">${siteUrl}</a>
                 </p>
               </div>
             </td>
@@ -191,8 +191,8 @@ serve(async (req: Request) => {
                 Mi Restaurante Online - Sitios web profesionales para restaurantes
               </p>
               <p style="margin: 0 0 10px 0; color: #666666; font-size: 13px;">
-                <a href="https://wa.me/51952040074" style="color: #667eea; text-decoration: none;">WhatsApp: +51 952 040 074</a> | 
-                <a href="mailto:hola@mirestaurante.online" style="color: #667eea; text-decoration: none;">hola@mirestaurante.online</a>
+                <a href="https://wa.me/51952040074" style="color: #44a79b; text-decoration: none;">WhatsApp: +51 952 040 074</a> | 
+                <a href="mailto:hola@mirestaurante.online" style="color: #44a79b; text-decoration: none;">hola@mirestaurante.online</a>
               </p>
               <p style="margin: 0; color: #999999; font-size: 12px;">
                 Santiago de Surco, Lima, Perú

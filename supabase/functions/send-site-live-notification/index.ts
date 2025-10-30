@@ -52,10 +52,10 @@ serve(async (req) => {
             body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #484848; }
             .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; }
             h1 { color: #1a1a1a; font-size: 32px; margin-bottom: 30px; }
-            .success-box { background-color: #d1fae5; padding: 32px; border-radius: 8px; border: 3px solid #10b981; margin: 24px 0; text-align: center; }
+            .success-box { background-color: #e6f7f5; padding: 32px; border-radius: 8px; border: 3px solid #44a79b; margin: 24px 0; text-align: center; }
             .info-box { background-color: #f8fafc; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
-            .button { display: inline-block; background-color: #e11d48; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; font-size: 16px; }
-            .button-secondary { display: inline-block; background-color: #e11d48; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 8px 0; font-size: 14px; }
+            .button { display: inline-block; background-color: #44a79b; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; font-size: 16px; }
+            .button-secondary { display: inline-block; background-color: #44a79b; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 8px 0; font-size: 14px; }
             .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
             .video-section { background-color: #fef3c7; padding: 24px; border-radius: 8px; margin: 24px 0; }
           </style>
@@ -73,7 +73,7 @@ serve(async (req) => {
 
             <div class="info-box">
               <strong>🌐 Accede a tu sitio web:</strong><br><br>
-              <a href="${siteUrl}" style="color: #e11d48; font-size: 18px; font-weight: bold;">${siteUrl}</a><br><br>
+              <a href="${siteUrl}" style="color: #44a79b; font-size: 18px; font-weight: bold;">${siteUrl}</a><br><br>
               <em>Comparte este enlace con tus clientes, en redes sociales y en tu menú físico.</em>
             </div>
 
@@ -112,7 +112,7 @@ serve(async (req) => {
               <li>Incluye el enlace en tus menús físicos y publicidad</li>
             </ul>
 
-            <p>¿Necesitas ayuda? Estamos aquí para apoyarte en <a href="mailto:soporte@mirestaurante.online" style="color: #e11d48;">soporte@mirestaurante.online</a></p>
+            <p>¿Necesitas ayuda? Estamos aquí para apoyarte en <a href="mailto:soporte@mirestaurante.online" style="color: #44a79b;">soporte@mirestaurante.online</a></p>
 
             <div class="footer">
               <a href="https://mirestaurante.online" style="color: #898989;">MiRestaurante.online</a><br>

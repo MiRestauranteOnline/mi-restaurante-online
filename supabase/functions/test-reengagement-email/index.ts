@@ -87,9 +87,9 @@ serve(async (req: Request) => {
           
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+            <td style="background: linear-gradient(135deg, #44a79b 0%, #2d7a6e 100%); padding: 40px 30px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">
-                ¡Te echamos de menos! 💜
+                ¡Te echamos de menos! 💙
               </h1>
             </td>
           </tr>
@@ -110,8 +110,8 @@ serve(async (req: Request) => {
               </p>
 
               <!-- Win-back Offer -->
-              <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border: 2px solid #667eea; padding: 25px; margin: 30px 0; border-radius: 8px; text-align: center;">
-                <h2 style="margin: 0 0 15px 0; color: #667eea; font-size: 24px; font-weight: 700;">
+              <div style="background: linear-gradient(135deg, #e6f7f515 0%, #e6f7f515 100%); border: 2px solid #44a79b; padding: 25px; margin: 30px 0; border-radius: 8px; text-align: center;">
+                <h2 style="margin: 0 0 15px 0; color: #2d7a6e; font-size: 24px; font-weight: 700;">
                   🎁 Oferta Especial de Regreso
                 </h2>
                 <p style="margin: 0 0 20px 0; color: #333333; font-size: 18px; line-height: 1.6;">
@@ -121,7 +121,7 @@ serve(async (req: Request) => {
                   <p style="margin: 0 0 10px 0; color: #666666; font-size: 14px;">
                     Código de descuento exclusivo:
                   </p>
-                  <code style="display: block; font-size: 24px; font-weight: 700; color: #667eea; letter-spacing: 3px; font-family: 'Courier New', monospace; margin: 10px 0;">
+                  <code style="display: block; font-size: 24px; font-weight: 700; color: #44a79b; letter-spacing: 3px; font-family: 'Courier New', monospace; margin: 10px 0;">
                     ${couponCode}
                   </code>
                   <p style="margin: 10px 0 0 0; color: #999999; font-size: 13px;">
@@ -132,7 +132,7 @@ serve(async (req: Request) => {
 
               <div style="text-align: center; margin: 30px 0;">
                 <a href="${dashboardUrl}" 
-                   style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
+                   style="display: inline-block; background: linear-gradient(135deg, #44a79b 0%, #2d7a6e 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(68, 167, 155, 0.3);">
                   Reactivar Mi Suscripción
                 </a>
               </div>
@@ -169,10 +169,10 @@ serve(async (req: Request) => {
                 <strong>¿Necesitas ayuda?</strong> Estamos aquí para ti
               </p>
               <p style="margin: 0 0 10px 0; color: #666666; font-size: 13px;">
-                <a href="https://wa.me/51952040074" style="color: #667eea; text-decoration: none;">📱 WhatsApp: +51 952 040 074</a>
+                <a href="https://wa.me/51952040074" style="color: #44a79b; text-decoration: none;">📱 WhatsApp: +51 952 040 074</a>
               </p>
               <p style="margin: 0 0 15px 0; color: #666666; font-size: 13px;">
-                <a href="mailto:hola@mirestaurante.online" style="color: #667eea; text-decoration: none;">✉️ hola@mirestaurante.online</a>
+                <a href="mailto:hola@mirestaurante.online" style="color: #44a79b; text-decoration: none;">✉️ hola@mirestaurante.online</a>
               </p>
               <p style="margin: 0; color: #999999; font-size: 12px;">
                 Mi Restaurante Online - Santiago de Surco, Lima, Perú

@@ -195,23 +195,23 @@ const contactText = {
 };
 
 const highlightBox = {
-  backgroundColor: '#dcfce7',
+  backgroundColor: '#e6f7f5',
   padding: '24px',
   borderRadius: '8px',
-  border: '2px solid #22c55e',
+  border: '2px solid #44a79b',
   margin: '24px 0',
   textAlign: 'center' as const,
 };
 
 const highlightTitle = {
-  color: '#15803d',
+  color: '#2d7a6e',
   fontSize: '16px',
   fontWeight: 'bold',
   margin: '0 0 12px',
 };
 
 const siteLink = {
-  color: '#15803d',
+  color: '#2d7a6e',
   fontSize: '20px',
   fontWeight: 'bold',
   textDecoration: 'none',
