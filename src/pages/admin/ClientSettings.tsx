@@ -1827,24 +1827,50 @@ const [faqForm, setFaqForm] = useState({
     if (!clientId) return;
     
     try {
+      const updateData: any = {
+        is_deactivated: checked,
+        updated_at: new Date().toISOString()
+      };
+
+      // If site is being activated (checked = false) and site_live_at is not set, set it now
+      if (!checked && !formData.site_live_at) {
+        updateData.site_live_at = new Date().toISOString();
+      }
+
       const { error } = await supabase
         .from('clients')
-        .update({
-          is_deactivated: checked,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', clientId);
 
       if (error) throw error;
 
-      setFormData({ ...formData, is_deactivated: checked });
+      setFormData({ ...formData, is_deactivated: checked, site_live_at: updateData.site_live_at || formData.site_live_at });
       
-      toast({
-        title: checked ? 'Sitio Desactivado' : 'Sitio Activado',
-        description: checked 
-          ? 'El sitio ahora mostrará un aviso de desactivación'
-          : 'El sitio está activo nuevamente',
-      });
+      // If site was just activated, send the site live email
+      if (!checked && updateData.site_live_at) {
+        try {
+          await supabase.functions.invoke('send-site-live-notification', {
+            body: { clientId }
+          });
+          toast({
+            title: 'Sitio Activado',
+            description: 'Email de notificación enviado al cliente',
+          });
+        } catch (emailError) {
+          console.error('Failed to send site live email:', emailError);
+          toast({
+            title: 'Sitio Activado',
+            description: 'El sitio está activo, pero hubo un error al enviar el email',
+          });
+        }
+      } else {
+        toast({
+          title: checked ? 'Sitio Desactivado' : 'Sitio Activado',
+          description: checked 
+            ? 'El sitio ahora mostrará un aviso de desactivación'
+            : 'El sitio está activo nuevamente',
+        });
+      }
     } catch (error: any) {
       toast({
         title: 'Error',

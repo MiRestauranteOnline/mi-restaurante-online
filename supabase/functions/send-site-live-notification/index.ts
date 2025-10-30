@@ -41,7 +41,7 @@ serve(async (req) => {
       : `https://${client.subdomain}.mirestaurante.online`;
     
     const dashboardUrl = `${siteUrl}/login`;
-    const dashboardGuideUrl = 'https://mirestaurante.online/guias/usar-panel-control';
+    const dashboardGuideUrl = 'https://mirestaurante.online/guias/primeros-pasos/introduccion';
 
     const html = `
       <!DOCTYPE html>
