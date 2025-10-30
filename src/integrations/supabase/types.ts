@@ -993,6 +993,7 @@ export type Database = {
           review_request_sent_at: string | null
           ruc: string | null
           signup_completed: boolean
+          site_live_at: string | null
           social_media_links: Json | null
           ssl_issued_date: string | null
           ssl_status: string | null
@@ -1067,6 +1068,7 @@ export type Database = {
           review_request_sent_at?: string | null
           ruc?: string | null
           signup_completed?: boolean
+          site_live_at?: string | null
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
@@ -1141,6 +1143,7 @@ export type Database = {
           review_request_sent_at?: string | null
           ruc?: string | null
           signup_completed?: boolean
+          site_live_at?: string | null
           social_media_links?: Json | null
           ssl_issued_date?: string | null
           ssl_status?: string | null
