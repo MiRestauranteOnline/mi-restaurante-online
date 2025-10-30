@@ -258,50 +258,36 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
     `;
   }
   
-  // Guides page
+  // Guides pages - provide specific content based on path
   if (pathname === '/guias' || pathname.startsWith('/guias/')) {
+    const guideContent = getGuideContent(pathname);
     return `
       <nav>
-        <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+        <a href="/" aria-label="Inicio - Mi Restaurante Online">
+          <img src="/logo.svg" alt="Mi Restaurante Online - Guías para páginas web de restaurantes" width="200" height="60" />
+        </a>
         <ul>
           <li><a href="/">Inicio</a></li>
           <li><a href="/blog">Blog</a></li>
           <li><a href="/guias">Guías</a></li>
           <li><a href="/contacto">Contacto</a></li>
+          <li><a href="/registro">Crear Mi Sitio</a></li>
         </ul>
       </nav>
       <main>
-        <h1>Centro de Ayuda - Guías para tu Página Web</h1>
-        <p>Aprende a gestionar tu página web de restaurante paso a paso.</p>
-        <section>
-          <h2>Primeros Pasos</h2>
-          <ul>
-            <li><a href="/guias/inicio/primeros-pasos">Introducción a tu panel de control</a></li>
-            <li><a href="/guias/inicio/beneficios-presencia-digital">Beneficios de tener presencia digital</a></li>
-            <li><a href="/guias/inicio/que-es-pagina-web-restaurante">Qué es una página web para restaurante</a></li>
-          </ul>
-        </section>
-        <section>
-          <h2>Diseño y Personalización</h2>
-          <ul>
-            <li><a href="/guias/diseno/elegir-plantilla">Elegir la plantilla perfecta</a></li>
-            <li><a href="/guias/diseno/personalizar-colores">Personalizar colores de tu marca</a></li>
-            <li><a href="/guias/diseno/subir-logo">Subir tu logo</a></li>
-          </ul>
-        </section>
-        <section>
-          <h2>Contenido</h2>
-          <ul>
-            <li><a href="/guias/contenido/actualizar-informacion-basica">Actualizar información básica</a></li>
-            <li><a href="/guias/contenido/agregar-imagenes">Agregar imágenes profesionales</a></li>
-            <li><a href="/guias/contenido/configurar-horarios">Configurar horarios de atención</a></li>
-            <li><a href="/guias/contenido/gestionar-menu">Gestionar tu menú digital</a></li>
-          </ul>
-        </section>
-        <a href="/">Volver al Inicio</a>
+        ${guideContent}
       </main>
       <footer>
         <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
+        <nav>
+          <h3>Enlaces Útiles</h3>
+          <ul>
+            <li><a href="/guias">Guías & Documentación</a></li>
+            <li><a href="/blog">Blog & Artículos</a></li>
+            <li><a href="/acerca-de">Acerca de Nosotros</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+          </ul>
+        </nav>
       </footer>
     `;
   }
@@ -367,25 +353,169 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
     `;
   }
   
-  // Default fallback for other pages (including blog posts)
+  // Default fallback for other pages
   return `
     <nav>
-      <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+      <a href="/" aria-label="Inicio - Mi Restaurante Online">
+        <img src="/logo.svg" alt="Mi Restaurante Online - Sitios web profesionales para restaurantes" width="200" height="60" />
+      </a>
       <ul>
         <li><a href="/">Inicio</a></li>
         <li><a href="/blog">Blog</a></li>
         <li><a href="/guias">Guías</a></li>
         <li><a href="/contacto">Contacto</a></li>
+        <li><a href="/registro">Crear Mi Sitio</a></li>
       </ul>
     </nav>
     <main>
       <h1>Mi Restaurante Online</h1>
-      <p>Crea tu página web para restaurante en 72 horas. Diseño profesional desde S/297/mes.</p>
+      <p>Crea tu página web para restaurante en 72 horas. Diseño profesional desde S/297/mes con menú digital incluido.</p>
+      <section>
+        <h2>Servicios Profesionales para Restaurantes</h2>
+        <ul>
+          <li><a href="/#benefits">Beneficios de tener presencia online</a></li>
+          <li><a href="/#pricing">Planes y Precios desde S/297/mes</a></li>
+          <li><a href="/blog">Guías Prácticas para Restaurantes</a></li>
+          <li><a href="/guias">Documentación y Soporte</a></li>
+        </ul>
+      </section>
       <a href="/">Volver al Inicio</a>
-      <a href="/registro">Crear Mi Sitio</a>
+      <a href="/registro">Crear Mi Sitio Ahora</a>
     </main>
     <footer>
       <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
+      <nav>
+        <ul>
+          <li><a href="/guias">Guías</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/contacto">Contacto</a></li>
+        </ul>
+      </nav>
     </footer>
+  `;
+}
+
+function getGuideContent(pathname: string): string {
+  // Guides index
+  if (pathname === '/guias') {
+    return `
+      <h1>Centro de Ayuda - Guías para Páginas Web de Restaurantes</h1>
+      <p>Aprende a gestionar tu página web de restaurante paso a paso con nuestras guías completas.</p>
+      
+      <section>
+        <h2>Primeros Pasos</h2>
+        <p>Comienza tu viaje digital con estas guías esenciales para tu restaurante.</p>
+        <ul>
+          <li><a href="/guias/primeros-pasos/introduccion">Introducción a tu panel de control</a> - Conoce las funcionalidades principales de tu dashboard</li>
+          <li><a href="/guias/primeros-pasos/beneficios">Beneficios de tener presencia digital</a> - Por qué tu restaurante necesita estar online</li>
+          <li><a href="/guias/primeros-pasos/configuracion-inicial">Configuración inicial de tu sitio</a> - Pasos básicos para comenzar</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>Diseño y Personalización</h2>
+        <p>Personaliza tu sitio web para reflejar la identidad única de tu restaurante.</p>
+        <ul>
+          <li><a href="/guias/diseno/elegir-plantilla">Elegir la plantilla perfecta</a> - Encuentra el diseño ideal para tu restaurante</li>
+          <li><a href="/guias/diseno/personalizar-colores">Personalizar colores de marca</a> - Aplica los colores de tu identidad corporativa</li>
+          <li><a href="/guias/diseno/subir-logo">Subir tu logo</a> - Añade el logo de tu restaurante</li>
+          <li><a href="/guias/diseno/imagenes">Gestionar imágenes</a> - Mejores prácticas para fotos de platos</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>Contenido del Sitio</h2>
+        <p>Gestiona el contenido de tu página web para atraer más clientes.</p>
+        <ul>
+          <li><a href="/guias/contenido/informacion-basica">Actualizar información básica</a> - Dirección, teléfono, horarios</li>
+          <li><a href="/guias/contenido/menu-digital">Gestionar tu menú digital</a> - Añade y actualiza tus platos</li>
+          <li><a href="/guias/contenido/imagenes-profesionales">Agregar imágenes profesionales</a> - Tips para fotografía de comida</li>
+          <li><a href="/guias/contenido/horarios">Configurar horarios de atención</a> - Mantén informados a tus clientes</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>Reservas Online</h2>
+        <p>Configura y gestiona el sistema de reservas de tu restaurante.</p>
+        <ul>
+          <li><a href="/guias/reservas/configuracion">Configurar sistema de reservas</a> - Activa las reservas online</li>
+          <li><a href="/guias/reservas/gestionar">Gestionar reservas</a> - Administra las solicitudes de tus clientes</li>
+          <li><a href="/guias/reservas/notificaciones">Notificaciones de reservas</a> - Configura alertas automáticas</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>SEO y Marketing</h2>
+        <p>Mejora la visibilidad de tu restaurante en Google.</p>
+        <ul>
+          <li><a href="/guias/seo/optimizacion-basica">Optimización SEO básica</a> - Mejora tu posicionamiento</li>
+          <li><a href="/guias/seo/google-business">Google My Business</a> - Aparece en búsquedas locales</li>
+          <li><a href="/guias/seo/redes-sociales">Integración con redes sociales</a> - Conecta tus perfiles</li>
+        </ul>
+      </section>
+      
+      <a href="/">← Volver al Inicio</a>
+    `;
+  }
+  
+  // Specific guide pages
+  if (pathname.includes('/primeros-pasos/introduccion')) {
+    return `
+      <article>
+        <h1>Introducción a tu Panel de Control</h1>
+        <p>Bienvenido a tu panel de control de Mi Restaurante Online. Esta guía te ayudará a familiarizarte con las principales funcionalidades.</p>
+        
+        <section>
+          <h2>¿Qué es el Panel de Control?</h2>
+          <p>El panel de control es tu centro de administración desde donde puedes gestionar todos los aspectos de tu página web de restaurante: contenido, menú, reservas, imágenes y configuración.</p>
+        </section>
+        
+        <section>
+          <h2>Secciones Principales</h2>
+          <h3>Dashboard Principal</h3>
+          <p>Vista general con estadísticas de visitas, reservas pendientes y accesos rápidos a las funciones más utilizadas.</p>
+          
+          <h3>Contenido del Sitio</h3>
+          <p>Actualiza la información básica de tu restaurante: nombre, descripción, dirección, teléfono, horarios y redes sociales.</p>
+          
+          <h3>Menú Digital</h3>
+          <p>Gestiona las categorías de tu menú y los platos. Añade fotos, descripciones y precios de cada platillo.</p>
+          
+          <h3>Galería de Imágenes</h3>
+          <p>Sube y organiza las fotos de tu restaurante, ambiente y platos destacados.</p>
+          
+          <h3>Sistema de Reservas</h3>
+          <p>Configura y gestiona las reservas online de tus clientes (Plan Avanzado).</p>
+        </section>
+        
+        <section>
+          <h2>Próximos Pasos</h2>
+          <ul>
+            <li><a href="/guias/contenido/informacion-basica">Actualizar información básica de tu restaurante</a></li>
+            <li><a href="/guias/diseno/personalizar-colores">Personalizar los colores de tu sitio</a></li>
+            <li><a href="/guias/contenido/menu-digital">Comenzar a añadir tu menú</a></li>
+          </ul>
+        </section>
+      </article>
+      <a href="/guias">← Volver a Guías</a>
+    `;
+  }
+  
+  // Default guide content for other guide pages
+  return `
+    <h1>Guías para tu Página Web de Restaurante</h1>
+    <p>Encuentra ayuda y tutoriales para gestionar tu sitio web profesional.</p>
+    
+    <section>
+      <h2>Recursos Disponibles</h2>
+      <ul>
+        <li><a href="/guias/primeros-pasos/introduccion">Introducción al panel de control</a></li>
+        <li><a href="/guias/contenido/menu-digital">Gestionar tu menú digital</a></li>
+        <li><a href="/guias/diseno/personalizar-colores">Personalizar diseño y colores</a></li>
+        <li><a href="/guias/reservas/configuracion">Configurar sistema de reservas</a></li>
+      </ul>
+    </section>
+    
+    <p><a href="/guias">Ver todas las guías</a> | <a href="/contacto">Contactar soporte</a></p>
   `;
 }
