@@ -48,26 +48,35 @@ export const RegistrationCompleteEmail = ({
         </Text>
 
         <Text style={text}>
-          Si prefieres usar tu propio dominio (ej: www.turestaurante.com), necesitas configurar 
-          los nameservers en tu proveedor de hosting:
+          <strong>📝 Para configurar tu dominio:</strong>
+        </Text>
+        
+        <Text style={text}>
+          1️⃣ Debes cambiar los nameservers en tu proveedor de dominios<br />
+          2️⃣ Ver guía paso a paso para Namecheap<br />
+          3️⃣ <strong>Responde a este email cuando hayas configurado los nameservers e incluye un screenshot de la configuración</strong><br />
+          4️⃣ Comparte tu dominio personalizado con nosotros en tu respuesta
         </Text>
 
-        <Section style={codeBox}>
-          <Text style={codeText}>ns1.lovableproject.com</Text>
-          <Text style={codeText}>ns2.lovableproject.com</Text>
-        </Section>
-
         <Section style={buttonContainer}>
-          <Link href="https://mirestaurante.online/panel/guias/configurar-dominio" style={button}>
-            Ver Guía de Configuración (NameCheap)
+          <Link href="https://mirestaurante.online/guias/configuracion-dominio/nameservers" style={button}>
+            Ver Guía de Nameservers
           </Link>
         </Section>
 
+        <Hr style={hr} />
+
+        <Heading style={h2}>🌐 ¿No tienes dominio?</Heading>
+        
         <Text style={text}>
-          <strong>¿No tienes un dominio todavía?</strong> Recomendamos configurarlo en{' '}
-          <Link href="https://www.namecheap.com" style={link}>NameCheap</Link> - 
-          es rápido, confiable y asequible.
+          Recomendamos comprarlo en Namecheap - es rápido, confiable y económico.
         </Text>
+
+        <Section style={buttonContainer}>
+          <Link href="https://mirestaurante.online/guias/configuracion-dominio/dominio-personalizado" style={buttonSecondary}>
+            Cómo Comprar un Dominio
+          </Link>
+        </Section>
 
         <Text style={smallText}>
           <em>
@@ -75,28 +84,6 @@ export const RegistrationCompleteEmail = ({
             y requieren información de contacto específica. Queremos que tú mantengas el control total 
             de tu dominio.
           </em>
-        </Text>
-
-        <Hr style={hr} />
-
-        <Heading style={h2}>📧 Configuración de Email (Opcional)</Heading>
-        
-        <Text style={text}>
-          ¿Quieres emails profesionales con tu dominio? (ej: contacto@turestaurante.com)
-        </Text>
-
-        <Section style={buttonContainer}>
-          <Link href="https://mirestaurante.online/panel/guias/configurar-email" style={buttonSecondary}>
-            Ver Guía de Email
-          </Link>
-        </Section>
-
-        <Hr style={hr} />
-
-        <Text style={text}>
-          <strong>Una vez que hayas configurado tus nameservers</strong>, simplemente responde a este email 
-          para notificarnos. Si prefieres que nosotros lo hagamos por ti, puedes enviarnos tus credenciales 
-          de acceso a tu proveedor de dominios y lo configuraremos sin costo adicional.
         </Text>
 
         <Text style={text}>
@@ -212,15 +199,15 @@ const button = {
 };
 
 const buttonSecondary = {
-  backgroundColor: '#64748b',
+  backgroundColor: '#3b82f6',
   borderRadius: '6px',
   color: '#fff',
-  fontSize: '16px',
+  fontSize: '14px',
   fontWeight: 'bold',
   textDecoration: 'none',
   textAlign: 'center' as const,
   display: 'inline-block',
-  padding: '14px 32px',
+  padding: '12px 24px',
 };
 
 const link = {

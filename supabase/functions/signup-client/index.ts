@@ -207,7 +207,7 @@ const handler = async (req: Request): Promise<Response> => {
     try {
       const resend = new Resend(Deno.env.get('RESEND_API_KEY')!);
       
-      const loginUrl = `https://mirestaurante.online/login`;
+      const loginUrl = `https://mirestaurante.online/registro`;
       
       const html = `
         <!DOCTYPE html>
