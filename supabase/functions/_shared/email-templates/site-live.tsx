@@ -95,7 +95,7 @@ export const SiteLiveEmail = ({
         </Section>
 
         <Section style={buttonContainer}>
-          <Link href="https://mirestaurante.online/panel/guias" style={buttonTertiary}>
+          <Link href="https://mirestaurante.online/guias/primeros-pasos/introduccion" style={buttonTertiary}>
             Ver Todas las Guías
           </Link>
         </Section>
@@ -263,7 +263,7 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: '#22c55e',
+  backgroundColor: '#e11d48',
   borderRadius: '6px',
   color: '#fff',
   fontSize: '16px',
@@ -287,7 +287,7 @@ const buttonSecondary = {
 };
 
 const buttonTertiary = {
-  backgroundColor: '#64748b',
+  backgroundColor: '#e11d48',
   borderRadius: '6px',
   color: '#fff',
   fontSize: '16px',

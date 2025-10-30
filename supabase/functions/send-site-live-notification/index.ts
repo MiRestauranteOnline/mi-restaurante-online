@@ -55,7 +55,7 @@ serve(async (req) => {
             .success-box { background-color: #d1fae5; padding: 32px; border-radius: 8px; border: 3px solid #10b981; margin: 24px 0; text-align: center; }
             .info-box { background-color: #f8fafc; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
             .button { display: inline-block; background-color: #e11d48; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; font-size: 16px; }
-            .button-secondary { display: inline-block; background-color: #3b82f6; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 8px 0; font-size: 14px; }
+            .button-secondary { display: inline-block; background-color: #e11d48; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 8px 0; font-size: 14px; }
             .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
             .video-section { background-color: #fef3c7; padding: 24px; border-radius: 8px; margin: 24px 0; }
           </style>
