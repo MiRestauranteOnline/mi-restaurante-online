@@ -57,6 +57,12 @@ verify_jwt = false
 [functions.serve-sitemap]
 verify_jwt = false
 
+[functions.send-reservation-email]
+verify_jwt = false
+
+[functions.send-site-live-notification]
+verify_jwt = false
+
 [functions.daily-blog-generator]
 verify_jwt = false
 
@@ -103,7 +109,4 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.complete-signup]
-verify_jwt = false
-
-[functions.send-site-live-notification]
 verify_jwt = false

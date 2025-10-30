@@ -1,4 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.75.0';
+import { Resend } from 'https://esm.sh/resend@4.0.0';
+
+const resend = new Resend(Deno.env.get('RESEND_API_KEY') as string);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -32,10 +35,10 @@ Deno.serve(async (req) => {
       throw new Error('Missing required field: clientId');
     }
 
-    // Get client's custom domain
+    // Get client's custom domain and details
     const { data: client, error: clientError } = await supabaseClient
       .from('clients')
-      .select('custom_domain')
+      .select('custom_domain, restaurant_name, email, subdomain, domain_verified')
       .eq('id', clientId)
       .single();
 
@@ -72,6 +75,7 @@ Deno.serve(async (req) => {
     const domain = cfData.result;
     const isVerified = domain?.status === 'active';
     const sslStatus = domain?.ssl_status || 'pending';
+    const wasVerified = client.domain_verified;
 
     // Update client record
     const { error: updateError } = await supabaseClient
@@ -91,6 +95,25 @@ Deno.serve(async (req) => {
     }
 
     console.log(`Domain ${customDomain} - Verified: ${isVerified}, SSL: ${sslStatus}`);
+
+    // Send email notification if status changed
+    if (isVerified && !wasVerified) {
+      // Domain just got verified - send success email
+      try {
+        const html = `<!DOCTYPE html><html><body style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;"><h1>¡Tu Dominio Está Listo! 🎉</h1><p>Hola ${client.restaurant_name},</p><p>¡Excelentes noticias! Tu dominio personalizado <strong>${customDomain}</strong> ha sido verificado exitosamente.</p><p>Tu sitio web está disponible en: <a href="https://${customDomain}">${customDomain}</a></p><p><a href="https://mirestaurante.online/client/dashboard" style="background: #e11d48; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Ver mi Panel</a></p></body></html>`;
+
+        await resend.emails.send({
+          from: 'MiRestaurante <info@mirestaurante.online>',
+          to: [client.email],
+          subject: `¡Tu dominio ${customDomain} está activo! 🎉`,
+          html,
+        });
+
+        console.log('Domain verified email sent successfully');
+      } catch (emailError) {
+        console.error('Error sending domain verified email:', emailError);
+      }
+    }
 
     return new Response(
       JSON.stringify({
