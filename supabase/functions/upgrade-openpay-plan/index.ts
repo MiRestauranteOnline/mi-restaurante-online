@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.75.0";
+import { Resend } from "https://esm.sh/resend@4.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,6 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
+    const resend = new Resend(Deno.env.get('RESEND_API_KEY')!);
 
     // Environment-based configuration
     const environment = Deno.env.get('OPENPAY_ENVIRONMENT') || 'sandbox';
@@ -348,6 +350,90 @@ serve(async (req) => {
       .eq('id', clientId);
 
     console.log('Plan upgraded successfully');
+
+    // Send upgrade confirmation email
+    try {
+      const nextBillingFormatted = nextBillingDate.toLocaleDateString('es-PE', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      const html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #484848; }
+              .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; }
+              h1 { color: #1a1a1a; font-size: 28px; margin-bottom: 30px; }
+              .success-box { background-color: #d1fae5; padding: 24px; border-radius: 8px; border: 2px solid #10b981; margin: 24px 0; text-align: center; }
+              .details-box { background-color: #f8fafc; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
+              .button { display: inline-block; background-color: #e11d48; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
+              .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
+              .features { background-color: #fef3c7; padding: 20px; border-radius: 8px; margin: 24px 0; }
+              .features ul { margin: 10px 0; padding-left: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>🎉 ¡Bienvenido al Plan Avanzado!</h1>
+              <p>Hola ${client.restaurant_name},</p>
+              <p>¡Felicitaciones! Tu upgrade al Plan Avanzado se ha completado exitosamente.</p>
+              
+              <div class="success-box">
+                <strong style="color: #065f46; font-size: 20px;">✅ Upgrade Completado</strong><br>
+                <span style="color: #065f46; font-size: 16px;">Ya tienes acceso a todas las funciones premium</span>
+              </div>
+
+              <div class="details-box">
+                <strong>Detalles del Upgrade</strong><br><br>
+                ${proratedAmount > 0 ? `<strong>Cargo prorrateado:</strong> S/ ${proratedAmount.toFixed(2)}<br>` : ''}
+                <strong>Plan anterior:</strong> Plan Básico (S/ ${basicPrice})<br>
+                <strong>Plan actual:</strong> Plan Avanzado (S/ ${advancedPrice})<br>
+                <strong>Próximo cobro completo:</strong> ${nextBillingFormatted} (S/ ${advancedPrice})
+              </div>
+
+              <div class="features">
+                <strong>🌟 Ahora tienes acceso a:</strong>
+                <ul>
+                  <li>Sistema de reservas online</li>
+                  <li>Soporte prioritario con PIN único</li>
+                  <li>Análisis avanzados de tu sitio</li>
+                  <li>Gestión de múltiples ubicaciones</li>
+                  <li>Y mucho más...</li>
+                </ul>
+              </div>
+
+              <p>Accede a tu panel de control para explorar todas las nuevas funciones disponibles:</p>
+              
+              <div style="text-align: center;">
+                <a href="https://mirestaurante.online/login" class="button">Explorar Panel Avanzado</a>
+              </div>
+
+              <p>¿Necesitas ayuda? Ahora tienes acceso a soporte prioritario. Contáctanos en <a href="mailto:premiumsoporte@mirestaurante.online" style="color: #e11d48;">premiumsoporte@mirestaurante.online</a></p>
+
+              <div class="footer">
+                <a href="https://mirestaurante.online" style="color: #898989;">MiRestaurante.online</a><br>
+                Sitios web profesionales para restaurantes en Perú
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+
+      await resend.emails.send({
+        from: 'MiRestaurante Pagos <pagos@mirestaurante.online>',
+        to: [client.email],
+        subject: '🎉 Upgrade Exitoso - Plan Avanzado',
+        html,
+      });
+
+      console.log('Upgrade confirmation email sent to:', client.email);
+    } catch (emailError) {
+      console.error('Error sending upgrade confirmation email:', emailError);
+    }
 
     return new Response(
       JSON.stringify({
