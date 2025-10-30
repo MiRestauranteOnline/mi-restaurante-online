@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CreditCard, Calendar, AlertTriangle, ArrowUp, CheckCircle, XCircle } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { CreditCard, Calendar, AlertTriangle, ArrowUp, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -378,6 +379,24 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
         </p>
       </div>
 
+      {/* Loading Progress Indicator */}
+      {actionLoading && (
+        <Card className="border-primary/50 bg-primary/5">
+          <CardContent className="pt-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                <p className="text-sm font-medium">Procesando tu solicitud...</p>
+              </div>
+              <Progress value={undefined} className="h-2" />
+              <p className="text-xs text-muted-foreground">
+                Por favor espera mientras procesamos tu cambio de plan. Esto puede tomar unos momentos.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Current Plan Overview */}
       <Card>
         <CardHeader>
@@ -502,12 +521,21 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                 </ul>
                 {canUpgrade && (
                   <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button className="w-full mt-4" disabled={actionLoading}>
+                <AlertDialogTrigger asChild>
+                  <Button className="w-full mt-4" disabled={actionLoading}>
+                    {actionLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Procesando...
+                      </>
+                    ) : (
+                      <>
                         <ArrowUp className="h-4 w-4 mr-2" />
                         Actualizar a Avanzado
-                      </Button>
-                    </AlertDialogTrigger>
+                      </>
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>¿Actualizar a Plan Avanzado?</AlertDialogTitle>
@@ -572,9 +600,16 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel disabled={actionLoading}>Cancelar</AlertDialogCancel>
                     <AlertDialogAction onClick={handleUpgrade} disabled={actionLoading}>
-                      Confirmar Upgrade
+                      {actionLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Procesando...
+                        </>
+                      ) : (
+                        'Confirmar Upgrade'
+                      )}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -585,7 +620,14 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button className="w-full mt-4" variant="outline" disabled={actionLoading}>
-                    Cambiar a Básico
+                    {actionLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Procesando...
+                      </>
+                    ) : (
+                      'Cambiar a Básico'
+                    )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -604,9 +646,16 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel disabled={actionLoading}>Cancelar</AlertDialogCancel>
                     <AlertDialogAction onClick={handleDowngrade} disabled={actionLoading}>
-                      Confirmar Cambio
+                      {actionLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Procesando...
+                        </>
+                      ) : (
+                        'Confirmar Cambio'
+                      )}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -632,7 +681,14 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               Tu suscripción ha sido suspendida debido a problemas de pago. Actualiza tu método de pago para continuar con el servicio.
             </p>
             <Button variant="default" disabled={actionLoading}>
-              Actualizar Método de Pago
+              {actionLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Procesando...
+                </>
+              ) : (
+                'Actualizar Método de Pago'
+              )}
             </Button>
           </CardContent>
         </Card>
@@ -661,7 +717,14 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
               Tu suscripción está inactiva. Reactívala para continuar usando todos los servicios.
             </p>
             <Button variant="default" disabled={actionLoading} onClick={handleReactivate}>
-              {couponFromUrl ? 'Reactivar con Descuento' : 'Reactivar Suscripción'}
+              {actionLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Procesando...
+                </>
+              ) : (
+                couponFromUrl ? 'Reactivar con Descuento' : 'Reactivar Suscripción'
+              )}
             </Button>
           </CardContent>
         </Card>
@@ -687,8 +750,17 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" className="w-full" disabled={actionLoading}>
-                  <AlertTriangle className="h-4 w-4 mr-2" />
-                  Cancelar Suscripción
+                  {actionLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Procesando...
+                    </>
+                  ) : (
+                    <>
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      Cancelar Suscripción
+                    </>
+                  )}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -711,13 +783,20 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>No, mantener suscripción</AlertDialogCancel>
+                  <AlertDialogCancel disabled={actionLoading}>No, mantener suscripción</AlertDialogCancel>
                   <AlertDialogAction 
                     onClick={() => handleCancel('user_request')} 
                     className="bg-destructive hover:bg-destructive/90" 
                     disabled={actionLoading}
                   >
-                    Sí, cancelar definitivamente
+                    {actionLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Procesando...
+                      </>
+                    ) : (
+                      'Sí, cancelar definitivamente'
+                    )}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
