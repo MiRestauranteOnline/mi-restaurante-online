@@ -54,8 +54,14 @@ serve(async (req) => {
             h1 { color: #1a1a1a; font-size: 32px; margin-bottom: 30px; }
             .success-box { background-color: #e6f7f5; padding: 32px; border-radius: 8px; border: 3px solid #44a79b; margin: 24px 0; text-align: center; }
             .info-box { background-color: #f8fafc; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
-            .button { display: inline-block; background-color: #44a79b; color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; font-size: 16px; }
-            .button-secondary { display: inline-block; background-color: #44a79b; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 8px 0; font-size: 14px; }
+            .button { display: inline-block; background-color: #44a79b; color: #ffffff !important; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; font-size: 16px; }
+            .button:visited { color: #ffffff !important; }
+            .button:hover { color: #ffffff !important; background-color: #3a8f85; }
+            .button:active { color: #ffffff !important; }
+            .button-secondary { display: inline-block; background-color: #44a79b; color: #ffffff !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 8px 0; font-size: 14px; }
+            .button-secondary:visited { color: #ffffff !important; }
+            .button-secondary:hover { color: #ffffff !important; background-color: #3a8f85; }
+            .button-secondary:active { color: #ffffff !important; }
             .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
             .video-section { background-color: #fef3c7; padding: 24px; border-radius: 8px; margin: 24px 0; }
           </style>

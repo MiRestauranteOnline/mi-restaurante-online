@@ -132,7 +132,10 @@ async function handleChargeSucceeded(supabase: any, resend: any, transaction: an
               .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; }
               h1 { color: #1a1a1a; font-size: 28px; margin-bottom: 30px; }
               .details-box { background-color: #f8fafc; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
-              .button { display: inline-block; background-color: #44a79b; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
+              .button { display: inline-block; background-color: #44a79b; color: #ffffff !important; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
+              .button:visited { color: #ffffff !important; }
+              .button:hover { color: #ffffff !important; background-color: #3a8f85; }
+              .button:active { color: #ffffff !important; }
               .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
             </style>
           </head>
@@ -237,7 +240,10 @@ async function handleChargeFailed(supabase: any, resend: any, transaction: any) 
               .warning-box { background-color: #fef3c7; padding: 24px; border-radius: 8px; border: 2px solid #fbbf24; margin: 24px 0; text-align: center; }
               .alert-box { background-color: #fee2e2; padding: 20px; border-radius: 8px; border: 2px solid #ef4444; margin: 24px 0; text-align: center; color: #991b1b; }
               .details-box { background-color: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
-              .button { display: inline-block; background-color: #44a79b; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
+              .button { display: inline-block; background-color: #44a79b; color: #ffffff !important; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
+              .button:visited { color: #ffffff !important; }
+              .button:hover { color: #ffffff !important; background-color: #3a8f85; }
+              .button:active { color: #ffffff !important; }
               .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
             </style>
           </head>
