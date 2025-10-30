@@ -175,22 +175,22 @@ const text = {
 };
 
 const infoBox = {
-  backgroundColor: '#f0fdf4',
-  border: '1px solid #86efac',
+  backgroundColor: '#e6f7f5',
+  border: '1px solid #44a79b',
   borderRadius: '8px',
   padding: '24px',
   margin: '24px 0',
 };
 
 const infoTitle = {
-  color: '#166534',
+  color: '#2d7a6e',
   fontSize: '18px',
   fontWeight: 'bold',
   margin: '0 0 12px 0',
 };
 
 const infoText = {
-  color: '#166534',
+  color: '#2d7a6e',
   fontSize: '16px',
   lineHeight: '24px',
   margin: '0',
@@ -212,7 +212,7 @@ const warningText = {
 };
 
 const link = {
-  color: '#e11d48',
+  color: '#44a79b',
   textDecoration: 'underline',
 };
 

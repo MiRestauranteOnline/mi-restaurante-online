@@ -118,15 +118,15 @@ const text = {
 };
 
 const infoBox = {
-  backgroundColor: '#f0fdf4',
-  border: '1px solid #86efac',
+  backgroundColor: '#e6f7f5',
+  border: '1px solid #44a79b',
   borderRadius: '6px',
   padding: '20px',
   margin: '24px 0',
 };
 
 const infoText = {
-  color: '#166534',
+  color: '#2d7a6e',
   fontSize: '16px',
   lineHeight: '24px',
   margin: '0',
@@ -138,7 +138,7 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: '#e11d48',
+  backgroundColor: '#44a79b',
   borderRadius: '6px',
   color: '#fff',
   fontSize: '16px',
@@ -150,7 +150,7 @@ const button = {
 };
 
 const link = {
-  color: '#e11d48',
+  color: '#44a79b',
   textDecoration: 'underline',
 };
 

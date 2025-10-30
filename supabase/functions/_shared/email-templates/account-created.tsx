@@ -110,7 +110,7 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: '#e11d48',
+  backgroundColor: '#44a79b',
   borderRadius: '6px',
   color: '#fff',
   fontSize: '16px',
@@ -122,7 +122,7 @@ const button = {
 };
 
 const link = {
-  color: '#e11d48',
+  color: '#44a79b',
   textDecoration: 'underline',
 };
 

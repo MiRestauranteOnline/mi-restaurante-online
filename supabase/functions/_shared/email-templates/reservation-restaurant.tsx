@@ -128,22 +128,22 @@ const text = {
 };
 
 const infoBox = {
-  backgroundColor: '#eff6ff',
-  border: '1px solid #93c5fd',
+  backgroundColor: '#e6f7f5',
+  border: '1px solid #44a79b',
   borderRadius: '8px',
   padding: '24px',
   margin: '24px 0',
 };
 
 const infoTitle = {
-  color: '#1e3a8a',
+  color: '#2d7a6e',
   fontSize: '18px',
   fontWeight: 'bold',
   margin: '0 0 12px 0',
 };
 
 const infoText = {
-  color: '#1e3a8a',
+  color: '#2d7a6e',
   fontSize: '16px',
   lineHeight: '24px',
   margin: '0',
@@ -155,7 +155,7 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: '#e11d48',
+  backgroundColor: '#44a79b',
   borderRadius: '6px',
   color: '#fff',
   fontSize: '16px',
@@ -167,12 +167,12 @@ const button = {
 };
 
 const emailLink = {
-  color: '#1e3a8a',
+  color: '#2d7a6e',
   textDecoration: 'underline',
 };
 
 const link = {
-  color: '#e11d48',
+  color: '#44a79b',
   textDecoration: 'underline',
 };
 

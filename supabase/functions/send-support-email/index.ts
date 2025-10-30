@@ -215,7 +215,7 @@ const handler = async (req: Request): Promise<Response> => {
       subject: emailSubject,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #FF6B35;">
+          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #44a79b;">
             <img src="https://mirestaurante.online/logo.svg" alt="Mi Restaurante Online" style="width: 60px; height: 60px;" />
             <h1 style="color: #333; margin: 10px 0;">Mi Restaurante Online</h1>
           </div>
@@ -258,7 +258,7 @@ const handler = async (req: Request): Promise<Response> => {
       subject: `Confirmación de Ticket de Soporte: ${ticket.ticket_number}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #FF6B35;">
+          <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 3px solid #44a79b;">
             <img src="https://mirestaurante.online/logo.svg" alt="Mi Restaurante Online" style="width: 60px; height: 60px;" />
             <h1 style="color: #333; margin: 10px 0;">Mi Restaurante Online</h1>
           </div>
@@ -267,7 +267,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p>Hola ${name},</p>
             <p>Tu ticket de soporte ha sido creado exitosamente:</p>
             
-            <div style="background-color: #f0f9ff; padding: 15px; border-radius: 5px; margin: 15px 0;">
+            <div style="background-color: #e6f7f5; padding: 15px; border-radius: 5px; margin: 15px 0; border: 1px solid #44a79b;">
               <p><strong>Número de Ticket:</strong> ${ticket.ticket_number}</p>
               <p><strong>Asunto:</strong> ${subject}</p>
               <p><strong>Tipo:</strong> ${supportType === "premium" ? "Premium" : "General"}</p>
