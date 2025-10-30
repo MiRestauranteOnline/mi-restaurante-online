@@ -619,6 +619,211 @@ function getGuideContent(pathname: string): string {
     `;
   }
   
+  // Actualizar información básica
+  if (pathname.includes('/contenido/actualizar-informacion-basica') || pathname.includes('/contenido/informacion-basica')) {
+    return `
+      <article>
+        <h1>Actualizar Información Básica de tu Restaurante</h1>
+        <p>Aprende cómo actualizar la información esencial de tu restaurante: dirección, teléfono, horarios y datos de contacto.</p>
+        
+        <section>
+          <h2>Información que Puedes Actualizar</h2>
+          <p>Desde tu panel de control puedes modificar todos los datos fundamentales de tu restaurante que aparecerán en tu página web.</p>
+          
+          <h3>Datos de Contacto</h3>
+          <ul>
+            <li><strong>Nombre del restaurante:</strong> El nombre comercial que aparecerá en todo el sitio</li>
+            <li><strong>Teléfono:</strong> Número de contacto principal para reservas y consultas</li>
+            <li><strong>Email:</strong> Correo electrónico de atención al cliente</li>
+            <li><strong>WhatsApp:</strong> Número para contacto directo por WhatsApp</li>
+          </ul>
+          
+          <h3>Ubicación</h3>
+          <ul>
+            <li><strong>Dirección completa:</strong> Calle, número, distrito</li>
+            <li><strong>Ciudad y región:</strong> Ubicación geográfica</li>
+            <li><strong>Referencia:</strong> Puntos de referencia cercanos</li>
+          </ul>
+          
+          <h3>Horarios de Atención</h3>
+          <p>Configura los horarios de apertura y cierre para cada día de la semana. Tus clientes verán cuándo está abierto tu restaurante.</p>
+        </section>
+        
+        <section>
+          <h2>Cómo Actualizar tu Información</h2>
+          <ol>
+            <li>Accede a tu panel de control</li>
+            <li>Ve a la sección "Configuración" o "Información Básica"</li>
+            <li>Modifica los campos que necesites actualizar</li>
+            <li>Guarda los cambios</li>
+            <li>Los cambios se reflejarán automáticamente en tu sitio web</li>
+          </ol>
+        </section>
+        
+        <section>
+          <h2>Mejores Prácticas</h2>
+          <ul>
+            <li>Mantén tu información siempre actualizada, especialmente horarios</li>
+            <li>Verifica que el número de teléfono sea correcto</li>
+            <li>Incluye referencias claras para facilitar que te encuentren</li>
+            <li>Actualiza horarios especiales en fechas festivas</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Siguiente Paso</h2>
+          <p><a href="/guias/contenido/menu-digital">Aprende a gestionar tu menú digital</a></p>
+        </section>
+      </article>
+      <a href="/guias">← Volver a Guías</a>
+    `;
+  }
+  
+  // Gestionar menú digital
+  if (pathname.includes('/contenido/menu-digital')) {
+    return `
+      <article>
+        <h1>Gestionar tu Menú Digital</h1>
+        <p>Aprende a añadir, editar y organizar los platos de tu restaurante en tu menú digital con código QR.</p>
+        
+        <section>
+          <h2>¿Qué es el Menú Digital?</h2>
+          <p>El menú digital permite a tus clientes ver todos tus platos desde sus móviles escaneando un código QR. Es práctico, higiénico y fácil de actualizar.</p>
+        </section>
+        
+        <section>
+          <h2>Organizar tu Menú por Categorías</h2>
+          <p>Estructura tu menú en categorías para que sea más fácil de navegar:</p>
+          <ul>
+            <li>Entradas y aperitivos</li>
+            <li>Platos principales</li>
+            <li>Postres</li>
+            <li>Bebidas</li>
+            <li>Menú del día</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Añadir Platos al Menú</h2>
+          <ol>
+            <li>Accede a la sección "Menú" en tu panel</li>
+            <li>Selecciona la categoría apropiada</li>
+            <li>Haz clic en "Añadir Plato"</li>
+            <li>Completa la información: nombre, descripción, precio</li>
+            <li>Sube una foto del plato (opcional pero recomendado)</li>
+            <li>Guarda los cambios</li>
+          </ol>
+        </section>
+        
+        <section>
+          <h2>Consejos para tu Menú Digital</h2>
+          <ul>
+            <li><strong>Descripciones claras:</strong> Menciona ingredientes principales</li>
+            <li><strong>Fotos atractivas:</strong> Imágenes de calidad aumentan ventas</li>
+            <li><strong>Precios actualizados:</strong> Mantén los precios al día</li>
+            <li><strong>Especiales del día:</strong> Destaca promociones</li>
+          </ul>
+        </section>
+      </article>
+      <a href="/guias">← Volver a Guías</a>
+    `;
+  }
+  
+  // Personalizar colores
+  if (pathname.includes('/diseno/personalizar-colores')) {
+    return `
+      <article>
+        <h1>Personalizar Colores de tu Sitio Web</h1>
+        <p>Aprende a personalizar los colores de tu página web para que refleje la identidad visual de tu restaurante.</p>
+        
+        <section>
+          <h2>Importancia de los Colores en tu Marca</h2>
+          <p>Los colores son fundamentales para crear una identidad visual memorable y profesional. Usa los colores que ya tiene tu restaurante en su imagen corporativa.</p>
+        </section>
+        
+        <section>
+          <h2>Elementos que Puedes Personalizar</h2>
+          <ul>
+            <li><strong>Color principal:</strong> El color dominante de tu marca</li>
+            <li><strong>Color secundario:</strong> Para botones y elementos destacados</li>
+            <li><strong>Color de fondo:</strong> El fondo general del sitio</li>
+            <li><strong>Color de texto:</strong> Asegura buena legibilidad</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Cómo Cambiar los Colores</h2>
+          <ol>
+            <li>Ve a la sección "Diseño" en tu panel</li>
+            <li>Selecciona "Personalizar Colores"</li>
+            <li>Elige los colores usando el selector de color</li>
+            <li>Previsualiza cómo se ve tu sitio</li>
+            <li>Guarda los cambios cuando estés satisfecho</li>
+          </ol>
+        </section>
+        
+        <section>
+          <h2>Consejos de Diseño</h2>
+          <ul>
+            <li>Mantén buen contraste entre texto y fondo</li>
+            <li>Usa máximo 3-4 colores principales</li>
+            <li>Considera la psicología del color para restaurantes</li>
+            <li>Prueba la legibilidad en diferentes dispositivos</li>
+          </ul>
+        </section>
+      </article>
+      <a href="/guias">← Volver a Guías</a>
+    `;
+  }
+  
+  // Configurar reservas
+  if (pathname.includes('/reservas/configuracion')) {
+    return `
+      <article>
+        <h1>Configurar Sistema de Reservas Online</h1>
+        <p>Guía completa para activar y configurar el sistema de reservas de tu restaurante (disponible en Plan Avanzado).</p>
+        
+        <section>
+          <h2>Beneficios de las Reservas Online</h2>
+          <ul>
+            <li>Tus clientes pueden reservar 24/7</li>
+            <li>Reduces llamadas telefónicas</li>
+            <li>Mejor gestión de tu capacidad</li>
+            <li>Confirmaciones automáticas por email</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Configuración Inicial</h2>
+          <h3>Paso 1: Activar Reservas</h3>
+          <p>Desde tu panel, ve a "Reservas" y activa la funcionalidad.</p>
+          
+          <h3>Paso 2: Configurar Capacidad</h3>
+          <p>Define cuántas mesas y personas puedes atender:</p>
+          <ul>
+            <li>Número total de mesas</li>
+            <li>Capacidad por mesa</li>
+            <li>Horarios disponibles para reservas</li>
+          </ul>
+          
+          <h3>Paso 3: Establecer Reglas</h3>
+          <ul>
+            <li>Antelación mínima para reservar</li>
+            <li>Tiempo máximo de antelación</li>
+            <li>Duración promedio de comidas</li>
+            <li>Restricciones especiales</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Gestionar Reservas</h2>
+          <p>Aprende a <a href="/guias/reservas/gestionar">gestionar las reservas de tus clientes</a> desde el panel de control.</p>
+        </section>
+      </article>
+      <a href="/guias">← Volver a Guías</a>
+    `;
+  }
+  
   // Default guide content for other guide pages
   return `
     <h1>Guías para tu Página Web de Restaurante</h1>
@@ -628,6 +833,7 @@ function getGuideContent(pathname: string): string {
       <h2>Recursos Disponibles</h2>
       <ul>
         <li><a href="/guias/primeros-pasos/introduccion">Introducción al panel de control</a></li>
+        <li><a href="/guias/contenido/actualizar-informacion-basica">Actualizar información básica</a></li>
         <li><a href="/guias/contenido/menu-digital">Gestionar tu menú digital</a></li>
         <li><a href="/guias/diseno/personalizar-colores">Personalizar diseño y colores</a></li>
         <li><a href="/guias/reservas/configuracion">Configurar sistema de reservas</a></li>
