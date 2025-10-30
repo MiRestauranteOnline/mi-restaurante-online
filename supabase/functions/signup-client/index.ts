@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { Resend } from "https://esm.sh/resend@4.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -201,6 +202,85 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log('Client signup completed successfully');
+
+    // Send account creation confirmation email
+    try {
+      const resend = new Resend(Deno.env.get('RESEND_API_KEY')!);
+      
+      const loginUrl = `https://mirestaurante.online/login`;
+      
+      const html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #484848; }
+              .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; }
+              h1 { color: #1a1a1a; font-size: 28px; margin-bottom: 30px; }
+              .success-box { background-color: #d1fae5; padding: 24px; border-radius: 8px; border: 2px solid #10b981; margin: 24px 0; text-align: center; }
+              .details-box { background-color: #f8fafc; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
+              .button { display: inline-block; background-color: #e11d48; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
+              .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
+              .credentials { background-color: #fef3c7; padding: 20px; border-radius: 8px; margin: 24px 0; border: 2px solid #fbbf24; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>✅ ¡Cuenta Creada Exitosamente!</h1>
+              <p>Hola ${restaurantName},</p>
+              <p>¡Bienvenido a MiRestaurante.online! Tu cuenta ha sido creada correctamente.</p>
+              
+              <div class="success-box">
+                <strong style="color: #065f46; font-size: 20px;">🎉 ¡Ya puedes continuar!</strong><br>
+                <span style="color: #065f46; font-size: 16px;">Completa los pasos restantes para activar tu sitio web</span>
+              </div>
+
+              <div class="credentials">
+                <strong>📧 Tus datos de acceso:</strong><br><br>
+                <strong>Email:</strong> ${email}<br>
+                <strong>Subdominio:</strong> ${subdomain}.mirestaurante.online<br><br>
+                <em>Guarda esta información en un lugar seguro. La necesitarás para acceder a tu panel de control.</em>
+              </div>
+
+              <div class="details-box">
+                <strong>📋 Próximos pasos:</strong><br><br>
+                1️⃣ Completa la información de tu restaurante<br>
+                2️⃣ Configura tus horarios de atención<br>
+                3️⃣ Sube las imágenes de tu restaurante<br>
+                4️⃣ Agrega preguntas frecuentes<br>
+                5️⃣ Realiza el pago de tu suscripción
+              </div>
+
+              <p><strong>⚠️ Importante:</strong> Si algo interrumpe el proceso, puedes iniciar sesión en cualquier momento y continuar donde lo dejaste.</p>
+              
+              <div style="text-align: center;">
+                <a href="${loginUrl}" class="button">Continuar Registro</a>
+              </div>
+
+              <p>¿Necesitas ayuda? Contáctanos en <a href="mailto:soporte@mirestaurante.online" style="color: #e11d48;">soporte@mirestaurante.online</a></p>
+
+              <div class="footer">
+                <a href="https://mirestaurante.online" style="color: #898989;">MiRestaurante.online</a><br>
+                Sitios web profesionales para restaurantes en Perú
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+
+      await resend.emails.send({
+        from: 'MiRestaurante <info@mirestaurante.online>',
+        to: [email],
+        subject: '✅ Cuenta Creada - Completa tu Registro',
+        html,
+      });
+
+      console.log('Account creation email sent to:', email);
+    } catch (emailError) {
+      console.error('Error sending account creation email:', emailError);
+      // Don't fail signup if email fails
+    }
 
     // Generate OTP for auto-login (bypasses CAPTCHA)
     // This creates a one-time token that can be used to establish a session

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.75.0";
+import { Resend } from "https://esm.sh/resend@4.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -85,6 +86,97 @@ serve(async (req) => {
       .eq('id', clientId);
 
     console.log('Subscription cancelled successfully');
+
+    // Send cancellation confirmation email
+    try {
+      const resend = new Resend(Deno.env.get('RESEND_API_KEY')!);
+      
+      const endDate = client.subscription_end_date 
+        ? new Date(client.subscription_end_date).toLocaleDateString('es-PE', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })
+        : 'inmediatamente';
+
+      const html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #484848; }
+              .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; }
+              h1 { color: #1a1a1a; font-size: 28px; margin-bottom: 30px; }
+              .info-box { background-color: #fee2e2; padding: 24px; border-radius: 8px; border: 2px solid #ef4444; margin: 24px 0; text-align: center; }
+              .details-box { background-color: #f8fafc; padding: 24px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 24px 0; }
+              .button { display: inline-block; background-color: #e11d48; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 24px 0; }
+              .footer { color: #898989; font-size: 14px; text-align: center; margin-top: 32px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>🔴 Suscripción Cancelada</h1>
+              <p>Hola ${client.restaurant_name},</p>
+              <p>Hemos procesado tu solicitud de cancelación de suscripción.</p>
+              
+              <div class="info-box">
+                <strong style="color: #991b1b; font-size: 20px;">Suscripción Cancelada</strong><br>
+                <span style="color: #991b1b; font-size: 16px;">Tu sitio permanecerá activo hasta: ${endDate}</span>
+              </div>
+
+              <div class="details-box">
+                <strong>Detalles de la Cancelación</strong><br><br>
+                <strong>Fecha de cancelación:</strong> ${new Date().toLocaleDateString('es-PE', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}<br>
+                <strong>Plan:</strong> ${client.plan_type === 'basic' ? 'Plan Básico' : 'Plan Avanzado'}<br>
+                <strong>Tu sitio estará activo hasta:</strong> ${endDate}<br>
+                ${reason ? `<strong>Motivo:</strong> ${reason}<br>` : ''}
+              </div>
+
+              <p><strong>¿Qué sucede ahora?</strong></p>
+              <ul>
+                <li>Tu sitio web continuará funcionando hasta ${endDate}</li>
+                <li>No se realizarán más cobros a tu método de pago</li>
+                <li>Después de ${endDate}, tu sitio será desactivado</li>
+                <li>Puedes reactivar tu suscripción en cualquier momento</li>
+              </ul>
+
+              <div class="details-box">
+                <strong>😢 Lamentamos verte partir</strong><br><br>
+                ¿Hay algo que podamos hacer para mejorar nuestro servicio? Tu feedback es muy valioso para nosotros.<br><br>
+                Si cambias de opinión, estaremos encantados de tenerte de vuelta.
+              </div>
+
+              <div style="text-align: center;">
+                <a href="https://mirestaurante.online/login" class="button">Reactivar Suscripción</a>
+              </div>
+
+              <p>¿Preguntas sobre tu cancelación? Contáctanos en <a href="mailto:pagos@mirestaurante.online" style="color: #e11d48;">pagos@mirestaurante.online</a></p>
+
+              <div class="footer">
+                <a href="https://mirestaurante.online" style="color: #898989;">MiRestaurante.online</a><br>
+                Sitios web profesionales para restaurantes en Perú
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+
+      await resend.emails.send({
+        from: 'MiRestaurante Pagos <pagos@mirestaurante.online>',
+        to: [client.email],
+        subject: '🔴 Suscripción Cancelada - MiRestaurante',
+        html,
+      });
+
+      console.log('Cancellation confirmation email sent to:', client.email);
+    } catch (emailError) {
+      console.error('Error sending cancellation confirmation email:', emailError);
+    }
 
     return new Response(
       JSON.stringify({
