@@ -173,8 +173,75 @@ async function getSEOContent(pathname: string, env: any): Promise<string> {
         `;
         }
       }
+      // Fallback when article not found or not accessible
+      {
+        const prettyTitle = slug
+          .split('-')
+          .map((s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s))
+          .join(' ');
+        return `
+          <nav>
+            <a href="/"><img src="/logo.svg" alt="Mi Restaurante Online" width="200" height="60" /></a>
+            <ul>
+              <li><a href="/">Inicio</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/guias">Guías</a></li>
+              <li><a href="/contacto">Contacto</a></li>
+            </ul>
+          </nav>
+          <main>
+            <article>
+              <header>
+                <nav aria-label="breadcrumb">
+                  <a href="/">Inicio</a> &gt; <a href="/blog">Blog</a> &gt; <span>${prettyTitle}</span>
+                </nav>
+                <h1>${prettyTitle}</h1>
+                <p>Resumen del artículo: ${prettyTitle}. Información para restaurantes en Perú.</p>
+              </header>
+              <section>
+                <h2>Introducción</h2>
+                <p>Esta es una vista previa estática para motores de búsqueda mientras se carga el contenido completo.</p>
+              </section>
+              <section>
+                <h2>Puntos Clave</h2>
+                <ul>
+                  <li>Aspectos importantes sobre ${prettyTitle}</li>
+                  <li>Requisitos y mejores prácticas</li>
+                  <li>Recursos y enlaces útiles</li>
+                </ul>
+              </section>
+            </article>
+            <a href="/blog">← Volver al Blog</a>
+          </main>
+          <footer>
+            <img src="/logo.svg" alt="Mi Restaurante Online" width="150" height="45" />
+            <nav>
+              <h3>Enlaces Útiles</h3>
+              <ul>
+                <li><a href="/guias">Guías & Documentación</a></li>
+                <li><a href="/blog">Blog & Artículos</a></li>
+                <li><a href="/acerca-de">Acerca de Nosotros</a></li>
+                <li><a href="/contacto">Contacto</a></li>
+              </ul>
+            </nav>
+          </footer>
+        `;
+      }
     } catch (error) {
       console.error('Error fetching blog post:', error);
+      // Fallback on error
+      const slug = blogPostMatch[2];
+      const prettyTitle = slug
+        .split('-')
+        .map((s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s))
+        .join(' ');
+      return `
+        <main>
+          <h1>${prettyTitle}</h1>
+          <p>Vista previa no disponible temporalmente. Consulta el artículo completo en el sitio.</p>
+          <a href="/blog">← Volver al Blog</a>
+        </main>
+      `;
     }
   }
   
