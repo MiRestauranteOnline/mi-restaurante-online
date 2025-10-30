@@ -15,13 +15,48 @@ export const onRequest: PagesFunction = async (ctx) => {
         
         // Inject SEO content based on route
         const seoContent = await getSEOContent(url.pathname, ctx.env);
+
+        // Build basic, route-specific meta (ensures unique tags per URL even without JS)
+        const path = url.pathname;
+        let pageTitle = 'Mi Restaurante Online';
+        let pageDescription = 'Página web para restaurante en Lima. Diseño web restaurante profesional en 72h. Sitio web restaurante Perú desde S/297/mes. Menú digital incluido.';
+        const canonical = `${url.origin}${path}`;
+
+        if (path.startsWith('/blog/')) {
+          const slug = decodeURIComponent(path.split('/').pop() || '').replace(/-/g, ' ');
+          const pretty = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'Blog';
+          pageTitle = `${pretty} | Blog de Mi Restaurante Online`;
+          pageDescription = `Lee ${pretty}. Consejos y guías prácticas para restaurantes en Perú.`;
+        } else if (path === '/blog') {
+          pageTitle = 'Blog para Restaurantes | Mi Restaurante Online';
+          pageDescription = 'Marketing, tecnología y gestión para restaurantes en Perú: artículos y tendencias.';
+        } else if (path === '/guias' || path.startsWith('/guias/')) {
+          const last = decodeURIComponent(path.split('/').pop() || '').replace(/-/g, ' ');
+          const pretty = last ? last.charAt(0).toUpperCase() + last.slice(1) : 'Guías';
+          pageTitle = `${pretty} | Guías para Restaurantes`;
+          pageDescription = 'Documentación y guías paso a paso para configurar tu sitio y crecer tu restaurante.';
+        } else if (path === '/acerca-de') {
+          pageTitle = 'Acerca de Nosotros | Mi Restaurante Online';
+          pageDescription = 'Conoce nuestra misión creando sitios web profesionales para restaurantes en Perú.';
+        } else if (path === '/contacto') {
+          pageTitle = 'Contacto | Mi Restaurante Online';
+          pageDescription = '¿Preguntas sobre nuestros planes de sitios web para restaurantes? Contáctanos aquí.';
+        } else if (path === '/soporte') {
+          pageTitle = 'Soporte | Mi Restaurante Online';
+          pageDescription = 'Centro de ayuda y soporte técnico para tu sitio web de restaurante.';
+        }
+
+        // Update head tags: <title>, meta description, canonical
+        html = html
+          .replace(/<title>[\s\S]*?<\/title>/, `<title>${pageTitle}</title>`)
+          .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${pageDescription}">`)
+          .replace(/<link rel="canonical" href="[^"]*"\s*\/?\s*>/, `<link rel="canonical" href="${canonical}" />`);
         
         // Replace empty root div with content-filled version for SEO
         html = html.replace(
           /<div id="root">[\s\S]*?<\/div>\s*<script/,
           `<div id="root">${seoContent}</div>\n    <script`
         );
-        
         return new Response(html, {
           status: response.status,
           statusText: response.statusText,
