@@ -100,7 +100,7 @@ serve(async (req: Request) => {
           console.error(`Failed to create coupon for client ${client.id}:`, couponError);
         }
 
-        const dashboardUrl = "https://mirestaurante.online/dashboard";
+        const dashboardUrl = `https://mirestaurante.online/client/subscription?coupon=${couponCode}`;
 
         // Email HTML template
         const emailHtml = `

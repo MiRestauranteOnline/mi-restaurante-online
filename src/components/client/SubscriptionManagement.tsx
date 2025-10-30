@@ -49,8 +49,24 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [planPrices, setPlanPrices] = useState<Record<string, number>>({});
   const [plans, setPlans] = useState<PlanData[]>([]);
+  const [couponFromUrl, setCouponFromUrl] = useState<string | null>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
+
+  // Check for coupon code in URL params
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const coupon = params.get('coupon');
+    if (coupon) {
+      setCouponFromUrl(coupon);
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+      toast({
+        title: "¡Código de descuento aplicado!",
+        description: `Se aplicará un descuento al reactivar tu suscripción con el código ${coupon}`,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     fetchPlanPrices();
@@ -260,18 +276,23 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
     try {
       const { data, error } = await supabase.functions.invoke('reactivate-subscription', {
         body: { 
-          clientId
+          clientId,
+          couponCode: couponFromUrl || null
         }
       });
 
       if (error) throw error;
       if (!data.success) throw new Error(data.error);
 
+      const discountApplied = data.discountApplied;
       toast({
         title: "¡Suscripción reactivada!",
-        description: "Tu sitio está nuevamente en línea. Bienvenido de vuelta.",
+        description: discountApplied 
+          ? `Tu sitio está nuevamente en línea con S/${discountApplied} de descuento aplicado. Bienvenido de vuelta.`
+          : "Tu sitio está nuevamente en línea. Bienvenido de vuelta.",
       });
 
+      setCouponFromUrl(null); // Clear coupon after use
       fetchSubscriptionData();
     } catch (error: any) {
       toast({
@@ -627,11 +648,20 @@ export function SubscriptionManagement({ clientId }: SubscriptionManagementProps
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {couponFromUrl && (
+              <Alert className="bg-green-50 border-green-200">
+                <AlertDescription className="text-green-800">
+                  🎁 <strong>Código de descuento aplicado:</strong> {couponFromUrl}
+                  <br />
+                  <span className="text-sm">Se aplicará automáticamente al reactivar</span>
+                </AlertDescription>
+              </Alert>
+            )}
             <p className="text-yellow-700">
               Tu suscripción está inactiva. Reactívala para continuar usando todos los servicios.
             </p>
             <Button variant="default" disabled={actionLoading} onClick={handleReactivate}>
-              Reactivar Suscripción
+              {couponFromUrl ? 'Reactivar con Descuento' : 'Reactivar Suscripción'}
             </Button>
           </CardContent>
         </Card>
