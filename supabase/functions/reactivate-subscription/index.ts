@@ -57,6 +57,130 @@ serve(async (req) => {
       throw new Error('Subscription is already active');
     }
 
+    const now = new Date();
+    const subscriptionEndDate = client.subscription_end_date ? new Date(client.subscription_end_date) : null;
+    const isPaidUntilFuture = subscriptionEndDate && subscriptionEndDate > now;
+
+    console.log('Reactivation check:', {
+      cancelled_at: client.cancelled_at,
+      subscription_end_date: client.subscription_end_date,
+      isPaidUntilFuture,
+    });
+
+    // SCENARIO 1: User already paid until future date - just reactivate
+    if (isPaidUntilFuture) {
+      console.log('Reactivating without charge - subscription paid until:', subscriptionEndDate.toISOString());
+
+      const { error: updateError } = await supabaseClient
+        .from('clients')
+        .update({
+          subscription_status: 'active',
+          is_deactivated: false,
+          cancelled_at: null,
+          subscription_auto_recurring: true,
+          updated_at: now.toISOString()
+        })
+        .eq('id', clientId);
+
+      if (updateError) throw updateError;
+
+      // Send reactivation email
+      const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #44a79b 0%, #3a8f85 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+              .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+              .success-box { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0; border-radius: 5px; }
+              .info-box { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+              .button { display: inline-block; padding: 12px 30px; background: #44a79b; color: #ffffff !important; text-decoration: none; border-radius: 5px; margin: 10px 5px; }
+              .button:visited { color: #ffffff !important; }
+              .button:hover { color: #ffffff !important; background-color: #3a8f85; }
+              .button:active { color: #ffffff !important; }
+              .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 14px; }
+              ul { line-height: 1.8; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>🎉 ¡Bienvenido de Vuelta!</h1>
+              </div>
+              <div class="content">
+                <p>Hola <strong>${client.restaurant_name}</strong>,</p>
+                
+                <p>¡Excelentes noticias! Tu suscripción ha sido reactivada exitosamente sin cargo adicional.</p>
+
+                <div class="success-box">
+                  <strong>✅ Estado: ACTIVO</strong><br>
+                  Tu sitio web está ahora en línea y funcionando completamente.
+                </div>
+
+                <div class="info-box">
+                  <h3>📅 Detalles de Tu Suscripción</h3>
+                  <ul>
+                    <li><strong>Plan:</strong> ${client.plan_type === 'basic' ? 'Básico' : 'Avanzado'}</li>
+                    <li><strong>Tu suscripción continúa hasta:</strong> ${subscriptionEndDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</li>
+                    <li><strong>Próxima facturación:</strong> ${subscriptionEndDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</li>
+                    <li><strong>No se realizó ningún cargo</strong> - tu período pagado continúa</li>
+                  </ul>
+                </div>
+
+                <div class="info-box">
+                  <h3>🚀 ¿Qué Puedes Hacer Ahora?</h3>
+                  <ul>
+                    <li>✨ Tu sitio web está activo y visible para tus clientes</li>
+                    <li>🎨 Accede a tu dashboard para gestionar tu contenido</li>
+                    <li>📊 Revisa tus estadísticas y analíticas</li>
+                  </ul>
+                  
+                  <center>
+                    <a href="https://mirestaurante.online/client" class="button">Ir a Mi Dashboard</a>
+                  </center>
+                </div>
+
+                <p>Gracias por confiar en Mi Restaurante Online. ¡Estamos emocionados de seguir siendo tu partner digital!</p>
+
+                <div class="footer">
+                  <p><strong>Mi Restaurante Online</strong></p>
+                  <p>📧 info@mirestaurante.online | 🌐 <a href="https://mirestaurante.online">mirestaurante.online</a></p>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+
+      await resend.emails.send({
+        from: 'Mi Restaurante Online <info@mirestaurante.online>',
+        to: [client.email],
+        subject: '🎉 ¡Tu suscripción ha sido reactivada!',
+        html: htmlContent,
+      });
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'Subscription reactivated without charge',
+          charged: false,
+          continuesUntil: subscriptionEndDate.toISOString()
+        }),
+        { 
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    // SCENARIO 2: Subscription expired - need to charge and create new subscription
+    console.log('Subscription expired, creating new subscription with charge');
+
     const planPrice = client.plan_type === 'basic' 
       ? (client.locked_basic_price || 297) 
       : (client.locked_advanced_price || 497);
@@ -237,8 +361,8 @@ serve(async (req) => {
 
     // Send reactivation email
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-    const now = new Date();
-    const newEndDate = new Date(now);
+    const emailNow = new Date();
+    const newEndDate = new Date(emailNow);
     newEndDate.setMonth(newEndDate.getMonth() + 1);
 
     const htmlContent = `
