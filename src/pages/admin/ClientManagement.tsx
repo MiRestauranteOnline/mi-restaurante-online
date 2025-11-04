@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Settings, Eye, Users, Check, ChevronsUpDown, UserCog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ interface Client {
   whatsapp?: string;
   created_at: string;
   updated_at: string;
+  seo_indexing_enabled?: boolean;
 }
 
 interface ClientStats {
@@ -232,6 +234,19 @@ export default function ClientManagement() {
               <div>
                 <p className="text-sm text-muted-foreground">Created</p>
                 <p className="font-medium">{new Date(selectedClient.created_at).toLocaleDateString()}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">SEO Indexing</p>
+                {selectedClient.seo_indexing_enabled === false ? (
+                  <Badge variant="destructive" className="mt-1">
+                    ⚠️ NO-INDEX
+                  </Badge>
+                ) : (
+                  <Badge variant="default" className="mt-1 bg-green-600 hover:bg-green-700">
+                    ✓ Indexado
+                  </Badge>
+                )}
               </div>
               
               <div className="space-y-2 pt-4">

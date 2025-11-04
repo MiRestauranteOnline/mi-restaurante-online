@@ -107,6 +107,7 @@ interface Client {
   dashboard_is_deactivated?: boolean;
   subscription_status?: string;
   payment_status?: string;
+  seo_indexing_enabled?: boolean;
 }
 
 interface ClientSettings {
@@ -1124,7 +1125,8 @@ const [faqForm, setFaqForm] = useState({
     // Site deactivation (admin only)
     is_deactivated: false,
     dashboard_is_deactivated: false,
-    site_live_at: null
+    site_live_at: null,
+    seo_indexing_enabled: true
   });
 
   useEffect(() => {
@@ -1263,7 +1265,8 @@ const [faqForm, setFaqForm] = useState({
         },
         is_deactivated: (data as any).is_deactivated || false,
         dashboard_is_deactivated: (data as any).dashboard_is_deactivated || false,
-        site_live_at: (data as any).site_live_at || null
+        site_live_at: (data as any).site_live_at || null,
+        seo_indexing_enabled: (data as any).seo_indexing_enabled !== false
       }));
     } catch (error: any) {
       toast({
@@ -6998,6 +7001,46 @@ setReviewForm({
                     onCheckedChange={(checked) => handleToggleAutoSave('premium_support_enabled', checked)}
                   />
                 </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="seo_indexing_enabled">Indexación en Buscadores</Label>
+                    <p className="text-sm text-muted-foreground">Permite que el sitio sea indexado por Google y otros buscadores</p>
+                  </div>
+                  <Switch
+                    id="seo_indexing_enabled"
+                    checked={formData.seo_indexing_enabled !== false}
+                    onCheckedChange={async (checked) => {
+                      try {
+                        const { error } = await supabase
+                          .from('clients')
+                          .update({ seo_indexing_enabled: checked } as any)
+                          .eq('id', effectiveClientId);
+
+                        if (error) throw error;
+
+                        setFormData({...formData, seo_indexing_enabled: checked});
+                        toast({
+                          title: "Configuración actualizada",
+                          description: checked ? "Sitio visible para buscadores" : "Sitio oculto de buscadores"
+                        });
+                      } catch (error: any) {
+                        toast({
+                          title: "Error",
+                          description: error.message,
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  />
+                </div>
+                {formData.seo_indexing_enabled === false && (
+                  <Alert variant="destructive">
+                    <AlertDescription>
+                      ⚠️ Este sitio está configurado como NO-INDEX. Los motores de búsqueda no lo indexarán.
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
             </div>
 
